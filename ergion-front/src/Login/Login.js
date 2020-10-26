@@ -1,4 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { setUserSession } from './Utils/Common';
+import LoadingOverlay from 'react-loading-overlay';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -25,6 +29,8 @@ function Copyright() {
     </Typography>
   );
 }
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,75 +63,134 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+const useFormInput = initialValue => {
+  const [value, setValue] = useState(initialValue);
+
+  const handleChange = e => {
+    setValue(e.target.value);
+  }
+  return {
+    value,
+    onChange: handleChange
+  }
+}
+
+export default function Login(props) {
   const classes = useStyles();
 
+  const [loading, setLoading] = useState(false);
+  const email = useFormInput('');
+  const password = useFormInput('');
+  const [error, setError] = useState(null);
+
+  const handleLogin = () => {
+    if (email.value == '') {
+      alert("Please enter your email")
+    } else if (password.value == '') {
+      alert("Please enter your password")
+
+    } else {
+      setError(null);
+      setLoading(true);
+      axios.post('https://reqres.in/api/login', { email: email.value, password: password.value }).then(response => {
+        setLoading(false);
+        setUserSession(response.data.token, response.data.user);
+        console.log(response.data.token)
+        props.history.push('/dashboard');
+      }).catch(err => {
+        setLoading(false);
+        alert(err)
+      });
+
+    }
+
+  }
+
+  const forgotPasswordFunction = () => {
+    alert("This is just a demo app")
+  }
+
   return (
-    <Grid container component="main" className={classes.root}>
-      <CssBaseline />
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
+    <LoadingOverlay
+      active={loading}
+      spinner
+      text='Loading ...'
+    >
+      <Grid container component="main" className={classes.root}>
+        <CssBaseline />
+        <Grid item xs={false} sm={4} md={7} className={classes.image} />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
           </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              Sign In
+            <form className={classes.form} noValidate>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                {...email}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                {...password}
+              />
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
+              />
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                disabled={loading}
+                onClick={
+                  handleLogin
+                }
+              >
+                Sign In
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
+              <Grid container>
+                <Grid item xs>
+                  <Link href="#" variant="body2" onClick={forgotPasswordFunction}>
+                    Forgot password?
                 </Link>
+                </Grid>
+                <Grid item>
+                  <Link href="/signup" variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Link href="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-            <Box mt={5}>
-              <Copyright />
-            </Box>
-          </form>
-        </div>
+              <Box mt={5}>
+                <Copyright />
+              </Box>
+            </form>
+          </div>
+        </Grid>
       </Grid>
-    </Grid>
+    </LoadingOverlay>
+
+
   );
+
+
 }
