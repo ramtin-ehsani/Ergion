@@ -109,6 +109,16 @@ class SignUp extends Component {
     this.setState({ submitted: true }, () => {
       setTimeout(() => this.setState({ submitted: false }), 5000);
     });
+    const submitted = this.state.submitted;
+    if(submitted){
+      const formData = this.state.formData;
+      axios.post('https://jsonplaceholder.typicode.com/users', { formData })
+      .then(res=>{
+        console.log(res);
+        console.log(res.data);
+        window.location = "/" //This line of code will redirect you once the submission is succeed
+      })
+    }
     console.log(this.state)
   }
 
