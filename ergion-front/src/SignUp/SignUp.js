@@ -10,7 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, ThemeProvider, createMuiTheme,StylesProvider, jssPreset } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import NiceInputPassword from "react-nice-input-password";
@@ -21,6 +21,8 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import rtl from "jss-rtl";
+import { create } from 'jss';
 
 const levelBarCss = (level) => ({
   height: "8px",
@@ -128,6 +130,11 @@ class SignUp extends Component {
   }
 
   render() {
+    const theme = createMuiTheme({
+      direction: 'rtl',
+    });
+    const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
+
     const securityLevels = [
       {
         descriptionLabel: <Typography>1 number</Typography>,
@@ -150,14 +157,16 @@ class SignUp extends Component {
     const { formData, submitted } = this.state;
 
     return (
-      <Container component="main" maxWidth="xs">
+      <StylesProvider jss={jss}>
+        <ThemeProvider theme={theme}>
+        <Container component="main" maxWidth="xs" dir="rtl">
         <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            عضویت
           </Typography>
           <ValidatorForm className={classes.form} ref="form"
             onSubmit={this.handleSubmit}>
@@ -170,7 +179,7 @@ class SignUp extends Component {
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
+                  label="نام"
                   autoFocus
                   value={formData.name}
                   onChange={this.handleChange}
@@ -184,7 +193,7 @@ class SignUp extends Component {
                   required
                   fullWidth
                   id="lastName"
-                  label="Last Name"
+                  label="نام خانوادگی"
                   name="lastName"
                   value={formData.lastName}
                   onChange={this.handleChange}
@@ -197,7 +206,7 @@ class SignUp extends Component {
                   variant="outlined"
                   required
                   fullWidth
-                  label="Email"
+                  label="ایمیل"
                   onChange={this.handleChange}
                   name="email"
                   value={formData.email}
@@ -207,7 +216,7 @@ class SignUp extends Component {
               </Grid>
               <Grid item xs={12}>
                 <NiceInputPassword
-                  label="Password"
+                  label="رمزعبور"
                   name="password"
                   LabelComponent={InputLabel}
                   InputComponent={TextField}
@@ -228,7 +237,7 @@ class SignUp extends Component {
                   variant="outlined"
                   required
                   margin="normal"
-                  label="Repeat password"
+                  label="تکرار رمزعبور"
                   onChange={this.handleChange}
                   name="repeatPassword"
                   type="password"
@@ -239,10 +248,10 @@ class SignUp extends Component {
               </Grid>
               <Grid item xs={12}>
                 <FormControl component="fieldset">
-                  <FormLabel component="legend">Role</FormLabel>
+                  <FormLabel component="legend">نقش</FormLabel>
                   <RadioGroup aria-label="role" name="role" row value={formData.role} onChange={this.handleChange}>
-                    <FormControlLabel value="teacher" control={<Radio color="primary" />} label="Teacher" />
-                    <FormControlLabel value="student" control={<Radio color="primary" />} label="Student" />
+                    <FormControlLabel value="teacher" control={<Radio color="primary" />} label="مدرس" />
+                    <FormControlLabel value="student" control={<Radio color="primary" />} label="دانش آموز" />
                   </RadioGroup>
                 </FormControl>
               </Grid>
@@ -254,12 +263,12 @@ class SignUp extends Component {
               color="primary"
               className={classes.submit}
             >
-              Sign Up
+              عضویت
             </Button>
-            <Grid container justify="flex-end">
+            <Grid container justify="center">
               <Grid item>
                 <Link href="/login" variant="body2">
-                  Already have an account? Sign in
+                  ورود
                 </Link>
               </Grid>
             </Grid>
@@ -269,6 +278,8 @@ class SignUp extends Component {
           <Copyright />
         </Box>
       </Container>
+      </ThemeProvider>
+      </StylesProvider>
     );
   }
 
