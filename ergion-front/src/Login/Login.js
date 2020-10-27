@@ -10,12 +10,16 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
-import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { create } from 'jss';
+import rtl from 'jss-rtl';
+import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 
 function Copyright() {
   return (
@@ -30,25 +34,21 @@ function Copyright() {
   );
 }
 
+const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100vh',
-  },
-  image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
-    backgroundRepeat: 'no-repeat',
-    backgroundColor:
-      theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+
+
   },
   paper: {
-    margin: theme.spacing(8, 4),
+    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    boxShadow: '30'
   },
   avatar: {
     margin: theme.spacing(1),
@@ -62,6 +62,24 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+  },
+  direction: 'rtl'
+});
 
 const useFormInput = initialValue => {
   const [value, setValue] = useState(initialValue);
@@ -85,9 +103,9 @@ export default function Login(props) {
 
   const handleLogin = () => {
     if (email.value == '') {
-      alert("Please enter your email")
+      alert("لطفا ایمیل خود را وارد کنید")
     } else if (password.value == '') {
-      alert("Please enter your password")
+      alert("لطفا رمز خود را وارد کنید")
 
     } else {
       setError(null);
@@ -111,84 +129,95 @@ export default function Login(props) {
   }
 
   return (
-    <LoadingOverlay
-      active={loading}
-      spinner
-      text='Loading ...'
-    >
-      <Grid container component="main" className={classes.root}>
-        <CssBaseline />
-        <Grid item xs={false} sm={4} md={7} className={classes.image} />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign in
-          </Typography>
-            <form className={classes.form} noValidate>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                {...email}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                {...password}
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                disabled={loading}
-                onClick={
-                  handleLogin
-                }
-              >
-                Sign In
-            </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2" onClick={forgotPasswordFunction}>
-                    Forgot password?
-                </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="/signup" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
-              </Grid>
-              <Box mt={5}>
+    <StylesProvider jss={jss}>
+
+      <ThemeProvider theme={theme} >
+        <LoadingOverlay
+          active={loading}
+          spinner
+          text='در حال پردازش...'
+          dir='rtl'
+        >
+
+          <Container component="main"  maxWidth='sm'>
+            <CssBaseline />
+            <Box boxShadow={5} padding="40px" >
+
+              <div className={classes.paper}>
+
+                <Avatar className={classes.avatar}>
+                  <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                  ورود
+        </Typography>
+                <form className={classes.form} noValidate>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="email"
+                    label="ایمیل"
+                    name="email"
+                    autoComplete="email"
+                    {...email}
+                    autoFocus
+                  />
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="رمز ورود"
+                    type="password"
+                    id="password"
+                    {...password}
+                    autoComplete="current-password"
+                  />
+                  <FormControlLabel
+                    control={<Checkbox value="remember" color="primary" />}
+                    label="من را به خاطر بسپار"
+                  />
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    disabled={loading}
+                    onClick={
+                      handleLogin
+                    }
+                  >
+                    ورود
+          </Button>
+                  <Grid container>
+                    <Grid item xs>
+                      <Link href="#" variant="body2" onClick={forgotPasswordFunction}>
+                        رمز را فراموش کردید؟
+              </Link>
+                    </Grid>
+                    <Grid item>
+                      <Link href="/signup" variant="body2">
+                        {"حساب کاربری ندارید؟ثبت نام کنید."}
+                      </Link>
+                    </Grid>
+                  </Grid>
+                </form>
+              </div>
+
+              <Box mt={8}>
                 <Copyright />
               </Box>
-            </form>
-          </div>
-        </Grid>
-      </Grid>
-    </LoadingOverlay>
+            </Box>
+          </Container>
 
+
+        </LoadingOverlay>
+      </ThemeProvider>
+
+    </StylesProvider>
 
   );
 
