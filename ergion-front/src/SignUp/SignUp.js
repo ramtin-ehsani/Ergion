@@ -17,6 +17,10 @@ import NiceInputPassword from "react-nice-input-password";
 import LockIcon from "@material-ui/icons/Lock";
 import InputLabel from "@material-ui/core/InputLabel";
 import axios from 'axios';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 const levelBarCss = (level) => ({
   height: "8px",
@@ -72,7 +76,8 @@ class SignUp extends Component {
       lastName: '',
       email: '',
       password: '',
-      repeatPassword: ''
+      repeatPassword: '',
+      role:"student"
     },
     submitted: false,
   }
@@ -116,7 +121,7 @@ class SignUp extends Component {
       .then(res=>{
         console.log(res);
         console.log(res.data);
-        window.location = "/" //This line of code will redirect you once the submission is succeed
+        // window.location = "/" //This line of code will redirect you once the submission is succeed
       })
     }
     console.log(this.state)
@@ -233,10 +238,13 @@ class SignUp extends Component {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
+                <FormControl component="fieldset">
+                  <FormLabel component="legend">Role</FormLabel>
+                  <RadioGroup aria-label="role" name="role" row value={formData.role} onChange={this.handleChange}>
+                    <FormControlLabel value="teacher" control={<Radio color="primary" />} label="Teacher" />
+                    <FormControlLabel value="student" control={<Radio color="primary" />} label="Student" />
+                  </RadioGroup>
+                </FormControl>
               </Grid>
             </Grid>
             <Button
