@@ -1,0 +1,17 @@
+.Main {
+  .title {
+    flex-grow: 1;
+  }
+
+  .toolbar {
+    padding-right: 24px;
+  }
+
+  .menuButton {
+    margin-left: 36px;
+  }
+
+  .menuButtonHidden {
+    display: none;
+  }
+}
