@@ -20,6 +20,7 @@ import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
+import IranSansFont from './fonts/IranSansFont.ttf';
 
 function Copyright() {
   return (
@@ -41,14 +42,13 @@ const useStyles = makeStyles((theme) => ({
   root: {
     height: '100vh',
 
-
   },
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    boxShadow: '30'
+    
   },
   avatar: {
     margin: theme.spacing(1),
@@ -63,9 +63,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const iranSans={
+  fontFamily: 'IranSansFont',
+  fontStyle: 'normal',
+  fontDisplay: 'swap',
+  fontWeight: 400,
+  src: `
+    local('IranSansFont'),
+    url(${IranSansFont}) format('truetype')
+  `,
+}
+
+
 const theme = createMuiTheme({
   typography: {
     fontFamily: [
+      'IranSansFont',
       '-apple-system',
       'BlinkMacSystemFont',
       '"Segoe UI"',
@@ -77,6 +90,13 @@ const theme = createMuiTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
+  },
+  overrides: {
+    MuiCssBaseline: {
+      '@global': {
+        '@font-face': [iranSans]
+      },
+    },
   },
   direction: 'rtl'
 });
@@ -140,18 +160,19 @@ export default function Login(props) {
 
   return (
     <StylesProvider jss={jss}>
+      
+      <ThemeProvider theme={theme}>
 
-      <ThemeProvider theme={theme} >
         <LoadingOverlay
           active={loading}
           spinner
           text='... در حال پردازش'
           dir='rtl'
+        
         >
-
-          <Container component="main" maxWidth='sm'>
+          <Container component="main" maxWidth='sm' >
             <CssBaseline />
-            <Box boxShadow={5} padding="40px" >
+            <Box boxShadow={5}  borderRadius={15} m={2} p={3} pl={5} pr={5} >
 
               <div className={classes.paper}>
 
@@ -212,7 +233,7 @@ export default function Login(props) {
                     </Grid>
                     <Grid item>
                       <Link href="/signup" variant="body2">
-                        {"حساب کاربری ندارید؟ ثبت نام کنید."}
+                        {".حساب کاربری ندارید؟ ثبت نام کنید"}
                       </Link>
                     </Grid>
                   </Grid>
