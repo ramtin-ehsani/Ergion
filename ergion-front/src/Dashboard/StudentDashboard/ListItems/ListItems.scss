@@ -1,28 +1,183 @@
 .mainList {
-  .listItemText {
-    //padding-left: 85px;
-    background-color: lightblue;
-    text-align: right;
+  //position: fixed;
+  //width: 240px;
+  //height: 100%;
+  margin-top: 62px;
+  //border: thick double #fafafa ;
+  //mso-border-shadow: yes;
+  //right: 0;
+
+  .desktopProfilePic {
+    width: 100px;
+    height: 100px;
+    margin: 10px auto;
   }
 
-  .listItemIcon {
-    //padding-left: 20px;
-    background-color: antiquewhite;
-    text-align: right;
+  .userName {
+    font-family: IRANSans;
+    font-size: large;
+    text-align: center;
+    margin-top: -10px;
+    margin-bottom: 1px;
+    white-space: normal;
+    width: 200px;
+    overflow: hidden;
+    text-overflow: initial;
+  }
+
+  .QandA {
+    font-family: IRANSans !important;
+    font-size: large;
+    padding-left: 79px;
+    margin-left: 30px;
+  }
+
+  .QandAIcon {
+    margin-right: 30px;
+    padding-left: 10px;
+  }
+
+  .profile {
+    font-family: IRANSans !important;
+    font-size: large;
+    padding-left: 77px;
+    margin-left: 30px;
+  }
+
+  .profileIcon {
+    margin-right: 30px;
+    padding-left: 12px;
+  }
+
+  .store {
+    font-family: IRANSans !important;
+    font-size: large;
+    padding-left: 72px;
+    margin-left: 30px;
+  }
+
+  .storeIcon {
+    margin-right: 30px;
+    padding-left: 10px;
+  }
+
+  .dashboard {
+    font-family: IRANSans !important;
+    font-size: large;
+    padding-left: 75px;
+    margin-left: 30px;
+  }
+
+  .dashIcon {
+    margin-right: 30px;
+    padding-left: 10px;
+  }
+
+  .setting {
+    font-family: IRANSans !important;
+    font-size: large;
+    padding-left: 70px;
+    margin-left: 30px;
+  }
+
+  .setIcon {
+    margin-right: 30px;
+    padding-left: 10px;
+  }
+
+  .exit {
+    font-family: IRANSans !important;
+    font-size: large;
+    padding-left: 90px;
+    margin-left: 30px;
+  }
+
+  .exitIcon {
+    margin-right: 30px;
     padding-left: 10px;
   }
 }
-.secondaryList {
-  .listItemText {
-    //padding-left: 85px;
-    background-color: lightblue;
-    text-align: right;
+
+.mobileList {
+  .userName {
+    font-family: IRANSans;
+    font-size: large;
+    text-align: center;
+    white-space: normal;
+    width: 200px;
+    overflow: hidden;
+    text-overflow: initial;
   }
 
-  .listItemIcon {
-    //padding-left: 20px;
-    background-color: antiquewhite;
-    text-align: right;
+  .QandA {
+    font-family: IRANSans !important;
+    font-size: large;
+    padding-left: 79px;
+    margin-left: 30px;
+  }
+
+  .QandAIcon {
+    margin-right: 30px;
+    padding-left: 10px;
+  }
+
+  .profile {
+    font-family: IRANSans !important;
+    font-size: large;
+    padding-left: 77px;
+    margin-left: 30px;
+  }
+
+  .profileIcon {
+    margin-right: 30px;
+    padding-left: 12px;
+  }
+
+  .store {
+    font-family: IRANSans !important;
+    font-size: large;
+    padding-left: 72px;
+    margin-left: 30px;
+  }
+
+  .storeIcon {
+    margin-right: 30px;
+    padding-left: 10px;
+  }
+
+  .dashboard {
+    font-family: IRANSans !important;
+    font-size: large;
+    padding-left: 75px;
+    margin-left: 30px;
+  }
+
+  .dashIcon {
+    margin-right: 30px;
+    padding-left: 10px;
+  }
+
+  .setting {
+    font-family: IRANSans !important;
+    font-size: large;
+    padding-left: 70px;
+    margin-left: 30px;
+  }
+
+  .setIcon {
+    margin-right: 30px;
+    padding-left: 10px;
+  }
+
+  .exit {
+    font-family: IRANSans !important;
+    font-size: large;
+    padding-left: 90px;
+    margin-left: 30px;
+  }
+
+  .exitIcon {
+    margin-right: 30px;
     padding-left: 10px;
   }
 }

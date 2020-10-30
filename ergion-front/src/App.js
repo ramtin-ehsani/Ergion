@@ -6,6 +6,7 @@ import SignUp from './SignUp/SignUp';
 import HomePage from './HomePage/HomePage'
 import Login from './Login/Login'
 import StudentDashboard from "./Dashboard/StudentDashboard/StudentDashboard";
+import './fonts/IRANSans/css/fontiran.css';
 
 const history = createBrowserHistory();
 

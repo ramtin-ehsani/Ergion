@@ -1,67 +1,123 @@
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import clsx from "clsx";
-import Toolbar from "@material-ui/core/Toolbar";
-import React from "react";
-import MenuIcon from '@material-ui/icons/Menu';
-import "./Toolbar.scss";
-import {makeStyles} from '@material-ui/core/styles';
+import React from 'react';
+import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
-
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import Toolbar from '@material-ui/core/Toolbar';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {mainListItems, MobileListItems} from "../ListItems/ListItems";
+import clsx from "clsx";
+import './Toolbar.scss';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-    appBar: {
-        zIndex: theme.zIndex.drawer + 1,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        })
+    drawer: {
+        [theme.breakpoints.up('sm')]: {
+            width: 'fixed',
+            flexShrink: 0,
+        },
     },
-    appBarShift: {
-        marginRight: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        })
-    }
+    drawers: {
+        [theme.breakpoints.up('md')]: {
+            width: 'fixed',
+            flexShrink: 0,
+        },
+    },
+    appBar: {
+        flex: 1, /*khodam*/
+        zIndex: theme.zIndex.drawer + 1,
+        [theme.breakpoints.up('sm')]: {
+            width: `calc(100%)`,
+            marginLeft: drawerWidth,
+        },
+    },
+    menuButton: {
+        marginLeft: theme.spacing(-1),
+        [theme.breakpoints.up('sm')]: {
+            display: 'none',
+        },
+    },
+    drawerPaper: {
+        width: drawerWidth,
+        height: "fixed",
+    },
 }));
 
-
-const Toolbars = () => {
-
+function ResponsiveDrawer(props) {
+    const {window} = props;
+    const container = window !== undefined ? () => window().document.body : undefined;
     const classes = useStyles();
-    const [open, setOpen] = React.useState(true);
+    const theme = useTheme();
+    const [mobileOpen, setMobileOpen] = React.useState(false);
 
-    const handleDrawerOpen = () => {
-        setOpen(true);
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
     };
 
     return (
         <div className="Main">
-            <AppBar position="absolute"
-                    className={clsx(classes.appBar, open && classes.appBarShift)}>
-                <Toolbar className={"toolbar"}>
-                    <Typography component="h1" variant="h6" color="inherit" noWrap className={"title"}>
-                        Dashboard
-                    </Typography>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx("menuButton", open && "menuButtonHidden")}
+            <div>
+                <AppBar position="fixed" className={classes.appBar}>
+                    <Toolbar>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            edge="end"
+                            onClick={handleDrawerToggle}
+                            className="{classes.menuButton}"
+                        >
+                            <MenuIcon/>
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
+
+            </div>
+            <nav className={classes.drawer} aria-label="mailbox folders">
+                <Hidden smUp implementation="css">
+                    <Drawer
+                        container={container}
+                        variant="temporary"
+                        anchor={theme.direction === 'ltr' ? 'right' : 'left'}
+                        open={mobileOpen}
+                        onClose={handleDrawerToggle}
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                        ModalProps={{
+                            keepMounted: true,
+                        }}
                     >
-                        <MenuIcon/>
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
+                        <Divider/>
+                        <div>
+                            <Divider/>
+                            {MobileListItems}
+                        </div>
+                    </Drawer>
+                </Hidden>
+                <Hidden xsDown implementation="js">
+                    <Drawer
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                        anchor={"right"}
+                        variant="permanent"
+                        open
+                    >
+                        <Divider/>
+                        {mainListItems}
+                    </Drawer>
+                </Hidden>
+            </nav>
         </div>
-    )
+    );
 }
 
-export default Toolbars;
+ResponsiveDrawer.propTypes = {
+    window: PropTypes.func,
+};
 
-
+export default ResponsiveDrawer;
