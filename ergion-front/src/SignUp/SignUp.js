@@ -21,8 +21,23 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import ToggleButton from '@material-ui/lab/ToggleButton';
 import rtl from "jss-rtl";
 import { create } from 'jss';
+import IranSans from './irsans.ttf';
+import './SignUp.css';
+
+const iranSans = {
+  fontFamily: 'IranSans',
+  fontStyle: 'normal',
+  fontDisplay: 'swap',
+  fontWeight: 400,
+  src: `
+    local('IranSans'),
+    url(${IranSans}) format('truetype')
+  `,
+};
 
 const levelBarCss = (level) => ({
   height: "8px",
@@ -50,12 +65,13 @@ function Copyright() {
 
 const styles = (theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
-    padding: '8px 8px 8px 8px',
+    marginTop: theme.spacing(2),
+    padding: '8px 10px 8px 10px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    boxShadow: '3px 3px 4px 4px #ccc'
+    boxShadow: '3px 3px 4px 4px #ccc',
+    borderRadius: '20px 20px 20px 20px',
   },
   avatar: {
     margin: theme.spacing(1),
@@ -74,21 +90,24 @@ const styles = (theme) => ({
 class SignUp extends Component {
   state = {
     formData: {
-      name: '',
-      lastName: '',
+      firstname: '',
+      lastname: '',
       email: '',
-      password: '',
-      repeatPassword: '',
-      role:"student"
+      password1: '',
+      password2: '',
+      role:"S",
+      username:''
     },
     submitted: false,
+    std_selected: true,
+    teach_selected: false,
   }
 
   componentDidMount() {
     // custom rule will have name 'isPasswordMatch'
     ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
       const { formData } = this.state;
-      if (value !== formData.password) {
+      if (value !== formData.password1) {
         return false;
       }
       return true;
@@ -103,7 +122,31 @@ class SignUp extends Component {
   handleChange = (event) => {
     const { formData } = this.state;
     formData[event.target.name] = event.target.value;
+    if(event.target.name === 'email'){
+      formData['username'] = event.target.value;
+    }
     this.setState({ formData });
+  }
+
+  handleChangeRole = (event, newRole) => {
+    const { formData } = this.state;
+    if(newRole !== null){
+      formData['role'] = newRole;
+      console.log(formData)
+      this.setState({ formData });
+      if(newRole === 'S'){
+        this.setState({
+          std_selected: true,
+          teach_selected: false
+        })
+      }
+      if(newRole === 'T'){
+        this.setState({
+          std_selected: false,
+          teach_selected: true
+        })
+      }
+    }
   }
 
   handleChangePass = (data) => {
@@ -119,11 +162,21 @@ class SignUp extends Component {
     const submitted = this.state.submitted;
     if(submitted){
       const formData = this.state.formData;
-      axios.post('https://jsonplaceholder.typicode.com/users', { formData })
+      axios.post('http://127.0.0.1:8000/rest-auth/registration/', { 
+        username:formData.email,
+        password1:formData.password1,
+        password2:formData.password2,
+        firstname:formData.firstname,
+        lastname:formData.lastname,
+        email:formData.email,
+        role:formData.role
+       })
       .then(res=>{
         console.log(res);
         console.log(res.data);
-        // window.location = "/" //This line of code will redirect you once the submission is succeed
+        if(res.status === 201){
+            window.location = "/login" //This line of code will redirect you once the submission is succeed
+        }
       })
     }
     console.log(this.state)
@@ -132,6 +185,29 @@ class SignUp extends Component {
   render() {
     const theme = createMuiTheme({
       direction: 'rtl',
+      typography: {
+        fontFamily: [
+          'IranSans',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
+          'sans-serif',
+          '"Apple Color Emoji"',
+          '"Segoe UI Emoji"',
+          '"Segoe UI Symbol"',
+        ].join(','),
+        fontWeight:'300'
+      },
+      overrides: {
+        MuiCssBaseline: {
+          '@global': {
+            '@font-face': [iranSans],
+          },
+        },
+      },
     });
     const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
@@ -155,6 +231,7 @@ class SignUp extends Component {
     ];
     const { classes } = this.props;
     const { formData, submitted } = this.state;
+    const textFieldStyle = { minHeight: "5rem" };
 
     return (
       <StylesProvider jss={jss}>
@@ -170,39 +247,62 @@ class SignUp extends Component {
           </Typography>
           <ValidatorForm className={classes.form} ref="form"
             onSubmit={this.handleSubmit}>
+            <Grid item xs={12}>
+              <ToggleButtonGroup exclusive value={formData.role} onChange={this.handleChangeRole} >
+                <ToggleButton value="S" style={this.state.std_selected?{backgroundColor:"#3f51b5",color:"white"}:{backgroundColor:"transparent",color:"grey"}}>
+                  دانش آموز هستم
+                </ToggleButton>
+                <ToggleButton value="T" style={this.state.teach_selected?{backgroundColor:"#3f51b5",color:"white"}:{backgroundColor:"transparent",color:"grey"}}>
+                  مدرس هستم
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+            {/* <Grid item xs={12}>
+                <FormControl component="fieldset">
+                  <FormLabel component="legend" >نقش</FormLabel>
+                  <RadioGroup aria-label="role" name="role" row value={formData.role} onChange={this.handleChange}>
+                    <FormControlLabel value="teacher" control={<Radio color="primary" />} label="مدرس" />
+                    <FormControlLabel value="student" control={<Radio color="primary" />} label="دانش آموز" />
+                  </RadioGroup>
+                </FormControl>
+            </Grid> */}
+            <Box mt={3}/>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextValidator
+                  style={textFieldStyle}
                   autoComplete="fname"
-                  name="name"
+                  name="firstname"
                   variant="outlined"
                   required
                   fullWidth
                   id="firstName"
                   label="نام"
                   autoFocus
-                  value={formData.name}
+                  value={formData.firstname}
                   onChange={this.handleChange}
                   validators={['required', 'matchRegexp:^[^0-9]+$']}
-                  errorMessages={['this field is required', 'name is not valid']}
+                  errorMessages={['this field is required', 'فرمت اشتباه است']}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextValidator
+                  style={textFieldStyle}
                   variant="outlined"
                   required
                   fullWidth
-                  id="lastName"
+                  id="lastname"
                   label="نام خانوادگی"
-                  name="lastName"
-                  value={formData.lastName}
+                  name="lastname"
+                  value={formData.lastname}
                   onChange={this.handleChange}
                   validators={['required', 'matchRegexp:^[^0-9]+$']}
-                  errorMessages={['this field is required', 'last name is not valid']}
+                  errorMessages={['this field is required', 'فرمت اشتباه است']}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextValidator
+                  style={textFieldStyle}
                   variant="outlined"
                   required
                   fullWidth
@@ -211,13 +311,15 @@ class SignUp extends Component {
                   name="email"
                   value={formData.email}
                   validators={['required', 'isEmail']}
-                  errorMessages={['this field is required', 'email is not valid']}
+                  errorMessages={['this field is required', 'ایمیل درست نمی باشد']}
                 />
               </Grid>
               <Grid item xs={12}>
                 <NiceInputPassword
-                  label="رمزعبور"
-                  name="password"
+                  className="label-pass"
+                  label="رمز عبور *"
+                  name="password1"
+                  style={{width:'100%'}}
                   LabelComponent={InputLabel}
                   InputComponent={TextField}
                   InputComponentProps={{
@@ -228,37 +330,31 @@ class SignUp extends Component {
                   }}
                   showSecurityLevelBar
                   renderLevelBarComponent={CustomLevelBar}
-                  value={formData.password}
+                  value={formData.password1}
                   securityLevels={securityLevels}
                   onChange={this.handleChangePass}
                 />
                 <TextValidator
+                  style={textFieldStyle}
                   fullWidth
                   variant="outlined"
                   required
                   margin="normal"
-                  label="تکرار رمزعبور"
+                  label="تکرار رمز عبور"
                   onChange={this.handleChange}
-                  name="repeatPassword"
+                  name="password2"
                   type="password"
                   validators={['isPasswordMatch', 'required']}
-                  errorMessages={['password mismatch', 'this field is required']}
-                  value={formData.repeatPassword}
+                  errorMessages={['رمز اشتباه است', 'this field is required']}
+                  value={formData.password2}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControl component="fieldset">
-                  <FormLabel component="legend">نقش</FormLabel>
-                  <RadioGroup aria-label="role" name="role" row value={formData.role} onChange={this.handleChange}>
-                    <FormControlLabel value="teacher" control={<Radio color="primary" />} label="مدرس" />
-                    <FormControlLabel value="student" control={<Radio color="primary" />} label="دانش آموز" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
+              
             </Grid>
             <Button
               type="submit"
               fullWidth
+              // disabled={submitted?false:true}
               variant="contained"
               color="primary"
               className={classes.submit}
@@ -274,7 +370,7 @@ class SignUp extends Component {
             </Grid>
           </ValidatorForm>
         </div>
-        <Box mt={5}>
+        <Box mt={2}>
           <Copyright />
         </Box>
       </Container>

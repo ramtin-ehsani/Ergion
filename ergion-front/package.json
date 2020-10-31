@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
     "axios": "^0.21.0",
     "jss-rtl": "^0.3.0",
     "react": "^17.0.1",
@@ -12,12 +13,28 @@
     "react-material-ui-form-validator": "^2.1.1",
     "react-nice-input-password": "^2.7.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "1.1.5"
+    "react-scripts": "^3.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "node-sass": "^4.14.1",
+    "sass-loader": "^10.0.4"
   }
 }
