@@ -21,6 +21,7 @@ import { create } from 'jss';
 import rtl from 'jss-rtl';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 import IranSansFont from './fonts/IranSansFont.ttf';
+import { FormatSize } from '@material-ui/icons';
 
 function Copyright() {
   return (
@@ -44,11 +45,17 @@ const useStyles = makeStyles((theme) => ({
 
   },
   paper: {
-    marginTop: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    
+
+  },
+  box: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: '100vh',
+    flexWrap:'wrap'
   },
   avatar: {
     margin: theme.spacing(1),
@@ -63,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const iranSans={
+const iranSans = {
   fontFamily: 'IranSansFont',
   fontStyle: 'normal',
   fontDisplay: 'swap',
@@ -159,22 +166,22 @@ export default function Login(props) {
   }
 
   return (
-    <StylesProvider jss={jss}>
-      
-      <ThemeProvider theme={theme}>
+    <StylesProvider jss={jss} >
+
+      <ThemeProvider theme={theme} >
 
         <LoadingOverlay
           active={loading}
           spinner
           text='... در حال پردازش'
-          dir='rtl'
-        
-        >
-          <Container component="main" maxWidth='sm' >
-            <CssBaseline />
-            <Box boxShadow={5}  borderRadius={15} m={2} p={3} pl={5} pr={5} >
+          className={classes.box}
 
-              <div className={classes.paper}>
+        >
+          <Container component="main" maxWidth='xs' >
+            <CssBaseline />
+            <Box boxShadow={5} borderRadius={15} m={2} p={3} >
+
+              <div className={classes.paper} >
 
                 <Avatar className={classes.avatar}>
                   <LockOutlinedIcon />
@@ -209,9 +216,11 @@ export default function Login(props) {
                     {...password}
                     autoComplete="current-password"
                   />
+
                   <FormControlLabel
                     control={<Checkbox value="remember" color="primary" />}
                     label="من را به خاطر بسپار"
+                    mt={2}
                   />
                   <Button
                     fullWidth
@@ -225,24 +234,28 @@ export default function Login(props) {
                   >
                     ورود
                   </Button>
-                  <Grid container>
-                    <Grid item xs>
+                  <Grid container direction='row-reverse' spacing='2'>
+                    <Grid item >
+                      <Link href="/signup" variant="body2" >
+                        {".بدون حساب کاربری؟ ثبت نام کنید"}
+                      </Link>
+                    </Grid>
+                    <Grid item >
                       <Link href="#" variant="body2" onClick={forgotPasswordFunction}>
                         رمز را فراموش کردید؟
                       </Link>
+
                     </Grid>
-                    <Grid item>
-                      <Link href="/signup" variant="body2">
-                        {".حساب کاربری ندارید؟ ثبت نام کنید"}
-                      </Link>
-                    </Grid>
+
                   </Grid>
                 </form>
+
+
+                <Box mt={4}>
+                  <Copyright />
+                </Box>
               </div>
 
-              <Box mt={8}>
-                <Copyright />
-              </Box>
             </Box>
           </Container>
 
