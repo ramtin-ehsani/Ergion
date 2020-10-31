@@ -9,11 +9,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import {mainListItems, MobileListItems} from "../ListItems/ListItems";
-import clsx from "clsx";
 import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import './Toolbar.scss';
-import {pink} from "@material-ui/core/colors";
 
 const drawerWidth = 240;
 
@@ -34,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     appBar: {
-        // flex: 1, /*khodam*/
         zIndex: theme.zIndex.drawer + 1,
         [theme.breakpoints.up('sm')]: {
             width: `calc(100%)`,
@@ -76,7 +73,7 @@ function ResponsiveDrawer(props) {
                         <IconButton
                             color="inherit"
                             aria-label="open drawer"
-                            edge="start" /*changed*/
+                            edge="start"
                             onClick={handleDrawerToggle}
                             className={classes.menuButton}
                         >
