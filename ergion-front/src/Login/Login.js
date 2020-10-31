@@ -146,11 +146,12 @@ export default function Login(props) {
 
     } else {
       setLoading(true);
-      axios.post('https://reqres.in/api/login', { email: email.value, password: password.value }).then(response => {
-        setLoading(false);
-        setUserSession(response.data.token, response.data.user);
-        console.log(response.data.token)
-        props.history.push('/dashboard');
+      axios.post('http://127.0.0.1:8000/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
+        if (response.status==201){setLoading(false);
+          setUserSession(response.data.token, response.data.user);
+          console.log(response.data.token)
+          props.history.push('/dashboard');}
+        
       }).catch(error => {
         setLoading(false);
         alert(error)
