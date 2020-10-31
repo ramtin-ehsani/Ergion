@@ -12,6 +12,7 @@
     "react-dom": "^17.0.1",
     "react-material-ui-form-validator": "^2.1.1",
     "react-nice-input-password": "^2.7.0",
+    "react-loading-overlay": "^1.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.0"
   },
@@ -20,6 +21,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "file-loader": "^6.2.0",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^10.0.4"
   },
   "browserslist": {
     "production": [
@@ -32,9 +38,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "node-sass": "^4.14.1",
-    "sass-loader": "^10.0.4"
   }
 }
