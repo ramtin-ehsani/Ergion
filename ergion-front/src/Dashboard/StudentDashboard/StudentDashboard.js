@@ -13,6 +13,7 @@ import Paper from '@material-ui/core/Paper';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {mainListItems, secondaryListItems} from './ListItems/ListItems';
 import "./StudentDashboard.scss";
+import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts'
 
 const drawerWidth = 240;
 
@@ -106,12 +107,15 @@ const Dashboard = () => {
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={8} lg={9}>
                             <Paper className={fixedHeightPaper}>
-                                <h1>Start doing here</h1>
+                                <h1></h1>
+                                
                             </Paper>
+                            <dive> <CourseFileLayouts/></dive> 
                         </Grid>
                     </Grid>
                 </Container>
             </main>
+          
         </div>
     );
 }
