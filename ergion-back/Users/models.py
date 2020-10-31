@@ -14,8 +14,8 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=1, choices=CHOICES, default='S')
 
     email = models.EmailField(_('email address'), unique=True)
-    # username = models.CharField(_('username'), unique=True, max_length=100)
-    username = None
+    username = models.CharField(_('username'), unique=True, max_length=100)
+    username = models.CharField(_('first name'), max_length=100, null=True)
     firstname = models.CharField(_('first name'), max_length=100, null=True)
     lastname = models.CharField(_('last name'), max_length=100, null=True)
     phone = models.PositiveBigIntegerField(_('phone number'), unique=True, null=True)

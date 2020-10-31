@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from allauth.account.views import confirm_email
-from django.conf.urls import url
-import Users
-
+from rest_framework.schemas import get_schema_view
+from rest_framework.documentation import include_docs_urls
+from rest_framework_swagger.views import get_swagger_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('Users.urls')),
+    path('schema/', get_schema_view(title="ergion")),
+    path('swagger-docs/', get_swagger_view(title="Ergion")),
 ]

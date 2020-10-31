@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'email',  'role', 'firstname', 'lastname', 'phone', 'date_of_birth']
+        fields = ['id', 'email', 'username',  'role', 'firstname', 'lastname', 'phone', 'date_of_birth']
 
 
 class UserRegistrationSerializer(RegisterSerializer):
@@ -24,7 +24,7 @@ class UserRegistrationSerializer(RegisterSerializer):
 
 
     email = serializers.EmailField(required=True)
-    # username = serializers.CharField(required=True)
+    username = serializers.CharField(required=True)
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
     firstname = serializers.CharField(max_length=100)
@@ -42,6 +42,7 @@ class UserRegistrationSerializer(RegisterSerializer):
         super(UserRegistrationSerializer, self).get_cleaned_data()
         return {
             'password': self.validated_data.get('password1', ''),
+            'username': self.validated_data.get('username', ''),
             'email': self.validated_data.get('email', ''),
             'role': self.validated_data.get('role', ''),
             'firstname': self.validated_data.get('firstname', ''),
