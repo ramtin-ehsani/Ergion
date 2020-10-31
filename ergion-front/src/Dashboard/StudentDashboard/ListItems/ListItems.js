@@ -17,7 +17,6 @@ export const mainListItems = (
 
         <ListItem className="test">
             <Avatar alt="messi" src={messi} className="desktopProfilePic"/>
-            {/*<p className="userName">محمدرضا شجریان</p>*/}
         </ListItem>
 
         <ListItem>

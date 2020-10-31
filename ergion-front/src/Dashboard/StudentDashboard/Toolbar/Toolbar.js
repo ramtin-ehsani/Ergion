@@ -10,7 +10,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import {mainListItems, MobileListItems} from "../ListItems/ListItems";
 import clsx from "clsx";
+import Typography from '@material-ui/core/Typography';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import './Toolbar.scss';
+import {pink} from "@material-ui/core/colors";
 
 const drawerWidth = 240;
 
@@ -27,8 +30,11 @@ const useStyles = makeStyles((theme) => ({
             flexShrink: 0,
         },
     },
+    title: {
+        flexGrow: 1,
+    },
     appBar: {
-        flex: 1, /*khodam*/
+        // flex: 1, /*khodam*/
         zIndex: theme.zIndex.drawer + 1,
         [theme.breakpoints.up('sm')]: {
             width: `calc(100%)`,
@@ -36,9 +42,9 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     menuButton: {
-        marginLeft: theme.spacing(-1),
-        [theme.breakpoints.up('sm')]: {
-            display: 'none',
+        marginLeft: theme.spacing(-7),
+        [theme.breakpoints.up("sm")]: {
+            display: 'none'
         },
     },
     drawerPaper: {
@@ -61,16 +67,20 @@ function ResponsiveDrawer(props) {
     return (
         <div className="Main">
             <div>
+                <CssBaseline/>
                 <AppBar position="fixed" className={classes.appBar}>
                     <Toolbar>
+                        <Typography variant="h6" noWrap className={classes.title}>
+                            Ergion
+                        </Typography>
                         <IconButton
                             color="inherit"
                             aria-label="open drawer"
-                            edge="end"
+                            edge="start" /*changed*/
                             onClick={handleDrawerToggle}
-                            className="{classes.menuButton}"
+                            className={classes.menuButton}
                         >
-                            <MenuIcon/>
+                            <MenuIcon className={classes.menuIcon}/>
                         </IconButton>
                     </Toolbar>
                 </AppBar>
