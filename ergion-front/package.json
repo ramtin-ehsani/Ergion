@@ -14,7 +14,9 @@
     "react-nice-input-password": "^2.7.0",
     "react-loading-overlay": "^1.0.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.0"
+    "react-scripts": "^3.4.0",
+    "react-image": "^4.0.3",
+    "sass": "^1.27.0"
   },
   "scripts": {
     "start": "react-scripts start",
