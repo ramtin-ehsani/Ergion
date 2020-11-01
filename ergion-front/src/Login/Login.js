@@ -21,7 +21,11 @@ import { create } from 'jss';
 import rtl from 'jss-rtl';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 import IranSansFont from './fonts/IranSansFont.ttf';
-import { FormatSize } from '@material-ui/icons';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { useHistory } from "react-router-dom";
 
 function Copyright() {
   return (
@@ -36,7 +40,10 @@ function Copyright() {
   );
 }
 
+
+
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     alignItems: 'center',
     height: '100vh',
-    flexWrap:'wrap'
+    flexWrap: 'wrap'
   },
   avatar: {
     margin: theme.spacing(1),
@@ -120,41 +127,73 @@ const useFormInput = initialValue => {
   }
 }
 
-export default function Login(props) {
+export default function Login() {
   const classes = useStyles();
+  const history = useHistory();
 
   const [loading, setLoading] = useState(false);
   const email = useFormInput('');
   const password = useFormInput('');
-  const [emailError, setEmailError] = useState(null);
-  const [passwordError, setPasswordError] = useState(null);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState(".ایمیل یا پسورد اشتباه است");
+  const [dialogTitle, setDialogTitle] = useState("خطا");
 
+
+  const ErrorDialog = (props) => {
+    const { title, children, open, setOpen } = props;
+    return (
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        aria-labelledby="error-dialog"
+      >
+        <DialogTitle id="error-dialog" dir='rtl'>{title}</DialogTitle>
+        <DialogContent>{children}</DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            onClick={() => setOpen(false)}
+            color="secondary"
+          >
+            باشه
+        </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
 
   const handleLogin = () => {
     setEmailError(false)
     setPasswordError(false)
-    if (email.value == '') {
+    if (email.value === '') {
       setEmailError(true)
-      if (password.value == '') {
+      if (password.value === '') {
         setPasswordError(true)
       }
-    } else if (password.value == '') {
+    } else if (password.value === '') {
       setPasswordError(true)
-      if (email.value == '') {
+      if (email.value === '') {
         setEmailError(true)
       }
 
     } else {
       setLoading(true);
       axios.post('http://127.0.0.1:8000/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
-        if (response.status==201){setLoading(false);
+        if (response.status === 200) {
+          setLoading(false);
           setUserSession(response.data.token, response.data.user);
           console.log(response.data.token)
-          props.history.push('/dashboard');}
-        
-      }).catch(error => {
+          history.push('/dashboard');
+        }
+
+      }).catch(() => {
         setLoading(false);
-        alert(error)
+        setDialogContent(".ایمیل یا پسورد اشتباه است")
+        setDialogTitle("خطا")
+        setDialogOpen(true)
+
 
       });
 
@@ -163,7 +202,9 @@ export default function Login(props) {
   }
 
   const forgotPasswordFunction = () => {
-    alert("This is just a demo app")
+    setDialogContent(":))هنوز در مرحله ی دمو هستیم")
+    setDialogTitle("توجه")
+    setDialogOpen(true)
   }
 
   return (
@@ -178,6 +219,7 @@ export default function Login(props) {
           className={classes.box}
 
         >
+
           <Container component="main" maxWidth='xs' >
             <CssBaseline />
             <Box boxShadow={5} borderRadius={15} m={2} p={3} >
@@ -190,6 +232,15 @@ export default function Login(props) {
                 <Typography component="h1" variant="h5">
                   ورود
                 </Typography>
+
+                <ErrorDialog
+                  title={dialogTitle}
+                  open={dialogOpen}
+                  setOpen={setDialogOpen}
+                >
+                  {dialogContent}
+
+                </ErrorDialog>
                 <form className={classes.form} noValidate>
                   <TextField
                     variant="outlined"
@@ -235,7 +286,7 @@ export default function Login(props) {
                   >
                     ورود
                   </Button>
-                  <Grid container direction='row-reverse' spacing='2'>
+                  <Grid container direction='row-reverse' spacing={2}>
                     <Grid item >
                       <Link href="/signup" variant="body2" >
                         {".بدون حساب کاربری؟ ثبت نام کنید"}
