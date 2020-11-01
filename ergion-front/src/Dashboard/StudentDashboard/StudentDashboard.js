@@ -5,7 +5,9 @@ import Toolbars from "./Toolbar/Toolbar"
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import "./StudentDashboard.scss";
-import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts'
+import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
+import Paper from "@material-ui/core/Paper";
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -45,16 +47,14 @@ const Dashboard = () => {
                 <Container maxWidth="lg" className={classes.container}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={8} lg={9}>
-                            <Paper className={fixedHeightPaper}>
-                                <h1></h1>
-                                
+                            <Paper className={classes.fixedHeight}>
+                                <h1 className="ergion">Ergion</h1>
                             </Paper>
-                            <dive> <CourseFileLayouts/></dive> 
+                            <div><CourseFileLayouts/></div>
                         </Grid>
                     </Grid>
                 </Container>
             </main>
-          
         </div>
     );
 }
