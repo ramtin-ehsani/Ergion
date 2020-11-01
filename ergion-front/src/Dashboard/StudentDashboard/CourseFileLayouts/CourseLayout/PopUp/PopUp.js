@@ -7,13 +7,30 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import "./PopUpstyle.scss";
+import { ThemeProvider } from '@material-ui/styles'
+import { makeStyles } from '@material-ui/core/styles';
+import theme from './theme.js'
+
+const useStyles = makeStyles(theme => ({
+    Dialogstyle:{
+        fontFamily: "IRANSans",
+    },
+    DialogTitlestyle:{
+        fontFamily: "IRANSans",
+    },  
+      Button:{
+        fontFamily: "IRANSans",
+    },
+   
+  }));
 
 export default function FormDialog(props) {
     const [open, setOpen] = React.useState(false);
-
+    const classes = useStyles();
     const [name, setName] = React.useState('');
     const handleClickOpen = () => {
         setOpen(true);
+        setName("");
     };
 
     function handleChange(event) {
@@ -28,12 +45,19 @@ export default function FormDialog(props) {
         props.handleNewCourse(name);
     };
     return (
+        <ThemeProvider theme={theme}>
+        
+     
         <div className="popupMain">
             <Button className="addButton" variant="outlined" color="primary" onClick={handleClickOpen}>
                 اضافه کردن کلاس جدید
             </Button>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">کلاس جدید</DialogTitle>
+            <Dialog className={classes.Dialogstyle} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle  >
+                    <div className={classes.DialogTitlestyle}>
+                    کلاس جدید
+                   </div> 
+                   </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         برای اضافه شدن به کلاس شناسه کلاس را وارد نمایید
@@ -50,15 +74,16 @@ export default function FormDialog(props) {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="primary">
+                    <Button className={classes.Button} onClick={handleClose} color="primary">
                         لغو
                     </Button>
-                    <Button onClick={handleCloseAndAdd} color="primary">
+                    <Button  className={classes.Button} onClick={handleCloseAndAdd} color="primary">
                         اضافه شدن
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </div> 
+        </ThemeProvider>
     );
 }
 
