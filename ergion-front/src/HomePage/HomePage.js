@@ -6,7 +6,7 @@ import "./Homepage.scss";
 
 function HomePage() {
     return (
-        <div className="HomePage">
+        <div className='App'>
             <h1>homepage</h1>
             <Grid
                 container
@@ -14,7 +14,6 @@ function HomePage() {
                 justify="center"
                 alignItems="center"
             >
-                <Link to="/homepage" style={{textDecoration: 'none'}}/>
                 <Link to="/login" style={{textDecoration: 'none'}}>
                     <Button
                         variant="contained"
@@ -28,14 +27,6 @@ function HomePage() {
                         variant="contained"
                         color="primary">
                         sign up
-                    </Button>
-                </Link>
-                <Box margin={1}/>
-                <Link to="/dashboard" style={{textDecoration: 'none'}}>
-                    <Button
-                        variant="contained"
-                        color="primary">
-                        Dashboard
                     </Button>
                 </Link>
             </Grid>

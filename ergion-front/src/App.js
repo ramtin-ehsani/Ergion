@@ -5,7 +5,6 @@ import {createBrowserHistory} from 'history';
 import SignUp from './SignUp/SignUp';
 import HomePage from './HomePage/HomePage'
 import Login from './Login/Login'
-import StudentDashboard from "./Dashboard/StudentDashboard/StudentDashboard";
 import './fonts/IRANSans/css/fontiran.css';
 
 const history = createBrowserHistory();
@@ -16,10 +15,9 @@ class App extends Component {
             <div className="App">
                 <Router history={history}>
                     <Switch>
-                        <Route path='/homepage' exact component={HomePage}/>
+                        <Route path='/' exact component={HomePage}/>
                         <Route path='/signup' exact component={SignUp}/>
                         <Route path='/login' exact component={Login}/>
-                        <Route path='/dashboard' exact component={StudentDashboard}/>
                     </Switch>
                 </Router>
             </div>
