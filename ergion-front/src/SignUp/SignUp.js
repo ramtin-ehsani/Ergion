@@ -21,6 +21,10 @@ import rtl from "jss-rtl";
 import { create } from 'jss';
 import IranSans from './irsans.ttf';
 import './SignUp.css';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const iranSans = {
   fontFamily: 'IranSans',
@@ -60,6 +64,7 @@ function Copyright() {
 const styles = (theme) => ({
   paper: {
     marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
     padding: '8px 10px 8px 10px',
     display: 'flex',
     flexDirection: 'column',
@@ -81,6 +86,29 @@ const styles = (theme) => ({
   },
 });
 
+const ErrorDialog = (props) => {
+  const { title, children, open, setOpen } = props;
+  return (
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      aria-labelledby="error-dialog"
+    >
+      <DialogTitle id="error-dialog" dir='rtl'>{title}</DialogTitle>
+      <DialogContent>{children}</DialogContent>
+      <DialogActions>
+        <Button
+          variant="contained"
+          onClick={() => setOpen(false)}
+          color="secondary"
+        >
+          باشه
+      </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 class SignUp extends Component {
   state = {
     formData: {
@@ -95,6 +123,11 @@ class SignUp extends Component {
     submitted: false,
     std_selected: true,
     teach_selected: false,
+    dialogOpen: false,
+    dialogContent: "ایمیل در سیستم وجود دارد",
+    dialogTitle: "خطا",
+    emailExists: false,
+    existingEmail: '',
   }
 
   componentDidMount() {
@@ -106,11 +139,21 @@ class SignUp extends Component {
       }
       return true;
     });
+    ValidatorForm.addValidationRule('emailExists', (value) => {
+      const { formData } = this.state;
+      if(this.state.emailExists && (this.state.existingEmail === formData.email)){
+        return false;
+      }
+      else{
+        return true;
+      }
+    });
   }
 
   componentWillUnmount() {
     // remove rule when it is not needed
     ValidatorForm.removeValidationRule('isPasswordMatch');
+    ValidatorForm.removeValidationRule('emailExists');
   }
 
   handleChange = (event) => {
@@ -171,7 +214,11 @@ class SignUp extends Component {
         if(res.status === 201){
             window.location = "/login" //This line of code will redirect you once the submission is succeed
         }
-      })
+      }).catch(() => {
+        this.setState({dialogOpen: true})
+        this.setState({emailExists: true})
+        this.setState({existingEmail: this.state.formData.email})
+      });
     }
     console.log(this.state)
   }
@@ -239,6 +286,14 @@ class SignUp extends Component {
           <Typography component="h1" variant="h5">
             عضویت
           </Typography>
+          <ErrorDialog
+              title={this.state.dialogTitle}
+              open={this.state.dialogOpen}
+              setOpen={(flag)=>{this.setState({dialogOpen:flag})}}
+            >
+            {this.state.dialogContent}
+
+          </ErrorDialog>
           <ValidatorForm className={classes.form} ref="form"
             onSubmit={this.handleSubmit}>
             <Grid item xs={12}>
@@ -304,8 +359,8 @@ class SignUp extends Component {
                   onChange={this.handleChange}
                   name="email"
                   value={formData.email}
-                  validators={['required', 'isEmail']}
-                  errorMessages={['this field is required', 'ایمیل درست نمی باشد']}
+                  validators={['required', 'isEmail', 'emailExists']}
+                  errorMessages={['this field is required', 'ایمیل درست نمی باشد', 'ایمیل در سیستم وجود دارد']}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -363,10 +418,10 @@ class SignUp extends Component {
               </Grid>
             </Grid>
           </ValidatorForm>
+          <Box mt={2}>
+            <Copyright />
+          </Box>
         </div>
-        <Box mt={2}>
-          <Copyright />
-        </Box>
       </Container>
       </ThemeProvider>
       </StylesProvider>
