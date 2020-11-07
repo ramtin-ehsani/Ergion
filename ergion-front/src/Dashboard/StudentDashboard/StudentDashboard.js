@@ -7,6 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import "./StudentDashboard.scss";
 import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
 import Paper from "@material-ui/core/Paper";
+import SingleCourse from '../../singleCourse/singleCourse';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -50,7 +51,7 @@ const Dashboard = () => {
                             <Paper className={classes.fixedHeight}>
                                 <h1 className="ergion">Ergion</h1>
                             </Paper>
-                            <div><CourseFileLayouts/></div>
+                            <div><SingleCourse/></div>
                         </Grid>
                     </Grid>
                 </Container>
