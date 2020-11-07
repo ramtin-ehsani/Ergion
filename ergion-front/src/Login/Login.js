@@ -20,7 +20,6 @@ import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
-import IranSansFont from './fonts/IranSansFont.ttf';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -77,40 +76,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const iranSans = {
-  fontFamily: 'IranSansFont',
-  fontStyle: 'normal',
-  fontDisplay: 'swap',
-  fontWeight: 400,
-  src: `
-    local('IranSansFont'),
-    url(${IranSansFont}) format('truetype')
-  `,
-}
 
 
 const theme = createMuiTheme({
   typography: {
-    fontFamily: [
-      'IranSansFont',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
-  },
-  overrides: {
-    MuiCssBaseline: {
-      '@global': {
-        '@font-face': [iranSans]
-      },
-    },
+    fontFamily: '"Vazir", sans-serif'
   },
   direction: 'rtl'
 });

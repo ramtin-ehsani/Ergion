@@ -1,12 +1,11 @@
 import React from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbars from "./Toolbar/Toolbar"
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
 import "./StudentDashboard.scss";
-import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
-import Paper from "@material-ui/core/Paper";
+import StudentProfile from '../../Profile/StudentProfile';
+import { Route, Switch } from 'react-router-dom';
+import Template from './Template'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -16,12 +15,8 @@ const useStyles = makeStyles((theme) => ({
     appBarSpacer: theme.mixins.toolbar,
     content: {
         flexGrow: 1,
-        height: '100vh',
+        height: '100%',
         overflow: 'auto',
-    },
-    container: {
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
     },
     paper: {
         padding: theme.spacing(2),
@@ -29,10 +24,9 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'auto',
         flexDirection: 'column',
     },
-    fixedHeight: {
-        height: 240,
-    },
+
 }));
+
 
 const Dashboard = () => {
 
@@ -40,20 +34,15 @@ const Dashboard = () => {
 
     return (
         <div className={"dashboard"}>
-            <CssBaseline/>
-            <Toolbars/>
-            <main className={classes.content}>
-                <div className={classes.appBarSpacer}/>
-                <Container maxWidth="lg" className={classes.container}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} md={8} lg={9}>
-                            <Paper className={classes.fixedHeight}>
-                                <h1 className="ergion">Ergion</h1>
-                            </Paper>
-                            <div><CourseFileLayouts/></div>
-                        </Grid>
-                    </Grid>
-                </Container>
+            <CssBaseline />
+            <Toolbars />
+            <main className={classes.content} >
+                <div className={classes.appBarSpacer} />
+                <Switch >
+                    <Route path='/dashboard' exact component={Template} />
+                    <Route path='/dashboard/profile' exact component={StudentProfile} />
+                </Switch>
+
             </main>
         </div>
     );

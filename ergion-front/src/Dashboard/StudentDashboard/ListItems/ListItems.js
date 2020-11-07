@@ -12,7 +12,16 @@ import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
 import messi from "../../../Pics/mesi.jpeg";
 
+const navigateToProfile=()=>{
+    window.location='/dashboard/profile'
+}
+
+const navidagteToDashboard=()=>{
+    window.location='/dashboard'
+}
+
 export const mainListItems = (
+
     <div className="mainList">
 
         <ListItem className="test">
@@ -26,16 +35,16 @@ export const mainListItems = (
         <Divider/>
 
         <ListItem button>
-            <p className="dashboard">داشبورد</p>
+            <p className="dashboard" onClick={navidagteToDashboard}>داشبورد</p>
             <ListItemIcon className="dashIcon">
                 <DashboardIcon/>
             </ListItemIcon>
         </ListItem>
 
 
-        <ListItem button>
+        <ListItem button onClick={navigateToProfile}>
             <p className="profile">پروفایل</p>
-            <ListItemIcon className="profileIcon">
+            <ListItemIcon className="profileIcon" >
                 <PersonRoundedIcon/>
             </ListItemIcon>
         </ListItem>
@@ -79,6 +88,8 @@ export const mainListItems = (
     </div>
 );
 
+
+
 export const MobileListItems = (
     <div className="mobileList">
 
@@ -91,14 +102,14 @@ export const MobileListItems = (
         <Divider/>
 
         <ListItem button>
-            <p className="dashboard">داشبورد</p>
+            <p className="dashboard" onClick={navidagteToDashboard}>داشبورد</p>
             <ListItemIcon className="dashIcon">
                 <DashboardIcon/>
             </ListItemIcon>
         </ListItem>
 
 
-        <ListItem button>
+        <ListItem button onClick={navigateToProfile}>
             <p className="profile">پروفایل</p>
             <ListItemIcon className="profileIcon">
                 <PersonRoundedIcon/>

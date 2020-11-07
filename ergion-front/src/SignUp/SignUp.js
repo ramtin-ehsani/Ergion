@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { withStyles, ThemeProvider, createMuiTheme,StylesProvider, jssPreset } from '@material-ui/core/styles';
+import { withStyles, ThemeProvider, createMuiTheme, StylesProvider, jssPreset } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import NiceInputPassword from "react-nice-input-password";
@@ -50,14 +50,14 @@ const CustomLevelBar = (levels) => <div style={levelBarCss(levels)} />;
 
 function Copyright() {
   return (
-      <Typography variant="body2" color="textSecondary" align="center">
-        {'Copyright © '}
-        <Link color="inherit" href="https://material-ui.com/">
-          Your Website
+    <Typography variant="body2" color="textSecondary" align="center">
+      {'Copyright © '}
+      <Link color="inherit" href="https://material-ui.com/">
+        Your Website
         </Link>{' '}
-        {new Date().getFullYear()}
-        {'.'}
-      </Typography>
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
   );
 }
 
@@ -117,8 +117,8 @@ class SignUp extends Component {
       email: '',
       password1: '',
       password2: '',
-      role:"S",
-      username:''
+      role: "S",
+      username: ''
     },
     submitted: false,
     std_selected: true,
@@ -141,10 +141,10 @@ class SignUp extends Component {
     });
     ValidatorForm.addValidationRule('emailExists', (value) => {
       const { formData } = this.state;
-      if(this.state.emailExists && (this.state.existingEmail === formData.email)){
+      if (this.state.emailExists && (this.state.existingEmail === formData.email)) {
         return false;
       }
-      else{
+      else {
         return true;
       }
     });
@@ -159,7 +159,7 @@ class SignUp extends Component {
   handleChange = (event) => {
     const { formData } = this.state;
     formData[event.target.name] = event.target.value;
-    if(event.target.name === 'email'){
+    if (event.target.name === 'email') {
       formData['username'] = event.target.value;
     }
     this.setState({ formData });
@@ -167,17 +167,17 @@ class SignUp extends Component {
 
   handleChangeRole = (event, newRole) => {
     const { formData } = this.state;
-    if(newRole !== null){
+    if (newRole !== null) {
       formData['role'] = newRole;
       console.log(formData)
       this.setState({ formData });
-      if(newRole === 'S'){
+      if (newRole === 'S') {
         this.setState({
           std_selected: true,
           teach_selected: false
         })
       }
-      if(newRole === 'T'){
+      if (newRole === 'T') {
         this.setState({
           std_selected: false,
           teach_selected: true
@@ -197,28 +197,29 @@ class SignUp extends Component {
       setTimeout(() => this.setState({ submitted: false }), 5000);
     });
     const submitted = this.state.submitted;
-    if(submitted){
+    if (submitted) {
       const formData = this.state.formData;
-      axios.post('http://127.0.0.1:8000/users/rest-auth/registration/', { 
-        username:formData.email,
-        password1:formData.password1,
-        password2:formData.password2,
-        firstname:formData.firstname,
-        lastname:formData.lastname,
-        email:formData.email,
-        role:formData.role
-       })
-      .then(res=>{
-        console.log(res);
-        console.log(res.data);
-        if(res.status === 201){
+      axios.post('http://127.0.0.1:8000/users/rest-auth/registration/', {
+        username: formData.email,
+        password1: formData.password1,
+        password2: formData.password2,
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        email: formData.email,
+        role: formData.role
+      })
+        .then(res => {
+          console.log(res);
+          console.log(res.data);
+          if (res.status === 201) {
             window.location = "/login" //This line of code will redirect you once the submission is succeed
-        }
-      }).catch(() => {
-        this.setState({dialogOpen: true})
-        this.setState({emailExists: true})
-        this.setState({existingEmail: this.state.formData.email})
-      });
+          }
+        }).catch(() => {
+          this.setState({ dialogOpen: true })
+          this.setState({ emailExists: true })
+          this.setState({ existingEmail: this.state.formData.email })
+        
+        });
     }
     console.log(this.state)
   }
@@ -240,7 +241,7 @@ class SignUp extends Component {
           '"Segoe UI Emoji"',
           '"Segoe UI Symbol"',
         ].join(','),
-        fontWeight:'300'
+        fontWeight: '300'
       },
       overrides: {
         MuiCssBaseline: {
@@ -271,42 +272,42 @@ class SignUp extends Component {
       }
     ];
     const { classes } = this.props;
-    const { formData, submitted } = this.state;
+    const { formData } = this.state;
     const textFieldStyle = { minHeight: "5rem" };
 
     return (
       <StylesProvider jss={jss}>
         <ThemeProvider theme={theme}>
-        <Container component="main" maxWidth="xs" dir="rtl">
-        <CssBaseline />
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            عضویت
+          <Container component="main" maxWidth="xs" dir="rtl">
+            <CssBaseline />
+            <div className={classes.paper}>
+              <Avatar className={classes.avatar}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                عضویت
           </Typography>
-          <ErrorDialog
-              title={this.state.dialogTitle}
-              open={this.state.dialogOpen}
-              setOpen={(flag)=>{this.setState({dialogOpen:flag})}}
-            >
-            {this.state.dialogContent}
+              <ErrorDialog
+                title={this.state.dialogTitle}
+                open={this.state.dialogOpen}
+                setOpen={(flag) => { this.setState({ dialogOpen: flag }) }}
+              >
+                {this.state.dialogContent}
 
-          </ErrorDialog>
-          <ValidatorForm className={classes.form} ref="form"
-            onSubmit={this.handleSubmit}>
-            <Grid item xs={12}>
-              <ToggleButtonGroup exclusive value={formData.role} onChange={this.handleChangeRole} >
-                <ToggleButton value="S" style={this.state.std_selected?{backgroundColor:"#3f51b5",color:"white"}:{backgroundColor:"transparent",color:"grey"}}>
-                  دانش آموز هستم
+              </ErrorDialog>
+              <ValidatorForm className={classes.form} ref="form"
+                onSubmit={this.handleSubmit}>
+                <Grid item xs={12}>
+                  <ToggleButtonGroup exclusive value={formData.role} onChange={this.handleChangeRole} >
+                    <ToggleButton value="S" style={this.state.std_selected ? { backgroundColor: "#3f51b5", color: "white" } : { backgroundColor: "transparent", color: "grey" }}>
+                      دانش آموز هستم
                 </ToggleButton>
-                <ToggleButton value="T" style={this.state.teach_selected?{backgroundColor:"#3f51b5",color:"white"}:{backgroundColor:"transparent",color:"grey"}}>
-                  مدرس هستم
+                    <ToggleButton value="T" style={this.state.teach_selected ? { backgroundColor: "#3f51b5", color: "white" } : { backgroundColor: "transparent", color: "grey" }}>
+                      مدرس هستم
                 </ToggleButton>
-              </ToggleButtonGroup>
-            </Grid>
-            {/* <Grid item xs={12}>
+                  </ToggleButtonGroup>
+                </Grid>
+                {/* <Grid item xs={12}>
                 <FormControl component="fieldset">
                   <FormLabel component="legend" >نقش</FormLabel>
                   <RadioGroup aria-label="role" name="role" row value={formData.role} onChange={this.handleChange}>
@@ -315,115 +316,115 @@ class SignUp extends Component {
                   </RadioGroup>
                 </FormControl>
             </Grid> */}
-            <Box mt={3}/>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextValidator
-                  style={textFieldStyle}
-                  autoComplete="fname"
-                  name="firstname"
-                  variant="outlined"
-                  required
+                <Box mt={3} />
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextValidator
+                      style={textFieldStyle}
+                      autoComplete="fname"
+                      name="firstname"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="firstName"
+                      label="نام"
+                      autoFocus
+                      value={formData.firstname}
+                      onChange={this.handleChange}
+                      validators={['required', 'matchRegexp:^[^0-9]+$']}
+                      errorMessages={['this field is required', 'فرمت اشتباه است']}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextValidator
+                      style={textFieldStyle}
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="lastname"
+                      label="نام خانوادگی"
+                      name="lastname"
+                      value={formData.lastname}
+                      onChange={this.handleChange}
+                      validators={['required', 'matchRegexp:^[^0-9]+$']}
+                      errorMessages={['this field is required', 'فرمت اشتباه است']}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextValidator
+                      style={textFieldStyle}
+                      variant="outlined"
+                      required
+                      fullWidth
+                      label="ایمیل"
+                      onChange={this.handleChange}
+                      name="email"
+                      value={formData.email}
+                      validators={['required', 'isEmail', 'emailExists']}
+                      errorMessages={['this field is required', 'ایمیل درست نمی باشد', 'ایمیل در سیستم وجود دارد']}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <NiceInputPassword
+                      className="label-pass"
+                      label="رمز عبور *"
+                      name="password1"
+                      style={{ width: '100%' }}
+                      LabelComponent={InputLabel}
+                      InputComponent={TextField}
+                      InputComponentProps={{
+                        variant: "outlined",
+                        InputProps: {
+                          endAdornment: <LockIcon />
+                        }
+                      }}
+                      showSecurityLevelBar
+                      renderLevelBarComponent={CustomLevelBar}
+                      value={formData.password1}
+                      securityLevels={securityLevels}
+                      onChange={this.handleChangePass}
+                    />
+                    <TextValidator
+                      style={textFieldStyle}
+                      fullWidth
+                      variant="outlined"
+                      required
+                      margin="normal"
+                      label="تکرار رمز عبور"
+                      onChange={this.handleChange}
+                      name="password2"
+                      type="password"
+                      validators={['isPasswordMatch', 'required']}
+                      errorMessages={['رمز اشتباه است', 'this field is required']}
+                      value={formData.password2}
+                    />
+                  </Grid>
+
+                </Grid>
+                <Button
+                  type="submit"
                   fullWidth
-                  id="firstName"
-                  label="نام"
-                  autoFocus
-                  value={formData.firstname}
-                  onChange={this.handleChange}
-                  validators={['required', 'matchRegexp:^[^0-9]+$']}
-                  errorMessages={['this field is required', 'فرمت اشتباه است']}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextValidator
-                  style={textFieldStyle}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="lastname"
-                  label="نام خانوادگی"
-                  name="lastname"
-                  value={formData.lastname}
-                  onChange={this.handleChange}
-                  validators={['required', 'matchRegexp:^[^0-9]+$']}
-                  errorMessages={['this field is required', 'فرمت اشتباه است']}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextValidator
-                  style={textFieldStyle}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  label="ایمیل"
-                  onChange={this.handleChange}
-                  name="email"
-                  value={formData.email}
-                  validators={['required', 'isEmail', 'emailExists']}
-                  errorMessages={['this field is required', 'ایمیل درست نمی باشد', 'ایمیل در سیستم وجود دارد']}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <NiceInputPassword
-                  className="label-pass"
-                  label="رمز عبور *"
-                  name="password1"
-                  style={{width:'100%'}}
-                  LabelComponent={InputLabel}
-                  InputComponent={TextField}
-                  InputComponentProps={{
-                    variant: "outlined",
-                    InputProps: {
-                      endAdornment: <LockIcon />
-                    }
-                  }}
-                  showSecurityLevelBar
-                  renderLevelBarComponent={CustomLevelBar}
-                  value={formData.password1}
-                  securityLevels={securityLevels}
-                  onChange={this.handleChangePass}
-                />
-                <TextValidator
-                  style={textFieldStyle}
-                  fullWidth
-                  variant="outlined"
-                  required
-                  margin="normal"
-                  label="تکرار رمز عبور"
-                  onChange={this.handleChange}
-                  name="password2"
-                  type="password"
-                  validators={['isPasswordMatch', 'required']}
-                  errorMessages={['رمز اشتباه است', 'this field is required']}
-                  value={formData.password2}
-                />
-              </Grid>
-              
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              // disabled={submitted?false:true}
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              عضویت
+                  // disabled={submitted?false:true}
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                >
+                  عضویت
             </Button>
-            <Grid container justify="center">
-              <Grid item>
-                <Link href="/login" variant="body2">
-                  ورود
+                <Grid container justify="center">
+                  <Grid item>
+                    <Link href="/login" variant="body2">
+                      ورود
                 </Link>
-              </Grid>
-            </Grid>
-          </ValidatorForm>
-          <Box mt={2}>
-            <Copyright />
-          </Box>
-        </div>
-      </Container>
-      </ThemeProvider>
+                  </Grid>
+                </Grid>
+              </ValidatorForm>
+              <Box mt={2}>
+                <Copyright />
+              </Box>
+            </div>
+          </Container>
+        </ThemeProvider>
       </StylesProvider>
     );
   }
