@@ -11,6 +11,9 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
 import messi from "../../../Pics/mesi.jpeg";
+import ClassIcon from '@material-ui/icons/Class';
+import {Link} from 'react-router-dom';
+import AddCourse from "../CourseFileLayouts/addCourse/AddCourse";
 
 export const mainListItems = (
     <div className="mainList">
@@ -56,6 +59,17 @@ export const mainListItems = (
             </ListItemIcon>
         </ListItem>
 
+
+        <Divider/>
+
+        <Link to="/dashboard/add-Courses" style={{textDecoration: "none", color: "inherit"}}>
+            <ListItem button>
+                <p className="class">کلاس</p>
+                <ListItemIcon className="classIcon">
+                    <ClassIcon/>
+                </ListItemIcon>
+            </ListItem>
+        </Link>
 
         <Divider/>
 
@@ -115,17 +129,25 @@ export const MobileListItems = (
 
 
         <ListItem button className="QA">
-            {/*<div className="PP">*/}
             <p className="QandA">سوالات</p>
             <ListItemIcon className="QandAIcon">
                 <QuestionAnswerIcon/>
             </ListItemIcon>
-            {/*</div>*/}
         </ListItem>
 
 
         <Divider/>
 
+        <Link to="/dashboard/add-Courses" style={{textDecoration: "none", color: "inherit"}}>
+            <ListItem button>
+                <p className="class">کلاس</p>
+                <ListItemIcon className="classIcon">
+                    <ClassIcon/>
+                </ListItemIcon>
+            </ListItem>
+        </Link>
+
+        <Divider/>
 
         <ListItem button>
             <p className="setting">تنظیمات</p>
