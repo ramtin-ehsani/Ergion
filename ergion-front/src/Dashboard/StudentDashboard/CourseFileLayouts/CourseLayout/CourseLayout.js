@@ -11,6 +11,9 @@ import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AddButtonAndPopUp from './PopUp/PopUp';
 import "./CourseLayout.scss";
+import riazi from "../../../../Pics/riazi.jpeg";
+import math from "../../../../Pics/math.png";
+import teacher from "../../../../Pics/teacher.jpeg";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -50,9 +53,9 @@ const useStyles = makeStyles((theme) => ({
 export default function CourseLayout() {
     const [list, setList] = React.useState([]);
     const classes = useStyles();
+
     const handleCourse = (val) => {
         const newList = list.concat({val});
-
         setList(newList);
     };
 
@@ -72,6 +75,7 @@ export default function CourseLayout() {
                         </div>
                     </Container>
                 </div>
+
                 <Container className={classes.cardGrid} maxWidth="md">
                     {/* End hero unit */}
                     <Grid container spacing={4}>
@@ -80,13 +84,13 @@ export default function CourseLayout() {
                                 <Card className="layout">
                                     <CardMedia
                                         className={classes.cardMedia}
-                                        image='./Coursedemo.png'
+                                        image={math}
                                         title="Image title"
                                     />
                                     <CardContent className={classes.cardContent}>
                                         <Typography gutterBottom variant="h5" component="h2">
-                                            <p className="courseNamePlace">course</p>
-                                        </Typography>
+                                           <p className="courseNamePlace">course</p>
+                                       </Typography>
                                         <Typography>
                                             <p className="courseAboutPlace">more about this Course</p>
                                         </Typography>
