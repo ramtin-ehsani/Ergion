@@ -11,9 +11,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AddButtonAndPopUp from './PopUp/PopUp';
 import "./CourseLayout.scss";
-import riazi from "../../../../Pics/riazi.jpeg";
 import math from "../../../../Pics/math.png";
-import teacher from "../../../../Pics/teacher.jpeg";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -48,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-// const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export default function CourseLayout() {
     const [list, setList] = React.useState([]);

@@ -13,7 +13,6 @@ import Avatar from "@material-ui/core/Avatar";
 import messi from "../../../Pics/mesi.jpeg";
 import ClassIcon from '@material-ui/icons/Class';
 import {Link} from 'react-router-dom';
-import AddCourse from "../CourseFileLayouts/addCourse/AddCourse";
 
 export const mainListItems = (
     <div className="mainList">

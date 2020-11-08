@@ -1,6 +1,9 @@
 import React, {Component} from "react";
 import "./AddCourse.scss";
 import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
+import Container from "@material-ui/core/Container";
+import main from "jss-rtl";
 
 
 class AddCourse extends Component {
@@ -12,23 +15,27 @@ class AddCourse extends Component {
         };
     }
 
+
     render() {
         return (
-            <div className="main">
-                <h1>
-                    Search bar test with a test array
-                </h1>
-                <section>
-                    <List items={this.state.testArr}/>
-                </section>
-                {/*<div className="test">*/}
-                {/*    <ul >*/}
-                {/*        {this.state.testArr.map(item => (*/}
-                {/*            <li key={item}>{item}</li>*/}
-                {/*        ))}*/}
-                {/*    </ul>*/}
-                {/*</div>*/}
-            </div>
+            <main className="main">
+                <div className="heroContent">
+                    <Container maxWidth="sm">
+                        <div>
+                            <Grid container spacing={2} justify="center">
+                                <Grid item>
+                                    <h1>
+                                        Search bar test with a test array
+                                    </h1>
+                                    <section>
+                                        <List items={this.state.testArr}/>
+                                    </section>
+                                </Grid>
+                            </Grid>
+                        </div>
+                    </Container>
+                </div>
+            </main>
         );
     }
 }
@@ -80,16 +87,26 @@ class List extends React.Component {
 
     render() {
         return (
-            <div className="main2">
-                <TextField onChange={this.handleChange} placeholder="Search..."/>
-                <ul className="filteredList">
-                    {this.state.filtered.map(item => (
-                        <li key={item}>
-                            {item} &nbsp;
-                        </li>
-                    ))}
-                </ul>
-            </div>
+            <main className="main2">
+                <div className="heroContent">
+                    <Container maxWidth="sm">
+                        <div>
+                            <Grid container spacing={2} justify="center">
+                                <Grid item>
+                                    <TextField onChange={this.handleChange} placeholder="Search..."/>
+                                    <ul className="filteredList">
+                                        {this.state.filtered.map(item => (
+                                            <li key={item}>
+                                                {item} &nbsp;
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </Grid>
+                            </Grid>
+                        </div>
+                    </Container>
+                </div>
+            </main>
         )
     }
 }

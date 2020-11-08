@@ -270,7 +270,8 @@ class SignUp extends Component {
             }
         ];
         const {classes} = this.props;
-        const {formData, submitted} = this.state;
+        const {formData} = this.state;
+        // const {formData, submitted} = this.state;
         const textFieldStyle = {minHeight: "5rem"};
 
         return (
