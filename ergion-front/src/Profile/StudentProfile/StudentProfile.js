@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import axios from 'axios';
+import axios,{AxiosError} from 'axios';
 import purple from '@material-ui/core/colors/purple';
 import Fab from "@material-ui/core/Fab";
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
@@ -8,7 +8,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -26,6 +25,7 @@ import {
   Divider,
   Typography,
 } from '@material-ui/core';
+
 
 
 function Alert(props) {
@@ -108,6 +108,8 @@ const user = {
   timezone: 'GTM-7'
 };
 
+
+
 class Profile extends Component {
   state = {
     formData: {
@@ -123,6 +125,8 @@ class Profile extends Component {
     anchorEl: null,
     allowedToRemove: false,
     userAlreadyHasPicture: false,
+    progress: 0,
+    errorMessage: '',
 
 
   }
@@ -183,6 +187,11 @@ class Profile extends Component {
 
   };
 
+
+  config = {
+    onUploadProgress: progressEvent => this.setState({ progress: Math.round((progressEvent.loaded * 100) / progressEvent.total) })
+  }
+
   onFileUpload = () => {
 
     if (this.state.allowedToUpload) {
@@ -196,16 +205,16 @@ class Profile extends Component {
         axios.post('https://reqres.in/api/users',
           {
             avatarImage: base64data,
-          })
+          }, this.config)
           .then(response => {
             if (response.status === 201) {
-              this.setState({ loading: false, hasImage: true, allowedToUpload: true })
+              this.setState({ loading: false, hasImage: true, allowedToUpload: true, progress: 0 })
 
             }
 
-          }).catch((error) => {
+          }).catch((error:AxiosError) => {
             console.log(error)
-            this.setState({ loading: false, allowedToUpload: true })
+            this.setState({ snackBarOpen: true, errorMessage: error.message, loading: false, allowedToUpload: true, progress: 0 })
           });
       }
     }
@@ -256,8 +265,8 @@ class Profile extends Component {
       >
         <Snackbar open={this.state.snackBarOpen} autoHideDuration={2000} onClose={this.onSnackBarClose}>
           <Alert onClose={this.onSnackBarClose} severity="error" >
-            لطفا یک عکس انتخاب کنید
-              </Alert>
+            {this.state.errorMessage}
+          </Alert>
         </Snackbar>
 
         <CardContent>
@@ -353,7 +362,7 @@ class Profile extends Component {
             >
               آپلود عکس
             {this.state.loading && (
-                <CircularProgress thickness={5} color="secondary" size={25} className={classes.progressBar} />
+                <CircularProgress variant="static" value={this.state.progress} thickness={5} size={25} className={classes.progressBar} />
 
               )}
 

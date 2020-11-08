@@ -310,7 +310,7 @@ class ProfileDetails extends Component {
               ذخیره شود
               
               {this.state.loading && (
-          <CircularProgress  thickness={5} color="secondary" size={25} className={classes.progressBar}/>
+                  <CircularProgress  thickness={5}  size={25} className={classes.progressBar}/>
           
           )}
           </Button>

@@ -7,13 +7,13 @@ import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
-import {mainListItems, MobileListItems} from "../ListItems/ListItems";
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { mainListItems, MobileListItems } from "../ListItems/ListItems";
 import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import './Toolbar.scss';
 
-const drawerWidth = 240;
+const drawerWidth = 247;
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -33,14 +33,14 @@ const useStyles = makeStyles((theme) => ({
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
-        [theme.breakpoints.up('sm')]: {
+        [theme.breakpoints.up('md')]: {
             width: `calc(100%)`,
             marginLeft: drawerWidth,
         },
     },
     menuButton: {
         marginLeft: theme.spacing(-7),
-        [theme.breakpoints.up("sm")]: {
+        [theme.breakpoints.up("lg")]: {
             display: 'none'
         },
     },
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ResponsiveDrawer(props) {
-    const {window} = props;
+    const { window } = props;
     const container = window !== undefined ? () => window().document.body : undefined;
     const classes = useStyles();
     const theme = useTheme();
@@ -64,7 +64,7 @@ function ResponsiveDrawer(props) {
     return (
         <div className="Main">
             <div>
-                <CssBaseline/>
+                <CssBaseline />
                 <AppBar position="fixed" className={classes.appBar}>
                     <Toolbar>
                         <Typography variant="h6" noWrap className={classes.title}>
@@ -77,20 +77,21 @@ function ResponsiveDrawer(props) {
                             onClick={handleDrawerToggle}
                             className={classes.menuButton}
                         >
-                            <MenuIcon className={classes.menuIcon}/>
+                            <MenuIcon className={classes.menuIcon} />
                         </IconButton>
                     </Toolbar>
                 </AppBar>
 
             </div>
             <nav className={classes.drawer} aria-label="mailbox folders">
-                <Hidden smUp implementation="css">
+                <Hidden lgUp implementation="css">
                     <Drawer
                         container={container}
                         variant="temporary"
                         anchor={theme.direction === 'ltr' ? 'right' : 'left'}
                         open={mobileOpen}
                         onClose={handleDrawerToggle}
+                        onClick={handleDrawerToggle}
                         classes={{
                             paper: classes.drawerPaper,
                         }}
@@ -98,14 +99,11 @@ function ResponsiveDrawer(props) {
                             keepMounted: true,
                         }}
                     >
-                        <Divider/>
-                        <div>
-                            <Divider/>
-                            {MobileListItems}
-                        </div>
+                        <Divider />
+                        {MobileListItems}
                     </Drawer>
                 </Hidden>
-                <Hidden xsDown implementation="js">
+                <Hidden mdDown implementation="js">
                     <Drawer
                         classes={{
                             paper: classes.drawerPaper,
@@ -114,7 +112,7 @@ function ResponsiveDrawer(props) {
                         variant="permanent"
                         open
                     >
-                        <Divider/>
+                        <Divider />
                         {mainListItems}
                     </Drawer>
                 </Hidden>
