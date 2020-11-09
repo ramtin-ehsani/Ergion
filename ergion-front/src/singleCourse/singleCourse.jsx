@@ -23,9 +23,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 
-import Chart from './Chart';
-import Deposits from './Deposits';
-import Orders from './Orders';
+import Chart from './information';
+import Deposits from './generalinformation';
+import Orders from './subjects';
 
 function Copyright() {
   return (
@@ -107,8 +107,8 @@ const useStyles = makeStyles((theme) => ({
 //     overflow: 'auto',
 //   },
   container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
   paper: {
     padding: theme.spacing(2),
@@ -136,7 +136,7 @@ const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
     return(
         <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
+        
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             {/* Chart */}

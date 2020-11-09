@@ -7,7 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import "./PopUpstyle.scss";
-import { ThemeProvider } from '@material-ui/styles';
+import { ThemeProvider } from '@material-ui/styles'
 import { makeStyles } from '@material-ui/core/styles';
 import theme from './theme.js'
 

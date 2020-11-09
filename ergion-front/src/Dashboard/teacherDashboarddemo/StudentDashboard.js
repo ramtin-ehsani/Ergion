@@ -46,12 +46,9 @@ const Dashboard = () => {
             <main className={classes.content}>
                 <div className={classes.appBarSpacer}/>
                 <Container maxWidth="lg" className={classes.container}>
-                    <Grid container spacing={3}>
+                    <Grid container spacing={0}>
                         <Grid item xs={12} md={8} lg={9}>
-                            <Paper className={classes.fixedHeight}>
-                                <h1 className="ergion">Ergion</h1>
-                            </Paper>
-                            
+                            <div><SingleCourse/></div>
                         </Grid>
                     </Grid>
                 </Container>
