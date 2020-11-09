@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import {mainListItems, MobileListItems} from "../ListItems/ListItems";
+import {MainListItems, MobileListItems} from "../ListItems/ListItems";
 import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import './Toolbar.scss';
@@ -46,7 +46,9 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerPaper: {
         width: drawerWidth,
-        height: "fixed",
+        height: "100%",
+        overflowY: 'auto',
+        overflowX: 'hidden',
     },
 }));
 
@@ -115,7 +117,7 @@ function ResponsiveDrawer(props) {
                         open
                     >
                         <Divider/>
-                        {mainListItems}
+                        <MainListItems/>
                     </Drawer>
                 </Hidden>
             </nav>

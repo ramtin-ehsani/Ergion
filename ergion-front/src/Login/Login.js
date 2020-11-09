@@ -182,9 +182,16 @@ export default function Login() {
       setLoading(true);
       axios.post('http://127.0.0.1:8000/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
         if (response.status === 200) {
+          const promise = axios.get('http://127.0.0.1:8000/users/rest-auth/user/',{
+            headers: {
+                "Authorization": `Token ${response.data.key}`,
+            }
+          })
+          promise.then(
+              result => setUserSession(response.data.key, result.data)
+          )
           setLoading(false);
-          setUserSession(response.data.token, response.data.user);
-          console.log(response.data.token)
+          console.log(response)
           history.push('/dashboard');
         }
 
