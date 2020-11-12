@@ -24,6 +24,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Divider from '@material-ui/core/Divider';
 import axios from 'axios';
+import {connect} from 'react-redux';
+import * as actionTypes from '../../../../store/actions';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -41,9 +43,9 @@ const useStyles = makeStyles((theme) => ({
     },
     cardGrid: {
         paddingTop: theme.spacing(3),
-        paddingBottom: theme.spacing(3),
-        marginLeft: theme.spacing(18),
-        marginRight: theme.spacing(8),
+        // paddingBottom: theme.spacing(3),
+        // marginLeft: 10,
+        marginRight: theme.spacing(50),
     },
     card: {
         height: '100%',
@@ -52,8 +54,9 @@ const useStyles = makeStyles((theme) => ({
     },
     cardMedia: {
         // paddingTop: '56.25%', // 16:9
-        height: 270,
-        width: '100%'
+        height: 180,
+        width: '100%',
+        objectFit: 'fill'
     },
     cardContent: {
         flexGrow: 1,
@@ -70,13 +73,8 @@ const useStyles = makeStyles((theme) => ({
 
 // const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-export default function CourseLayout() {
+function CourseLayout(props) {
     const [list, setList] = React.useState([
-        { id: '123', name:'ریاضی 1', image:myimg, link:'/riazi1', teacher:'استاد علیپور'},
-        { id: '125', name:'ادبیات 1', image:myimg3, link:'/adabiat1', teacher:'استاد رضایی'},
-        { id: '126', name:'فیزیک 2', image:myimg2, link:'/phisic2', teacher:'استاد غلامی'},
-        { id: '127', name:'ریاضی 3', image:myimg4, link:'/riazi3', teacher:'استاد علیپور'},
-        { id: '129', name:'ریاضی 1', image:myimg, link:'/riazi1', teacher:'استاد جعفری'},
     ]);
     const [open, setOpen] = React.useState(false);
 
@@ -95,6 +93,33 @@ export default function CourseLayout() {
 
         setList(newList);
     };
+
+    React.useEffect(()=>{
+        setTimeout(()=>{
+            const promise1 = axios.get('http://127.0.0.1:8000/api/student_dashboard/courses/',{
+                headers: {
+                    "Authorization": `Token ${localStorage.getItem('token')}`,
+                },
+              })
+              promise1.then(
+                result =>{
+                    result.data.map((course)=>{
+                      const c = {id:course.id, name:course.name, image:course.poster, link:course.course_link_url, teacher:`${course.owner_firstname} ${course.owner_lastname}` }
+                      console.log(c)
+                      let flag = true;
+                      props.courses.map(course=>{
+                          if (course.id === c.id){
+                              flag = false;
+                          }
+                      })
+                      if(flag){
+                          props.onAddCourse(c);
+                      }
+                    })
+                }
+              )
+        },500)
+    },[])
 
     return (
         <React.Fragment>
@@ -137,8 +162,8 @@ export default function CourseLayout() {
                 <Container className={classes.cardGrid} maxWidth="md">
                     {/* End hero unit */}
                     <Grid container spacing={4}>
-                        {list.map((list) => (
-                            <Grid item key={list.id} xs={12} sm={6} md={4}>
+                        {props.courses.map((list) => (
+                            <Grid item key={list.id} xs={12} sm={6} md={3}>
                                 <Card className="layout">
                                     <CardMedia
                                         className={classes.cardMedia}
@@ -180,3 +205,16 @@ export default function CourseLayout() {
         </React.Fragment>
     );
 }
+
+const mapStateToProps = state =>{
+    return{
+        courses: state.addedCourses
+    };
+};
+const mapDispatchToProps = dispatch =>{
+    return{
+        onAddCourse: (course)=> dispatch({type: actionTypes.ADD_COURSE, payload:course })
+    
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(CourseLayout);

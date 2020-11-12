@@ -26,6 +26,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useHistory } from "react-router-dom";
+import {connect} from 'react-redux';
+import * as actionTypes from '../store/actions';
 
 function Copyright() {
   return (
@@ -127,7 +129,7 @@ const useFormInput = initialValue => {
   }
 }
 
-export default function Login() {
+function Login(props) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -180,15 +182,32 @@ export default function Login() {
 
     } else {
       setLoading(true);
-      axios.post('http://127.0.0.1:8000/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
+      axios.post('http://127.0.0.1:8000/api/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
         if (response.status === 200) {
-          const promise = axios.get('http://127.0.0.1:8000/users/rest-auth/user/',{
+          const promise = axios.get('http://127.0.0.1:8000/api/users/rest-auth/user/',{
             headers: {
                 "Authorization": `Token ${response.data.key}`,
             }
           })
           promise.then(
-              result => setUserSession(response.data.key, result.data)
+              result => {
+                setUserSession(response.data.key, result.data);
+                props.onUserLoggedIn(result.data['firstname'],result.data['lastname'],result.data['email']);
+              }
+          )
+          const promise1 = axios.get('http://127.0.0.1:8000/api/student_dashboard/courses/',{
+            headers: {
+                "Authorization": `Token ${response.data.key}`,
+            },
+          })
+          promise1.then(
+            result =>{
+              console.log(result)
+                result.data.map((course)=>{
+                  const c = {id:course.id, name:course.name, image:course.poster, link:course.course_link_url, teacher:`${course.owner_firstname} ${course.owner_lastname}` }
+                  props.onAddCourse(c);
+                })
+            }
           )
           setLoading(false);
           console.log(response)
@@ -328,3 +347,17 @@ export default function Login() {
 
 
 }
+
+const mapStateToProps = state =>{
+  return{
+      user: state.loggedInUser,
+      courses: state.addedCourses
+  };
+};
+const mapDispatchToProps = dispatch =>{
+  return{
+      onUserLoggedIn: (firstName,lastName,email)=>dispatch({type: actionTypes.LOGIN, firstName:firstName, lastName:lastName, email:email }),
+      onAddCourse: (course)=> dispatch({type: actionTypes.ADD_COURSE, payload:course })
+  }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Login);
