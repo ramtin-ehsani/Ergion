@@ -46,7 +46,9 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerPaper: {
         width: drawerWidth,
-        height: "fixed",
+        height: "100%",
+        overflowY: 'auto',
+        overflowX: 'hidden',
     },
 }));
 

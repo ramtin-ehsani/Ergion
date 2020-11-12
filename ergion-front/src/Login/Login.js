@@ -26,6 +26,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import * as actionTypes from '../store/actions'
 import { useDispatch } from 'react-redux';
+import { useHistory } from "react-router-dom";
+import { connect } from 'react-redux';
 
 function Copyright() {
   return (
@@ -98,10 +100,7 @@ const useFormInput = initialValue => {
   }
 }
 
-export default function Login() {
-
-
-
+function Login(props) {
   const classes = useStyles();
 
   const [loading, setLoading] = useState(false);
@@ -166,29 +165,54 @@ export default function Login() {
             headers: { Authorization: (`Token ` + response.data.key) }
           }
 
-          axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/', getValueConfig)
-            .then((res) => {
-              // handle success
-              const avatarImage = res.data.profile_picture
-              const firstName = res.data.firstname
-              const lastName = res.data.lastname
-              const grade = res.data.grade
-              const email = res.data.email
-              usedispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
+          const promise = axios.get('http://127.0.0.1:8000/api/users/rest-auth/user/', {
+            headers: {
+              "Authorization": `Token ${response.data.key}`,
+            }
+          })
+          promise.then(
+            result => {
+              setUserSession(response.data.key, result.data);
+              if (result.data['role'] === 'S') {
+                axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/', getValueConfig)
+                  .then((res) => {
+                    // handle success
+                    const avatarImage = res.data.profile_picture
+                    const firstName = res.data.firstname
+                    const lastName = res.data.lastname
+                    const grade = res.data.grade
+                    const email = res.data.email
+                    usedispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
 
-              localStorage.setItem('api_key', response.data.key)
-              setLoading(false);
-              setUserSession(response.data.key, response.data.user);
-              window.location = '/dashboard'
-
-
-            })
-            .catch((error) => {
-              // handle error
-              console.log(error);
-            })
-
-
+                    localStorage.setItem('api_key', response.data.key)
+                    setUserSession(response.data.key, response.data.user);
+                    
+                  })
+                  .catch((error) => {
+                    // handle error
+                    console.log(error);
+                  })
+                  const promise1 = axios.get('http://127.0.0.1:8000/api/student_dashboard/courses/', {
+                    headers: {
+                      "Authorization": `Token ${response.data.key}`,
+                    },
+                  })
+                  promise1.then(
+                    result => {
+                      console.log(result)
+                      result.data.map((course) => {
+                        const c = { id: course.id, name: course.name, image: course.poster, link: course.course_link_url, teacher: `${course.owner_firstname} ${course.owner_lastname}` }
+                        props.onAddCourse(c);
+                      })
+                      setLoading(false);
+                      window.location = '/dashboard'
+                    }
+                  )
+              }
+            }
+          )
+          
+          console.log(response)
         }
 
       }).catch(() => {
@@ -324,3 +348,17 @@ export default function Login() {
 
 
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.loggedInUser,
+    courses: state.addedCourses
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    onUserLoggedIn: (firstName, lastName, email) => dispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, email: email }),
+    onAddCourse: (course) => dispatch({ type: actionTypes.ADD_COURSE, payload: course })
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

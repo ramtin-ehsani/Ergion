@@ -9,6 +9,7 @@ import Template from './Template'
 import * as actionTypes from '../../store/actions'
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
+import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -81,6 +82,7 @@ const Dashboard = () => {
                 <Switch >
                     <Route path='/dashboard' exact component={Template} />
                     <Route path='/dashboard/profile' exact component={StudentProfile} />
+                    <Route path='/dashboard/added_courses' exact component={CourseFileLayouts}/>
                 </Switch>
 
             </main>

@@ -5,6 +5,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
+import ClassIcon from '@material-ui/icons/Class';
 import SettingsIcon from '@material-ui/icons/Settings';
 import "./ListItems.scss";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
@@ -35,7 +36,6 @@ export const MainListItems = () => {
 
     const user = useSelector(state => state.loggedInUser)
 
-
     return (
         <div className="mainList">
 
@@ -58,11 +58,19 @@ export const MainListItems = () => {
                 </ListItemIcon>
             </ListItem>
 
-
             <ListItem button onClick={navigateToProfile}>
                 <p className="profile">پروفایل</p>
                 <ListItemIcon className="profileIcon" >
                     <PersonRoundedIcon />
+                </ListItemIcon>
+            </ListItem>
+
+            <ListItem button
+                onClick={() => { history.push('/dashboard/added_courses') }}
+            >
+                <p className="courses">کلاس</p>
+                <ListItemIcon className="courseIcon">
+                    <ClassIcon />
                 </ListItemIcon>
             </ListItem>
 
@@ -103,12 +111,9 @@ export const MainListItems = () => {
 
 
         </div>
-
     )
+
 }
-
-
-
 
 
 export const MobileListItems = () => {
@@ -200,5 +205,5 @@ export const MobileListItems = () => {
         </div>
 
     )
-}
 
+}
