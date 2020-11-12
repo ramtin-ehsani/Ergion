@@ -10,138 +10,195 @@ import "./ListItems.scss";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
-import messi from "../../../Pics/mesi.jpeg";
-
-export const mainListItems = (
-    <div className="mainList">
-
-        <ListItem className="test">
-            <Avatar alt="messi" src={messi} className="desktopProfilePic"/>
-        </ListItem>
-
-        <ListItem>
-            <p className="userName">لیونل مسی</p>
-        </ListItem>
-
-        <Divider/>
-
-        <ListItem button>
-            <p className="dashboard">داشبورد</p>
-            <ListItemIcon className="dashIcon">
-                <DashboardIcon/>
-            </ListItemIcon>
-        </ListItem>
+import { useSelector } from 'react-redux';
+import { useHistory } from "react-router-dom";
 
 
-        <ListItem button>
-            <p className="profile">پروفایل</p>
-            <ListItemIcon className="profileIcon">
-                <PersonRoundedIcon/>
-            </ListItemIcon>
-        </ListItem>
+
+export const MainListItems = () => {
+
+    const history = useHistory();
+
+    const navigateToProfile = () => {
+        history.push('/dashboard/profile');
+    }
+
+    const navidagteToDashboard = () => {
+        history.push('/dashboard');
+    }
+
+    const logOut = () => {
+        localStorage.setItem("api_key", null)
+        window.location = '/login'
+
+    }
+
+    const user = useSelector(state => state.loggedInUser)
 
 
-        <ListItem button>
-            <p className="store">فروشگاه</p>
-            <ListItemIcon className="storeIcon">
-                <ShoppingCartIcon/>
-            </ListItemIcon>
-        </ListItem>
+    return (
+        <div className="mainList">
+
+            <ListItem className="test">
+                <Avatar alt="messi" src={user.profilePicture} className="desktopProfilePic" />
+            </ListItem>
+
+            <ListItem>
+                <p className="userName">
+                    {user.firstName + ' ' + user.lastName}
+                </p>
+            </ListItem>
+
+            <Divider />
+
+            <ListItem button>
+                <p className="dashboard" onClick={navidagteToDashboard}>داشبورد</p>
+                <ListItemIcon className="dashIcon">
+                    <DashboardIcon />
+                </ListItemIcon>
+            </ListItem>
 
 
-        <ListItem button className="QA">
-            <p className="QandA">سوالات</p>
-            <ListItemIcon className="QandAIcon">
-                <QuestionAnswerIcon/>
-            </ListItemIcon>
-        </ListItem>
+            <ListItem button onClick={navigateToProfile}>
+                <p className="profile">پروفایل</p>
+                <ListItemIcon className="profileIcon" >
+                    <PersonRoundedIcon />
+                </ListItemIcon>
+            </ListItem>
 
 
-        <Divider/>
+            <ListItem button>
+                <p className="store">فروشگاه</p>
+                <ListItemIcon className="storeIcon">
+                    <ShoppingCartIcon />
+                </ListItemIcon>
+            </ListItem>
 
 
-        <ListItem button>
-            <p className="setting">تنظیمات</p>
-            <ListItemIcon className="setIcon">
-                <SettingsIcon/>
-            </ListItemIcon>
-        </ListItem>
+            <ListItem button className="QA">
+                <p className="QandA">سوالات</p>
+                <ListItemIcon className="QandAIcon">
+                    <QuestionAnswerIcon />
+                </ListItemIcon>
+            </ListItem>
 
 
-        <ListItem button>
-            <p className="exit">خروج</p>
-            <ListItemIcon className="exitIcon">
-                <ExitToAppIcon className="logoutIcon"/>
-            </ListItemIcon>
-        </ListItem>
+            <Divider />
 
 
-    </div>
-);
-
-export const MobileListItems = (
-    <div className="mobileList">
-
-
-        <ListItem>
-            <Avatar alt="messi" src={messi}/>
-            <p className="userName">لیونل مسی</p>
-        </ListItem>
-
-        <Divider/>
-
-        <ListItem button>
-            <p className="dashboard">داشبورد</p>
-            <ListItemIcon className="dashIcon">
-                <DashboardIcon/>
-            </ListItemIcon>
-        </ListItem>
+            <ListItem button>
+                <p className="setting">تنظیمات</p>
+                <ListItemIcon className="setIcon">
+                    <SettingsIcon />
+                </ListItemIcon>
+            </ListItem>
 
 
-        <ListItem button>
-            <p className="profile">پروفایل</p>
-            <ListItemIcon className="profileIcon">
-                <PersonRoundedIcon/>
-            </ListItemIcon>
-        </ListItem>
+            <ListItem button onClick={logOut}>
+                <p className="exit">خروج</p>
+                <ListItemIcon className="exitIcon">
+                    <ExitToAppIcon className="logoutIcon" />
+                </ListItemIcon>
+            </ListItem>
 
 
-        <ListItem button>
-            <p className="store">فروشگاه</p>
-            <ListItemIcon className="storeIcon">
-                <ShoppingCartIcon/>
-            </ListItemIcon>
-        </ListItem>
+        </div>
+
+    )
+}
 
 
-        <ListItem button className="QA">
-            {/*<div className="PP">*/}
-            <p className="QandA">سوالات</p>
-            <ListItemIcon className="QandAIcon">
-                <QuestionAnswerIcon/>
-            </ListItemIcon>
-            {/*</div>*/}
-        </ListItem>
 
 
-        <Divider/>
+
+export const MobileListItems = () => {
 
 
-        <ListItem button>
-            <p className="setting">تنظیمات</p>
-            <ListItemIcon className="setIcon">
-                <SettingsIcon/>
-            </ListItemIcon>
-        </ListItem>
+    const history = useHistory();
+
+    const navigateToProfile = () => {
+        history.push('/dashboard/profile');
+    }
+
+    const navidagteToDashboard = () => {
+        history.push('/dashboard');
+    }
+
+    const logOut = () => {
+        localStorage.setItem("api_key", null)
+        window.location = '/login'
+
+    }
+
+    const user = useSelector(state => state.loggedInUser)
+
+    return (
+        <div className="mobileList">
 
 
-        <ListItem button>
-            <p className="exit">خروج</p>
-            <ListItemIcon className="exitIcon">
-                <ExitToAppIcon className="logoutIcon"/>
-            </ListItemIcon>
-        </ListItem>
+            <ListItem>
+                <Avatar alt="messi" src={user.profilePicture} />
+                <p className="userName">
+                    {user.firstName + ' ' + user.lastName}</p>
+            </ListItem>
+
+            <Divider />
+
+            <ListItem button>
+                <p className="dashboard" onClick={navidagteToDashboard}>داشبورد</p>
+                <ListItemIcon className="dashIcon">
+                    <DashboardIcon />
+                </ListItemIcon>
+            </ListItem>
 
 
-    </div>
-);
+            <ListItem button onClick={navigateToProfile}>
+                <p className="profile">پروفایل</p>
+                <ListItemIcon className="profileIcon">
+                    <PersonRoundedIcon />
+                </ListItemIcon>
+            </ListItem>
+
+
+            <ListItem button>
+                <p className="store">فروشگاه</p>
+                <ListItemIcon className="storeIcon">
+                    <ShoppingCartIcon />
+                </ListItemIcon>
+            </ListItem>
+
+
+            <ListItem button className="QA">
+                {/*<div className="PP">*/}
+                <p className="QandA">سوالات</p>
+                <ListItemIcon className="QandAIcon">
+                    <QuestionAnswerIcon />
+                </ListItemIcon>
+                {/*</div>*/}
+            </ListItem>
+
+
+            <Divider />
+
+
+            <ListItem button>
+                <p className="setting">تنظیمات</p>
+                <ListItemIcon className="setIcon">
+                    <SettingsIcon />
+                </ListItemIcon>
+            </ListItem>
+
+
+            <ListItem button onClick={logOut}>
+                <p className="exit">خروج</p>
+                <ListItemIcon className="exitIcon">
+                    <ExitToAppIcon className="logoutIcon" />
+                </ListItemIcon>
+            </ListItem>
+
+
+        </div>
+
+    )
+}
+

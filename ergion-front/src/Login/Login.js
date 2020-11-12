@@ -20,12 +20,12 @@ import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
-import IranSansFont from './fonts/IranSansFont.ttf';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { useHistory } from "react-router-dom";
+import * as actionTypes from '../store/actions'
+import { useDispatch } from 'react-redux';
 
 function Copyright() {
   return (
@@ -77,40 +77,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const iranSans = {
-  fontFamily: 'IranSansFont',
-  fontStyle: 'normal',
-  fontDisplay: 'swap',
-  fontWeight: 400,
-  src: `
-    local('IranSansFont'),
-    url(${IranSansFont}) format('truetype')
-  `,
-}
 
 
 const theme = createMuiTheme({
   typography: {
-    fontFamily: [
-      'IranSansFont',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
-  },
-  overrides: {
-    MuiCssBaseline: {
-      '@global': {
-        '@font-face': [iranSans]
-      },
-    },
+    fontFamily: '"Vazir", sans-serif'
   },
   direction: 'rtl'
 });
@@ -128,8 +99,10 @@ const useFormInput = initialValue => {
 }
 
 export default function Login() {
+
+
+
   const classes = useStyles();
-  const history = useHistory();
 
   const [loading, setLoading] = useState(false);
   const email = useFormInput('');
@@ -164,6 +137,12 @@ export default function Login() {
     );
   };
 
+  const usedispatch = useDispatch()
+
+  usedispatch({ type: actionTypes.LOGIN, grade: "", email: "", firstName: "", lastName: "", profilePicture: "" })
+
+
+
   const handleLogin = () => {
     setEmailError(false)
     setPasswordError(false)
@@ -180,12 +159,36 @@ export default function Login() {
 
     } else {
       setLoading(true);
-      axios.post('http://127.0.0.1:8000/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
+      axios.post('http://127.0.0.1:8000/api/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
         if (response.status === 200) {
-          setLoading(false);
-          setUserSession(response.data.token, response.data.user);
-          console.log(response.data.token)
-          history.push('/dashboard');
+
+          const getValueConfig = {
+            headers: { Authorization: (`Token ` + response.data.key) }
+          }
+
+          axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/', getValueConfig)
+            .then((res) => {
+              // handle success
+              const avatarImage = res.data.profile_picture
+              const firstName = res.data.firstname
+              const lastName = res.data.lastname
+              const grade = res.data.grade
+              const email = res.data.email
+              usedispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
+
+              localStorage.setItem('api_key', response.data.key)
+              setLoading(false);
+              setUserSession(response.data.key, response.data.user);
+              window.location = '/dashboard'
+
+
+            })
+            .catch((error) => {
+              // handle error
+              console.log(error);
+            })
+
+
         }
 
       }).catch(() => {
