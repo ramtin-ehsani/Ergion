@@ -7,6 +7,8 @@ import Grid from '@material-ui/core/Grid';
 import "./StudentDashboard.scss";
 import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
 import Paper from "@material-ui/core/Paper";
+import { Route, Switch } from "react-router-dom";
+import Template from './Template'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -44,16 +46,11 @@ const Dashboard = () => {
             <Toolbars/>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer}/>
-                <Container maxWidth="lg" className={classes.container}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} md={8} lg={9}>
-                            <Paper className={classes.fixedHeight}>
-                                <h1 className="ergion">Ergion</h1>
-                            </Paper>
-                            <div><CourseFileLayouts/></div>
-                        </Grid>
-                    </Grid>
-                </Container>
+                <Switch>
+                    <Route path='/dashboard' exact component={Template} />
+                    <Route path='/dashboard/added_courses' exact component={CourseFileLayouts}/>
+                </Switch>
+                
             </main>
         </div>
     );

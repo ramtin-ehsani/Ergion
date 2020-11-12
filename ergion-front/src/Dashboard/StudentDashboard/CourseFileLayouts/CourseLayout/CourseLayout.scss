@@ -1,5 +1,12 @@
 .layout {
   font-family: IRANSans !important;
+  transition: 0.3s;
+  max-width: 300;
+  margin: auto;
+  box-shadow: 0 8px 40px -12px rgba(0,0,0,0.3);
+  &:hover {
+      box-shadow: 0 16px 70px -12.125px rgba(0,0,0,0.3) !important;
+  }
 
   .toSee {
     font-family: IRANSans !important;
@@ -7,9 +14,14 @@
 
   .courseNamePlace {
     font-family: IRANSans !important;
+    margin: 12px;
   }
 
   .courseAboutPlace {
     font-family: IRANSans !important;
+    margin: 8px;
   }
+}
+.dialog > * {
+  font-family: IRANSans !important;
 }
