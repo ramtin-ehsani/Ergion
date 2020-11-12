@@ -1,31 +1,55 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
+import ClassIcon from '@material-ui/icons/Class';
 import SettingsIcon from '@material-ui/icons/Settings';
 import "./ListItems.scss";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
 import messi from "../../../Pics/mesi.jpeg";
+import { useHistory } from "react-router-dom";
 
-export const mainListItems = (
-    <div className="mainList">
+
+
+export function MainListItems(){
+    const history = useHistory();
+    let [firstname,setfirstname] = useState('')
+    let [lastname,setlastname] = useState('')
+
+    useEffect(()=>{
+        setTimeout(() => {
+            if(JSON.parse(localStorage.getItem('user') === null)){
+                history.push('/login')
+            }
+            else{
+                setfirstname(JSON.parse(localStorage.getItem('user'))['firstname'])
+                setlastname(JSON.parse(localStorage.getItem('user'))['lastname'])
+                console.log(1)
+            }
+          }, 400);
+    },[])
+
+    return(
+        <div className="mainList">
 
         <ListItem className="test">
             <Avatar alt="messi" src={messi} className="desktopProfilePic"/>
         </ListItem>
 
         <ListItem>
-            <p className="userName">لیونل مسی</p>
+            <p className="userName"> {`${firstname} ${lastname}`}</p>
         </ListItem>
 
         <Divider/>
 
-        <ListItem button>
+        <ListItem button
+        onClick={()=>{history.push('/dashboard')}}
+        >
             <p className="dashboard">داشبورد</p>
             <ListItemIcon className="dashIcon">
                 <DashboardIcon/>
@@ -37,6 +61,15 @@ export const mainListItems = (
             <p className="profile">پروفایل</p>
             <ListItemIcon className="profileIcon">
                 <PersonRoundedIcon/>
+            </ListItemIcon>
+        </ListItem>
+
+        <ListItem button
+        onClick={()=>{history.push('/dashboard/added_courses')}}
+        >
+            <p className="courses">کلاس</p>
+            <ListItemIcon className="courseIcon">
+                <ClassIcon/>
             </ListItemIcon>
         </ListItem>
 
@@ -68,7 +101,9 @@ export const mainListItems = (
         </ListItem>
 
 
-        <ListItem button>
+        <ListItem button
+        onClick={()=>{history.push('/login'); localStorage.removeItem('token');
+        localStorage.removeItem('user');}}>
             <p className="exit">خروج</p>
             <ListItemIcon className="exitIcon">
                 <ExitToAppIcon className="logoutIcon"/>
@@ -76,8 +111,9 @@ export const mainListItems = (
         </ListItem>
 
 
-    </div>
-);
+        </div>
+        )
+}
 
 export const MobileListItems = (
     <div className="mobileList">
