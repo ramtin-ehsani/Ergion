@@ -42,20 +42,19 @@ const Account = () => {
         <Page
           className={classes.root}
           title="پروفایل"
-          
+
 
         >
           <Container maxWidth="lg" >
 
             <Grid
               container
-              spacing={3}
+              spacing={4}
               lg={10}
               item={true}
-              
+
 
             >
-
               <Grid
                 item
                 lg={4}
@@ -63,7 +62,7 @@ const Account = () => {
                 xs={12}
               >
                 <Box boxShadow={6} >
-                <Profile />
+                  <Profile />
                 </Box>
               </Grid>
               <Grid

@@ -3,6 +3,10 @@ import axios from 'axios';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import {connect} from 'react-redux';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import * as actionTypes from '../../store/actions'
 import {
   Box,
   Button,
@@ -13,6 +17,7 @@ import {
   Grid,
   TextField,
 } from '@material-ui/core';
+
 
 const states = [
   {
@@ -78,39 +83,69 @@ const styles = (theme) => ({
   },
 });
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    dispatchUser: (firstName, lastName, email, grade, profilePicture) =>
+      dispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: profilePicture })
+
+  };
+};
+
+const mapStateToProps = state => ({
+  user: state.loggedInUser,
+
+});
+
+
 
 class ProfileDetails extends Component {
+
+
   state = {
     oldData: {
       firstName: '',
       lastName: '',
       email: '',
-      grade: ''
+      grade: '1'
 
     },
     formData: {
       firstName: '',
       lastName: '',
       email: '',
-      grade: ''
+      grade: '1'
     },
     textFieldChanged: false,
     loading:false,
     allowedToSave: true,
+    snackBarOpen: false,
+    errorMessage: '',
   }
 
+  config = {
+    headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
+  }
 
   getValues = () => {
-    axios.get('https://reqres.in/api/users/2')
+    axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/',this.config)
       .then((response) => {
         // handle success
         const formData = {
-          firstName: response.data.data.first_name,
-          lastName: response.data.data.last_name,
-          email: response.data.data.email,
-          grade: '5'
+          firstName: response.data.firstname,
+          lastName: response.data.lastname,
+          email: response.data.email,
+          grade: response.data.grade
 
         }
+
+        if(this.props.user.grade==null){
+          formData['grade']=1;
+        }
+
 
         this.setState({
           oldData: { ...formData }, formData: formData
@@ -124,12 +159,15 @@ class ProfileDetails extends Component {
       })
   }
 
+  
 
   componentDidMount() {
     this.getValues()
+    
   }
 
-
+  
+  
   handleChange = (event) => {
     const { formData } = this.state;
     formData[event.target.name] = event.target.value
@@ -153,37 +191,61 @@ class ProfileDetails extends Component {
     if (this.state.allowedToSave) {
       const { oldData } = this.state
       const { formData } = this.state
-      this.setState({loading:true,allowedToSave: false })
-      axios.post('https://reqres.in/api/users',
-        {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          grade: formData.grade
-        })
+      this.setState({ loading:true, allowedToSave: false })
+
+      const data = new FormData()
+      data.append('firstname', formData.firstName)
+      data.append('lastname', formData.lastName)
+      data.append('email', formData.email)
+      data.append('grade', formData.grade)
+
+        axios.post('http://127.0.0.1:8000/api/student_dashboard/student_details/',
+        data,this.config)
         .then(response => {
-          if (response.status === 201) {
-            console.log(response.data)
-            oldData['firstName'] = formData.firstName
-            oldData['lastName'] = formData.lastName
-            oldData['email'] = formData.email
-            oldData['grade'] = formData.grade
-            this.setState({
-              oldData:
-                oldData,loading:false,allowedToSave: true
-            })
-            this.checkForTextFieldChange(oldData, formData)
+            if (response.status === 201) {
+              oldData['firstName'] = formData.firstName
+              oldData['lastName'] = formData.lastName
+              oldData['grade'] = formData.grade
 
-          }
 
-        }).catch((error) => {
-          console.log(error)
-          this.setState({loading:false,allowedToSave: true })
-        });
+              if(formData.email!==response.data.email){
+
+                this.setState({ snackBarOpen: true, errorMessage: "The email is in use by another user" })
+
+              }else{
+                oldData['email'] = formData.email
+
+              }
+              
+              this.setState({
+                  oldData,loading:false,allowedToSave: true,
+                  formData:{...this.state.formData}
+              })
+              this.checkForTextFieldChange(oldData, formData)
+
+              this.props.dispatchUser(formData.firstName, formData.lastName
+                , response.data.email, formData.grade, this.props.user.profilePicture)
+
+            }
+
+          }).catch((error) => {
+            console.log(error)
+            this.setState({loading:false,allowedToSave: true })
+          });
+
+        
+      
     }
 
   }
 
+
+  onSnackBarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ snackBarOpen: false })
+  }
 
   render() {
 
@@ -196,6 +258,17 @@ class ProfileDetails extends Component {
       // >
       <Card className={classes.root}>
         <ValidatorForm form="form" onSubmit={this.handleSaveButton} >
+        <Snackbar
+          open={this.state.snackBarOpen}
+          autoHideDuration={1500}
+          onClose={this.onSnackBarClose}
+        >
+
+          <Alert onClose={this.onSnackBarClose} severity="error" >
+            {this.state.errorMessage}
+
+          </Alert>
+        </Snackbar>
 
           <CardHeader
             subheader="اطلاعات خود را میتوانید ویرایش کنید"
@@ -323,4 +396,7 @@ class ProfileDetails extends Component {
 };
 
 
-export default withStyles(styles)(ProfileDetails);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(ProfileDetails));

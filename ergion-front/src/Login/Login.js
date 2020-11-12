@@ -25,6 +25,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useHistory } from "react-router-dom";
+import * as actionTypes from '../store/actions'
+import { useDispatch } from 'react-redux';
 
 function Copyright() {
   return (
@@ -134,6 +136,8 @@ export default function Login() {
     );
   };
 
+  const usedispatch = useDispatch()
+
   const handleLogin = () => {
     setEmailError(false)
     setPasswordError(false)
@@ -150,12 +154,36 @@ export default function Login() {
 
     } else {
       setLoading(true);
-      axios.post('http://127.0.0.1:8000/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
+      axios.post('http://127.0.0.1:8000/api/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
         if (response.status === 200) {
-          setLoading(false);
-          setUserSession(response.data.token, response.data.user);
-          console.log(response.data.token)
-          history.push('/dashboard');
+          
+          const getValueConfig = {
+            headers: { Authorization: (`Token ` + response.data.key) }
+          }
+
+          axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/', getValueConfig)
+            .then((res) => {
+              // handle success
+              const avatarImage = res.data.profile_picture
+              const firstName = res.data.firstname
+              const lastName = res.data.lastname
+              const grade = res.data.grade
+              const email = res.data.email
+              usedispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
+
+              localStorage.setItem('api_key',response.data.key)
+              setLoading(false);
+              setUserSession(response.data.key, response.data.user);
+              history.push('/dashboard');
+
+
+            })
+            .catch((error) => {
+              // handle error
+              console.log(error);
+            })
+
+
         }
 
       }).catch(() => {

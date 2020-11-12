@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import axios,{AxiosError} from 'axios';
+import axios from 'axios';
 import purple from '@material-ui/core/colors/purple';
 import Fab from "@material-ui/core/Fab";
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
@@ -14,7 +14,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions'
 import {
   Avatar,
   Box,
@@ -101,6 +102,19 @@ const styles = (theme) => ({
 
 });
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    dispatchUser: (firstName, lastName, email, grade, profilePicture) =>
+      dispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: profilePicture })
+
+  };
+};
+
+const mapStateToProps = state => ({
+  user: state.loggedInUser,
+
+});
+
 
 
 const user = {
@@ -111,12 +125,11 @@ const user = {
 
 
 class Profile extends Component {
+
+
+
   state = {
-    formData: {
-      firstName: '',
-      lastName: '',
-      avatarImage: ''
-    },
+    avatarImage: this.props.user.profilePicture,
     selectedFile: null,
     hasImage: false,
     snackBarOpen: false,
@@ -131,6 +144,8 @@ class Profile extends Component {
 
   }
 
+
+
   handleClick = (event) => {
     this.setState({ anchorEl: event.currentTarget });
   };
@@ -139,30 +154,30 @@ class Profile extends Component {
     this.setState({ anchorEl: null });
   };
 
+
   getValues = () => {
-    axios.get('https://reqres.in/api/users/2')
+    axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/', this.config)
       .then((response) => {
         // handle success
-        const formData = {
-          firstName: response.data.data.first_name,
-          lastName: response.data.data.last_name,
-          avatarImage: response.data.data.avatar
+        const avatarImage = response.data.profile_picture
 
-        }
-
-        if (response.data.data.avatar.length > 0) {
+        if (avatarImage !== null) {
           this.setState({ userAlreadyHasPicture: true, allowedToRemove: true });
         }
 
 
         this.setState({
-          formData
+          avatarImage
         })
+
 
 
       })
       .catch((error) => {
         // handle error
+        if (error.isAxiosError) {
+          this.setState({ snackBarOpen: true, errorMessage: error.message, loading: false, allowedToUpload: true, progress: 0 })
+        }
         console.log(error);
       })
   }
@@ -170,16 +185,17 @@ class Profile extends Component {
 
   componentDidMount() {
     this.getValues()
+
   }
 
 
+
   onFileChange = event => {
-    const { formData } = this.state;
 
 
     if (event.target.files && event.target.files[0]) {
-      formData['avatarImage'] = URL.createObjectURL(event.target.files[0])
-      this.setState({ formData, selectedFile: event.target.files[0], hasImage: true, allowedToRemove: true })
+      const avatarImage = URL.createObjectURL(event.target.files[0])
+      this.setState({ avatarImage, selectedFile: event.target.files[0], hasImage: true, allowedToRemove: true })
 
     }
     // Update the state 
@@ -188,8 +204,9 @@ class Profile extends Component {
   };
 
 
-  config = {
-    onUploadProgress: progressEvent => this.setState({ progress: Math.round((progressEvent.loaded * 100) / progressEvent.total) })
+  uploadConfig = {
+    onUploadProgress: progressEvent => this.setState({ progress: Math.round((progressEvent.loaded * 100) / progressEvent.total) }),
+    headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
   }
 
   onFileUpload = () => {
@@ -198,50 +215,66 @@ class Profile extends Component {
 
       this.setState({ allowedToUpload: false, loading: true })
 
-      const reader = new FileReader();
-      reader.readAsDataURL(this.state.selectedFile);
-      reader.onloadend = () => {
-        const base64data = reader.result;
-        axios.post('https://reqres.in/api/users',
-          {
-            avatarImage: base64data,
-          }, this.config)
-          .then(response => {
-            if (response.status === 201) {
-              this.setState({ loading: false, hasImage: true, allowedToUpload: true, progress: 0 })
+      const data = new FormData()
+      data.append('profile_picture', this.state.selectedFile)
+      data.append('firstname', this.props.user.firstName)
+      data.append('lastname', this.props.user.lastName)
+      data.append('email', this.props.user.email)
+      if (this.props.user.grade == null) {
+        data.append('grade', 1)
 
-            }
+      } else {
+        data.append('grade', this.props.user.grade)
 
-          }).catch((error:AxiosError) => {
-            console.log(error)
-            this.setState({ snackBarOpen: true, errorMessage: error.message, loading: false, allowedToUpload: true, progress: 0 })
-          });
       }
+
+
+      axios.post('http://127.0.0.1:8000/api/student_dashboard/student_details/',
+        data, this.uploadConfig)
+        .then(response => {
+          if (response.status === 201) {
+            this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
+              , this.props.user.email, this.props.user.grade, this.state.avatarImage)
+            this.setState({ loading: false, hasImage: false, allowedToUpload: true, progress: 0 })
+
+          }
+
+        }).catch((error) => {
+          if (error.isAxiosError) {
+            this.setState({ snackBarOpen: true, errorMessage: error.message, loading: false, allowedToUpload: true, progress: 0 })
+          }
+          console.log(error);
+        });
     }
 
 
   };
 
+
+  config = {
+    headers: { Authorization: `Token ${localStorage.getItem('api_key')}` },
+  }
+
+
   deletePicture = () => {
-    if (this.state.userAlreadyHasPicture) {
-      axios.post('https://reqres.in/api/users',
-        {
-          avatarImage: "",
-        }).then(response => {
-          if (response.status === 201) {
-            this.setState({ userAlreadyHasPicture: false, hasImage: false, formData: { ...this.state.formData, avatarImage: "" }, allowedToRemove: false })
-            this.handleClose();
 
-          }
+    axios.delete('http://127.0.0.1:8000/api/student_dashboard/student_details/?field=profile_picture',
+      this.config).then(response => {
+        if (response.status === 200) {
+          this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
+            , this.props.user.email, this.props.user.grade, '')
+          this.setState({ userAlreadyHasPicture: false, hasImage: false, avatarImage: "", allowedToRemove: false })
+          this.handleClose();
 
-        }).catch((error) => {
-          console.log(error)
-        });
-    } else {
-      this.setState({ hasImage: false, formData: { ...this.state.formData, avatarImage: "" }, allowedToRemove: false })
-      this.handleClose();
+        }
 
-    }
+      }).catch((error) => {
+        if (error.isAxiosError) {
+          this.handleClose();
+          this.setState({ snackBarOpen: true, errorMessage: error.message, loading: false, allowedToUpload: true, progress: 0 })
+        }
+        console.log(error);
+      });
 
 
 
@@ -263,9 +296,15 @@ class Profile extends Component {
       <Card
         className={classes.root}
       >
-        <Snackbar open={this.state.snackBarOpen} autoHideDuration={2000} onClose={this.onSnackBarClose}>
+        <Snackbar
+          open={this.state.snackBarOpen}
+          autoHideDuration={1500}
+          onClose={this.onSnackBarClose}
+        >
+
           <Alert onClose={this.onSnackBarClose} severity="error" >
             {this.state.errorMessage}
+
           </Alert>
         </Snackbar>
 
@@ -279,7 +318,7 @@ class Profile extends Component {
             <div className={classes.avatarContainer}>
               <Avatar
                 className={classes.avatar}
-                src={this.state.formData.avatarImage}
+                src={this.state.avatarImage}
               />
               <input
                 accept="image/*"
@@ -330,7 +369,7 @@ class Profile extends Component {
               variant="h3"
               className={classes.typographyStyle}
             >
-              {this.state.formData.firstName + ' ' + this.state.formData.lastName}
+              {this.props.user.firstName + ' ' + this.props.user.lastName}
             </Typography>
             <Typography
               color="textSecondary"
@@ -376,4 +415,7 @@ class Profile extends Component {
 };
 
 
-export default withStyles(styles)(Profile);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Profile));
