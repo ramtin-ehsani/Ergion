@@ -24,7 +24,6 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { useHistory } from "react-router-dom";
 import * as actionTypes from '../store/actions'
 import { useDispatch } from 'react-redux';
 
@@ -100,8 +99,10 @@ const useFormInput = initialValue => {
 }
 
 export default function Login() {
+
+
+
   const classes = useStyles();
-  const history = useHistory();
 
   const [loading, setLoading] = useState(false);
   const email = useFormInput('');
@@ -138,6 +139,10 @@ export default function Login() {
 
   const usedispatch = useDispatch()
 
+  usedispatch({ type: actionTypes.LOGIN, grade: "", email: "", firstName: "", lastName: "", profilePicture: "" })
+
+
+
   const handleLogin = () => {
     setEmailError(false)
     setPasswordError(false)
@@ -156,7 +161,7 @@ export default function Login() {
       setLoading(true);
       axios.post('http://127.0.0.1:8000/api/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
         if (response.status === 200) {
-          
+
           const getValueConfig = {
             headers: { Authorization: (`Token ` + response.data.key) }
           }
@@ -171,10 +176,10 @@ export default function Login() {
               const email = res.data.email
               usedispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
 
-              localStorage.setItem('api_key',response.data.key)
+              localStorage.setItem('api_key', response.data.key)
               setLoading(false);
               setUserSession(response.data.key, response.data.user);
-              history.push('/dashboard');
+              window.location = '/dashboard'
 
 
             })

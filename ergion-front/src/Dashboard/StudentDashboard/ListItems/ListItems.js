@@ -27,6 +27,12 @@ export const MainListItems = () => {
         history.push('/dashboard');
     }
 
+    const logOut = () => {
+        localStorage.setItem("api_key", null)
+        window.location = '/login'
+
+    }
+
     const user = useSelector(state => state.loggedInUser)
 
 
@@ -88,7 +94,7 @@ export const MainListItems = () => {
             </ListItem>
 
 
-            <ListItem button>
+            <ListItem button onClick={logOut}>
                 <p className="exit">خروج</p>
                 <ListItemIcon className="exitIcon">
                     <ExitToAppIcon className="logoutIcon" />
@@ -116,6 +122,12 @@ export const MobileListItems = () => {
 
     const navidagteToDashboard = () => {
         history.push('/dashboard');
+    }
+
+    const logOut = () => {
+        localStorage.setItem("api_key", null)
+        window.location = '/login'
+
     }
 
     const user = useSelector(state => state.loggedInUser)
@@ -177,7 +189,7 @@ export const MobileListItems = () => {
             </ListItem>
 
 
-            <ListItem button>
+            <ListItem button onClick={logOut}>
                 <p className="exit">خروج</p>
                 <ListItemIcon className="exitIcon">
                     <ExitToAppIcon className="logoutIcon" />
