@@ -210,7 +210,7 @@ class ProfileDetails extends Component {
 
               if(formData.email!==response.data.email){
 
-                this.setState({ snackBarOpen: true, errorMessage: "The email is in use by another user" })
+                this.setState({ snackBarOpen: true, errorMessage: "این ایمیل از قبل وجود دارد" })
 
               }else{
                 oldData['email'] = formData.email

@@ -11,10 +11,6 @@ import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AddButtonAndPopUp from './PopUp/PopUp';
 import "./CourseLayout.scss";
-import myimg from '../../../../Pics/math.jpg';
-import myimg2 from '../../../../Pics/physics.jpg';
-import myimg3 from '../../../../Pics/lit.jpg';
-import myimg4 from '../../../../Pics/cl.jpg';
 import { Link } from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -79,8 +75,6 @@ function CourseLayout(props) {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
-        const user = JSON.parse(localStorage.getItem('user'))
-        console.log(user)
         setOpen(true);
     };
 

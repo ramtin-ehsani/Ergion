@@ -164,6 +164,15 @@ export const MobileListItems = () => {
                 </ListItemIcon>
             </ListItem>
 
+            <ListItem button
+                onClick={() => { history.push('/dashboard/added_courses') }}
+            >
+                <p className="courses">کلاس</p>
+                <ListItemIcon className="courseIcon">
+                    <ClassIcon />
+                </ListItemIcon>
+            </ListItem>
+
 
             <ListItem button>
                 <p className="store">فروشگاه</p>

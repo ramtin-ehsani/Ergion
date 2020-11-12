@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     appBarSpacer: theme.mixins.toolbar,
     content: {
         flexGrow: 1,
-        height: '100%',
+        height: '100vh',
         overflow: 'auto',
     },
     paper: {
@@ -44,7 +44,7 @@ const Dashboard = () => {
 
     useEffect(() => {
 
-        if (localStorage.getItem("api_key") !== null) {
+        if (localStorage.getItem("api_key") !== 'null') {
 
             axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/', config)
                 .then((res) => {
@@ -62,9 +62,13 @@ const Dashboard = () => {
                     // handle error
                     console.log(error);
                 })
+
         } else {
             window.location = '/login'
         }
+
+
+
 
 
     })
@@ -82,7 +86,7 @@ const Dashboard = () => {
                 <Switch >
                     <Route path='/dashboard' exact component={Template} />
                     <Route path='/dashboard/profile' exact component={StudentProfile} />
-                    <Route path='/dashboard/added_courses' exact component={CourseFileLayouts}/>
+                    <Route path='/dashboard/added_courses' exact component={CourseFileLayouts} />
                 </Switch>
 
             </main>

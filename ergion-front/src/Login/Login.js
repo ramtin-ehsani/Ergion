@@ -26,7 +26,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import * as actionTypes from '../store/actions'
 import { useDispatch } from 'react-redux';
-import { useHistory } from "react-router-dom";
 import { connect } from 'react-redux';
 
 function Copyright() {
@@ -138,8 +137,6 @@ function Login(props) {
 
   const usedispatch = useDispatch()
 
-  usedispatch({ type: actionTypes.LOGIN, grade: "", email: "", firstName: "", lastName: "", profilePicture: "" })
-
 
 
   const handleLogin = () => {
@@ -186,32 +183,32 @@ function Login(props) {
 
                     localStorage.setItem('api_key', response.data.key)
                     setUserSession(response.data.key, response.data.user);
-                    
+
                   })
                   .catch((error) => {
                     // handle error
                     console.log(error);
                   })
-                  const promise1 = axios.get('http://127.0.0.1:8000/api/student_dashboard/courses/', {
-                    headers: {
-                      "Authorization": `Token ${response.data.key}`,
-                    },
-                  })
-                  promise1.then(
-                    result => {
-                      console.log(result)
-                      result.data.map((course) => {
-                        const c = { id: course.id, name: course.name, image: course.poster, link: course.course_link_url, teacher: `${course.owner_firstname} ${course.owner_lastname}` }
-                        props.onAddCourse(c);
-                      })
-                      setLoading(false);
-                      window.location = '/dashboard'
-                    }
-                  )
+                const promise1 = axios.get('http://127.0.0.1:8000/api/student_dashboard/courses/', {
+                  headers: {
+                    "Authorization": `Token ${response.data.key}`,
+                  },
+                })
+                promise1.then(
+                  result => {
+                    console.log(result)
+                    result.data.map((course) => {
+                      const c = { id: course.id, name: course.name, image: course.poster, link: course.course_link_url, teacher: `${course.owner_firstname} ${course.owner_lastname}` }
+                      props.onAddCourse(c);
+                    })
+                    setLoading(false);
+                    window.location = '/dashboard'
+                  }
+                )
               }
             }
           )
-          
+
           console.log(response)
         }
 
