@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 
 
-const states = [
+const grades = [
   {
     value: '1',
     label: ' اول دبستان'
@@ -337,7 +337,7 @@ class ProfileDetails extends Component {
                   value={this.state.formData.grade}
                   variant="outlined"
                 >
-                  {states.map((option) => (
+                  {grades.map((option) => (
                     <option
                       key={option.value}
                       value={option.value}
