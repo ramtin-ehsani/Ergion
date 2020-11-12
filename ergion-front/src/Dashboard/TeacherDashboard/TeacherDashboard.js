@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbars from "./Toolbar/Toolbar"
-import "./StudentDashboard.scss";
-import StudentProfile from '../../Profile/StudentProfile';
+import "./TeacherDashboard.scss";
+import TeacherProfile from '../../Profile/TeacherProfile';
 import { Route, Switch } from 'react-router-dom';
 import Template from './Template'
 import * as actionTypes from '../../store/actions'
@@ -84,9 +84,9 @@ const Dashboard = () => {
             <main className={classes.content} >
                 <div className={classes.appBarSpacer} />
                 <Switch >
-                    <Route path='/student_dashboard' exact component={Template} />
-                    <Route path='/student_dashboard/profile' exact component={StudentProfile} />
-                    <Route path='/student_dashboard/added_courses' exact component={CourseFileLayouts} />
+                    <Route path='/teacher_dashboard' exact component={Template} />
+                    <Route path='/teacher_dashboard/profile' exact component={TeacherProfile} />
+                    <Route path='/teacher_dashboard/added_courses' exact component={CourseFileLayouts} />
                 </Switch>
 
             </main>
