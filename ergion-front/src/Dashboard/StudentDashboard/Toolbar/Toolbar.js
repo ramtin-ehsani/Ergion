@@ -49,6 +49,11 @@ const useStyles = makeStyles((theme) => ({
         width: drawerWidth,
         height: "fixed",
     },
+    Main: {
+        // [theme.breakpoints.up("md")]: { /*sm -> lg*/
+        //     marginLeft: 500,
+        // },
+    }
 }));
 
 function ResponsiveDrawer(props) {
@@ -63,7 +68,8 @@ function ResponsiveDrawer(props) {
     };
 
     return (
-        <div className="Main">
+        <div className={classes.Main}>
+        {/*<div className="Main">*/}
             <div>
                 <CssBaseline/>
                 <AppBar position="fixed" className={classes.appBar}>

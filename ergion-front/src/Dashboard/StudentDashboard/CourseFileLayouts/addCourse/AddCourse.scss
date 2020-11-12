@@ -1,12 +1,33 @@
 .main {
-}
 
-.main2 {
-  .filteredList {
-    font-size: 25px;
+  .cardSpacing {
+    padding: 7px;
   }
 
-  .heroContent {
-    padding: 64px 0 48px;
+  .textFieldSearchbar {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+
+    .labelOFSearchbar {
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      flex-direction: row;
+
+      .search_Icon {
+        margin-left: 7px;
+      }
+    }
+  }
+
+  .sss {
+    width: 100%;
+    height: 40px;
+
+    .toSee {
+      font-size: 20px;
+    }
   }
 }
