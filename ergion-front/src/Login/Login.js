@@ -20,14 +20,14 @@ import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
-import IranSansFont from './fonts/IranSansFont.ttf';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import * as actionTypes from '../store/actions'
+import { useDispatch } from 'react-redux';
 import { useHistory } from "react-router-dom";
-import {connect} from 'react-redux';
-import * as actionTypes from '../store/actions';
+import { connect } from 'react-redux';
 
 function Copyright() {
   return (
@@ -79,40 +79,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const iranSans = {
-  fontFamily: 'IranSansFont',
-  fontStyle: 'normal',
-  fontDisplay: 'swap',
-  fontWeight: 400,
-  src: `
-    local('IranSansFont'),
-    url(${IranSansFont}) format('truetype')
-  `,
-}
 
 
 const theme = createMuiTheme({
   typography: {
-    fontFamily: [
-      'IranSansFont',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
-  },
-  overrides: {
-    MuiCssBaseline: {
-      '@global': {
-        '@font-face': [iranSans]
-      },
-    },
+    fontFamily: '"Vazir", sans-serif'
   },
   direction: 'rtl'
 });
@@ -131,7 +102,6 @@ const useFormInput = initialValue => {
 
 function Login(props) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [loading, setLoading] = useState(false);
   const email = useFormInput('');
@@ -166,6 +136,12 @@ function Login(props) {
     );
   };
 
+  const usedispatch = useDispatch()
+
+  usedispatch({ type: actionTypes.LOGIN, grade: "", email: "", firstName: "", lastName: "", profilePicture: "" })
+
+
+
   const handleLogin = () => {
     setEmailError(false)
     setPasswordError(false)
@@ -184,34 +160,59 @@ function Login(props) {
       setLoading(true);
       axios.post('http://127.0.0.1:8000/api/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
         if (response.status === 200) {
-          const promise = axios.get('http://127.0.0.1:8000/api/users/rest-auth/user/',{
+
+          const getValueConfig = {
+            headers: { Authorization: (`Token ` + response.data.key) }
+          }
+
+          const promise = axios.get('http://127.0.0.1:8000/api/users/rest-auth/user/', {
             headers: {
-                "Authorization": `Token ${response.data.key}`,
+              "Authorization": `Token ${response.data.key}`,
             }
           })
           promise.then(
-              result => {
-                setUserSession(response.data.key, result.data);
-                props.onUserLoggedIn(result.data['firstname'],result.data['lastname'],result.data['email']);
+            result => {
+              setUserSession(response.data.key, result.data);
+              if (result.data['role'] === 'S') {
+                axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/', getValueConfig)
+                  .then((res) => {
+                    // handle success
+                    const avatarImage = res.data.profile_picture
+                    const firstName = res.data.firstname
+                    const lastName = res.data.lastname
+                    const grade = res.data.grade
+                    const email = res.data.email
+                    usedispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
+
+                    localStorage.setItem('api_key', response.data.key)
+                    setUserSession(response.data.key, response.data.user);
+                    
+                  })
+                  .catch((error) => {
+                    // handle error
+                    console.log(error);
+                  })
+                  const promise1 = axios.get('http://127.0.0.1:8000/api/student_dashboard/courses/', {
+                    headers: {
+                      "Authorization": `Token ${response.data.key}`,
+                    },
+                  })
+                  promise1.then(
+                    result => {
+                      console.log(result)
+                      result.data.map((course) => {
+                        const c = { id: course.id, name: course.name, image: course.poster, link: course.course_link_url, teacher: `${course.owner_firstname} ${course.owner_lastname}` }
+                        props.onAddCourse(c);
+                      })
+                      setLoading(false);
+                      window.location = '/dashboard'
+                    }
+                  )
               }
-          )
-          const promise1 = axios.get('http://127.0.0.1:8000/api/student_dashboard/courses/',{
-            headers: {
-                "Authorization": `Token ${response.data.key}`,
-            },
-          })
-          promise1.then(
-            result =>{
-              console.log(result)
-                result.data.map((course)=>{
-                  const c = {id:course.id, name:course.name, image:course.poster, link:course.course_link_url, teacher:`${course.owner_firstname} ${course.owner_lastname}` }
-                  props.onAddCourse(c);
-                })
             }
           )
-          setLoading(false);
+          
           console.log(response)
-          history.push('/dashboard');
         }
 
       }).catch(() => {
@@ -348,16 +349,16 @@ function Login(props) {
 
 }
 
-const mapStateToProps = state =>{
-  return{
-      user: state.loggedInUser,
-      courses: state.addedCourses
+const mapStateToProps = state => {
+  return {
+    user: state.loggedInUser,
+    courses: state.addedCourses
   };
 };
-const mapDispatchToProps = dispatch =>{
-  return{
-      onUserLoggedIn: (firstName,lastName,email)=>dispatch({type: actionTypes.LOGIN, firstName:firstName, lastName:lastName, email:email }),
-      onAddCourse: (course)=> dispatch({type: actionTypes.ADD_COURSE, payload:course })
+const mapDispatchToProps = dispatch => {
+  return {
+    onUserLoggedIn: (firstName, lastName, email) => dispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, email: email }),
+    onAddCourse: (course) => dispatch({ type: actionTypes.ADD_COURSE, payload: course })
   }
 }
-export default connect(mapStateToProps,mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

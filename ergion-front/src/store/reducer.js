@@ -1,35 +1,37 @@
 import * as actionTypes from './actions';
 
 const initialState = {
-    addedCourses:[
+    addedCourses: [
     ],
-    loggedInUser:{
-        firstName:'',
+    loggedInUser: {
+        firstName: '',
         lastName: '',
-        email:'',
+        email: '',
+        profilePicture: '',
+        grade: 1,
     },
 };
 
-const reducer = (state= initialState, action)=>{
-    switch(action.type){
+const reducer = (state = initialState, action) => {
+    switch (action.type) {
         case actionTypes.ADD_COURSE:
-            return{
+            return {
                 ...state,
-                addedCourses:[
+                addedCourses: [
                     ...state.addedCourses,
                     action.payload
                 ],
             };
         case actionTypes.LOGIN:
-            return{
+            return {
                 ...state,
-                addedCourses:[
-
-                ],
-                loggedInUser:{
+                loggedInUser: {
+                    ...state.loggedInUser,
                     firstName: action.firstName,
                     lastName: action.lastName,
-                    email: action.email
+                    email: action.email,
+                    profilePicture: action.profilePicture,
+                    grade: action.grade,
                 }
             };
         default:
