@@ -37,13 +37,13 @@ textAlign:"right"
 }));
 
 
-export default function Chart() {
+export default function information(props) {
   const [Add, setAdd] = React.useState(true);
   const [S, setS] = React.useState(false);
   const classes = useStyles();
-  const [name, setname] = React.useState('فیزیک یازدهم');
-  const [bio, setbio] = React.useState('در این جلسه قرار هست مقدمه ای برای نیرو و برایندگیری اون که کل سال یازدهم درگیر اون هستید بگیم  پس با دقت زیاد با ما همراه باشید');
-const s=true;
+  const [name, setname] = React.useState(props.course.name);
+  const [bio, setbio] = React.useState(props.course.info);
+
   const handleAdd = () => {
     setAdd(!Add);
 };
@@ -60,7 +60,7 @@ const handleBio = (val) => {
           
         <div className={classes.Buttonpos}>
           
-        {/* {Add?
+        {Add?
       <Button size="medium" onClick={handleAdd} variant="contained" color="primary">
         <div className={classes.title}>
                         اضافه شدن
@@ -70,13 +70,13 @@ const handleBio = (val) => {
                     <div className={classes.title}>
                     حذف
 </div>
-                </Button> */}
+                </Button>
                 
                 
-{/* }  */}
+} 
 
- <Box r={1}><AddButtonAndPopUp classes={classes.EditButton} name={name} bio={bio} handleNewName={handleName} handleNewBio={handleBio}/>
-         </Box> 
+ {/* <Box r={1}><AddButtonAndPopUp classes={classes.EditButton} name={name} bio={bio} handleNewName={handleName} handleNewBio={handleBio}/>
+         </Box>  */}
         
  </div>
     
