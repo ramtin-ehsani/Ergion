@@ -99,6 +99,10 @@ const styles = (theme) => ({
     margin: theme.spacing(0, 1, 0),
     color: 'orange',
   },
+  alertStyle:{
+    display:'flex',
+    font:'20'
+  }
 
 });
 
@@ -137,7 +141,6 @@ class Profile extends Component {
     allowedToUpload: true,
     anchorEl: null,
     allowedToRemove: false,
-    userAlreadyHasPicture: false,
     progress: 0,
     errorMessage: '',
 
@@ -156,13 +159,13 @@ class Profile extends Component {
 
 
   getValues = () => {
-    axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/', this.config)
+    axios.get('http://127.0.0.1:8000/api/users/teacher/profile', this.config)
       .then((response) => {
         // handle success
         const avatarImage = response.data.profile_picture
 
         if (avatarImage !== null) {
-          this.setState({ userAlreadyHasPicture: true, allowedToRemove: true });
+          this.setState({  allowedToRemove: true });
         }
 
 
@@ -263,7 +266,7 @@ class Profile extends Component {
         if (response.status === 200) {
           this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
             , this.props.user.email, this.props.user.grade, '')
-          this.setState({ userAlreadyHasPicture: false, hasImage: false, avatarImage: "", allowedToRemove: false })
+          this.setState({  hasImage: false, avatarImage: "", allowedToRemove: false })
           this.handleClose();
 
         }
@@ -300,9 +303,10 @@ class Profile extends Component {
           open={this.state.snackBarOpen}
           autoHideDuration={1500}
           onClose={this.onSnackBarClose}
+          dir='rtl'
         >
 
-          <Alert onClose={this.onSnackBarClose} severity="error" >
+          <Alert onClose={this.onSnackBarClose} severity="error" className={classes.alertStyle} >
             {this.state.errorMessage}
 
           </Alert>
@@ -368,6 +372,7 @@ class Profile extends Component {
               gutterBottom
               variant="h3"
               className={classes.typographyStyle}
+              style={{minHeight:'2rem'}}
             >
               {this.props.user.firstName + ' ' + this.props.user.lastName}
             </Typography>

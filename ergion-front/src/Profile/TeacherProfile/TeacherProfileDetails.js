@@ -45,6 +45,10 @@ const styles = (theme) => ({
     color: 'orange',
     
   },
+  alertStyle:{
+    display:'flex',
+    font:'20'
+  }
 });
 
 function Alert(props) {
@@ -235,9 +239,10 @@ class ProfileDetails extends Component {
           open={this.state.snackBarOpen}
           autoHideDuration={1500}
           onClose={this.onSnackBarClose}
+          dir='rtl'
         >
 
-          <Alert onClose={this.onSnackBarClose} severity="error" >
+          <Alert onClose={this.onSnackBarClose} severity="error" className={classes.alertStyle} >
             {this.state.errorMessage}
 
           </Alert>
