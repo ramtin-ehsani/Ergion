@@ -18,9 +18,13 @@ from django.urls import path, include
 from rest_framework.schemas import get_schema_view
 from rest_framework.documentation import include_docs_urls
 from rest_framework_swagger.views import get_swagger_view
+from django.conf.urls.static import static
+from .settings import MEDIA_URL, MEDIA_ROOT
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('users/', include('Users.urls')),
+    path('api/users/', include('Users.urls')),
+    path('api/course/', include('Course.urls')),
     path('schema/', get_schema_view(title="ergion")),
     path('swagger-docs/', get_swagger_view(title="Ergion")),
 ]
+urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)
