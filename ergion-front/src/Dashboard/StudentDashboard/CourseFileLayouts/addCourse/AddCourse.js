@@ -22,6 +22,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import ShareIcon from '@material-ui/icons/Share';
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+// import copy from "copy-to-clipboard";
+
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -67,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 20,
     },
     snackBAr: {
-        // paddingBottom: window.innerHeight - 150,    Change the position of Snackbar
+        paddingBottom: window.innerHeight - 150,    /*Change the position of Snackbar*/
     },
     avatar: {
         backgroundColor: "red",
@@ -114,23 +116,24 @@ const AddCourse = () => {
 
     const config = {
         // headers: {Authorization: `Token ${localStorage.getItem('api_key')}`},       /* End Version */
-        headers: {Authorization: `Token 40f12d53477df5c984be7cb411887bcdfdd9316a`},    /* Test Version */
+        headers: {Authorization: `Token bd2cdfaff3ea600ec058aaaddb695dec42a2f6e2`},    /* Test Version */
     };
     const changeSearchBarHandler = (event) => {
-        const API = "http://127.0.0.1:8000/api/all_courses/?substring=" + event.target.value;
+        const API = "http://127.0.0.1:8000/api/all-courses/?substring=" + event.target.value;
         axios.get(API, config)
             .then((response) => {
                 setCourses(response.data);
             })
     }
 
-    function copyToClipboard() {
-        let textField = document.createElement('textarea')
-        textField.innerText = 'http://localhost:3000/dashboard/add-Courses'
-        document.body.appendChild(textField)
-        textField.select()
-        document.execCommand('copy')
-        textField.remove()
+
+    function copyToClipboard(id) {
+        let textField = document.createElement('textarea');
+        textField.innerText = 'http://localhost:3000/course/' + id;
+        document.body.appendChild(textField);
+        textField.select();
+        document.execCommand('copy');
+        textField.remove();
         setOpen(true);
     }
 
@@ -141,8 +144,12 @@ const AddCourse = () => {
         setOpen(false);
     };
 
+    function courseLinkHandler(id) {
+        return ('http://localhost:3000/course/' + id);
+    }
+
     useEffect(() => {
-        const showAllAPI = "http://127.0.0.1:8000/api/all_courses/";
+        const showAllAPI = "http://127.0.0.1:8000/api/all-courses/";
         axios.get(showAllAPI, config)
             .then((response) => {
                 setCourses(response.data);
@@ -182,26 +189,26 @@ const AddCourse = () => {
                                             <CardHeader
                                                 title={
                                                     <Typography className="courseOwnerPlace" component="h4">
-                                                        مدرس: {course.owner_firstname + " " + course.owner_lastname}
+                                                        مدرس: {course.instructor_firstname + " " + course.instructor_lastname}
                                                     </Typography>
                                                 }
                                                 avatar={
-                                                    <Avatar src={course.poster} aria-label="recipe"
+                                                    <Avatar src={course.instructor_profile_picture} aria-label="recipe"
                                                             className={classes.avatar}>
-                                                        {(course.owner_firstname).split("")[0]}
+                                                        {(course.instructor_firstname).split("")[0]}
                                                     </Avatar>
                                                 }
                                             />
                                             <CardMedia
                                                 className={classes.cardMedia}
                                                 component='img'
-                                                image={course.poster}
+                                                image={course.course_cover}
                                                 title={course.name}
                                             />
                                             <CardContent className={classes.cardContent} spacing={3}>
                                                 <Typography gutterBottom variant="h5" component="h2"
                                                             className="courseNamePlace">
-                                                    {course.name}
+                                                    {course.subject}
                                                 </Typography>
                                                 {/*<Typography className="courseOwnerPlace" component="h4">*/}
                                                 {/*    مدرس: {course.owner_firstname + " " + course.owner_lastname}*/}
@@ -209,6 +216,9 @@ const AddCourse = () => {
                                                 <Typography className="courseCapacityPlace" component="h6">
                                                     ظرفیت کلاس:{" " + course.capacity}
                                                 </Typography>
+                                                {/*<Typography className="courseCapacityPlace" component="h6">*/}
+                                                {/*     دوره:{" " + course.grade}*/}
+                                                {/*</Typography>*/}
                                             </CardContent>
                                             <Divider/>
                                             <Divider/>
@@ -221,7 +231,8 @@ const AddCourse = () => {
                                                     dir="rtl"
                                                     justify="space-evenly"
                                                     alignItems="center">
-                                                    <Button href="#" className="toSeeButton" size="small"
+                                                    <Button href={courseLinkHandler(course.id)}
+                                                            className="toSeeButton" size="small"
                                                             color="primary">
                                                         <p className="toSee">مشاهده</p>
                                                     </Button>
@@ -230,7 +241,9 @@ const AddCourse = () => {
                                                     {/*</Button>*/}
                                                     <div className={classes.root}>
                                                         <Button size="small" color="primary"
-                                                                onClick={copyToClipboard}>
+                                                                onClick={() => copyToClipboard(course.id)}
+                                                                action={localStorage.setItem('id', course.id)}
+                                                        >
                                                             <ShareIcon/>
                                                         </Button>
                                                         <Snackbar className={classes.snackBAr} dir="rtl" open={open}

@@ -45,7 +45,7 @@ const Dashboard = () => {
                 <div className={classes.appBarSpacer}/>
                 <Switch>
                     <Route path="/dashboard" exact component={CourseFileLayouts}/>
-                    <Route path="/dashboard/add-Courses" exact component={AddCourse}/>
+                    <Route path="/dashboard/find-your-course" exact component={AddCourse}/>
                 </Switch>
             </main>
         </div>

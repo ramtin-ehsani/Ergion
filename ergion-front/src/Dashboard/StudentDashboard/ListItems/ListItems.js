@@ -61,7 +61,7 @@ export const mainListItems = (
 
         <Divider/>
 
-        <Link to="/dashboard/add-Courses" style={{textDecoration: "none", color: "inherit"}}>
+        <Link to="/dashboard/find-your-course" style={{textDecoration: "none", color: "inherit"}}>
             <ListItem button>
                 <p className="class">کلاس</p>
                 <ListItemIcon className="classIcon">
@@ -137,7 +137,7 @@ export const MobileListItems = (
 
         <Divider/>
 
-        <Link to="/dashboard/add-Courses" style={{textDecoration: "none", color: "inherit"}}>
+        <Link to="/dashboard/find-your-course" style={{textDecoration: "none", color: "inherit"}}>
             <ListItem button>
                 <p className="class">کلاس</p>
                 <ListItemIcon className="classIcon">

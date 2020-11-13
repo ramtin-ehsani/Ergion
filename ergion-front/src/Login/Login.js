@@ -178,7 +178,7 @@ export default function Login() {
 
         } else {
             setLoading(true);
-            axios.post('http://127.0.0.1:8000/users/rest-auth/login/', {
+            axios.post('http://127.0.0.1:8000/api/users/rest-auth/login/', {
                 email: email.value,
                 password: password.value
             }).then(response => {
