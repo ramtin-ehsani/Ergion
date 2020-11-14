@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import './Toolbar.scss';
 
-const drawerWidth = 240;
+const drawerWidth = 247;
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -33,14 +33,15 @@ const useStyles = makeStyles((theme) => ({
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
-        [theme.breakpoints.up('sm')]: {
+        [theme.breakpoints.up('md')]: { /*sm -> md  */
             width: `calc(100%)`,
+            height: 'fixed',
             marginLeft: drawerWidth,
         },
     },
     menuButton: {
         marginLeft: theme.spacing(-7),
-        [theme.breakpoints.up("sm")]: {
+        [theme.breakpoints.up("lg")]: { /*sm -> lg*/
             display: 'none'
         },
     },
@@ -48,6 +49,11 @@ const useStyles = makeStyles((theme) => ({
         width: drawerWidth,
         height: "fixed",
     },
+    Main: {
+        // [theme.breakpoints.up("md")]: { /*sm -> lg*/
+        //     marginLeft: 500,
+        // },
+    }
 }));
 
 function ResponsiveDrawer(props) {
@@ -62,7 +68,8 @@ function ResponsiveDrawer(props) {
     };
 
     return (
-        <div className="Main">
+        <div className={classes.Main}>
+        {/*<div className="Main">*/}
             <div>
                 <CssBaseline/>
                 <AppBar position="fixed" className={classes.appBar}>
@@ -81,16 +88,16 @@ function ResponsiveDrawer(props) {
                         </IconButton>
                     </Toolbar>
                 </AppBar>
-
             </div>
             <nav className={classes.drawer} aria-label="mailbox folders">
-                <Hidden smUp implementation="css">
+                <Hidden lgUp implementation="css">
                     <Drawer
                         container={container}
                         variant="temporary"
                         anchor={theme.direction === 'ltr' ? 'right' : 'left'}
                         open={mobileOpen}
                         onClose={handleDrawerToggle}
+                        onClick={handleDrawerToggle}
                         classes={{
                             paper: classes.drawerPaper,
                         }}
@@ -99,13 +106,10 @@ function ResponsiveDrawer(props) {
                         }}
                     >
                         <Divider/>
-                        <div>
-                            <Divider/>
-                            {MobileListItems}
-                        </div>
+                        {MobileListItems}
                     </Drawer>
                 </Hidden>
-                <Hidden xsDown implementation="js">
+                <Hidden mdDown implementation="js">
                     <Drawer
                         classes={{
                             paper: classes.drawerPaper,
