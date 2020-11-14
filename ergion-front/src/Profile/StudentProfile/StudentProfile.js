@@ -71,7 +71,7 @@ const styles = (theme) => ({
   },
   avatar: {
     height: 100,
-    width: 100
+    width: 100,
   },
   input: {
     display: "none"
@@ -99,13 +99,17 @@ const styles = (theme) => ({
     margin: theme.spacing(0, 1, 0),
     color: 'orange',
   },
+  alertStyle: {
+    display: 'flex',
+    font: '20'
+  }
 
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchUser: (firstName, lastName, email, grade, profilePicture) =>
-      dispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: profilePicture })
+    dispatchUser: (firstName, lastName, profilePicture) =>
+      dispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, profilePicture: profilePicture })
 
   };
 };
@@ -137,7 +141,6 @@ class Profile extends Component {
     allowedToUpload: true,
     anchorEl: null,
     allowedToRemove: false,
-    userAlreadyHasPicture: false,
     progress: 0,
     errorMessage: '',
 
@@ -156,13 +159,13 @@ class Profile extends Component {
 
 
   getValues = () => {
-    axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/', this.config)
+    axios.get('http://127.0.0.1:8000/api/student-profile/', this.config)
       .then((response) => {
         // handle success
         const avatarImage = response.data.profile_picture
 
         if (avatarImage !== null) {
-          this.setState({ userAlreadyHasPicture: true, allowedToRemove: true });
+          this.setState({ allowedToRemove: true });
         }
 
 
@@ -217,27 +220,14 @@ class Profile extends Component {
 
       const data = new FormData()
       data.append('profile_picture', this.state.selectedFile)
-      data.append('firstname', this.props.user.firstName)
-      data.append('lastname', this.props.user.lastName)
-      data.append('email', this.props.user.email)
-      if (this.props.user.grade == null) {
-        data.append('grade', 1)
 
-      } else {
-        data.append('grade', this.props.user.grade)
-
-      }
-
-
-      axios.post('http://127.0.0.1:8000/api/student_dashboard/student_details/',
+      axios.put('http://127.0.0.1:8000/api/student-profile/',
         data, this.uploadConfig)
-        .then(response => {
-          if (response.status === 201) {
-            this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
-              , this.props.user.email, this.props.user.grade, this.state.avatarImage)
-            this.setState({ loading: false, hasImage: false, allowedToUpload: true, progress: 0 })
+        .then(() => {
+          this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
+            , this.state.avatarImage)
+          this.setState({ loading: false, hasImage: false, allowedToUpload: true, progress: 0 })
 
-          }
 
         }).catch((error) => {
           if (error.isAxiosError) {
@@ -258,12 +248,17 @@ class Profile extends Component {
 
   deletePicture = () => {
 
-    axios.delete('http://127.0.0.1:8000/api/student_dashboard/student_details/?field=profile_picture',
+    const data = new FormData()
+    data.append('profile_picture', null)
+
+
+    axios.put('http://127.0.0.1:8000/api/student-profile/', data,
       this.config).then(response => {
+
         if (response.status === 200) {
           this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
-            , this.props.user.email, this.props.user.grade, '')
-          this.setState({ userAlreadyHasPicture: false, hasImage: false, avatarImage: "", allowedToRemove: false })
+            , '')
+          this.setState({ hasImage: false, avatarImage: "", allowedToRemove: false })
           this.handleClose();
 
         }
@@ -300,9 +295,10 @@ class Profile extends Component {
           open={this.state.snackBarOpen}
           autoHideDuration={1500}
           onClose={this.onSnackBarClose}
+          dir='rtl'
         >
 
-          <Alert onClose={this.onSnackBarClose} severity="error" >
+          <Alert onClose={this.onSnackBarClose} severity="error" className={classes.alertStyle} >
             {this.state.errorMessage}
 
           </Alert>
@@ -368,6 +364,7 @@ class Profile extends Component {
               gutterBottom
               variant="h3"
               className={classes.typographyStyle}
+              style={{ minHeight: '2rem' }}
             >
               {this.props.user.firstName + ' ' + this.props.user.lastName}
             </Typography>

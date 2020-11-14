@@ -22,6 +22,7 @@ import Divider from '@material-ui/core/Divider';
 import axios from 'axios';
 import {connect} from 'react-redux';
 import * as actionTypes from '../../../../store/actions';
+import { Box } from '@material-ui/core';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -65,6 +66,10 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(6),
     },
+    gridTitle: {
+        paddingBottom: theme.spacing(3),
+        paddingTop: theme.spacing(3)
+    }
 }));
 
 // const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -90,15 +95,16 @@ function CourseLayout(props) {
 
     React.useEffect(()=>{
         setTimeout(()=>{
-            const promise1 = axios.get('http://127.0.0.1:8000/api/student_dashboard/courses/',{
+            const promise1 = axios.get('http://127.0.0.1:8000/api/student-courses/',{
                 headers: {
                     "Authorization": `Token ${localStorage.getItem('token')}`,
                 },
               })
               promise1.then(
                 result =>{
+                    console.log(result)
                     result.data.map((course)=>{
-                      const c = {id:course.id, name:course.name, image:course.poster, link:course.course_link_url, teacher:`${course.owner_firstname} ${course.owner_lastname}` }
+                      const c = {id:course.id, name:course.name, image:course.course_cover, link:course.course_url, teacher:`${course.instructor_firstname} ${course.instructor_lastname}` }
                       console.log(c)
                       let flag = true;
                       props.courses.map(course=>{
@@ -154,8 +160,22 @@ function CourseLayout(props) {
                 </DialogActions>
                 </Dialog>
                 <Container className={classes.cardGrid} maxWidth="md">
+                    <Grid container dir="rtl" className={classes.gridTitle} spacing={3} justify="flex-start" alignItems="baseline">
+                        <Grid item>
+                            <Typography className='typo' component="div">
+                            <Box fontSize={20} fontWeight="fontWeightBold" m={1}>
+                                کلاس های من
+                            </Box>
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Button className="addButton" variant="outlined" color="primary">
+                                اضافه کردن کلاس جدید
+                            </Button>
+                        </Grid>
+                    </Grid>
                     {/* End hero unit */}
-                    <Grid container spacing={4}>
+                    <Grid container spacing={4} dir="rtl" >
                         {props.courses.map((list) => (
                             <Grid item key={list.id} xs={12} sm={6} md={3}>
                                 <Card className="layout">

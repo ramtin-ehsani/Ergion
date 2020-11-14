@@ -52,14 +52,16 @@ const Account = () => {
               spacing={4}
               lg={10}
               item={true}
-
+              direction="column"
+              alignItems="center"
 
             >
               <Grid
                 item
-                lg={4}
-                md={6}
+                lg={6}
+                md={12}
                 xs={12}
+                style={{width:'100%'}}
               >
                 <Box boxShadow={6} >
                   <Profile />
@@ -67,8 +69,8 @@ const Account = () => {
               </Grid>
               <Grid
                 item
-                lg={8}
-                md={6}
+                lg={12}
+                md={12}
                 xs={12}
               >
                 <Box boxShadow={6} >

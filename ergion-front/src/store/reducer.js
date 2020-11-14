@@ -6,9 +6,7 @@ const initialState = {
     loggedInUser: {
         firstName: '',
         lastName: '',
-        email: '',
         profilePicture: '',
-        grade: 1,
     },
 };
 
@@ -26,12 +24,9 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 loggedInUser: {
-                    ...state.loggedInUser,
                     firstName: action.firstName,
                     lastName: action.lastName,
-                    email: action.email,
                     profilePicture: action.profilePicture,
-                    grade: action.grade,
                 }
             };
         default:

@@ -51,8 +51,8 @@ export const MainListItems = () => {
 
             <Divider />
 
-            <ListItem button>
-                <p className="dashboard" onClick={navidagteToDashboard}>داشبورد</p>
+            <ListItem button onClick={navidagteToDashboard}>
+                <p className="dashboard" >داشبورد</p>
                 <ListItemIcon className="dashIcon">
                     <DashboardIcon />
                 </ListItemIcon>
@@ -149,8 +149,8 @@ export const MobileListItems = () => {
 
             <Divider />
 
-            <ListItem button>
-                <p className="dashboard" onClick={navidagteToDashboard}>داشبورد</p>
+            <ListItem button onClick={navidagteToDashboard}>
+                <p className="dashboard" >داشبورد</p>
                 <ListItemIcon className="dashIcon">
                     <DashboardIcon />
                 </ListItemIcon>

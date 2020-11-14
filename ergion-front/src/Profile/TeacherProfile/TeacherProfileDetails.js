@@ -45,6 +45,10 @@ const styles = (theme) => ({
     color: 'orange',
     
   },
+  alertStyle:{
+    display:'flex',
+    font:'20'
+  }
 });
 
 function Alert(props) {
@@ -74,7 +78,7 @@ class ProfileDetails extends Component {
       firstName: '',
       lastName: '',
       email: '',
-      occupation: 'SchoolTeacher',
+      occupation: '',
       resume:'',
       universityEmail:'',
       aboutMe:'',
@@ -86,7 +90,7 @@ class ProfileDetails extends Component {
       firstName: '',
       lastName: '',
       email: '',
-      occupation: 'SchoolTeacher',
+      occupation: '',
       resume:'',
       universityEmail:'',
       aboutMe:'',
@@ -111,7 +115,11 @@ class ProfileDetails extends Component {
           firstName: response.data.firstname,
           lastName: response.data.lastname,
           email: response.data.email,
-          occupation: response.data.grade
+          occupation: response.data.grade,
+          resume: response.data.grade,
+          universityEmail: response.data.grade,
+          institute: response.data.grade,
+          aboutMe: response.data.grade,
 
         }
 
@@ -151,8 +159,15 @@ class ProfileDetails extends Component {
   };
 
   checkForTextFieldChange = (oldData, newData) => {
-    if (oldData.firstName === newData.firstName && oldData.lastName === newData.lastName
-      && oldData.email === newData.email && oldData.grade === newData.grade) {
+    if (oldData.firstName === newData.firstName 
+      && oldData.lastName === newData.lastName
+      && oldData.email === newData.email
+      && oldData.occupation === newData.occupation
+      && oldData.resume === newData.resume
+      && oldData.universityEmail === newData.universityEmail
+      && oldData.aboutMe === newData.aboutMe 
+      && oldData.institute === newData.institute) {
+
       this.setState({ textFieldChanged: false })
     } else {
       this.setState({ textFieldChanged: true })
@@ -170,7 +185,11 @@ class ProfileDetails extends Component {
       data.append('firstname', formData.firstName)
       data.append('lastname', formData.lastName)
       data.append('email', formData.email)
-      data.append('grade', formData.grade)
+      data.append('occupation', formData.occupation)
+      data.append('resume', formData.resume)
+      data.append('universityEmail', formData.universityEmail)
+      data.append('aboutMe', formData.aboutMe)
+      data.append('institute', formData.institute)
 
         axios.post('http://127.0.0.1:8000/api/student_dashboard/student_details/',
         data,this.config)
@@ -235,9 +254,10 @@ class ProfileDetails extends Component {
           open={this.state.snackBarOpen}
           autoHideDuration={1500}
           onClose={this.onSnackBarClose}
+          dir='rtl'
         >
 
-          <Alert onClose={this.onSnackBarClose} severity="error" >
+          <Alert onClose={this.onSnackBarClose} severity="error" className={classes.alertStyle} >
             {this.state.errorMessage}
 
           </Alert>
@@ -309,6 +329,7 @@ class ProfileDetails extends Component {
                   SelectProps={{ native: true }}
                   value={this.state.formData.occupation}
                   variant="outlined"
+                  
                 >
                   {occupation.map((option) => (
                     <option
@@ -377,52 +398,13 @@ class ProfileDetails extends Component {
                   fullWidth
                   label="نام موسسه یا دانشگاه"
                   name="institute"
+                  dir='rtl'
                   onChange={this.handleChange}
                   value={this.state.formData.institute}
                   variant="outlined"
                 />
 
               </Grid>
-
-
-
-              
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-
-                <TextValidator
-                  fullWidth
-                  label="ایمیل دانشگاهی"
-                  name="universityEmail"
-                  onChange={this.handleChange}
-                  value={this.state.formData.universityEmail}
-                  variant="outlined"
-                  validators={['isEmail']}
-                  errorMessages={['فرمت ایمیل درست نمی باشد']}
-                />
-
-              </Grid>
-
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-
-                <TextValidator
-                  fullWidth
-                  label="سوابق کاری"
-                  name="resume"
-                  onChange={this.handleChange}
-                  value={this.state.formData.resume}
-                  variant="outlined"
-                />
-
-              </Grid>
-              
 
               <Grid
                 item
@@ -432,11 +414,36 @@ class ProfileDetails extends Component {
 
                 <TextValidator
                   fullWidth
+                  label="سوابق کاری"
+                  name="resume"
+                  dir='rtl'
+                  onChange={this.handleChange}
+                  value={this.state.formData.resume}
+                  variant="outlined"
+                  multiline={true}
+                  
+                />
+
+              </Grid>
+              
+
+              <Grid
+                item
+                md={12}
+                xs={12}
+                
+              >
+
+                <TextValidator
+                  fullWidth
+                  dir='rtl'
                   label="درباره من"
                   name="aboutMe"
                   onChange={this.handleChange}
                   value={this.state.formData.aboutMe}
                   variant="outlined"
+                  multiline={true}
+                  rows={5}
                 />
 
               </Grid>

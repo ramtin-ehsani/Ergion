@@ -168,26 +168,26 @@ function Login(props) {
             result => {
               setUserSession(response.data.key, result.data);
               if (result.data['role'] === 'S') {
-                axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/', config)
+                axios.get('http://127.0.0.1:8000/api/student-profile/', config)
                   .then((res) => {
                     // handle success
+                    console.log(res)
                     const avatarImage = res.data.profile_picture
                     const firstName = res.data.firstname
                     const lastName = res.data.lastname
-                    const grade = res.data.grade
-                    const email = res.data.email
-                    usedispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
+                    usedispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
 
                     localStorage.setItem('api_key', response.data.key)
                     setUserSession(response.data.key, response.data.user);
-                    const promise1 = axios.get('http://127.0.0.1:8000/api/student_dashboard/courses/',
+                    const promise1 = axios.get('http://127.0.0.1:8000/api/student-courses/',
                       config)
                     promise1.then(
-                      result => {
-                        console.log(result)
-                        result.data.map((course) => {
-                          const c = { id: course.id, name: course.name, image: course.poster, link: course.course_link_url, teacher: `${course.owner_firstname} ${course.owner_lastname}` }
+                      resultt => {
+                        console.log(resultt)
+                        resultt.data.map((course) => {
+                          const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, teacher: `${course.instructor_firstname} ${course.instructor_lastname}` }
                           props.onAddCourse(c);
+                          return null
                         })
                         setLoading(false);
                         window.location = '/student_dashboard'
@@ -201,38 +201,39 @@ function Login(props) {
                   })
 
               } else {
+                setLoading(false);
+                window.location = '/teacher_dashboard'
 
-                axios.get('http://127.0.0.1:8000/api/teacher_dashboard/teacher_details/', config)
-                  .then((res) => {
-                    // handle success
-                    const avatarImage = res.data.profile_picture
-                    const firstName = res.data.firstname
-                    const lastName = res.data.lastname
-                    const grade = res.data.grade
-                    const email = res.data.email
-                    usedispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
+                // axios.get('http://127.0.0.1:8000/api/users/teacher/profile', config)
+                //   .then((res) => {
+                //     // handle success
+                //     const avatarImage = res.data.profile_picture
+                //     const firstName = res.data.firstname
+                //     const lastName = res.data.lastname
+                //     usedispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
 
-                    localStorage.setItem('api_key', response.data.key)
-                    setUserSession(response.data.key, response.data.user);
-                    const promise1 = axios.get('http://127.0.0.1:8000/api/teacher_dashboard/courses/',
-                      config)
-                    promise1.then(
-                      result => {
-                        console.log(result)
-                        result.data.map((course) => {
-                          const c = { id: course.id, name: course.name, image: course.poster, link: course.course_link_url, teacher: `${course.owner_firstname} ${course.owner_lastname}` }
-                          props.onAddCourse(c);
-                        })
-                        setLoading(false);
-                        window.location = '/teacher_dashboard'
-                      }
-                    )
+                //     localStorage.setItem('api_key', response.data.key)
+                //     setUserSession(response.data.key, response.data.user);
+                //     const promise1 = axios.get('http://127.0.0.1:8000/api/users/teacher/course',
+                //       config)
+                //     promise1.then(
+                //       resultt => {
+                //         console.log(resultt)
+                //         resultt.data.map((course) => {
+                //           const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, teacher: `${course.instructor_firstname} ${course.instructor_lastname}` }
+                //           props.onAddCourse(c);
+                              // return null
+                //         })
+                //         setLoading(false);
+                //         window.location = '/teacher_dashboard'
+                //       }
+                //     )
 
-                  })
-                  .catch((error) => {
-                    // handle error
-                    console.log(error);
-                  })
+                //   })
+                //   .catch((error) => {
+                //     // handle error
+                //     console.log(error);
+                //   })
 
 
               }

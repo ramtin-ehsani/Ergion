@@ -81,6 +81,10 @@ const styles = (theme) => ({
     color: 'orange',
     
   },
+  alertStyle:{
+    display:'flex',
+    font:'20'
+  }
 });
 
 function Alert(props) {
@@ -89,8 +93,8 @@ function Alert(props) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchUser: (firstName, lastName, email, grade, profilePicture) =>
-      dispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: profilePicture })
+    dispatchUser: (firstName, lastName, profilePicture) =>
+      dispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, profilePicture: profilePicture })
 
   };
 };
@@ -131,7 +135,7 @@ class ProfileDetails extends Component {
   }
 
   getValues = () => {
-    axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/',this.config)
+    axios.get('http://127.0.0.1:8000/api/student-profile/',this.config)
       .then((response) => {
         // handle success
         const formData = {
@@ -142,7 +146,7 @@ class ProfileDetails extends Component {
 
         }
 
-        if(this.props.user.grade==null){
+        if(response.data.grade===null){
           formData['grade']=1;
         }
 
@@ -199,14 +203,14 @@ class ProfileDetails extends Component {
       data.append('email', formData.email)
       data.append('grade', formData.grade)
 
-        axios.post('http://127.0.0.1:8000/api/student_dashboard/student_details/',
+        axios.put('http://127.0.0.1:8000/api/student-profile/',
         data,this.config)
         .then(response => {
-            if (response.status === 201) {
               oldData['firstName'] = formData.firstName
               oldData['lastName'] = formData.lastName
               oldData['grade'] = formData.grade
 
+              console.log(response.data)
 
               if(formData.email!==response.data.email){
 
@@ -224,9 +228,9 @@ class ProfileDetails extends Component {
               this.checkForTextFieldChange(oldData, formData)
 
               this.props.dispatchUser(formData.firstName, formData.lastName
-                , response.data.email, formData.grade, this.props.user.profilePicture)
+                ,  this.props.user.profilePicture)
 
-            }
+            
 
           }).catch((error) => {
             console.log(error)
@@ -262,9 +266,10 @@ class ProfileDetails extends Component {
           open={this.state.snackBarOpen}
           autoHideDuration={1500}
           onClose={this.onSnackBarClose}
+          dir='rtl'
         >
 
-          <Alert onClose={this.onSnackBarClose} severity="error" >
+          <Alert onClose={this.onSnackBarClose} severity="error" className={classes.alertStyle}>
             {this.state.errorMessage}
 
           </Alert>
