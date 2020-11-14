@@ -11,7 +11,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AddButtonAndPopUp from './PopUp/PopUp';
 import "./CourseLayout.scss";
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -72,9 +72,9 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-// const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 function CourseLayout(props) {
+    const history = useHistory();
     const [list, setList] = React.useState([
     ]);
     const [open, setOpen] = React.useState(false);
@@ -87,9 +87,9 @@ function CourseLayout(props) {
         setOpen(false);
     };
     const classes = useStyles();
+
     const handleCourse = (val) => {
         const newList = list.concat({val});
-
         setList(newList);
     };
 
@@ -169,7 +169,7 @@ function CourseLayout(props) {
                             </Typography>
                         </Grid>
                         <Grid item>
-                            <Button className="addButton" variant="outlined" color="primary">
+                            <Button className="addButton" variant="outlined" color="primary" onClick={()=>{history.push('/student_dashboard/find-your-course')}}>
                                 اضافه کردن کلاس جدید
                             </Button>
                         </Grid>

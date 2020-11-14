@@ -40,7 +40,7 @@ export const MainListItems = () => {
         <div className="mainList">
 
             <ListItem className="test">
-                <Avatar alt="messi" src={user.profilePicture} className="desktopProfilePic" />
+                <Avatar alt="عکس پروفایل" src={user.profilePicture} className="desktopProfilePic" />
             </ListItem>
 
             <ListItem>
@@ -142,7 +142,7 @@ export const MobileListItems = () => {
 
 
             <ListItem>
-                <Avatar alt="messi" src={user.profilePicture} />
+                <Avatar alt="عکس پروفایل" src={user.profilePicture} />
                 <p className="userName">
                     {user.firstName + ' ' + user.lastName}</p>
             </ListItem>

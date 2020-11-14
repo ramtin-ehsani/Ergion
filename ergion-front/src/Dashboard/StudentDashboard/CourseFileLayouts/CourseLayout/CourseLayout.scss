@@ -14,12 +14,22 @@
 
   .courseNamePlace {
     font-family: IRANSans !important;
-    margin: 12px;
+    //margin: 12px;
   }
 
-  .courseAboutPlace {
+  .courseCapacityPlace {
     font-family: IRANSans !important;
-    margin: 8px;
+    //margin: 8px;
+    font-size: 16px;
+    padding-top: 4px;
+  }
+
+  .courseOwnerPlace {
+    font-family: IRANSans !important;
+    font-size: 16px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
   }
 }
 .dialog > * {

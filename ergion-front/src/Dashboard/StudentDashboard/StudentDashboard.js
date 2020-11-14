@@ -10,6 +10,7 @@ import * as actionTypes from '../../store/actions'
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
+import AddCourse from "./CourseFileLayouts/addCourse/AddCourse";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     appBarSpacer: theme.mixins.toolbar,
     content: {
         flexGrow: 1,
-        height: '100vh',
+        height: '100%',
         overflow: 'auto',
     },
     paper: {
@@ -70,11 +71,6 @@ const Dashboard = () => {
 
 
     })
-
-
-
-
-
     return (
         <div className={"dashboard"}>
             <CssBaseline />
@@ -85,6 +81,7 @@ const Dashboard = () => {
                     <Route path='/student_dashboard' exact component={Template} />
                     <Route path='/student_dashboard/profile' exact component={StudentProfile} />
                     <Route path='/student_dashboard/added_courses' exact component={CourseFileLayouts} />
+                    <Route path="/student_dashboard/find-your-course" exact component={AddCourse}/>
                 </Switch>
 
             </main>

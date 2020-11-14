@@ -32,11 +32,10 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+      <Link color="inherit" href="#">
+        Ergion
       </Link>{' '}
       {new Date().getFullYear()}
-      {'.'}
     </Typography>
   );
 }
@@ -222,7 +221,7 @@ function Login(props) {
                 //         resultt.data.map((course) => {
                 //           const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, teacher: `${course.instructor_firstname} ${course.instructor_lastname}` }
                 //           props.onAddCourse(c);
-                              // return null
+                // return null
                 //         })
                 //         setLoading(false);
                 //         window.location = '/teacher_dashboard'
