@@ -220,16 +220,6 @@ class Profile extends Component {
 
       const data = new FormData()
       data.append('profile_picture', this.state.selectedFile)
-      data.append('firstname', this.props.user.firstName)
-      data.append('lastname', this.props.user.lastName)
-      data.append('email', this.props.user.email)
-      if (this.props.user.grade == null) {
-        data.append('grade', 1)
-
-      } else {
-        data.append('grade', this.props.user.grade)
-
-      }
 
 
       axios.post('http://127.0.0.1:8000/api/student_dashboard/student_details/',
@@ -237,7 +227,7 @@ class Profile extends Component {
         .then(response => {
           if (response.status === 201) {
             this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
-              , this.props.user.email, this.props.user.grade, this.state.avatarImage)
+              , this.state.avatarImage)
             this.setState({ loading: false, hasImage: false, allowedToUpload: true, progress: 0 })
 
           }
@@ -265,7 +255,7 @@ class Profile extends Component {
       this.config).then(response => {
         if (response.status === 200) {
           this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
-            , this.props.user.email, this.props.user.grade, '')
+            , '')
           this.setState({  hasImage: false, avatarImage: "", allowedToRemove: false })
           this.handleClose();
 

@@ -52,9 +52,7 @@ const Dashboard = () => {
                     const avatarImage = res.data.profile_picture
                     const firstName = res.data.firstname
                     const lastName = res.data.lastname
-                    const grade = res.data.grade
-                    const email = res.data.email
-                    usedispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
+                    usedispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
 
 
                 })
