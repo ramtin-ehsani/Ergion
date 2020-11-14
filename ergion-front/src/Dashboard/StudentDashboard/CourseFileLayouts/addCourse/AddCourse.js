@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(3),
         // paddingBottom: theme.spacing(3),
         // marginLeft: theme.spacing(18),
-        // marginRight: theme.spacing(8),
+        // marginRight: theme.spacing(30),
     },
     card: {
         height: '100%',
@@ -49,15 +49,16 @@ const useStyles = makeStyles((theme) => ({
     },
     cardMedia: {
         // paddingTop: '56.25%', // 16:9filteredList
-        height: 270,
-        width: '100%'
+        height: 180,
+        width: '100%',
+        objectFit: 'cover'
     },
     cardContent: {
         flexGrow: 1,
         padding: theme.spacing(1),
     },
     cardActions: {
-        height: 50,
+        // height: 50,
         padding: theme.spacing(0.5),
     },
     footer: {
@@ -69,11 +70,12 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 20,
     },
     snackBAr: {
-        paddingBottom: window.innerHeight - 150,    /*Change the position of Snackbar*/
+        // paddingBottom: window.innerHeight - 150,    /*Change the position of Snackbar*/
     },
     avatar: {
         backgroundColor: "red",
-    }
+    },
+
 }));
 
 const jss = create({plugins: [...jssPreset().plugins, rtl()]});
@@ -115,8 +117,7 @@ const AddCourse = () => {
 
 
     const config = {
-        // headers: {Authorization: `Token ${localStorage.getItem('api_key')}`},       /* End Version */
-        headers: {Authorization: `Token bd2cdfaff3ea600ec058aaaddb695dec42a2f6e2`},    /* Test Version */
+        headers: {Authorization: `Token ${localStorage.getItem('api_key')}`},    
     };
     const changeSearchBarHandler = (event) => {
         const API = "http://127.0.0.1:8000/api/all-courses/?substring=" + event.target.value;
@@ -163,8 +164,8 @@ const AddCourse = () => {
                 <ThemeProvider theme={theme}>
                     <CssBaseline/>
                     <main className="main">
-                        <Container className={classes.cardGrid} maxWidth="lg">
-                            <Grid dir="rtl" lg={10} item={true}>
+                        <Container className={classes.cardGrid} maxWidth="md">
+                            <Grid dir="rtl" lg={11} item={true} md={12}>
                                 <TextField
                                     className="textFieldSearchbar"
                                     variant="outlined"
@@ -182,7 +183,7 @@ const AddCourse = () => {
                                 />
                             </Grid>
                             <Box mt={6}/>
-                            <Grid dir="rtl" container lg={10} item={true}>
+                            <Grid dir="rtl" container spacing={2} lg={11} item={true} md={12}>
                                 {courses && courses.map((course) =>
                                     <Grid className="cardSpacing" item key={course.id} xs={12} sm={6} md={3}>
                                         <Card className="layout">
@@ -208,7 +209,7 @@ const AddCourse = () => {
                                             <CardContent className={classes.cardContent} spacing={3}>
                                                 <Typography gutterBottom variant="h5" component="h2"
                                                             className="courseNamePlace">
-                                                    {course.subject}
+                                                    {course.name}
                                                 </Typography>
                                                 {/*<Typography className="courseOwnerPlace" component="h4">*/}
                                                 {/*    مدرس: {course.owner_firstname + " " + course.owner_lastname}*/}

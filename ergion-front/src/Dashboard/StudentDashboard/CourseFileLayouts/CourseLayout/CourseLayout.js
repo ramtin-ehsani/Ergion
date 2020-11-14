@@ -7,7 +7,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AddButtonAndPopUp from './PopUp/PopUp';
 import "./CourseLayout.scss";
@@ -20,13 +20,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Divider from '@material-ui/core/Divider';
 import axios from 'axios';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import * as actionTypes from '../../../../store/actions';
 import { Box } from '@material-ui/core';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
-  });
+});
 const useStyles = makeStyles((theme) => ({
     icon: {
         marginRight: theme.spacing(2),
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(3),
         // paddingBottom: theme.spacing(3),
         // marginLeft: 10,
-        marginRight: theme.spacing(50),
+        // marginRight: theme.spacing(50),
     },
     card: {
         height: '100%',
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
         // paddingTop: '56.25%', // 16:9
         height: 180,
         width: '100%',
-        objectFit: 'fill'
+        objectFit: 'cover'
     },
     cardContent: {
         flexGrow: 1,
@@ -89,41 +89,41 @@ function CourseLayout(props) {
     const classes = useStyles();
 
     const handleCourse = (val) => {
-        const newList = list.concat({val});
+        const newList = list.concat({ val });
         setList(newList);
     };
 
-    React.useEffect(()=>{
-        setTimeout(()=>{
-            const promise1 = axios.get('http://127.0.0.1:8000/api/student-courses/',{
+    React.useEffect(() => {
+        setTimeout(() => {
+            const promise1 = axios.get('http://127.0.0.1:8000/api/student-courses/', {
                 headers: {
                     "Authorization": `Token ${localStorage.getItem('token')}`,
                 },
-              })
-              promise1.then(
-                result =>{
+            })
+            promise1.then(
+                result => {
                     console.log(result)
-                    result.data.map((course)=>{
-                      const c = {id:course.id, name:course.name, image:course.course_cover, link:course.course_url, teacher:`${course.instructor_firstname} ${course.instructor_lastname}` }
-                      console.log(c)
-                      let flag = true;
-                      props.courses.map(course=>{
-                          if (course.id === c.id){
-                              flag = false;
-                          }
-                      })
-                      if(flag){
-                          props.onAddCourse(c);
-                      }
+                    result.data.map((course) => {
+                        const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, teacher: `${course.instructor_firstname} ${course.instructor_lastname}` }
+                        console.log(c)
+                        let flag = true;
+                        props.courses.map(course => {
+                            if (course.id === c.id) {
+                                flag = false;
+                            }
+                        })
+                        if (flag) {
+                            props.onAddCourse(c);
+                        }
                     })
                 }
-              )
-        },500)
-    },[])
+            )
+        }, 500)
+    }, [])
 
     return (
         <React.Fragment>
-            <CssBaseline/>
+            <CssBaseline />
             <main>
                 {/* Hero unit */}
                 {/* <div className={classes.heroContent}>
@@ -138,46 +138,46 @@ function CourseLayout(props) {
                     </Container>
                 </div> */}
                 <Dialog
-                className="dialog"
-                open={open}
-                TransitionComponent={Transition}
-                keepMounted
-                onClose={handleClose}
+                    className="dialog"
+                    open={open}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={handleClose}
                 >
-                <DialogTitle className="dialog" id="alert-dialog-slide-title" dir='rtl'>{"آیا مطمئن هستید؟"}</DialogTitle>
-                <DialogContent className="dialog">
-                    <DialogContentText id="alert-dialog-slide-description" dir='rtl'>
-                    آیا درس مورد نطر را میخواهید حذف کنید؟
+                    <DialogTitle className="dialog" id="alert-dialog-slide-title" dir='rtl'>{"آیا مطمئن هستید؟"}</DialogTitle>
+                    <DialogContent className="dialog">
+                        <DialogContentText id="alert-dialog-slide-description" dir='rtl'>
+                            آیا درس مورد نطر را میخواهید حذف کنید؟
                     </DialogContentText>
-                </DialogContent>
-                <DialogActions dir='rtl' className="dialog">
-                    <Button onClick={handleClose} color="secondary">
-                    بله
+                    </DialogContent>
+                    <DialogActions dir='rtl' className="dialog">
+                        <Button onClick={handleClose} color="secondary">
+                            بله
                     </Button>
-                    <Button onClick={handleClose} color="primary">
-                    نه
+                        <Button onClick={handleClose} color="primary">
+                            نه
                     </Button>
-                </DialogActions>
+                    </DialogActions>
                 </Dialog>
-                <Container className={classes.cardGrid} maxWidth="md">
-                    <Grid container dir="rtl" className={classes.gridTitle} spacing={3} justify="flex-start" alignItems="baseline">
-                        <Grid item>
+                <Container className={classes.cardGrid} maxWidth="md" >
+                    <Grid container dir="rtl" lg={11} item={true} className={classes.gridTitle} spacing={3} justify="flex-start" alignItems="baseline">
+                        <Grid item >
                             <Typography className='typo' component="div">
-                            <Box fontSize={20} fontWeight="fontWeightBold" m={1}>
-                                کلاس های من
+                                <Box fontSize={20} fontWeight="fontWeightBold" m={1}>
+                                    کلاس های من
                             </Box>
                             </Typography>
                         </Grid>
-                        <Grid item>
-                            <Button className="addButton" variant="outlined" color="primary" onClick={()=>{history.push('/student_dashboard/find-your-course')}}>
+                        <Grid item >
+                            <Button className="addButton" variant="outlined" color="primary" onClick={() => { history.push('/student_dashboard/find-your-course') }}>
                                 اضافه کردن کلاس جدید
                             </Button>
                         </Grid>
                     </Grid>
                     {/* End hero unit */}
-                    <Grid container spacing={4} dir="rtl" >
+                    <Grid container spacing={2} dir="rtl" lg={11} item={true} >
                         {props.courses.map((list) => (
-                            <Grid item key={list.id} xs={12} sm={6} md={3}>
+                            <Grid item key={list.id} xs={12} sm={6} md={3} >
                                 <Card className="layout">
                                     <CardMedia
                                         className={classes.cardMedia}
@@ -193,24 +193,27 @@ function CourseLayout(props) {
                                             {list.teacher}
                                         </Typography>
                                     </CardContent>
-                                    <Divider/>
+                                    <Divider />
+                                    <Divider />
+                                    <Divider />
+                                    <Divider />
                                     <CardActions className={classes.cardActions}>
                                         <Grid
-                                        container
-                                        direction="row"
-                                        justify="space-evenly"
-                                        alignItems="center">
-                                        <Button size="small" color="primary" onClick={handleClickOpen}>
-                                            <p className="toSee">حذف</p>
-                                        </Button>
-                                        <Link to={list.link} style={{textDecoration: 'none'}}>
-                                        <Button size="small" color="primary">
-                                            <p className="toSee">مشاهده</p>
-                                        </Button>
-                                        </Link>
+                                            container
+                                            direction="row"
+                                            justify="space-evenly"
+                                            alignItems="center">
+                                            <Button size="small" color="primary" onClick={handleClickOpen}>
+                                                <p className="toSee">حذف</p>
+                                            </Button>
+                                            <Link to={list.link} style={{ textDecoration: 'none' }}>
+                                                <Button size="small" color="primary">
+                                                    <p className="toSee">مشاهده</p>
+                                                </Button>
+                                            </Link>
                                         </Grid>
                                     </CardActions>
-                                </Card>                                    
+                                </Card>
                             </Grid>
                         ))}
                     </Grid>
@@ -220,15 +223,15 @@ function CourseLayout(props) {
     );
 }
 
-const mapStateToProps = state =>{
-    return{
+const mapStateToProps = state => {
+    return {
         courses: state.addedCourses
     };
 };
-const mapDispatchToProps = dispatch =>{
-    return{
-        onAddCourse: (course)=> dispatch({type: actionTypes.ADD_COURSE, payload:course })
-    
+const mapDispatchToProps = dispatch => {
+    return {
+        onAddCourse: (course) => dispatch({ type: actionTypes.ADD_COURSE, payload: course })
+
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CourseLayout);
