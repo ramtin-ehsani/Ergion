@@ -154,14 +154,14 @@ function Login(props) {
 
     } else {
       setLoading(true);
-      axios.post('http://127.0.0.1:8000/api/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
+      axios.post('http://127.0.0.1:8000/api/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
         if (response.status === 200) {
 
           const config = {
             headers: { Authorization: `Token ${response.data.key}` }
           }
 
-          const promise = axios.get('http://127.0.0.1:8000/api/users/rest-auth/user/', config
+          const promise = axios.get('http://127.0.0.1:8000/api/rest-auth/user/', config
           )
           promise.then(
             result => {
