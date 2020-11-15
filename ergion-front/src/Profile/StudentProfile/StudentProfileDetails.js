@@ -114,14 +114,14 @@ class ProfileDetails extends Component {
       firstName: '',
       lastName: '',
       email: '',
-      grade: '1'
+      grade: ''
 
     },
     formData: {
       firstName: '',
       lastName: '',
       email: '',
-      grade: '1'
+      grade: ''
     },
     textFieldChanged: false,
     loading:false,
@@ -142,7 +142,7 @@ class ProfileDetails extends Component {
           firstName: response.data.firstname,
           lastName: response.data.lastname,
           email: response.data.email,
-          grade: response.data.grade
+          grade: String(response.data.grade)
 
         }
 

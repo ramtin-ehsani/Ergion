@@ -99,17 +99,17 @@ const styles = (theme) => ({
     margin: theme.spacing(0, 1, 0),
     color: 'orange',
   },
-  alertStyle:{
-    display:'flex',
-    font:'20'
+  alertStyle: {
+    display: 'flex',
+    font: '20'
   }
 
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchUser: (firstName, lastName, email, grade, profilePicture) =>
-      dispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: profilePicture })
+    dispatchUser: (firstName, lastName, profilePicture) =>
+      dispatch({ type: actionTypes.LOGIN,  firstName: firstName, lastName: lastName, profilePicture: profilePicture })
 
   };
 };
@@ -144,7 +144,6 @@ class Profile extends Component {
     progress: 0,
     errorMessage: '',
 
-
   }
 
 
@@ -159,13 +158,13 @@ class Profile extends Component {
 
 
   getValues = () => {
-    axios.get('http://127.0.0.1:8000/api/users/teacher/profile', this.config)
+    axios.get('http://127.0.0.1:8000/api/teacher-profile/', this.config)
       .then((response) => {
         // handle success
         const avatarImage = response.data.profile_picture
 
         if (avatarImage !== null) {
-          this.setState({  allowedToRemove: true });
+          this.setState({ allowedToRemove: true });
         }
 
 
@@ -187,7 +186,7 @@ class Profile extends Component {
 
 
   componentDidMount() {
-    // this.getValues()
+    this.getValues()
 
   }
 
@@ -222,15 +221,13 @@ class Profile extends Component {
       data.append('profile_picture', this.state.selectedFile)
 
 
-      axios.post('http://127.0.0.1:8000/api/student_dashboard/student_details/',
+      axios.put('http://127.0.0.1:8000/api/teacher-profile/',
         data, this.uploadConfig)
-        .then(response => {
-          if (response.status === 201) {
-            this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
-              , this.state.avatarImage)
-            this.setState({ loading: false, hasImage: false, allowedToUpload: true, progress: 0 })
+        .then(() => {
+          this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
+            , this.state.avatarImage)
+          this.setState({ loading: false, hasImage: false, allowedToUpload: true, progress: 0 })
 
-          }
 
         }).catch((error) => {
           if (error.isAxiosError) {
@@ -251,12 +248,16 @@ class Profile extends Component {
 
   deletePicture = () => {
 
-    axios.delete('http://127.0.0.1:8000/api/student_dashboard/student_details/?field=profile_picture',
+    // const data = new FormData()
+    // data.append('profile_picture', null)
+
+    const data={profile_picture:null}
+    axios.put('http://127.0.0.1:8000/api/teacher-profile/', data,
       this.config).then(response => {
         if (response.status === 200) {
           this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
             , '')
-          this.setState({  hasImage: false, avatarImage: "", allowedToRemove: false })
+          this.setState({ hasImage: false, avatarImage: "", allowedToRemove: false })
           this.handleClose();
 
         }
@@ -273,7 +274,7 @@ class Profile extends Component {
 
   }
 
-  onSnackBarClose = (event, reason) => {
+  onSnackBarClose = ( reason) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -341,7 +342,7 @@ class Profile extends Component {
                 onClose={this.handleClose}
               >
                 <label htmlFor='contained-button-file'>
-                  <StyledMenuItem onClick={this.handleClose}>
+                  <StyledMenuItem onClick={this.handleClose} >
                     <ListItemIcon>
                       <AddPhotoAlternateIcon />
                     </ListItemIcon>
@@ -362,7 +363,7 @@ class Profile extends Component {
               gutterBottom
               variant="h3"
               className={classes.typographyStyle}
-              style={{minHeight:'2rem'}}
+              style={{ minHeight: '2rem' }}
             >
               {this.props.user.firstName + ' ' + this.props.user.lastName}
             </Typography>

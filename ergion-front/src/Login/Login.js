@@ -154,14 +154,14 @@ function Login(props) {
 
     } else {
       setLoading(true);
-      axios.post('http://127.0.0.1:8000/api/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
+      axios.post('http://127.0.0.1:8000/api/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
         if (response.status === 200) {
 
           const config = {
             headers: { Authorization: `Token ${response.data.key}` }
           }
 
-          const promise = axios.get('http://127.0.0.1:8000/api/users/rest-auth/user/', config
+          const promise = axios.get('http://127.0.0.1:8000/api/rest-auth/user/', config
           )
           promise.then(
             result => {
@@ -200,39 +200,40 @@ function Login(props) {
                   })
 
               } else {
-                setLoading(false);
-                window.location = '/teacher_dashboard'
 
-                // axios.get('http://127.0.0.1:8000/api/users/teacher/profile', config)
-                //   .then((res) => {
-                //     // handle success
-                //     const avatarImage = res.data.profile_picture
-                //     const firstName = res.data.firstname
-                //     const lastName = res.data.lastname
-                //     usedispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
+                axios.get('http://127.0.0.1:8000/api/teacher-profile/', config)
+                  .then((res) => {
+                    // handle success
+                    console.log(res.data)
+                    const avatarImage = res.data.avatar
+                    const firstName = res.data.firstname
+                    const lastName = res.data.lastname
+                    usedispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
 
-                //     localStorage.setItem('api_key', response.data.key)
-                //     setUserSession(response.data.key, response.data.user);
-                //     const promise1 = axios.get('http://127.0.0.1:8000/api/users/teacher/course',
-                //       config)
-                //     promise1.then(
-                //       resultt => {
-                //         console.log(resultt)
-                //         resultt.data.map((course) => {
-                //           const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, teacher: `${course.instructor_firstname} ${course.instructor_lastname}` }
-                //           props.onAddCourse(c);
-                // return null
-                //         })
-                //         setLoading(false);
-                //         window.location = '/teacher_dashboard'
-                //       }
-                //     )
+                    localStorage.setItem('api_key', response.data.key)
+                    setUserSession(response.data.key, response.data.user);
+                    setLoading(false);
+                    window.location = '/teacher_dashboard'
+                    const promise1 = axios.get('http://127.0.0.1:8000/api/teacher-courses/',
+                      config)
+                    promise1.then(
+                      resultt => {
+                        console.log(resultt)
+                        resultt.data.map((course) => {
+                          const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, capacity: course.capacity }
+                          props.onAddCourse(c);
+                          return null
+                        })
+                        setLoading(false);
+                        window.location = '/teacher_dashboard'
+                      }
+                    )
 
-                //   })
-                //   .catch((error) => {
-                //     // handle error
-                //     console.log(error);
-                //   })
+                  })
+                  .catch((error) => {
+                    // handle error
+                    console.log(error);
+                  })
 
 
               }
