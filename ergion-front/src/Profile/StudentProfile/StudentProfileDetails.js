@@ -284,34 +284,16 @@ class ProfileDetails extends Component {
             <Grid
               container
               spacing={4}
+              dir="rtl"
             >
 
-              <Grid
+<Grid
                 item
                 md={6}
                 xs={12}
               >
                 <TextValidator
                   fullWidth
-                  dir='rtl'
-                  label="نام خانوادگی"
-                  name="lastName"
-                  onChange={this.handleChange}
-                  required
-                  value={this.state.formData.lastName}
-                  variant="outlined"
-                  validators={['required', 'matchRegexp:^[^0-9]+$']}
-                  errorMessages={['this field is required', 'فرمت اشتباه است']}
-                />
-              </Grid>
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <TextValidator
-                  fullWidth
-                  dir='rtl'
                   label="نام"
                   name="firstName"
                   onChange={this.handleChange}
@@ -327,6 +309,25 @@ class ProfileDetails extends Component {
                 item
                 md={6}
                 xs={12}
+              >
+                <TextValidator
+                  fullWidth
+                  label="نام خانوادگی"
+                  name="lastName"
+                  onChange={this.handleChange}
+                  required
+                  value={this.state.formData.lastName}
+                  variant="outlined"
+                  validators={['required', 'matchRegexp:^[^0-9]+$']}
+                  errorMessages={['this field is required', 'فرمت اشتباه است']}
+                />
+              </Grid>
+              
+
+              <Grid
+                item
+                md={6}
+                xs={12}
 
 
               >
@@ -334,7 +335,6 @@ class ProfileDetails extends Component {
                   fullWidth
                   label="مقطع تحصیلی"
                   name="grade"
-                  dir='rtl'
                   onChange={this.handleChange}
                   required
                   select
@@ -362,6 +362,7 @@ class ProfileDetails extends Component {
                   fullWidth
                   label="ایمیل"
                   name="email"
+                  dir='lrt'
                   onChange={this.handleChange}
                   required
                   value={this.state.formData.email}

@@ -244,7 +244,7 @@ class ProfileDetails extends Component {
 
               if(formData.email!==response.data.email){
 
-                this.setState({ snackBarOpen: true, errorMessage: "The email is in use by another user" })
+                this.setState({ snackBarOpen: true, errorMessage: "این ایمیل از قبل وجود دارد" })
 
               }else{
                 oldData['email'] = formData.email
@@ -315,8 +315,8 @@ class ProfileDetails extends Component {
             <Grid
               container
               spacing={4}
+              dir='rtl'
             >
-
               <Grid
                 item
                 md={6}
@@ -324,25 +324,6 @@ class ProfileDetails extends Component {
               >
                 <TextValidator
                   fullWidth
-                  dir='rtl'
-                  label="نام خانوادگی"
-                  name="lastName"
-                  onChange={this.handleChange}
-                  required
-                  value={this.state.formData.lastName}
-                  variant="outlined"
-                  validators={['required', 'matchRegexp:^[^0-9]+$']}
-                  errorMessages={['this field is required', 'فرمت اشتباه است']}
-                />
-              </Grid>
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <TextValidator
-                  fullWidth
-                  dir='rtl'
                   label="نام"
                   name="firstName"
                   onChange={this.handleChange}
@@ -358,6 +339,25 @@ class ProfileDetails extends Component {
                 item
                 md={6}
                 xs={12}
+              >
+                <TextValidator
+                  fullWidth
+                  label="نام خانوادگی"
+                  name="lastName"
+                  onChange={this.handleChange}
+                  required
+                  value={this.state.formData.lastName}
+                  variant="outlined"
+                  validators={['required', 'matchRegexp:^[^0-9]+$']}
+                  errorMessages={['this field is required', 'فرمت اشتباه است']}
+                />
+              </Grid>
+              
+
+              <Grid
+                item
+                md={6}
+                xs={12}
 
 
               >
@@ -365,7 +365,6 @@ class ProfileDetails extends Component {
                   fullWidth
                   label="شغل"
                   name="occupation"
-                  dir='rtl'
                   onChange={this.handleChange}
                   required
                   select
@@ -395,6 +394,7 @@ class ProfileDetails extends Component {
                   fullWidth
                   label="ایمیل"
                   name="email"
+                  dir="ltr"
                   onChange={this.handleChange}
                   required
                   value={this.state.formData.email}
@@ -415,6 +415,7 @@ class ProfileDetails extends Component {
                 <TextValidator
                   fullWidth
                   label="ایمیل دانشگاهی"
+                  dir="ltr"
                   name="universityEmail"
                   onChange={this.handleChange}
                   value={this.state.formData.universityEmail}
@@ -438,7 +439,6 @@ class ProfileDetails extends Component {
                   InputProps={{ inputProps: { min: 0, max: 70 } }}
                   label="سوابق کاری"
                   name="resume"
-                  dir='rtl'
                   contentEditable={false}
                   type='number'
                   onChange={this.handleChange}
@@ -461,7 +461,6 @@ class ProfileDetails extends Component {
                   fullWidth
                   label="نام موسسه یا دانشگاه"
                   name="institute"
-                  dir='rtl'
                   onChange={this.handleChange}
                   value={this.state.formData.institute}
                   variant="outlined"
@@ -479,7 +478,6 @@ class ProfileDetails extends Component {
 
                 <TextValidator
                   fullWidth
-                  dir='rtl'
                   label="درباره من"
                   name="aboutMe"
                   onChange={this.handleChange}

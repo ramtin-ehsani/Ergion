@@ -154,18 +154,6 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const useFormInput = initialValue => {
-    const [value, setValue] = React.useState(initialValue);
-
-    const handleChange = e => {
-        setValue(e.target.value);
-    }
-    return {
-        value,
-        onChange: handleChange
-    }
-}
-
 function CourseLayout(props) {
 
     // Add Course Dialog
@@ -175,11 +163,11 @@ function CourseLayout(props) {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [selectedFile, setSelectedFile] = React.useState(null);
     const [coverImage, setCoverImage] = React.useState("");
-    const newCourseName = useFormInput('');
-    const newCourseSubject = useFormInput('');
-    const newCourseGrade = useFormInput('1');
-    const newCourseCapacity = useFormInput(10);
-    const newCourseDescription = useFormInput('');
+    const newCourseName = React.useRef("");
+    const newCourseSubject = React.useRef("");
+    const newCourseGrade = React.useRef("1");
+    const newCourseCapacity = React.useRef(10);
+    const newCourseDescription = React.useRef("");
     const [id, setID] = React.useState(1)
 
     const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
@@ -187,11 +175,19 @@ function CourseLayout(props) {
     const onFileChange = event => {
 
         if (event.target.files && event.target.files[0]) {
+            localStorage.setItem("course_name",newCourseName.current.value)
+            localStorage.setItem("course_subject",newCourseSubject.current.value)
+            localStorage.setItem("course_grade",newCourseGrade.current.value)
+            localStorage.setItem("course_capacity",newCourseCapacity.current.value)
+            localStorage.setItem("course_description",newCourseDescription.current.value)
+
             setSelectedFile(event.target.files[0])
             setCoverImage(URL.createObjectURL(event.target.files[0]))
         }
 
     };
+
+
 
     function copyLink(id) {
         navigator.clipboard.writeText('http://localhost:3000/course/' + id)
@@ -255,22 +251,42 @@ function CourseLayout(props) {
     ];
 
     const addCourseButton = () => {
-        alert('hi')
+        const data=new FormData()
+        data.append('name',newCourseName.current.value)
+        data.append('subject',newCourseSubject.current.value)
+        data.append('grade',newCourseGrade.current.value)
+        data.append('capacity',newCourseCapacity.current.value)
+        data.append('about_course',newCourseDescription.current.value)
+        if(selectedFile!==null){
+            data.append('course_cover',selectedFile)
+        }else{
+            data.append('course_cover',"")
+        }
+        data.append('course_url',("http://localhost:3000/course/" + id))
+        axios.post('http://127.0.0.1:8000/api/teacher-courses/',data,{headers: {
+            "Authorization": `Token ${localStorage.getItem('api_key')}`,
+        },}).then((response)=>{
+            console.log(response)
+            setDialogOpen(false)
+            getValues()
+
+        }).catch((error)=>{
+            console.log(error)
+        })
 
     }
 
     const newCourseButton = () => {
         setSelectedFile(null)
         setCoverImage("")
+        localStorage.setItem("course_name","")
+        localStorage.setItem("course_subject","")
+        localStorage.setItem("course_grade","1")
+        localStorage.setItem("course_capacity",10)
+        localStorage.setItem("course_description","")
         setDialogOpen(true)
 
     }
-    // const handleChange = (event) => {
-    //     formData[event.target.name] = event.target.value
-    //     this.setState({
-    //       formData: formData
-    //     })
-    //   };
     const NewCourseDialog = (props) => {
         const { open, setOpen } = props;
         return (
@@ -282,9 +298,9 @@ function CourseLayout(props) {
                         open={open}
                         onClose={() => setOpen(false)}
                         aria-labelledby="error-dialog"
-                        // TransitionComponent={Transition}
                         className={classes.newCourseRoot}
                     >
+                        <ValidatorForm form="form" onSubmit={addCourseButton} >
 
                         <DialogTitle id="error-dialog" dir='rtl' className={classes.newCourseTitle}>
                             ایجاد یک کلاس جدید
@@ -296,7 +312,7 @@ function CourseLayout(props) {
 
                         <DialogContent>
 
-                            <ValidatorForm form="form" onSubmit={addCourseButton} >
+                            
 
                                 <div className={classes.newCourseAddImageContainer}>
                                     <Typography className={classes.typoStyle}>
@@ -331,42 +347,41 @@ function CourseLayout(props) {
                                     <Grid
                                         container
                                         spacing={3}
+                                        dir='rtl'
                                     >
 
-                                        <Grid
+
+<Grid
                                             item
                                             md={6}
                                             xs={12}
                                         >
                                             <TextValidator
                                                 fullWidth
-                                                dir='rtl'
-                                                label="موضوع"
-                                                name="subject"
-                                                {...newCourseSubject}
-                                                required
-                                                variant="outlined"
-                                                validators={['required']}
-                                                errorMessages={['this field is required']}
-                                            />
-                                        </Grid>
-                                        <Grid
-                                            item
-                                            md={6}
-                                            xs={12}
-                                        >
-                                            <TextValidator
-                                                fullWidth
-                                                dir='rtl'
                                                 label="نام"
                                                 name="name"
-                                                {...newCourseName}
+                                                inputRef={newCourseName}
+                                                defaultValue={localStorage.getItem("course_name")}
                                                 required
                                                 variant="outlined"
-                                                validators={['required']}
-                                                errorMessages={['this field is required']}
                                             />
                                         </Grid>
+                                        <Grid
+                                            item
+                                            md={6}
+                                            xs={12}
+                                        >
+                                            <TextValidator
+                                                fullWidth
+                                                label="موضوع"
+                                                name="subject"
+                                                inputRef={newCourseSubject}
+                                                required
+                                                defaultValue={localStorage.getItem("course_subject")}
+                                                variant="outlined"
+                                            />
+                                        </Grid>
+                                        
 
                                         <Grid
                                             item
@@ -379,9 +394,9 @@ function CourseLayout(props) {
                                                 fullWidth
                                                 label="مقطع"
                                                 name="grade"
-                                                dir='rtl'
                                                 required
-                                                {...newCourseGrade}
+                                                inputRef={newCourseGrade}
+                                                defaultValue={localStorage.getItem("course_grade")}
                                                 select
                                                 SelectProps={{ native: true }}
                                                 variant="outlined"
@@ -404,19 +419,16 @@ function CourseLayout(props) {
                                             xs={12}
                                         >
 
-                                            <TextValidator
+                                            <TextField
                                                 fullWidth
-                                                InputProps={{ inputProps: { min: 0, max: 70 } }}
+                                                InputProps={{ inputProps: { min: 1 } }}
                                                 label="ظرفیت"
                                                 name="capacity"
-                                                {...newCourseCapacity}
-                                                dir='rtl'
-                                                required
+                                                inputRef={newCourseCapacity}
+                                                defaultValue={localStorage.getItem("course_capacity")}
                                                 contentEditable={false}
                                                 type='number'
                                                 variant="outlined"
-                                                validators={['required', 'matchRegexp:^(?:[0-9]|[1-6][0-9]|70)$']}
-                                                errorMessages={['this field is required', 'فقط اعداد بین 0 تا 70 مجاز است']}
 
                                             />
 
@@ -427,7 +439,7 @@ function CourseLayout(props) {
                                             xs={12}
 
                                         >
-                                            <FormControl variant="outlined" fullWidth >
+                                            <FormControl variant="outlined" fullWidth dir='ltr'>
                                                 <InputLabel htmlFor="outlined-copy">لینک</InputLabel>
                                                 <OutlinedInput
                                                     id='outlined-copy'
@@ -459,12 +471,13 @@ function CourseLayout(props) {
                                             xs={12}
 
                                         >
-                                            <TextValidator
+                                            <TextField
                                                 fullWidth
                                                 dir='rtl'
                                                 label="توضیحات"
                                                 name="description"
-                                                {...newCourseDescription}
+                                                inputRef={newCourseDescription}
+                                                defaultValue={localStorage.getItem("course_description")}
                                                 variant="outlined"
                                                 multiline={true}
                                                 rows={5}
@@ -476,8 +489,6 @@ function CourseLayout(props) {
                                 </CardContent>
 
 
-
-                            </ValidatorForm>
                         </DialogContent>
 
                         <Divider />
@@ -498,12 +509,14 @@ function CourseLayout(props) {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                type='submit'
+                                // onClick={addCourseButton}
+                                type="submit"
                                 className={classes.newCourseButtonWidth}
                             >
                                 ایجاد
                                 </Button>
                         </DialogActions>
+                        </ValidatorForm>
 
 
 
@@ -554,9 +567,9 @@ function CourseLayout(props) {
         setList(newList);
     };
 
-    React.useEffect(() => {
-        setTimeout(() => {
-            const promise1 = axios.get('http://127.0.0.1:8000/api/teacher-courses/', {
+    const getValues=()=>{
+        setList([])
+        const promise1 = axios.get('http://127.0.0.1:8000/api/teacher-courses/', {
                 headers: {
                     "Authorization": `Token ${localStorage.getItem('token')}`,
                 },
@@ -565,9 +578,8 @@ function CourseLayout(props) {
                 result => {
                     console.log(result)
                     result.data.map((course) => {
-                        numberOfId=course.id+1
+                        numberOfId = course.id + 1
                         const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, capacity: course.capacity }
-                        console.log(c)
                         let flag = true;
                         props.courses.map(course => {
                             if (course.id === c.id) {
@@ -581,6 +593,13 @@ function CourseLayout(props) {
                     setID(numberOfId)
                 }
             )
+
+    }
+
+    React.useEffect(() => {
+        setTimeout(() => {
+            getValues();
+            
         }, 500)
     }, [])
 
