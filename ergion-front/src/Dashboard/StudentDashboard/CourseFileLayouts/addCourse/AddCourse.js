@@ -165,7 +165,7 @@ const AddCourse = () => {
                     <CssBaseline/>
                     <main className="main">
                         <Container className={classes.cardGrid} maxWidth="md">
-                            <Grid dir="rtl" lg={11} item={true} md={12}>
+                            <Grid dir="rtl" lg={10} item={true} md={12}>
                                 <TextField
                                     className="textFieldSearchbar"
                                     variant="outlined"
@@ -183,9 +183,9 @@ const AddCourse = () => {
                                 />
                             </Grid>
                             <Box mt={6}/>
-                            <Grid dir="rtl" container spacing={2} lg={11} item={true} md={12}>
+                            <Grid dir="rtl" container spacing={2} lg={10} item={true} md={12}>
                                 {courses && courses.map((course) =>
-                                    <Grid className="cardSpacing" item key={course.id} xs={12} sm={6} md={3}>
+                                    <Grid className="cardSpacing" item key={course.id} xs={12} sm={6} md={4}>
                                         <Card className="layout">
                                             <CardHeader
                                                 title={
@@ -204,7 +204,7 @@ const AddCourse = () => {
                                                 className={classes.cardMedia}
                                                 component='img'
                                                 image={course.course_cover}
-                                                title={course.name}
+                                                title={course.sunject}
                                             />
                                             <CardContent className={classes.cardContent} spacing={3}>
                                                 <Typography gutterBottom variant="h5" component="h2"

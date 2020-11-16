@@ -160,7 +160,7 @@ function CourseLayout(props) {
                     </DialogActions>
                 </Dialog>
                 <Container className={classes.cardGrid} maxWidth="md" >
-                    <Grid container dir="rtl" lg={11} item={true} className={classes.gridTitle} spacing={3} justify="flex-start" alignItems="baseline">
+                    <Grid container dir="rtl" lg={10} item={true} className={classes.gridTitle} spacing={3} justify="flex-start" alignItems="baseline">
                         <Grid item >
                             <Typography className='typo' component="div">
                                 <Box fontSize={20} fontWeight="fontWeightBold" m={1}>
@@ -175,9 +175,9 @@ function CourseLayout(props) {
                         </Grid>
                     </Grid>
                     {/* End hero unit */}
-                    <Grid container spacing={2} dir="rtl" lg={11} item={true} >
+                    <Grid container spacing={2} dir="rtl" lg={10} item={true} >
                         {props.courses.map((list) => (
-                            <Grid item key={list.id} xs={12} sm={6} md={3} >
+                            <Grid item key={list.id} xs={12} sm={6} md={4} >
                                 <Card className="layout">
                                     <CardMedia
                                         className={classes.cardMedia}
