@@ -26,14 +26,8 @@ import { Box } from '@material-ui/core';
 
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputLabel from '@material-ui/core/InputLabel';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import IconButton from '@material-ui/core/IconButton';
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
-import InputAdornment from '@material-ui/core/InputAdornment';
 import purple from '@material-ui/core/colors/purple';
 import Fab from "@material-ui/core/Fab";
 import rtl from 'jss-rtl';
@@ -100,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
 
     },
     newCourseCardMedia: {
-        height: 200,
+        height: 160,
         width: '100%',
         objectFit: 'cover',
         paddingLeft: 17,
@@ -108,8 +102,8 @@ const useStyles = makeStyles((theme) => ({
     },
     newCourseAddImageContainer: {
         position: 'relative',
-        marginBottom: 10,
-        marginTop: 10,
+        marginBottom: 4,
+        marginTop: 4,
 
     },
     newCourseTitle: {
@@ -139,14 +133,14 @@ const useStyles = makeStyles((theme) => ({
         // justifyContent:'space-between',
         paddingLeft: 30,
         paddingRight: 30,
-        paddingBottom: 10,
-        paddingTop: 10,
+        paddingBottom: 8,
+        paddingTop: 8,
     },
     typoStyle: {
         textAlign: 'center',
         fontSize: '1rem',
         fontWeight: 300,
-        margin: 10,
+        margin: 8,
     },
 
 
@@ -159,7 +153,6 @@ function CourseLayout(props) {
     // Add Course Dialog
 
 
-    var numberOfId = 1;
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [selectedFile, setSelectedFile] = React.useState(null);
     const [coverImage, setCoverImage] = React.useState("");
@@ -168,18 +161,17 @@ function CourseLayout(props) {
     const newCourseGrade = React.useRef("1");
     const newCourseCapacity = React.useRef(10);
     const newCourseDescription = React.useRef("");
-    const [id, setID] = React.useState(1)
 
     const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
     const onFileChange = event => {
 
         if (event.target.files && event.target.files[0]) {
-            localStorage.setItem("course_name",newCourseName.current.value)
-            localStorage.setItem("course_subject",newCourseSubject.current.value)
-            localStorage.setItem("course_grade",newCourseGrade.current.value)
-            localStorage.setItem("course_capacity",newCourseCapacity.current.value)
-            localStorage.setItem("course_description",newCourseDescription.current.value)
+            localStorage.setItem("course_name", newCourseName.current.value)
+            localStorage.setItem("course_subject", newCourseSubject.current.value)
+            localStorage.setItem("course_grade", newCourseGrade.current.value)
+            localStorage.setItem("course_capacity", newCourseCapacity.current.value)
+            localStorage.setItem("course_description", newCourseDescription.current.value)
 
             setSelectedFile(event.target.files[0])
             setCoverImage(URL.createObjectURL(event.target.files[0]))
@@ -188,10 +180,6 @@ function CourseLayout(props) {
     };
 
 
-
-    function copyLink(id) {
-        navigator.clipboard.writeText('http://localhost:3000/course/' + id)
-    }
 
     const theme = createMuiTheme({
         typography: {
@@ -251,26 +239,27 @@ function CourseLayout(props) {
     ];
 
     const addCourseButton = () => {
-        const data=new FormData()
-        data.append('name',newCourseName.current.value)
-        data.append('subject',newCourseSubject.current.value)
-        data.append('grade',newCourseGrade.current.value)
-        data.append('capacity',newCourseCapacity.current.value)
-        data.append('about_course',newCourseDescription.current.value)
-        if(selectedFile!==null){
-            data.append('course_cover',selectedFile)
-        }else{
-            data.append('course_cover',"")
+        const data = new FormData()
+        data.append('name', newCourseName.current.value)
+        data.append('subject', newCourseSubject.current.value)
+        data.append('grade', newCourseGrade.current.value)
+        data.append('capacity', newCourseCapacity.current.value)
+        data.append('about_course', newCourseDescription.current.value)
+        if (selectedFile !== null) {
+            data.append('course_cover', selectedFile)
+        } else {
+            data.append('course_cover', "")
         }
-        data.append('course_url',("http://localhost:3000/course/" + id))
-        axios.post('http://127.0.0.1:8000/api/teacher-courses/',data,{headers: {
-            "Authorization": `Token ${localStorage.getItem('api_key')}`,
-        },}).then((response)=>{
+        axios.post('http://127.0.0.1:8000/api/teacher-courses/', data, {
+            headers: {
+                "Authorization": `Token ${localStorage.getItem('api_key')}`,
+            },
+        }).then((response) => {
             console.log(response)
             setDialogOpen(false)
             getValues()
 
-        }).catch((error)=>{
+        }).catch((error) => {
             console.log(error)
         })
 
@@ -279,11 +268,11 @@ function CourseLayout(props) {
     const newCourseButton = () => {
         setSelectedFile(null)
         setCoverImage("")
-        localStorage.setItem("course_name","")
-        localStorage.setItem("course_subject","")
-        localStorage.setItem("course_grade","1")
-        localStorage.setItem("course_capacity",10)
-        localStorage.setItem("course_description","")
+        localStorage.setItem("course_name", "")
+        localStorage.setItem("course_subject", "")
+        localStorage.setItem("course_grade", "1")
+        localStorage.setItem("course_capacity", 10)
+        localStorage.setItem("course_description", "")
         setDialogOpen(true)
 
     }
@@ -302,17 +291,17 @@ function CourseLayout(props) {
                     >
                         <ValidatorForm form="form" onSubmit={addCourseButton} >
 
-                        <DialogTitle id="error-dialog" dir='rtl' className={classes.newCourseTitle}>
-                            ایجاد یک کلاس جدید
+                            <DialogTitle id="error-dialog" dir='rtl' className={classes.newCourseTitle}>
+                                ایجاد یک کلاس جدید
                         </DialogTitle>
 
-                        <Divider />
-                        <Divider />
+                            <Divider />
+                            <Divider />
 
 
-                        <DialogContent>
+                            <DialogContent>
 
-                            
+
 
                                 <div className={classes.newCourseAddImageContainer}>
                                     <Typography className={classes.typoStyle}>
@@ -346,12 +335,12 @@ function CourseLayout(props) {
                                 <CardContent>
                                     <Grid
                                         container
-                                        spacing={3}
+                                        spacing={2}
                                         dir='rtl'
                                     >
 
 
-<Grid
+                                        <Grid
                                             item
                                             md={6}
                                             xs={12}
@@ -381,7 +370,7 @@ function CourseLayout(props) {
                                                 variant="outlined"
                                             />
                                         </Grid>
-                                        
+
 
                                         <Grid
                                             item
@@ -433,37 +422,7 @@ function CourseLayout(props) {
                                             />
 
                                         </Grid>
-                                        <Grid
-                                            item
-                                            md={12}
-                                            xs={12}
 
-                                        >
-                                            <FormControl variant="outlined" fullWidth dir='ltr'>
-                                                <InputLabel htmlFor="outlined-copy">لینک</InputLabel>
-                                                <OutlinedInput
-                                                    id='outlined-copy'
-                                                    label="لینک"
-                                                    name="link"
-                                                    disabled={true}
-                                                    endAdornment={
-                                                        <InputAdornment position="end">
-                                                            <IconButton
-                                                                aria-label="copy"
-                                                                onClick={() => copyLink(id)}
-                                                                edge="end"
-                                                            >
-                                                                <FileCopyIcon />
-                                                            </IconButton>
-                                                        </InputAdornment>
-                                                    }
-                                                    // onChange={this.handleChange}
-                                                    value={"http://localhost:3000/course/" + id}
-                                                    variant="outlined"
-                                                />
-                                            </FormControl>
-
-                                        </Grid>
 
                                         <Grid
                                             item
@@ -489,33 +448,33 @@ function CourseLayout(props) {
                                 </CardContent>
 
 
-                        </DialogContent>
+                            </DialogContent>
 
-                        <Divider />
-                        <Divider />
+                            <Divider />
+                            <Divider />
 
-                        <DialogActions className={classes.newCourseButtonContent}>
+                            <DialogActions className={classes.newCourseButtonContent}>
 
 
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                onClick={() => { setDialogOpen(false) }}
-                                className={classes.newCourseButtonWidth}
-                            >
-                                لغو
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => { setDialogOpen(false) }}
+                                    className={classes.newCourseButtonWidth}
+                                >
+                                    لغو
                             </Button>
 
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                // onClick={addCourseButton}
-                                type="submit"
-                                className={classes.newCourseButtonWidth}
-                            >
-                                ایجاد
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    // onClick={addCourseButton}
+                                    type="submit"
+                                    className={classes.newCourseButtonWidth}
+                                >
+                                    ایجاد
                                 </Button>
-                        </DialogActions>
+                            </DialogActions>
                         </ValidatorForm>
 
 
@@ -567,41 +526,36 @@ function CourseLayout(props) {
         setList(newList);
     };
 
-    const getValues=()=>{
+    const getValues = () => {
         setList([])
         const promise1 = axios.get('http://127.0.0.1:8000/api/teacher-courses/', {
-                headers: {
-                    "Authorization": `Token ${localStorage.getItem('token')}`,
-                },
-            })
-            promise1.then(
-                result => {
-                    console.log(result)
-                    result.data.map((course) => {
-                        numberOfId = course.id + 1
-                        const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, capacity: course.capacity }
-                        let flag = true;
-                        props.courses.map(course => {
-                            if (course.id === c.id) {
-                                flag = false;
-                            }
-                        })
-                        if (flag) {
-                            props.onAddCourse(c);
+            headers: {
+                "Authorization": `Token ${localStorage.getItem('token')}`,
+            },
+        })
+        promise1.then(
+            result => {
+                result.data.map((course) => {
+                    const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, capacity: course.capacity }
+                    let flag = true;
+                    props.courses.map(course => {
+                        if (course.id === c.id) {
+                            flag = false;
                         }
                     })
-                    setID(numberOfId)
-                }
-            )
+                    if (flag) {
+                        props.onAddCourse(c);
+                    }
+                })
+            }
+        )
 
     }
 
     React.useEffect(() => {
-        setTimeout(() => {
-            getValues();
-            
-        }, 500)
-    }, [])
+        getValues();
+
+    },[])
 
     return (
         <React.Fragment>
