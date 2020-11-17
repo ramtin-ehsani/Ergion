@@ -23,9 +23,11 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 
-import information from './information';
-import generalinformation from './generalinformation';
-import subjects from './subjects';
+import Information from './information';
+import Generalinformation from './generalinformation';
+import Coursemedia from './coursemedia';
+import Subjects from './subjects';
+import Axios from "axios";
 
 
 function Copyright() {
@@ -46,6 +48,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    margin:theme.spacing(2),
   },
 
   title: {
@@ -58,28 +61,64 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
+  
     display: 'flex',
     overflow: 'auto',
     flexDirection: 'column',
   },
+  
   fixedHeight: {
-    height: 240,
+    height: 270,
   },
+  fixedHeight1:{
+    height: 400+theme.spacing(2) ,
+  },
+  fixedHeight2:{
+    height:130,
+    alignItems:'right',
+    justifyItems:'end',
+    marginBottom:theme.spacing(2),
+    padding:0,
+    
+  }
 }));
 
-const SingleCourse = ({ match }) => {
-    const course = useSelector(state => state.course);
+const SingleCourse = ({match}) => {
+    //const course = useSelector(state => state.course);
+const [course,setcourse]=React.useState({});
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(getSingleCourse(match.params.id));
-        console.log(match);
-    }, []);
+    // useEffect(() => {
+    //     dispatch(getSingleCourse(match.params.id));
+    //     console.log(match);
+    //     console.log(course);
+    // }, []);
+    useEffect(()=> 
+    {
+    setTimeout(()=>
+    {console.log(match.params.id);
+          const promise
+     =  Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`)
+     promise.then(
+       response=>{
+
+setcourse(response.data)
+console.log(response.data)
+
+         
+       }
+     )
+
+
+    }
+    ,500)}
+    ,[])
 
     const classes = useStyles();
   
 const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
+const fixedHeightPaper1 = clsx(classes.paper, classes.fixedHeight1);
+const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
     return(
         <main className={classes.content}>
         
@@ -87,20 +126,27 @@ const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
           <Grid container spacing={3}>
            
             <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper}>
-                <information course={course}/>
+              <Paper className={fixedHeightPaper1}>
+                <Information course={course}/>
               </Paper>
             </Grid>
             
             <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-                <generalinformation  course={course}/>
+
+            
+            
+              <Paper className={fixedHeightPaper2}>
+              <Coursemedia course={course}/>
+              </Paper>     
+                       <Paper className={fixedHeightPaper}>
+                <Generalinformation  course={course}/>
               </Paper>
             </Grid>
+
            
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <subjects course={course}/>
+                <Subjects course={course}/>
                 
               </Paper>
             </Grid>

@@ -1,6 +1,9 @@
 import axios from "axios";
-
-export const getcourse=()=>
+import http from "./httpservice";
+import config from "./config.json"
+export const getcourse=(courseid)=>
 {
-return axios.get();
+return axios.get(`${config.apicourse}/${courseid}`);
+
+
 };

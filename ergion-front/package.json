@@ -6,32 +6,34 @@
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@reduxjs/toolkit": "^1.4.0",
     "axios": "^0.21.0",
+    "create": "0.0.2",
+    "create-react-app": "^4.0.0",
     "jss-rtl": "^0.3.0",
     "react": "^17.0.1",
+    "react-app": "^1.1.2",
     "react-dom": "^17.0.1",
+    "react-hooks": "^1.0.1",
     "react-image": "^4.0.3",
     "react-loading-overlay": "^1.0.1",
     "react-material-ui-form-validator": "^2.1.1",
     "react-nice-input-password": "^2.7.0",
     "react-redux": "^7.2.2",
+    "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.0",
+    "react-toastify": "^6.1.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "sass": "^1.27.0"
+    "sass": "^1.27.0",
+    "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  },
-  "devDependencies": {
-    "file-loader": "^6.2.0",
-    "node-sass": "^4.14.1",
-    "redux-devtools": "^3.7.0",
-    "sass-loader": "^10.0.4"
   },
   "browserslist": {
     "production": [
@@ -44,5 +46,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^4.42.0"
   }
 }

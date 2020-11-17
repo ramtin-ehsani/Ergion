@@ -8,7 +8,8 @@ import "./StudentDashboard.scss";
 import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
 import Paper from "@material-ui/core/Paper";
 import SingleCourse from '../../singleCourse/singleCourse';
-
+import {Route, Switch, Router} from 'react-router-dom';
+import {createBrowserHistory} from 'history';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Dashboard = () => {
+const Dashboard = ({match}) => {
 
     const classes = useStyles();
 
@@ -48,10 +49,10 @@ const Dashboard = () => {
                 <Container maxWidth="lg" className={classes.container}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={8} lg={9}>
-                            <Paper className={classes.fixedHeight}>
-                                <h1 className="ergion">Ergion</h1>
+                            <Paper >
+                           <Route path="/dashboard/course/:id" component={SingleCourse}/>
                             </Paper>
-                            
+                             
                         </Grid>
                     </Grid>
                 </Container>

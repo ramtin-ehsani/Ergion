@@ -41,7 +41,7 @@ fontFamily:"IRANSans",
   
 }));
 
-export default function subjects() {
+export default function Subjects() {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -60,7 +60,7 @@ export default function subjects() {
         <TableBody>
           {rows.map((row) => (
             <TableRow align="right" key={row.id}>
-              <TableCell align="right">   <Typography component="body2" variant="h5"  gutterBottom align="right">
+              <TableCell align="right">   <Typography component="body2" variant="h2"  gutterBottom align="right">
      {row.date}
     </Typography></TableCell>
               <Link color="primary" href="#" onClick={preventDefault}>   <TableCell align="right">{row.name}</TableCell> </Link>

@@ -34,12 +34,30 @@ const theme = createMuiTheme({
     h5: {
       fontFamily: "IRANSans" ,
       fontWeight: 400,
-      fontSize: 16,
+      fontSize: 30,
       
       direction: 'rtl',
       textAlign:"right"
     
 
+    },
+    h3: {
+      fontFamily: "IRANSans" ,
+      fontWeight: 300,
+      fontSize: 16,
+      color:"gray",
+      direction: 'rtl',
+      textAlign:"right"
+    
+
+    },
+    h4: {
+      fontFamily: "IRANSans" ,
+      fontWeight: 400,
+      fontSize: 16,
+      direction: 'rtl',
+      textAlign:"right"
+    
     }
   },
 

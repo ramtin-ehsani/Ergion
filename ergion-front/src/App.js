@@ -8,7 +8,6 @@ import Login from './Login/Login'
 import './fonts/IRANSans/css/fontiran.css';
 import StudentDashboard from "./Dashboard/StudentDashboard/StudentDashboard";
 import singleCourse from './singleCourse/singleCourse';
-import teacherDashboard from "./Dashboard/teacherDashboarddemo/StudentDashboard"
 const history = createBrowserHistory();
 
 class App extends Component {
@@ -20,8 +19,8 @@ class App extends Component {
                         <Route path='/' exact component={HomePage}/>
                         <Route path='/signup' exact component={SignUp}/>
                         <Route path='/login' exact component={Login}/>
-                        <Route path='/dashboard' exact component={StudentDashboard}/>
-                        <Route path='/course/' component={teacherDashboard}/>
+                        <Route path='/dashboard' component={StudentDashboard}/>
+                        
                     </Switch>
                 </Router>
             </div>

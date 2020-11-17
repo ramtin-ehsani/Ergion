@@ -6,7 +6,7 @@ import Title from './Title';
 //import "generalinformation.scss";
 import { ThemeProvider } from '@material-ui/styles';
 import theme from './theme.js';
-
+import Mytypography1 from './mytypography1';
 function preventDefault(event) {
   event.preventDefault();
 }
@@ -23,8 +23,9 @@ const useStyles = makeStyles(theme => ({
   }));
 
 
-export default function generalinformation(props) {
+export default function Generalinformation(props) {
   const classes = useStyles();
+
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
@@ -38,25 +39,31 @@ export default function generalinformation(props) {
 
 
 <Link color="primary" href="#" onClick={preventDefault}>
-نگین درخشان
+{props.course.instructor_firstname} {props.course.instructor_lastname} 
         </Link>
+        <p>
+        مقطع:
+        </p>
+        <Mytypography1>
+{props.course.grade}</Mytypography1>
 <p>
-تعداد دانش آموزان:
+ظرفیت:
 </p>
-<p>
-۲۳
-</p>
+<Mytypography1>
+{props.course.capacity}
+</Mytypography1>
 
 <p>
 تعداد فایل ها:
 </p>
-۱۶
+<Mytypography1>
+۱۶</Mytypography1>
 <p>
 آخرین به روز رسانی:
 </p>    
-<p>
+<Mytypography1>
 ۹۹/۸/۱۸
-</p>
+</Mytypography1>
       </Typography>
       
 
