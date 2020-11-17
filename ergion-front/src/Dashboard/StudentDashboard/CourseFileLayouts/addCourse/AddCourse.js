@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cardGrid: {
         paddingTop: theme.spacing(3),
+        // backgroundColor: "red"
         // paddingBottom: theme.spacing(3),
         // marginLeft: theme.spacing(18),
         // marginRight: theme.spacing(30),
@@ -49,6 +50,11 @@ const useStyles = makeStyles((theme) => ({
     },
     cardMedia: {
         // paddingTop: '56.25%', // 16:9filteredList
+        // minHeight: "100%",
+        // minWidth: "100%",
+        // maxWidth: "100%",
+        // maxHeight: "100%",
+
         height: 180,
         width: '100%',
         objectFit: 'cover'
@@ -165,7 +171,7 @@ const AddCourse = () => {
                     <CssBaseline/>
                     <main className="main">
                         <Container className={classes.cardGrid} maxWidth="md">
-                            <Grid dir="rtl" lg={11} item={true} md={12}>
+                            <Grid dir="rtl" lg={10} item={true} md={12}>
                                 <TextField
                                     className="textFieldSearchbar"
                                     variant="outlined"
@@ -183,10 +189,11 @@ const AddCourse = () => {
                                 />
                             </Grid>
                             <Box mt={6}/>
-                            <Grid dir="rtl" container spacing={2} lg={11} item={true} md={12}>
+                            <Grid dir="rtl" container spacing={2} lg={10} item={true} md={12}>
                                 {courses && courses.map((course) =>
-                                    <Grid className="cardSpacing" item key={course.id} xs={12} sm={6} md={3}>
-                                        <Card className="layout">
+                                    <Grid className="cardSpacing" item key={course.id} xs={12} sm={6} md={4}>
+                                    {/*// <Grid className="cardSpacing" item key={course.id}>*/}
+                                        <Card className="layout1">
                                             <CardHeader
                                                 title={
                                                     <Typography className="courseOwnerPlace" component="h4">
@@ -204,7 +211,7 @@ const AddCourse = () => {
                                                 className={classes.cardMedia}
                                                 component='img'
                                                 image={course.course_cover}
-                                                title={course.name}
+                                                title={course.sunject}
                                             />
                                             <CardContent className={classes.cardContent} spacing={3}>
                                                 <Typography gutterBottom variant="h5" component="h2"

@@ -5,7 +5,8 @@ import Toolbars from "./Toolbar/Toolbar"
 import "./StudentDashboard.scss";
 import StudentProfile from '../../Profile/StudentProfile';
 import { Route, Switch } from 'react-router-dom';
-import Template from './Template'
+// import Template from './Template';
+import Suggestions from "./SuggestedCourse/Seggestions";
 import * as actionTypes from '../../store/actions'
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -78,7 +79,7 @@ const Dashboard = () => {
             <main className={classes.content} >
                 <div className={classes.appBarSpacer} />
                 <Switch >
-                    <Route path='/student_dashboard' exact component={Template} />
+                    <Route path='/student_dashboard' exact component={Suggestions} />
                     <Route path='/student_dashboard/profile' exact component={StudentProfile} />
                     <Route path='/student_dashboard/added_courses' exact component={CourseFileLayouts} />
                     <Route path="/student_dashboard/find-your-course" exact component={AddCourse}/>
