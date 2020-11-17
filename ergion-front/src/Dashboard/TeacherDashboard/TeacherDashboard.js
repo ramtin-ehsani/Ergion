@@ -59,6 +59,7 @@ const Dashboard = () => {
                 .catch((error) => {
                     // handle error
                     console.log(error);
+                    window.location = '/login'
                 })
 
         } else {
