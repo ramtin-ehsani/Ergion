@@ -2,16 +2,14 @@ import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbars from "./Toolbar/Toolbar"
-import "./StudentDashboard.scss";
-import StudentProfile from '../../Profile/StudentProfile';
+import "./TeacherDashboard.scss";
+import TeacherProfile from '../../Profile/TeacherProfile';
 import { Route, Switch } from 'react-router-dom';
-// import Template from './Template';
-import Suggestions from "./SuggestedCourse/Seggestions";
+import Template from './Template'
 import * as actionTypes from '../../store/actions'
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
-import AddCourse from "./CourseFileLayouts/addCourse/AddCourse";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -48,7 +46,7 @@ const Dashboard = () => {
 
         if (localStorage.getItem("api_key") !== 'null') {
 
-            axios.get('http://127.0.0.1:8000/api/student-profile/', config)
+            axios.get('http://127.0.0.1:8000/api/teacher-profile/', config)
                 .then((res) => {
                     // handle success
                     const avatarImage = res.data.profile_picture
@@ -73,6 +71,11 @@ const Dashboard = () => {
 
 
     })
+
+
+
+
+
     return (
         <div className={"dashboard"}>
             <CssBaseline />
@@ -80,10 +83,9 @@ const Dashboard = () => {
             <main className={classes.content} >
                 <div className={classes.appBarSpacer} />
                 <Switch >
-                    <Route path='/student_dashboard' exact component={Suggestions} />
-                    <Route path='/student_dashboard/profile' exact component={StudentProfile} />
-                    <Route path='/student_dashboard/added_courses' exact component={CourseFileLayouts} />
-                    <Route path="/student_dashboard/find-your-course" exact component={AddCourse}/>
+                    <Route path='/teacher_dashboard' exact component={Template} />
+                    <Route path='/teacher_dashboard/profile' exact component={TeacherProfile} />
+                    <Route path='/teacher_dashboard/added_courses' exact component={CourseFileLayouts} />
                 </Switch>
 
             </main>

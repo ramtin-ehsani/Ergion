@@ -20,22 +20,22 @@ import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
-import IranSansFont from './fonts/IranSansFont.ttf';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { useHistory } from "react-router-dom";
+import * as actionTypes from '../store/actions'
+import { useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+      <Link color="inherit" href="#">
+        Ergion
       </Link>{' '}
       {new Date().getFullYear()}
-      {'.'}
     </Typography>
   );
 }
@@ -77,40 +77,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const iranSans = {
-  fontFamily: 'IranSansFont',
-  fontStyle: 'normal',
-  fontDisplay: 'swap',
-  fontWeight: 400,
-  src: `
-    local('IranSansFont'),
-    url(${IranSansFont}) format('truetype')
-  `,
-}
 
 
 const theme = createMuiTheme({
   typography: {
-    fontFamily: [
-      'IranSansFont',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
-  },
-  overrides: {
-    MuiCssBaseline: {
-      '@global': {
-        '@font-face': [iranSans]
-      },
-    },
+    fontFamily: '"Vazir", sans-serif'
   },
   direction: 'rtl'
 });
@@ -127,9 +98,8 @@ const useFormInput = initialValue => {
   }
 }
 
-export default function Login() {
+function Login(props) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [loading, setLoading] = useState(false);
   const email = useFormInput('');
@@ -164,6 +134,10 @@ export default function Login() {
     );
   };
 
+  const usedispatch = useDispatch()
+
+
+
   const handleLogin = () => {
     setEmailError(false)
     setPasswordError(false)
@@ -180,12 +154,91 @@ export default function Login() {
 
     } else {
       setLoading(true);
-      axios.post('http://127.0.0.1:8000/users/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
+      axios.post('http://127.0.0.1:8000/api/rest-auth/login/', { email: email.value, password: password.value }).then(response => {
         if (response.status === 200) {
-          setLoading(false);
-          setUserSession(response.data.token, response.data.user);
-          console.log(response.data.token)
-          history.push('/dashboard');
+
+          const config = {
+            headers: { Authorization: `Token ${response.data.key}` }
+          }
+
+          const promise = axios.get('http://127.0.0.1:8000/api/rest-auth/user/', config
+          )
+          promise.then(
+            result => {
+              setUserSession(response.data.key, result.data);
+              if (result.data['role'] === 'S') {
+                axios.get('http://127.0.0.1:8000/api/student-profile/', config)
+                  .then((res) => {
+                    // handle success
+                    console.log(res)
+                    const avatarImage = res.data.profile_picture
+                    const firstName = res.data.firstname
+                    const lastName = res.data.lastname
+                    usedispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
+
+                    localStorage.setItem('api_key', response.data.key)
+                    setUserSession(response.data.key, response.data.user);
+                    const promise1 = axios.get('http://127.0.0.1:8000/api/student-courses/',
+                      config)
+                    promise1.then(
+                      resultt => {
+                        console.log(resultt)
+                        resultt.data.map((course) => {
+                          const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, teacher: `${course.instructor_firstname} ${course.instructor_lastname}` }
+                          props.onAddCourse(c);
+                          return null
+                        })
+                        setLoading(false);
+                        window.location = '/student_dashboard'
+                      }
+                    )
+
+                  })
+                  .catch((error) => {
+                    // handle error
+                    console.log(error);
+                  })
+
+              } else {
+
+                axios.get('http://127.0.0.1:8000/api/teacher-profile/', config)
+                  .then((res) => {
+                    // handle success
+                    console.log(res.data)
+                    const avatarImage = res.data.avatar
+                    const firstName = res.data.firstname
+                    const lastName = res.data.lastname
+                    usedispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
+
+                    localStorage.setItem('api_key', response.data.key)
+                    setUserSession(response.data.key, response.data.user);
+                    setLoading(false);
+                    window.location = '/teacher_dashboard'
+                    const promise1 = axios.get('http://127.0.0.1:8000/api/teacher-courses/',
+                      config)
+                    promise1.then(
+                      resultt => {
+                        console.log(resultt)
+                        resultt.data.map((course) => {
+                          const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, capacity: course.capacity }
+                          props.onAddCourse(c);
+                          return null
+                        })
+                        setLoading(false);
+                        window.location = '/teacher_dashboard'
+                      }
+                    )
+
+                  })
+                  .catch((error) => {
+                    // handle error
+                    console.log(error);
+                  })
+
+
+              }
+            }
+          )
         }
 
       }).catch(() => {
@@ -321,3 +374,17 @@ export default function Login() {
 
 
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.loggedInUser,
+    courses: state.addedCourses
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    onUserLoggedIn: (firstName, lastName, email) => dispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, email: email }),
+    onAddCourse: (course) => dispatch({ type: actionTypes.ADD_COURSE, payload: course })
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

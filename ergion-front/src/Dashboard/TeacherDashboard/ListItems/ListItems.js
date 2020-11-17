@@ -21,11 +21,11 @@ export const MainListItems = () => {
     const history = useHistory();
 
     const navigateToProfile = () => {
-        history.push('/student_dashboard/profile');
+        history.push('/teacher_dashboard/profile');
     }
 
     const navidagteToDashboard = () => {
-        history.push('/student_dashboard');
+        history.push('/teacher_dashboard');
     }
 
     const logOut = () => {
@@ -66,7 +66,7 @@ export const MainListItems = () => {
             </ListItem>
 
             <ListItem button
-                onClick={() => { history.push('/student_dashboard/added_courses') }}
+                onClick={() => { history.push('/teacher_dashboard/added_courses') }}
             >
                 <p className="courses">کلاس</p>
                 <ListItemIcon className="courseIcon">
@@ -122,11 +122,11 @@ export const MobileListItems = () => {
     const history = useHistory();
 
     const navigateToProfile = () => {
-        history.push('/student_dashboard/profile');
+        history.push('/teacher_dashboard/profile');
     }
 
     const navidagteToDashboard = () => {
-        history.push('/student_dashboard');
+        history.push('/teacher_dashboard');
     }
 
     const logOut = () => {
@@ -165,7 +165,7 @@ export const MobileListItems = () => {
             </ListItem>
 
             <ListItem button
-                onClick={() => { history.push('/student_dashboard/added_courses') }}
+                onClick={() => { history.push('/teacher_dashboard/added_courses') }}
             >
                 <p className="courses">کلاس</p>
                 <ListItemIcon className="courseIcon">

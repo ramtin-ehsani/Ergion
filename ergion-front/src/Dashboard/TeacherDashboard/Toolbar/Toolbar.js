@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
         zIndex: theme.zIndex.drawer + 1,
         [theme.breakpoints.up('md')]: {
             width: `calc(100%)`,
-            height: 'fixed',
             marginLeft: drawerWidth,
         },
     },
@@ -51,11 +50,6 @@ const useStyles = makeStyles((theme) => ({
         overflowY: 'auto',
         overflowX: 'hidden',
     },
-    Main: {
-        // [theme.breakpoints.up("md")]: { /*sm -> lg*/
-        //     marginLeft: 500,
-        // },
-    }
 }));
 
 function ResponsiveDrawer(props) {
@@ -70,8 +64,7 @@ function ResponsiveDrawer(props) {
     };
 
     return (
-        <div className={classes.Main}>
-        {/*<div className="Main">*/}
+        <div className="Main">
             <div>
                 <CssBaseline />
                 <AppBar position="fixed" className={classes.appBar}>
@@ -90,6 +83,7 @@ function ResponsiveDrawer(props) {
                         </IconButton>
                     </Toolbar>
                 </AppBar>
+
             </div>
             <nav className={classes.drawer} aria-label="mailbox folders">
                 <Hidden lgUp implementation="css">
