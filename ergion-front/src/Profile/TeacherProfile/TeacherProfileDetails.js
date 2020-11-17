@@ -21,17 +21,22 @@ import {
 
 const occupation = [
   {
-    value: 'Consultant',
-    label: ' مشاور کنکور'
+    value: '4',
+    label: ' انتخاب کنید'
   },
   {
-    value: 'SchoolTeacher',
+    value: '1',
     label: 'معلم'
   },
   {
-    value: 'Student',
+    value: '2',
     label: 'دانشجو'
   },
+  {
+    value: '3',
+    label: ' مشاور کنکور'
+  },
+  
 ];
 
 
@@ -57,8 +62,8 @@ function Alert(props) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchUser: (firstName, lastName, email, grade, profilePicture) =>
-      dispatch({ type: actionTypes.LOGIN, grade: grade, email: email, firstName: firstName, lastName: lastName, profilePicture: profilePicture })
+    dispatchUser: (firstName, lastName, profilePicture) =>
+      dispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, profilePicture: profilePicture })
 
   };
 };
@@ -101,6 +106,7 @@ class ProfileDetails extends Component {
     allowedToSave: true,
     snackBarOpen: false,
     errorMessage: '',
+    teacherTypeError:true,
   }
 
   config = {
@@ -108,23 +114,35 @@ class ProfileDetails extends Component {
   }
 
   getValues = () => {
-    axios.get('http://127.0.0.1:8000/api/student_dashboard/student_details/',this.config)
+    axios.get('http://127.0.0.1:8000/api/teacher-profile/',this.config)
       .then((response) => {
         // handle success
         const formData = {
           firstName: response.data.firstname,
           lastName: response.data.lastname,
           email: response.data.email,
-          occupation: response.data.grade,
-          resume: response.data.grade,
-          universityEmail: response.data.grade,
-          institute: response.data.grade,
-          aboutMe: response.data.grade,
+          occupation: String(response.data.teacher_type),
+          resume:String(response.data.work_experience),
+          universityEmail: response.data.scholar_email,
+          institute: response.data.academy_name,
+          aboutMe: response.data.personal_description,
 
         }
 
-        if(this.props.user.grade==null){
-          formData['occupation']='SchoolTeacher';
+        if(response.data.scholar_email==null){
+          formData['universityEmail']='';
+        }
+        if(response.data.personal_description==null){
+          formData['aboutMe']='';
+        }
+        if(response.data.academy_name==null){
+          formData['institute']='';
+        }
+
+        if(response.data.teacher_type!==4){
+          this.setState({
+            teacherTypeError:false,
+          })
         }
 
 
@@ -143,7 +161,7 @@ class ProfileDetails extends Component {
   
 
   componentDidMount() {
-    // this.getValues()
+    this.getValues()
     
   }
 
@@ -155,6 +173,17 @@ class ProfileDetails extends Component {
     this.setState({
       formData: formData
     })
+    if(event.target.name==='occupation'){
+      if(event.target.value!=='4'){
+        this.setState({
+          teacherTypeError: false
+        })
+      }else{
+        this.setState({
+          teacherTypeError: true
+        })
+      }
+    }
     this.checkForTextFieldChange(this.state.oldData, formData)
   };
 
@@ -170,39 +199,52 @@ class ProfileDetails extends Component {
 
       this.setState({ textFieldChanged: false })
     } else {
-      this.setState({ textFieldChanged: true })
+
+      if(newData.occupation!=='4' ){
+
+        this.setState({ textFieldChanged: true })
+
+      }else{
+        this.setState({ textFieldChanged: false })
+      }
     }
   }
 
 
   handleSaveButton = () => {
-    if (this.state.allowedToSave) {
-      const { oldData } = this.state
-      const { formData } = this.state
-      this.setState({ loading:true, allowedToSave: false })
 
-      const data = new FormData()
-      data.append('firstname', formData.firstName)
-      data.append('lastname', formData.lastName)
-      data.append('email', formData.email)
-      data.append('occupation', formData.occupation)
-      data.append('resume', formData.resume)
-      data.append('universityEmail', formData.universityEmail)
-      data.append('aboutMe', formData.aboutMe)
-      data.append('institute', formData.institute)
+      if (this.state.allowedToSave) {
+        const { oldData } = this.state
+        const { formData } = this.state
+        this.setState({ loading:true, allowedToSave: false })
 
-        axios.post('http://127.0.0.1:8000/api/student_dashboard/student_details/',
+
+        const data = new FormData()
+        data.append('firstname', formData.firstName)
+        data.append('lastname', formData.lastName)
+        data.append('email', formData.email)
+        data.append('teacher_type', formData.occupation)
+        data.append('work_experience', formData.resume)
+        data.append('scholar_email', formData.universityEmail)
+        data.append('personal_description', formData.aboutMe)
+        data.append('academy_name', formData.institute)
+
+
+        axios.put('http://127.0.0.1:8000/api/teacher-profile/',
         data,this.config)
         .then(response => {
-            if (response.status === 201) {
               oldData['firstName'] = formData.firstName
               oldData['lastName'] = formData.lastName
-              oldData['grade'] = formData.grade
+              oldData['occupation'] = formData.occupation
+              oldData['institute'] = formData.institute
+              oldData['aboutMe'] = formData.aboutMe
+              oldData['universityEmail'] = formData.universityEmail
+              oldData['resume'] = formData.resume
 
 
               if(formData.email!==response.data.email){
 
-                this.setState({ snackBarOpen: true, errorMessage: "The email is in use by another user" })
+                this.setState({ snackBarOpen: true, errorMessage: "این ایمیل از قبل وجود دارد" })
 
               }else{
                 oldData['email'] = formData.email
@@ -216,9 +258,9 @@ class ProfileDetails extends Component {
               this.checkForTextFieldChange(oldData, formData)
 
               this.props.dispatchUser(formData.firstName, formData.lastName
-                , response.data.email, formData.grade, this.props.user.profilePicture)
+                , this.props.user.profilePicture)
 
-            }
+            
 
           }).catch((error) => {
             console.log(error)
@@ -226,13 +268,14 @@ class ProfileDetails extends Component {
           });
 
         
+        
       
     }
 
   }
 
 
-  onSnackBarClose = (event, reason) => {
+  onSnackBarClose = ( reason) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -272,8 +315,8 @@ class ProfileDetails extends Component {
             <Grid
               container
               spacing={4}
+              dir='rtl'
             >
-
               <Grid
                 item
                 md={6}
@@ -281,25 +324,6 @@ class ProfileDetails extends Component {
               >
                 <TextValidator
                   fullWidth
-                  dir='rtl'
-                  label="نام خانوادگی"
-                  name="lastName"
-                  onChange={this.handleChange}
-                  required
-                  value={this.state.formData.lastName}
-                  variant="outlined"
-                  validators={['required', 'matchRegexp:^[^0-9]+$']}
-                  errorMessages={['this field is required', 'فرمت اشتباه است']}
-                />
-              </Grid>
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <TextValidator
-                  fullWidth
-                  dir='rtl'
                   label="نام"
                   name="firstName"
                   onChange={this.handleChange}
@@ -315,6 +339,25 @@ class ProfileDetails extends Component {
                 item
                 md={6}
                 xs={12}
+              >
+                <TextValidator
+                  fullWidth
+                  label="نام خانوادگی"
+                  name="lastName"
+                  onChange={this.handleChange}
+                  required
+                  value={this.state.formData.lastName}
+                  variant="outlined"
+                  validators={['required', 'matchRegexp:^[^0-9]+$']}
+                  errorMessages={['this field is required', 'فرمت اشتباه است']}
+                />
+              </Grid>
+              
+
+              <Grid
+                item
+                md={6}
+                xs={12}
 
 
               >
@@ -322,10 +365,10 @@ class ProfileDetails extends Component {
                   fullWidth
                   label="شغل"
                   name="occupation"
-                  dir='rtl'
                   onChange={this.handleChange}
                   required
                   select
+                  error={this.state.teacherTypeError}
                   SelectProps={{ native: true }}
                   value={this.state.formData.occupation}
                   variant="outlined"
@@ -351,6 +394,7 @@ class ProfileDetails extends Component {
                   fullWidth
                   label="ایمیل"
                   name="email"
+                  dir="ltr"
                   onChange={this.handleChange}
                   required
                   value={this.state.formData.email}
@@ -362,13 +406,6 @@ class ProfileDetails extends Component {
               </Grid>
 
 
-
-
-
-
-
-
-
               <Grid
                 item
                 md={6}
@@ -378,6 +415,7 @@ class ProfileDetails extends Component {
                 <TextValidator
                   fullWidth
                   label="ایمیل دانشگاهی"
+                  dir="ltr"
                   name="universityEmail"
                   onChange={this.handleChange}
                   value={this.state.formData.universityEmail}
@@ -388,6 +426,8 @@ class ProfileDetails extends Component {
 
               </Grid>
 
+              
+
               <Grid
                 item
                 md={6}
@@ -396,12 +436,17 @@ class ProfileDetails extends Component {
 
                 <TextValidator
                   fullWidth
-                  label="نام موسسه یا دانشگاه"
-                  name="institute"
-                  dir='rtl'
+                  InputProps={{ inputProps: { min: 0, max: 70 } }}
+                  label="سوابق کاری"
+                  name="resume"
+                  contentEditable={false}
+                  type='number'
                   onChange={this.handleChange}
-                  value={this.state.formData.institute}
+                  value={this.state.formData.resume}
                   variant="outlined"
+                  validators={['matchRegexp:^(?:[0-9]|[1-6][0-9]|70)$']}
+                  errorMessages={[ 'فقط اعداد بین 0 تا 70 مجاز است']}
+                  
                 />
 
               </Grid>
@@ -414,14 +459,11 @@ class ProfileDetails extends Component {
 
                 <TextValidator
                   fullWidth
-                  label="سوابق کاری"
-                  name="resume"
-                  dir='rtl'
+                  label="نام موسسه یا دانشگاه"
+                  name="institute"
                   onChange={this.handleChange}
-                  value={this.state.formData.resume}
+                  value={this.state.formData.institute}
                   variant="outlined"
-                  multiline={true}
-                  
                 />
 
               </Grid>
@@ -436,7 +478,6 @@ class ProfileDetails extends Component {
 
                 <TextValidator
                   fullWidth
-                  dir='rtl'
                   label="درباره من"
                   name="aboutMe"
                   onChange={this.handleChange}

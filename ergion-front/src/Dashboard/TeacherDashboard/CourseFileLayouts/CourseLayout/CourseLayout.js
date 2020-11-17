@@ -7,11 +7,11 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AddButtonAndPopUp from './PopUp/PopUp';
 import "./CourseLayout.scss";
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -20,12 +20,25 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Divider from '@material-ui/core/Divider';
 import axios from 'axios';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import * as actionTypes from '../../../../store/actions';
+import { Box } from '@material-ui/core';
+
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
+import { StylesProvider, jssPreset } from '@material-ui/core/styles';
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
+import purple from '@material-ui/core/colors/purple';
+import Fab from "@material-ui/core/Fab";
+import rtl from 'jss-rtl';
+import { create } from 'jss';
+import {
+    TextField,
+} from '@material-ui/core';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
-  });
+});
 const useStyles = makeStyles((theme) => ({
     icon: {
         marginRight: theme.spacing(2),
@@ -41,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(3),
         // paddingBottom: theme.spacing(3),
         // marginLeft: 10,
-        marginRight: theme.spacing(50),
+        // marginRight: theme.spacing(50),
     },
     card: {
         height: '100%',
@@ -52,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
         // paddingTop: '56.25%', // 16:9
         height: 180,
         width: '100%',
-        objectFit: 'fill'
+        objectFit: 'cover'
     },
     cardContent: {
         flexGrow: 1,
@@ -65,11 +78,436 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(6),
     },
+    gridTitle: {
+        paddingBottom: theme.spacing(3),
+        paddingTop: theme.spacing(3)
+    },
+
+
+
+
+
+    newCourseRoot: {
+        root: {
+            height: 'auto',
+        },
+
+    },
+    newCourseCardMedia: {
+        height: 160,
+        width: '100%',
+        objectFit: 'cover',
+        paddingLeft: 17,
+        paddingRight: 17,
+    },
+    newCourseAddImageContainer: {
+        position: 'relative',
+        marginBottom: 4,
+        marginTop: 4,
+
+    },
+    newCourseTitle: {
+        backgroundColor: '#3f50b5',
+        color: '#fff',
+        textAlign: "center",
+
+    },
+    newCourseAddImage: {
+        position: 'absolute',
+        right: 25,
+        bottom: 10,
+        margin: 4,
+        color: purple[900],
+        width: 40,
+        height: 40,
+    },
+    input: {
+        display: "none"
+    },
+    newCourseButtonWidth: {
+        width: 120,
+        height: 40,
+        fontSize: '1rem',
+    },
+    newCourseButtonContent: {
+        // justifyContent:'space-between',
+        paddingLeft: 30,
+        paddingRight: 30,
+        paddingBottom: 8,
+        paddingTop: 8,
+    },
+    typoStyle: {
+        textAlign: 'center',
+        fontSize: '1rem',
+        fontWeight: 300,
+        margin: 8,
+    },
+
+
+
+
 }));
 
-// const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
 function CourseLayout(props) {
+
+    // Add Course Dialog
+
+
+    const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [selectedFile, setSelectedFile] = React.useState(null);
+    const [coverImage, setCoverImage] = React.useState("");
+    const newCourseName = React.useRef("");
+    const newCourseSubject = React.useRef("");
+    const newCourseGrade = React.useRef("1");
+    const newCourseCapacity = React.useRef(10);
+    const newCourseDescription = React.useRef("");
+
+    const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
+
+    const onFileChange = event => {
+
+        if (event.target.files && event.target.files[0]) {
+            localStorage.setItem("course_name", newCourseName.current.value)
+            localStorage.setItem("course_subject", newCourseSubject.current.value)
+            localStorage.setItem("course_grade", newCourseGrade.current.value)
+            localStorage.setItem("course_capacity", newCourseCapacity.current.value)
+            localStorage.setItem("course_description", newCourseDescription.current.value)
+
+            setSelectedFile(event.target.files[0])
+            setCoverImage(URL.createObjectURL(event.target.files[0]))
+        }
+
+    };
+
+
+
+    const theme = createMuiTheme({
+        typography: {
+            fontFamily: '"Vazir", sans-serif'
+        },
+        direction: 'rtl'
+    });
+    const grades = [
+        {
+            value: '1',
+            label: ' اول دبستان'
+        },
+        {
+            value: '2',
+            label: 'دوم دبستان'
+        },
+        {
+            value: '3',
+            label: 'سوم دبستان'
+        },
+        {
+            value: '4',
+            label: 'چهارم دبستان'
+        },
+        {
+            value: '5',
+            label: 'پنجم دبستان'
+        },
+        {
+            value: '6',
+            label: 'ششم دبستان'
+        },
+        {
+            value: '7',
+            label: 'هفتم'
+        },
+        {
+            value: '8',
+            label: 'هشتم'
+        },
+        {
+            value: '9',
+            label: 'نهم'
+        },
+        {
+            value: '10',
+            label: 'دهم'
+        },
+        {
+            value: '11',
+            label: 'یازدهم'
+        },
+        {
+            value: '12',
+            label: 'دوازدهم'
+        },
+    ];
+
+    const addCourseButton = () => {
+        const data = new FormData()
+        data.append('name', newCourseName.current.value)
+        data.append('subject', newCourseSubject.current.value)
+        data.append('grade', newCourseGrade.current.value)
+        data.append('capacity', newCourseCapacity.current.value)
+        data.append('about_course', newCourseDescription.current.value)
+        if (selectedFile !== null) {
+            data.append('course_cover', selectedFile)
+        } else {
+            data.append('course_cover', "")
+        }
+        axios.post('http://127.0.0.1:8000/api/teacher-courses/', data, {
+            headers: {
+                "Authorization": `Token ${localStorage.getItem('api_key')}`,
+            },
+        }).then((response) => {
+            console.log(response)
+            setDialogOpen(false)
+            getValues()
+
+        }).catch((error) => {
+            console.log(error)
+        })
+
+    }
+
+    const newCourseButton = () => {
+        setSelectedFile(null)
+        setCoverImage("")
+        localStorage.setItem("course_name", "")
+        localStorage.setItem("course_subject", "")
+        localStorage.setItem("course_grade", "1")
+        localStorage.setItem("course_capacity", 10)
+        localStorage.setItem("course_description", "")
+        setDialogOpen(true)
+
+    }
+    const NewCourseDialog = (props) => {
+        const { open, setOpen } = props;
+        return (
+            <StylesProvider jss={jss} >
+
+                <ThemeProvider theme={theme} >
+
+                    <Dialog
+                        open={open}
+                        onClose={() => setOpen(false)}
+                        aria-labelledby="error-dialog"
+                        className={classes.newCourseRoot}
+                    >
+                        <ValidatorForm form="form" onSubmit={addCourseButton} >
+
+                            <DialogTitle id="error-dialog" dir='rtl' className={classes.newCourseTitle}>
+                                ایجاد یک کلاس جدید
+                        </DialogTitle>
+
+                            <Divider />
+                            <Divider />
+
+
+                            <DialogContent>
+
+
+
+                                <div className={classes.newCourseAddImageContainer}>
+                                    <Typography className={classes.typoStyle}>
+                                        کاور
+                                    </Typography>
+                                    <CardMedia
+                                        className={classes.newCourseCardMedia}
+                                        component='img'
+                                        image={coverImage}
+                                    />
+                                    <input
+                                        accept="image/*"
+                                        className={classes.input}
+                                        id="contained-button-file"
+                                        multiple
+                                        type="file"
+                                        onChange={onFileChange}
+                                    />
+                                    <label htmlFor='contained-button-file'>
+
+                                        <Fab
+                                            component="span"
+                                            className={classes.newCourseAddImage}>
+
+                                            <AddPhotoAlternateIcon />
+
+                                        </Fab>
+                                    </label>
+                                </div>
+
+                                <CardContent>
+                                    <Grid
+                                        container
+                                        spacing={2}
+                                        dir='rtl'
+                                    >
+
+
+                                        <Grid
+                                            item
+                                            md={6}
+                                            xs={12}
+                                        >
+                                            <TextValidator
+                                                fullWidth
+                                                label="نام"
+                                                name="name"
+                                                inputRef={newCourseName}
+                                                defaultValue={localStorage.getItem("course_name")}
+                                                required
+                                                variant="outlined"
+                                            />
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            md={6}
+                                            xs={12}
+                                        >
+                                            <TextValidator
+                                                fullWidth
+                                                label="موضوع"
+                                                name="subject"
+                                                inputRef={newCourseSubject}
+                                                required
+                                                defaultValue={localStorage.getItem("course_subject")}
+                                                variant="outlined"
+                                            />
+                                        </Grid>
+
+
+                                        <Grid
+                                            item
+                                            md={6}
+                                            xs={12}
+
+
+                                        >
+                                            <TextField
+                                                fullWidth
+                                                label="مقطع"
+                                                name="grade"
+                                                required
+                                                inputRef={newCourseGrade}
+                                                defaultValue={localStorage.getItem("course_grade")}
+                                                select
+                                                SelectProps={{ native: true }}
+                                                variant="outlined"
+
+                                            >
+                                                {grades.map((option) => (
+                                                    <option
+                                                        key={option.value}
+                                                        value={option.value}
+                                                    >
+                                                        {option.label}
+                                                    </option>
+                                                ))}
+                                            </TextField>
+                                        </Grid>
+
+                                        <Grid
+                                            item
+                                            md={6}
+                                            xs={12}
+                                        >
+
+                                            <TextField
+                                                fullWidth
+                                                InputProps={{ inputProps: { min: 1 } }}
+                                                label="ظرفیت"
+                                                name="capacity"
+                                                inputRef={newCourseCapacity}
+                                                defaultValue={localStorage.getItem("course_capacity")}
+                                                contentEditable={false}
+                                                type='number'
+                                                variant="outlined"
+
+                                            />
+
+                                        </Grid>
+
+
+                                        <Grid
+                                            item
+                                            md={12}
+                                            xs={12}
+
+                                        >
+                                            <TextField
+                                                fullWidth
+                                                dir='rtl'
+                                                label="توضیحات"
+                                                name="description"
+                                                inputRef={newCourseDescription}
+                                                defaultValue={localStorage.getItem("course_description")}
+                                                variant="outlined"
+                                                multiline={true}
+                                                rows={5}
+                                            />
+
+                                        </Grid>
+
+                                    </Grid>
+                                </CardContent>
+
+
+                            </DialogContent>
+
+                            <Divider />
+                            <Divider />
+
+                            <DialogActions className={classes.newCourseButtonContent}>
+
+
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => { setDialogOpen(false) }}
+                                    className={classes.newCourseButtonWidth}
+                                >
+                                    لغو
+                            </Button>
+
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    // onClick={addCourseButton}
+                                    type="submit"
+                                    className={classes.newCourseButtonWidth}
+                                >
+                                    ایجاد
+                                </Button>
+                            </DialogActions>
+                        </ValidatorForm>
+
+
+
+                    </Dialog>
+
+                </ThemeProvider>
+            </StylesProvider>
+        );
+    };
+
+
+
+
+
+    // Add Course Dialog
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const history = useHistory();
     const [list, setList] = React.useState([
     ]);
     const [open, setOpen] = React.useState(false);
@@ -82,42 +520,46 @@ function CourseLayout(props) {
         setOpen(false);
     };
     const classes = useStyles();
-    const handleCourse = (val) => {
-        const newList = list.concat({val});
 
+    const handleCourse = (val) => {
+        const newList = list.concat({ val });
         setList(newList);
     };
 
-    React.useEffect(()=>{
-        setTimeout(()=>{
-            const promise1 = axios.get('http://127.0.0.1:8000/api/student_dashboard/courses/',{
-                headers: {
-                    "Authorization": `Token ${localStorage.getItem('token')}`,
-                },
-              })
-              promise1.then(
-                result =>{
-                    result.data.map((course)=>{
-                      const c = {id:course.id, name:course.name, image:course.poster, link:course.course_link_url, teacher:`${course.owner_firstname} ${course.owner_lastname}` }
-                      console.log(c)
-                      let flag = true;
-                      props.courses.map(course=>{
-                          if (course.id === c.id){
-                              flag = false;
-                          }
-                      })
-                      if(flag){
-                          props.onAddCourse(c);
-                      }
+    const getValues = () => {
+        setList([])
+        const promise1 = axios.get('http://127.0.0.1:8000/api/teacher-courses/', {
+            headers: {
+                "Authorization": `Token ${localStorage.getItem('token')}`,
+            },
+        })
+        promise1.then(
+            result => {
+                result.data.map((course) => {
+                    const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, capacity: course.capacity }
+                    let flag = true;
+                    props.courses.map(course => {
+                        if (course.id === c.id) {
+                            flag = false;
+                        }
                     })
-                }
-              )
-        },500)
+                    if (flag) {
+                        props.onAddCourse(c);
+                    }
+                })
+            }
+        )
+
+    }
+
+    React.useEffect(() => {
+        getValues();
+
     },[])
 
     return (
         <React.Fragment>
-            <CssBaseline/>
+            <CssBaseline />
             <main>
                 {/* Hero unit */}
                 {/* <div className={classes.heroContent}>
@@ -131,33 +573,68 @@ function CourseLayout(props) {
                         </div>
                     </Container>
                 </div> */}
+
+
+
+
+                <NewCourseDialog
+                    open={dialogOpen}
+                    setOpen={setDialogOpen}
+                />
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <Dialog
-                className="dialog"
-                open={open}
-                TransitionComponent={Transition}
-                keepMounted
-                onClose={handleClose}
+                    className="dialog"
+                    open={open}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={handleClose}
                 >
-                <DialogTitle className="dialog" id="alert-dialog-slide-title" dir='rtl'>{"آیا مطمئن هستید؟"}</DialogTitle>
-                <DialogContent className="dialog">
-                    <DialogContentText id="alert-dialog-slide-description" dir='rtl'>
-                    آیا درس مورد نطر را میخواهید حذف کنید؟
+                    <DialogTitle className="dialog" id="alert-dialog-slide-title" dir='rtl'>{"آیا مطمئن هستید؟"}</DialogTitle>
+                    <DialogContent className="dialog">
+                        <DialogContentText id="alert-dialog-slide-description" dir='rtl'>
+                            آیا درس مورد نطر را میخواهید حذف کنید؟
                     </DialogContentText>
-                </DialogContent>
-                <DialogActions dir='rtl' className="dialog">
-                    <Button onClick={handleClose} color="secondary">
-                    بله
+                    </DialogContent>
+                    <DialogActions dir='rtl' className="dialog">
+                        <Button onClick={handleClose} color="secondary">
+                            بله
                     </Button>
-                    <Button onClick={handleClose} color="primary">
-                    نه
+                        <Button onClick={handleClose} color="primary">
+                            نه
                     </Button>
-                </DialogActions>
+                    </DialogActions>
                 </Dialog>
-                <Container className={classes.cardGrid} maxWidth="md">
+                <Container className={classes.cardGrid} maxWidth="md" >
+                    <Grid container dir="rtl" lg={11} item={true} className={classes.gridTitle} spacing={3} justify="flex-start" alignItems="baseline">
+                        <Grid item >
+                            <Typography className='typo' component="div">
+                                <Box fontSize={20} fontWeight="fontWeightBold" m={1}>
+                                    کلاس های من
+                            </Box>
+                            </Typography>
+                        </Grid>
+                        <Grid item >
+                            <Button className="addButton" variant="outlined" color="primary" onClick={newCourseButton}>
+                                ساختن کلاس جدید
+                            </Button>
+                        </Grid>
+                    </Grid>
                     {/* End hero unit */}
-                    <Grid container spacing={4}>
+                    <Grid container spacing={2} dir="rtl" lg={11} item={true} >
                         {props.courses.map((list) => (
-                            <Grid item key={list.id} xs={12} sm={6} md={3}>
+                            <Grid item key={list.id} xs={12} sm={6} md={3} >
                                 <Card className="layout">
                                     <CardMedia
                                         className={classes.cardMedia}
@@ -170,27 +647,30 @@ function CourseLayout(props) {
                                             {list.name}
                                         </Typography>
                                         <Typography className="courseAboutPlace">
-                                            {list.teacher}
+                                            {`ظرفیت : ${list.capacity}`}
                                         </Typography>
                                     </CardContent>
-                                    <Divider/>
+                                    <Divider />
+                                    <Divider />
+                                    <Divider />
+                                    <Divider />
                                     <CardActions className={classes.cardActions}>
                                         <Grid
-                                        container
-                                        direction="row"
-                                        justify="space-evenly"
-                                        alignItems="center">
-                                        <Button size="small" color="primary" onClick={handleClickOpen}>
-                                            <p className="toSee">حذف</p>
-                                        </Button>
-                                        <Link to={list.link} style={{textDecoration: 'none'}}>
-                                        <Button size="small" color="primary">
-                                            <p className="toSee">مشاهده</p>
-                                        </Button>
-                                        </Link>
+                                            container
+                                            direction="row"
+                                            justify="space-evenly"
+                                            alignItems="center">
+                                            <Button size="small" color="primary" onClick={handleClickOpen}>
+                                                <p className="toSee">حذف</p>
+                                            </Button>
+                                            <Link to={list.link} style={{ textDecoration: 'none' }}>
+                                                <Button size="small" color="primary">
+                                                    <p className="toSee">مشاهده</p>
+                                                </Button>
+                                            </Link>
                                         </Grid>
                                     </CardActions>
-                                </Card>                                    
+                                </Card>
                             </Grid>
                         ))}
                     </Grid>
@@ -200,15 +680,15 @@ function CourseLayout(props) {
     );
 }
 
-const mapStateToProps = state =>{
-    return{
+const mapStateToProps = state => {
+    return {
         courses: state.addedCourses
     };
 };
-const mapDispatchToProps = dispatch =>{
-    return{
-        onAddCourse: (course)=> dispatch({type: actionTypes.ADD_COURSE, payload:course })
-    
+const mapDispatchToProps = dispatch => {
+    return {
+        onAddCourse: (course) => dispatch({ type: actionTypes.ADD_COURSE, payload: course })
+
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CourseLayout);
