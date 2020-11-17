@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cardGrid: {
         paddingTop: theme.spacing(3),
+        // backgroundColor: "red"
         // paddingBottom: theme.spacing(3),
         // marginLeft: theme.spacing(18),
         // marginRight: theme.spacing(30),
@@ -49,6 +50,11 @@ const useStyles = makeStyles((theme) => ({
     },
     cardMedia: {
         // paddingTop: '56.25%', // 16:9filteredList
+        // minHeight: "100%",
+        // minWidth: "100%",
+        // maxWidth: "100%",
+        // maxHeight: "100%",
+
         height: 180,
         width: '100%',
         objectFit: 'cover'
@@ -186,7 +192,8 @@ const AddCourse = () => {
                             <Grid dir="rtl" container spacing={2} lg={10} item={true} md={12}>
                                 {courses && courses.map((course) =>
                                     <Grid className="cardSpacing" item key={course.id} xs={12} sm={6} md={4}>
-                                        <Card className="layout">
+                                    {/*// <Grid className="cardSpacing" item key={course.id}>*/}
+                                        <Card className="layout1">
                                             <CardHeader
                                                 title={
                                                     <Typography className="courseOwnerPlace" component="h4">

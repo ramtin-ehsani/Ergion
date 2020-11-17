@@ -1,30 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import axios from "axios";
 import {createMuiTheme, jssPreset, makeStyles, StylesProvider, ThemeProvider} from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
-// import myimg from '../../../Pics/math.jpg';
 import "./Seggestions.scss";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-// import Typography from "@material-ui/core/Typography";
-// import {Box} from "@material-ui/core";
-// import Button from "@material-ui/core/Button";
 import {create} from "jss";
 import rtl from "jss-rtl";
 import Typography from "@material-ui/core/Typography";
 import {Box} from "@material-ui/core";
-import CardContent from "@material-ui/core/CardContent";
-import Card from "@material-ui/core/Card";
+import {useHistory} from 'react-router-dom';
 import Slider from "react-slick";
 import "../../../../node_modules/slick-carousel/slick/slick.css";
 import "../../../../node_modules/slick-carousel/slick/slick-theme.css";
-// import myimg2 from '../../../Pics/physics.jpg';
-// import myimg3 from '../../../Pics/lit.jpg';
+import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
+import SkipNextIcon from '@material-ui/icons/SkipNext';
 
 const theme = createMuiTheme({
     '@global': {
@@ -54,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     root: {
-        height: "100vh",
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
@@ -92,10 +81,10 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(3)
     },
     cardGrid: {
-        // paddingTop: theme.spacing(3),
-        boxShadow: "0 3px 40px 0 rgba(0,0,0,.06)",
+        paddingTop: theme.spacing(3),
+        //boxShadow: "0 3px 40px 0 rgba(0,0,0,.6)",
         height: "fit-content",
-        marginTop: 20,
+        // marginTop: 20,
 
         // backgroundColor: "aqua",
 
@@ -109,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         textAlign: "center",
         fontFamily: "IRANSans",
-        fontSize: 80,
+        // fontSize: 80,
     },
     header: {
         fontWeight: "bolder",
@@ -124,10 +113,11 @@ const useStyles = makeStyles((theme) => ({
     },
     typo: {
         // backgroundColor: "pink",
+
         justify: "flex-start",
         fontFamily: "IRANSans",
         alignItems: "baseline",
-        paddingLeft: 20,
+        // paddingLeft: 20,
         textAlign: "right",
         fontWeight: "bolder",
     },
@@ -136,10 +126,10 @@ const useStyles = makeStyles((theme) => ({
         // height: 400,
         // border: '2px solid lightgray',
         // boxShadow: ,
-        minWidth: 295,
-        maxWidth: 295,
-        maxHeight: 300,
-        minHeight: 300,
+        minWidth: 235,
+        maxWidth: 235,
+        maxHeight: 200,
+        minHeight: 200,
 
         // height: 100,
     }
@@ -165,31 +155,26 @@ const useStyles = makeStyles((theme) => ({
 
 const settings = {
     dots: true,
-    // infinite: false,
     speed: 300,
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2000,
+    autoplaySpeed: 2500,
     rtl: true,
-    // centerMode: true,
-    // className: "center",
     pauseOnHover: true,
-    // centerPadding: "100px",
     responsive: [
         {
             breakpoint: 1024,
             settings: {
                 slidesToShow: 3,
                 slidesToScroll: 3,
-                infinite: true,
+                // infinite: true,
                 dots: true
             }
         },
         {
-            breakpoint: 600,
+            breakpoint: 760,
             settings: {
-                // dots: false,
                 slidesToShow: 2,
                 slidesToScroll: 2,
                 initialSlide: 2,
@@ -198,12 +183,12 @@ const settings = {
             }
         },
         {
-            breakpoint: 480,
+            breakpoint: 500,
             settings: {
                 slidesToShow: 1,
                 slidesToScroll: 1,
-                dots: true
-
+                dots: false,
+                autoplaySpeed: 5000,
             }
         }
     ]
@@ -214,8 +199,13 @@ const jss = create({plugins: [...jssPreset().plugins, rtl()]});
 
 const Suggestions = () => {
     const classes = useStyles();
+    const history = useHistory();
+
+    let slider = useRef();
+
     const [suggested, setSuggested] = useState(null);
     const [hovered, setHovered] = useState([]);
+
     const config = {
         headers: {
             "Authorization": `Token ${localStorage.getItem('api_key')}`,
@@ -255,71 +245,46 @@ const Suggestions = () => {
                     <CssBaseline/>
                     <div className={classes.root}>
                         <Container maxWidth="md" className={classes.cardGrid}>
-                            <Grid item>
-                                <Typography className={classes.typo} component="div">
-                                    <Box alignItems="baseline" justify="flex-start" fontSize={20}
-                                         fontWeight="fontWeightBold" m={4}>
-                                        دروس پیشنهادی
-                                    </Box>
-                                </Typography>
+                            <Grid container dir="rtl" lg={10} item={true} className={classes.gridTitle} spacing={3}
+                                  justify="flex-start" alignItems="baseline">
+                                <Grid style={{width: "100%", display: "flex", flex: 1}} item>
+                                    <Typography className='typography' component="div">
+                                        <Box fontSize={20} fontWeight="fontWeightBold" m={1}>
+                                            دروس پیشنهادی
+                                        </Box>
+                                    </Typography>
+                                    <Grid dir="rtl" className="preAndNextButton" item>
+                                        <SkipNextIcon className="nextButton"
+                                                      onClick={() => slider.slickNext()}>{"<"}</SkipNextIcon>
+                                        <SkipPreviousIcon className="nextButton"
+                                                          onClick={() => slider.slickPrev()}>{">"}</SkipPreviousIcon>
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                            <Box mt={6}/>
-                            {/*<Grid container dir="rtl" lg={11} item={true} justify="flex-start" alignItems="baseline">*/}
-                            {/*    <GridList cols={2.5} className={classes.gridList}>*/}
-                            <Grid>
-                                {/*<GridList style={{width: "70%", dir: "rtl", marginLeft: 30}} cellHeight={350} spacing={12} lg={10} cols={3.5} dir="rtl" className={classes.gridList}>*/}
-                                <div style={{height: "400px", width: "100%", dir: "rtl"}}>
-                                    <Slider {...settings}>
-                                        {suggested && suggested.map((course, index) => (
-                                            // <Slider></Slider>
+                            <Grid container dir="rtl" lg={10} item={true} spacing={2}>
+                                <div style={{width: "100%", dir: "rtl", marginTop: "5px"}}>
+                                    <Slider ref={c => (slider = c)} {...settings}>
+                                        {suggested && suggested.map((course) => (
                                             <div
                                                 key={course.id}
-                                                className="sssss"
-                                                // style={{marginLeft: "50px", justifyContent: "center", display: "flex"}}
-                                                // className={classes.img}
-                                                          onMouseOver={() => {
-                                                              let test = [...hovered];
-                                                              test[index] = true;
-                                                              setHovered(test)
-                                                          }}
-                                                          onMouseLeave={() => {
-                                                              let test = [...hovered];
-                                                              test[index] = false;
-                                                              setHovered(test)
-                                                          }}
+                                                className="slider-items"
+                                                onClick={() => {
+                                                    history.push('/course/' + course.id)
+                                                }}
                                             >
                                                 <img
                                                     className={classes.test}
                                                     src={course.course_cover}
                                                     alt={course.name}
                                                 />
-                                                {/*{*/}
-                                                {/*    // hovered[index] && (*/}
-                                                {/*hovered[index] && (*/}
-                                                {/*<GridListTileBar*/}
-                                                {/*    dir="rtl"*/}
-                                                {/*    className={classes.layout}*/}
-                                                {/*    title={*/}
-                                                {/*        <div>*/}
-                                                {/*            <span className={classes.spanName}>{course.name}</span>*/}
-                                                {/*        </div>*/}
-                                                {/*    }*/}
-                                                {/*    // subtitle={<span className={classes.spanName}>استاد {course.instructor_lastname}</span>}*/}
-                                                {/*    actionIcon={*/}
-                                                {/*        <IconButton onClick={() => console.log(course.name)}*/}
-                                                {/*                    aria-label={`info about ${course.name}`}*/}
-                                                {/*                    className={classes.icon}>*/}
-                                                {/*            <InfoIcon style={{fill: 'whitesmoke'}}/>*/}
-                                                {/*        </IconButton>*/}
-                                                {/*    }*/}
-                                                {/*/>*/}
-                                                {/*)*/}
-                                                {/*}*/}
+                                                <div className='info'>
+                                                    <p id='name'>{course.name}</p>
+                                                    <p id='teacher'>استاد {course.instructor_lastname}</p>
+                                                </div>
                                             </div>
                                         ))}
                                     </Slider>
                                 </div>
-                                {/*</GridList>*/}
                             </Grid>
                         </Container>
                     </div>

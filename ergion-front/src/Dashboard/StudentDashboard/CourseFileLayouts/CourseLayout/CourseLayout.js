@@ -54,6 +54,10 @@ const useStyles = makeStyles((theme) => ({
         height: 180,
         width: '100%',
         objectFit: 'cover'
+        // minHeight: "100%",
+        // minWidth: "100%",
+        // maxWidth: "100%",
+        // maxHeight: "100%",
     },
     cardContent: {
         flexGrow: 1,

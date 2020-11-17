@@ -18,10 +18,209 @@
 //}
 .slick-prev:before, .slick-next:before {
   color: black !important;
+  display: none !important;
   //background-color: #bd70ff;
 }
 
-.sssss{
+.slick-dots li button {
+  color: #FFFF33 !important;
+  border-radius: 100%;
+}
+
+.slick-dots {
+  position: initial !important;
+  //margin-top: 10px !important;
+  margin: 10px !important;
+}
+
+.typography {
+  font-family: IRANSans !important;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  font-weight: bolder;
+  flex: 1;
+
+  .nextButton {
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.slider-items {
+  cursor: pointer;
   display: flex !important;
   justify-content: center !important;
+  position: relative;
+
+  width: 80%;
+
+  .info {
+    padding: 5px;
+
+    p {
+      margin: 0 0 3px 0 !important;
+      color: white;
+      font-size: 15px;
+      font-weight: 500;
+      width: 100%;
+      text-align: right;
+    }
+
+    height: fit-content;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.6);
+
+    min-width: 235px;
+    max-width: 235px;
+  }
 }
+
+.preAndNextButton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+//.preAndNextButton {
+//  //background-color: #bd70ff;
+//  //align-items: first;
+//  justify-content: end;
+//  height: fit-content;
+//  display: flex;
+//
+//  $total-arrows: 3;
+//  $arrow-line-length: 15px;
+//  $arrow-line-width: 4px;
+//
+//  // arrow animtion + choose direction
+//  @mixin arrow-transitions($rot: 0deg) {
+//    transform: translate(50%, -50%) rotateZ($rot);
+//  }
+//
+//  .arrow-containerRight {
+//    display: block;
+//    width: 50px;
+//    height: 50px;
+//    position: initial;
+//    top: 50%;
+//    left: 50%;
+//    @include arrow-transitions(-90deg);
+//
+//    &:hover {
+//      cursor: pointer;
+//
+//      .arrow {
+//        top: 50%;
+//
+//        &:before {
+//          @include arrow-transitions(-30deg);
+//        }
+//
+//        &:after {
+//          @include arrow-transitions(30deg);
+//        }
+//      }
+//    }
+//
+//    .arrow {
+//      margin-left: 100px;
+//      padding-top: 100px;
+//      position: absolute;
+//      width: 100%;
+//      transition: all .4s ease;
+//
+//      &:before,
+//      &:after {
+//        transition: all .4s ease;
+//        content: '';
+//        display: block;
+//        position: absolute;
+//        transform-origin: bottom right;
+//        background: black;
+//        width: $arrow-line-width;
+//        height: $arrow-line-length;
+//        border-radius: 10px;
+//        transform: translate(-50%, -50%) rotateZ(-45deg);
+//      }
+//
+//      &:after {
+//        transform-origin: bottom left;
+//        transform: translate(-50%, -50%) rotateZ(45deg);
+//      }
+//
+//      @for $i from 1 through $total-arrows {
+//        &:nth-child(#{$i}) {
+//          opacity: 0.3 * $i;
+//          top: 15 + (100% * $i/5);
+//        }
+//      }
+//    }
+//
+//  }
+//
+//  .arrow-containerLeft {
+//    display: block;
+//    width: 50px;
+//    height: 50px;
+//    position: initial;
+//    top: 50%;
+//    left: 50%;
+//    @include arrow-transitions(90deg);
+//
+//    &:hover {
+//      cursor: pointer;
+//
+//      .arrow {
+//        top: 50%;
+//
+//        &:before {
+//          @include arrow-transitions(-30deg);
+//        }
+//
+//        &:after {
+//          @include arrow-transitions(30deg);
+//        }
+//      }
+//    }
+//
+//
+//
+//    .arrow {
+//      position: absolute;
+//      left: 50%;
+//      transition: all .4s ease;
+//
+//      &:before,
+//      &:after {
+//        transition: all .4s ease;
+//        content: '';
+//        display: block;
+//        position: absolute;
+//        transform-origin: bottom right;
+//        background: black;
+//        width: $arrow-line-width;
+//        height: $arrow-line-length;
+//        border-radius: 10px;
+//        transform: translate(-50%, -50%) rotateZ(-45deg);
+//      }
+//
+//      &:after {
+//        transform-origin: bottom left;
+//        transform: translate(-50%, -50%) rotateZ(45deg);
+//      }
+//
+//      @for $i from 1 through $total-arrows {
+//        &:nth-child(#{$i}) {
+//          opacity: 0.3 * $i;
+//          top: 15 + (100% * $i/5);
+//        }
+//      }
+//    }
+//
+//  }
+//}
