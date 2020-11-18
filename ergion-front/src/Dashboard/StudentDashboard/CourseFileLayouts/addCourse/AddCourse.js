@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import "./AddCourse.scss";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
-import {createMuiTheme, jssPreset, makeStyles, StylesProvider, ThemeProvider} from '@material-ui/core/styles';
+import { createMuiTheme, jssPreset, makeStyles, StylesProvider, ThemeProvider } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -16,12 +16,14 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
 import Box from "@material-ui/core/Box";
 import Avatar from "@material-ui/core/Avatar";
-import {create} from "jss";
+import { create } from "jss";
 import rtl from "jss-rtl";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import SearchIcon from '@material-ui/icons/Search';
 import ShareIcon from '@material-ui/icons/Share';
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+import { ButtonGroup } from "@material-ui/core";
 // import copy from "copy-to-clipboard";
 
 
@@ -65,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cardActions: {
         // height: 50,
-        padding: theme.spacing(0.5),
+        padding: theme.spacing(0),
     },
     footer: {
         backgroundColor: theme.palette.background.paper,
@@ -84,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const jss = create({plugins: [...jssPreset().plugins, rtl()]});
+const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 const theme = createMuiTheme({
     typography: {
@@ -116,6 +118,8 @@ const theme = createMuiTheme({
 const AddCourse = () => {
 
     const classes = useStyles();
+    const [loading, setLoading] = React.useState(true);
+    const [isEmpty, setEmpty] = React.useState(false);
 
     const [courses, setCourses] = useState(null);
 
@@ -123,7 +127,7 @@ const AddCourse = () => {
 
 
     const config = {
-        headers: {Authorization: `Token ${localStorage.getItem('api_key')}`},    
+        headers: { Authorization: `Token ${localStorage.getItem('api_key')}` },
     };
     const changeSearchBarHandler = (event) => {
         const API = "http://127.0.0.1:8000/api/all-courses/?substring=" + event.target.value;
@@ -159,7 +163,13 @@ const AddCourse = () => {
         const showAllAPI = "http://127.0.0.1:8000/api/all-courses/";
         axios.get(showAllAPI, config)
             .then((response) => {
-                setCourses(response.data);
+                if (response.data.length > 0) {
+                    setEmpty(false)
+                    setCourses(response.data);
+                } else {
+                    setEmpty(true)
+                }
+                setLoading(false)
             })
     }, []);
 
@@ -168,7 +178,7 @@ const AddCourse = () => {
         <React.Fragment>
             <StylesProvider jss={jss}>
                 <ThemeProvider theme={theme}>
-                    <CssBaseline/>
+                    <CssBaseline />
                     <main className="main">
                         <Container className={classes.cardGrid} maxWidth="md">
                             <Grid dir="rtl" lg={10} item={true} md={12}>
@@ -179,7 +189,7 @@ const AddCourse = () => {
                                     dir="rtl"
                                     label={
                                         <div className="labelOFSearchbar">
-                                            <SearchIcon className="search_Icon"/>
+                                            <SearchIcon className="search_Icon" />
                                             دوره خودتو پیدا کن
                                         </div>
                                     }
@@ -188,11 +198,22 @@ const AddCourse = () => {
                                     color="primary"
                                 />
                             </Grid>
-                            <Box mt={6}/>
+                            <Box mt={6} />
                             <Grid dir="rtl" container spacing={2} lg={10} item={true} md={12}>
+                                {loading && (
+                                    <CircularProgress />
+                                )}
+                                {isEmpty && (<Grid item >
+                                    <Typography className='typo' component="div">
+                                        <Box fontSize={20} m={1}>
+                                            کلاسی یافت نشد
+                                            </Box>
+                                    </Typography>
+                                </Grid>
+                                )}
                                 {courses && courses.map((course) =>
                                     <Grid className="cardSpacing" item key={course.id} xs={12} sm={6} md={4}>
-                                    {/*// <Grid className="cardSpacing" item key={course.id}>*/}
+                                        {/*// <Grid className="cardSpacing" item key={course.id}>*/}
                                         <Card className="layout1">
                                             <CardHeader
                                                 title={
@@ -202,7 +223,7 @@ const AddCourse = () => {
                                                 }
                                                 avatar={
                                                     <Avatar src={course.instructor_profile_picture} aria-label="recipe"
-                                                            className={classes.avatar}>
+                                                        className={classes.avatar}>
                                                         {(course.instructor_firstname).split("")[0]}
                                                     </Avatar>
                                                 }
@@ -215,7 +236,7 @@ const AddCourse = () => {
                                             />
                                             <CardContent className={classes.cardContent} spacing={3}>
                                                 <Typography gutterBottom variant="h5" component="h2"
-                                                            className="courseNamePlace">
+                                                    className="courseNamePlace">
                                                     {course.name}
                                                 </Typography>
                                                 {/*<Typography className="courseOwnerPlace" component="h4">*/}
@@ -228,42 +249,37 @@ const AddCourse = () => {
                                                 {/*     دوره:{" " + course.grade}*/}
                                                 {/*</Typography>*/}
                                             </CardContent>
-                                            <Divider/>
-                                            <Divider/>
-                                            <Divider/>
-                                            <Divider/>
+                                            <Divider />
+                                            <Divider />
+                                            <Divider />
+                                            <Divider />
                                             <CardActions className={classes.cardActions}>
-                                                <Grid
-                                                    container
-                                                    direction="row"
-                                                    dir="rtl"
-                                                    justify="space-evenly"
-                                                    alignItems="center">
-                                                    <Button href={courseLinkHandler(course.id)}
-                                                            className="toSeeButton" size="small"
-                                                            color="primary">
-                                                        <p className="toSee">مشاهده</p>
+                                                <ButtonGroup fullWidth>
+                                                    <Button href={`/student_dashboard/added_courses/${course.id}`}
+                                                        className="toSeeButton" size="small"
+                                                        color="primary" variant='contained'>
+                                                        مشاهده
                                                     </Button>
-                                                    {/*<Button size="small" color="primary" onClick={copyToClipboard}>*/}
-                                                    {/*    <ShareIcon/>*/}
-                                                    {/*</Button>*/}
-                                                    <div className={classes.root}>
-                                                        <Button size="small" color="primary"
-                                                                onClick={() => copyToClipboard(course.id)}
-                                                                action={localStorage.setItem('id', course.id)}
-                                                        >
-                                                            <ShareIcon/>
+                                                    <Divider style={{minWidth:'3px',maxWidth:'3px'}}/>
+                                                    <Button size="small" color="primary"
+                                                        onClick={() => copyToClipboard(course.id)}
+                                                        action={localStorage.setItem('id', course.id)}
+                                                        endIcon={<ShareIcon />}
+                                                        variant='contained'
+                                                        className="toSeeButton"
+                                                    >
+                                                        اشتراک
                                                         </Button>
-                                                        <Snackbar className={classes.snackBAr} dir="rtl" open={open}
-                                                                  autoHideDuration={1500}
-                                                                  onClose={handleClose}>
-                                                            <Alert className={classes.alertText} onClose={handleClose}
-                                                                   severity="success" variant="filled">
-                                                                لینک کلاس کپی شد
+                                                </ButtonGroup>
+                                                <Snackbar className={classes.snackBAr} dir="rtl" open={open}
+                                                    autoHideDuration={1500}
+                                                    onClose={handleClose}>
+                                                    <Alert className={classes.alertText} onClose={handleClose}
+                                                        severity="success" variant="filled">
+                                                        لینک کلاس کپی شد
                                                             </Alert>
-                                                        </Snackbar>
-                                                    </div>
-                                                </Grid>
+                                                </Snackbar>
+
                                             </CardActions>
                                         </Card>
                                     </Grid>

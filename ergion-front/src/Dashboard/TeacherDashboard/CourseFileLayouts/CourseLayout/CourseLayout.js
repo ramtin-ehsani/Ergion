@@ -22,7 +22,9 @@ import Divider from '@material-ui/core/Divider';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../../../store/actions';
-import { Box } from '@material-ui/core';
+import { Box, ButtonGroup } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
@@ -72,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(1),
     },
     cardActions: {
-        padding: theme.spacing(0.5),
+        padding: theme.spacing(0),
     },
     footer: {
         backgroundColor: theme.palette.background.paper,
@@ -508,6 +510,8 @@ function CourseLayout(props) {
 
 
     const history = useHistory();
+    const [loading, setLoading] = React.useState(true);
+    const [isEmpty, setEmpty] = React.useState(false);
     const [list, setList] = React.useState([
     ]);
     const [open, setOpen] = React.useState(false);
@@ -535,18 +539,24 @@ function CourseLayout(props) {
         })
         promise1.then(
             result => {
-                result.data.map((course) => {
-                    const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, capacity: course.capacity }
-                    let flag = true;
-                    props.courses.map(course => {
-                        if (course.id === c.id) {
-                            flag = false;
+                if (result.data.length > 0) {
+                    setEmpty(false)
+                    result.data.map((course) => {
+                        const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, capacity: course.capacity }
+                        let flag = true;
+                        props.courses.map(course => {
+                            if (course.id === c.id) {
+                                flag = false;
+                            }
+                        })
+                        if (flag) {
+                            props.onAddCourse(c);
                         }
                     })
-                    if (flag) {
-                        props.onAddCourse(c);
-                    }
-                })
+                }else {
+                    setEmpty(true)
+                }
+                setLoading(false)
             }
         )
 
@@ -555,7 +565,7 @@ function CourseLayout(props) {
     React.useEffect(() => {
         getValues();
 
-    },[])
+    }, [])
 
     return (
         <React.Fragment>
@@ -633,8 +643,20 @@ function CourseLayout(props) {
                     </Grid>
                     {/* End hero unit */}
                     <Grid container spacing={2} dir="rtl" lg={11} item={true} >
+                        {loading && (
+                            <CircularProgress />
+                        )}
+
+                        {isEmpty && (<Grid item >
+                            <Typography className='typo' component="div">
+                                <Box fontSize={20} m={1}>
+                                    کلاسی یافت نشد
+                            </Box>
+                            </Typography>
+                        </Grid>
+                        )}
                         {props.courses.map((list) => (
-                            <Grid item key={list.id} xs={12} sm={6} md={3} >
+                            <Grid item key={list.id} xs={12} sm={6} md={4} >
                                 <Card className="layout">
                                     <CardMedia
                                         className={classes.cardMedia}
@@ -655,20 +677,34 @@ function CourseLayout(props) {
                                     <Divider />
                                     <Divider />
                                     <CardActions className={classes.cardActions}>
-                                        <Grid
+                                        <ButtonGroup dir="ltr" fullWidth>
+                                            <Button
+                                                startIcon={<DeleteIcon />}
+                                                size="small" variant='contained' color="primary" onClick={handleClickOpen} className='toSee'>
+                                                حذف
+                                            </Button>
+                                            <Divider style={{minWidth:'3px',maxWidth:'3px'}}/>
+                                            <Button size="small" variant='contained' color="primary" className='toSee' href={`/teacher_dashboard/added_courses/${list.id}`}>
+                                                مشاهده
+                                                </Button>
+                                        </ButtonGroup>
+                                        {/* <Grid
                                             container
                                             direction="row"
                                             justify="space-evenly"
                                             alignItems="center">
-                                            <Button size="small" color="primary" onClick={handleClickOpen}>
-                                                <p className="toSee">حذف</p>
+                                            <Link to={`/teacher_dashboard/added_courses/${list.id}`} style={{ textDecoration: 'none' }}>
+                                            <Button size="small" color="primary" className='toSee' variant='outlined'>
+                                                مشاهده
                                             </Button>
-                                            <Link to={list.link} style={{ textDecoration: 'none' }}>
-                                                <Button size="small" color="primary">
-                                                    <p className="toSee">مشاهده</p>
-                                                </Button>
                                             </Link>
-                                        </Grid>
+                                            <Button
+                                            
+                                             size="small" color="primary" variant='outlined' onClick={handleClickOpen} className='toSee'>
+                                                حذف
+                                            </Button>
+                                            
+                                        </Grid> */}
                                     </CardActions>
                                 </Card>
                             </Grid>

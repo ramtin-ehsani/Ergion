@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
 import AddCourse from "./CourseFileLayouts/addCourse/AddCourse";
+import SingleCourse from '../../singleCourse/singlecoursecontainer';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -84,6 +85,7 @@ const Dashboard = () => {
                     <Route path='/student_dashboard/profile' exact component={StudentProfile} />
                     <Route path='/student_dashboard/added_courses' exact component={CourseFileLayouts} />
                     <Route path="/student_dashboard/find-your-course" exact component={AddCourse}/>
+                    <Route path='/student_dashboard/added_courses/:id' exact component={SingleCourse} />
                 </Switch>
 
             </main>

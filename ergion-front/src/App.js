@@ -9,6 +9,7 @@ import './fonts/IRANSans/css/fontiran.css';
 import StudentDashboard from "./Dashboard/StudentDashboard/StudentDashboard";
 import TeacherDashboard from "./Dashboard/TeacherDashboard/TeacherDashboard";
 import Error404 from "./404/404";
+import SingleCourse from './singleCourse/singlecoursecontainer';
 
 
 const history = createBrowserHistory();
@@ -24,7 +25,8 @@ class App extends Component {
                         <Route path='/login' exact component={Login}/>
                         <Route path='/student_dashboard'  component={StudentDashboard}/>
                         <Route path='/teacher_dashboard'  component={TeacherDashboard}/>
-                        <Route path='*' component={Error404}/>
+                        {/* <Route path='*' component={Error404}/> */}
+                        <Route path="/course/:id" component={SingleCourse}/>
                     </Switch>
                 </Router>
             </div>
