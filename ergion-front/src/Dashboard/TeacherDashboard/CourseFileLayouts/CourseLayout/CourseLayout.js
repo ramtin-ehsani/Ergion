@@ -510,6 +510,8 @@ function CourseLayout(props) {
 
 
     const history = useHistory();
+    const [loading, setLoading] = React.useState(true);
+    const [isEmpty, setEmpty] = React.useState(false);
     const [list, setList] = React.useState([
     ]);
     const [open, setOpen] = React.useState(false);
@@ -537,18 +539,24 @@ function CourseLayout(props) {
         })
         promise1.then(
             result => {
-                result.data.map((course) => {
-                    const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, capacity: course.capacity }
-                    let flag = true;
-                    props.courses.map(course => {
-                        if (course.id === c.id) {
-                            flag = false;
+                if (result.data.length > 0) {
+                    setEmpty(false)
+                    result.data.map((course) => {
+                        const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, capacity: course.capacity }
+                        let flag = true;
+                        props.courses.map(course => {
+                            if (course.id === c.id) {
+                                flag = false;
+                            }
+                        })
+                        if (flag) {
+                            props.onAddCourse(c);
                         }
                     })
-                    if (flag) {
-                        props.onAddCourse(c);
-                    }
-                })
+                }else {
+                    setEmpty(true)
+                }
+                setLoading(false)
             }
         )
 
@@ -557,7 +565,7 @@ function CourseLayout(props) {
     React.useEffect(() => {
         getValues();
 
-    },[])
+    }, [])
 
     return (
         <React.Fragment>
@@ -635,10 +643,19 @@ function CourseLayout(props) {
                     </Grid>
                     {/* End hero unit */}
                     <Grid container spacing={2} dir="rtl" lg={11} item={true} >
-                        {props.courses.length === 0 ? (
+                        {loading && (
                             <CircularProgress />
-                        ):
-                        props.courses.map((list) => (
+                        )}
+
+                        {isEmpty && (<Grid item >
+                            <Typography className='typo' component="div">
+                                <Box fontSize={20} m={1}>
+                                    کلاسی یافت نشد
+                            </Box>
+                            </Typography>
+                        </Grid>
+                        )}
+                        {props.courses.map((list) => (
                             <Grid item key={list.id} xs={12} sm={6} md={4} >
                                 <Card className="layout">
                                     <CardMedia
@@ -662,12 +679,13 @@ function CourseLayout(props) {
                                     <CardActions className={classes.cardActions}>
                                         <ButtonGroup dir="ltr" fullWidth>
                                             <Button
-                                            startIcon={<DeleteIcon/>}
-                                             size="small" variant='contained' color="primary" onClick={handleClickOpen} className='toSee'>
-                                                    حذف
+                                                startIcon={<DeleteIcon />}
+                                                size="small" variant='contained' color="primary" onClick={handleClickOpen} className='toSee'>
+                                                حذف
                                             </Button>
-                                            <Button size="small" variant='contained' color="primary" className='toSee' href={`/student_dashboard/added_courses/${list.id}`}>
-                                                    مشاهده
+                                            <Divider style={{minWidth:'3px',maxWidth:'3px'}}/>
+                                            <Button size="small" variant='contained' color="primary" className='toSee' href={`/teacher_dashboard/added_courses/${list.id}`}>
+                                                مشاهده
                                                 </Button>
                                         </ButtonGroup>
                                         {/* <Grid

@@ -63,7 +63,7 @@ export default function FormDialog(props) {
             </Button>
             <Dialog className={classes.Dialogstyle} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle  >
-                    <div className={classes.DialogTitlestyle}>
+                    <div className={classes.DialogTitlestyle} dir='rtl'>
                     ویرایش اطلاعات کلاس
                    </div> 
                    </DialogTitle>

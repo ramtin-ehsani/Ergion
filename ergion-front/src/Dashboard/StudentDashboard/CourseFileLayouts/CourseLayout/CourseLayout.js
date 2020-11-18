@@ -75,12 +75,15 @@ const useStyles = makeStyles((theme) => ({
     gridTitle: {
         paddingBottom: theme.spacing(3),
         paddingTop: theme.spacing(3)
-    }
+    },
+    
 }));
 
 
 function CourseLayout(props) {
     const history = useHistory();
+    const [loading, setLoading] = React.useState(true);
+    const [isEmpty, setEmpty] = React.useState(false);
     const [list, setList] = React.useState([
     ]);
     const [open, setOpen] = React.useState(false);
@@ -100,15 +103,17 @@ function CourseLayout(props) {
     };
 
     React.useEffect(() => {
-        setTimeout(() => {
-            const promise1 = axios.get('http://127.0.0.1:8000/api/student-courses/', {
-                headers: {
-                    "Authorization": `Token ${localStorage.getItem('token')}`,
-                },
-            })
-            promise1.then(
-                result => {
-                    console.log(result)
+        // setTimeout(() => {
+        const promise1 = axios.get('http://127.0.0.1:8000/api/student-courses/', {
+            headers: {
+                "Authorization": `Token ${localStorage.getItem('token')}`,
+            },
+        })
+        promise1.then(
+            result => {
+                console.log(result)
+                if (result.data.length > 0) {
+                    setEmpty(false)
                     result.data.map((course) => {
                         const c = { id: course.id, name: course.name, image: course.course_cover, link: course.course_url, teacher: `${course.instructor_firstname} ${course.instructor_lastname}` }
                         console.log(c)
@@ -118,13 +123,18 @@ function CourseLayout(props) {
                                 flag = false;
                             }
                         })
+
                         if (flag) {
                             props.onAddCourse(c);
                         }
                     })
+                } else {
+                    setEmpty(true)
                 }
-            )
-        }, 500)
+                setLoading(false)
+            }
+        )
+        // }, 500)
     }, [])
 
     return (
@@ -182,13 +192,21 @@ function CourseLayout(props) {
                     </Grid>
                     {/* End hero unit */}
                     <Grid container spacing={2} dir="rtl" lg={10} item={true} >
-                        {props.courses.length === 0 ? (
-                        <CircularProgress  />
-                        )
-                            :
-                        props.courses.map((list) => {
-                            return(
-                                <Grid item key={list.id} xs={12} sm={6} md={4} >
+                        {loading && (
+                            <CircularProgress />
+                        )}
+
+                        {isEmpty && (<Grid item >
+                            <Typography className='typo' component="div">
+                                <Box fontSize={20}  m={1}>
+                                کلاسی یافت نشد
+                            </Box>
+                            </Typography>
+                        </Grid>
+                        )}
+
+                        {props.courses.map((list) =>
+                            <Grid item key={list.id} xs={12} sm={6} md={4} >
                                 <Card className="layout">
                                     <CardMedia
                                         className={classes.cardMedia}
@@ -211,12 +229,13 @@ function CourseLayout(props) {
                                     <CardActions className={classes.cardActions}>
                                         <ButtonGroup dir="ltr" fullWidth>
                                             <Button
-                                            startIcon={<DeleteIcon/>}
-                                             size="small" variant='contained' color="primary" onClick={handleClickOpen} className='toSee'>
-                                                    حذف
+                                                startIcon={<DeleteIcon />}
+                                                size="small" variant='contained' color="primary" onClick={handleClickOpen} className='toSee'>
+                                                حذف
                                             </Button>
+                                            <Divider style={{minWidth:'3px'}}/>
                                             <Button size="small" variant='contained' color="primary" className='toSee' href={`/student_dashboard/added_courses/${list.id}`}>
-                                                    مشاهده
+                                                مشاهده
                                                 </Button>
                                         </ButtonGroup>
                                         {/* <Grid
@@ -236,8 +255,8 @@ function CourseLayout(props) {
                                     </CardActions>
                                 </Card>
                             </Grid>
-                            )
-                            })}
+                        )
+                        }
                     </Grid>
                 </Container>
             </main>

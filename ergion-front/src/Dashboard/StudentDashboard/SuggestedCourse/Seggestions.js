@@ -1,16 +1,17 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from "axios";
-import {createMuiTheme, jssPreset, makeStyles, StylesProvider, ThemeProvider} from '@material-ui/core/styles';
+import { createMuiTheme, jssPreset, makeStyles, StylesProvider, ThemeProvider } from '@material-ui/core/styles';
 import "./Seggestions.scss";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import {create} from "jss";
+import { create } from "jss";
 import rtl from "jss-rtl";
 import Typography from "@material-ui/core/Typography";
-import {Box} from "@material-ui/core";
-import {useHistory} from 'react-router-dom';
+import { Box } from "@material-ui/core";
+import { useHistory } from 'react-router-dom';
 import Slider from "react-slick";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import "../../../../node_modules/slick-carousel/slick/slick.css";
 import "../../../../node_modules/slick-carousel/slick/slick-theme.css";
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
@@ -239,11 +240,13 @@ const settingsLessThan3Mode = {
 
 }
 
-const jss = create({plugins: [...jssPreset().plugins, rtl()]});
+const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 const Suggestions = () => {
     const classes = useStyles();
     const history = useHistory();
+    const [loading, setLoading] = React.useState(true);
+    const [isEmpty, setEmpty] = React.useState(false);
 
     let slider = useRef();
 
@@ -260,12 +263,17 @@ const Suggestions = () => {
         const api = "http://127.0.0.1:8000/api/suggested-courses/";
         axios.get(api, config)
             .then((response) => {
-                setSuggested(response.data);
+                if (response.data.length > 0) {
+                    setEmpty(false)
+                    setSuggested(response.data);
+                } else {
+                    setEmpty(true)
+                }
+                setLoading(false)
+                setArrSize(response.data.length)
                 // (suggested && suggested.map(() => (
                 //     test = suggested.toString().length
                 // )))
-                const suggestedCourseSize = response.data.length
-                setArrSize(suggestedCourseSize)
                 console.log(response.data)
                 console.log(response.data.length)
             })
@@ -292,12 +300,12 @@ const Suggestions = () => {
         <React.Fragment>
             <StylesProvider jss={jss}>
                 <ThemeProvider theme={theme}>
-                    <CssBaseline/>
+                    <CssBaseline />
                     <div className={classes.root}>
                         <Container maxWidth="md" className={classes.cardGrid}>
                             <Grid container dir="rtl" lg={10} item={true} className={classes.gridTitle} spacing={3}
-                                  justify="flex-start" alignItems="baseline">
-                                <Grid style={{width: "100%", display: "flex", flex: 1}} item>
+                                justify="flex-start" alignItems="baseline">
+                                <Grid style={{ width: "100%", display: "flex", flex: 1 }} item>
                                     <Typography className='typography' component="div">
                                         <Box fontSize={20} fontWeight="fontWeightBold" m={1}>
                                             دروس پیشنهادی
@@ -305,47 +313,48 @@ const Suggestions = () => {
                                     </Typography>
                                     <Grid dir="rtl" className="preAndNextButton" item>
                                         <SkipNextIcon className="nextButton"
-                                                      onClick={() => slider.slickNext()}>{"<"}</SkipNextIcon>
+                                            onClick={() => slider.slickNext()}>{"<"}</SkipNextIcon>
                                         <SkipPreviousIcon className="nextButton"
-                                                          onClick={() => slider.slickPrev()}>{">"}</SkipPreviousIcon>
+                                            onClick={() => slider.slickPrev()}>{">"}</SkipPreviousIcon>
                                     </Grid>
                                 </Grid>
                             </Grid>
                             <Grid container dir="rtl" lg={10} item={true} spacing={2}>
                                 <div className="slider-items-parent"
-                                     style={{width: "100%", dir: "rtl", marginTop: "5px"}}>
-                                    {
-                                        arrSize === 0 ? (
-                                            <Typography className='typo' component="div">
-                                                <Box fontSize={20} m={4}>
-                                                    <p className="notFound">کلاسی یافت نشد!</p>
-                                                </Box>
-                                            </Typography>
-                                        ) : (
-                                            <Slider
-                                                ref={c => (slider = c)} {...arrSize > 3 ? {...settings} : {...settingsLessThan3Mode}}>
-                                                {suggested && suggested.map((course) => (
-                                                    <div
-                                                        key={course.id}
-                                                        className="slider-items"
-                                                        onClick={() => {
-                                                            history.push(`/student_dashboard/added_courses/${course.id}`)
-                                                        }}
-                                                    >
-                                                        <img
-                                                            className={classes.test}
-                                                            src={course.course_cover}
-                                                            alt={course.name}
-                                                        />
-                                                        <div className='info'>
-                                                            <p id='name'>{course.name}</p>
-                                                            <p id='teacher'>استاد {course.instructor_lastname}</p>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </Slider>
-                                        )
-                                    }
+                                    style={{ width: "100%", dir: "rtl", marginTop: "5px" }}>
+                                    {loading && (
+                                        <CircularProgress />
+                                    )}
+                                    {isEmpty && (<Grid item >
+                                        <Typography className='typo' component="div">
+                                            <Box fontSize={20} m={1}>
+                                                کلاسی یافت نشد
+                                            </Box>
+                                        </Typography>
+                                    </Grid>
+                                    )}
+                                    <Slider
+                                        ref={c => (slider = c)} {...arrSize > 3 ? { ...settings } : { ...settingsLessThan3Mode }}>
+                                        {suggested && suggested.map((course) => (
+                                            <div
+                                                key={course.id}
+                                                className="slider-items"
+                                                onClick={() => {
+                                                    history.push(`/student_dashboard/added_courses/${course.id}`)
+                                                }}
+                                            >
+                                                <img
+                                                    className={classes.test}
+                                                    src={course.course_cover}
+                                                    alt={course.name}
+                                                />
+                                                <div className='info'>
+                                                    <p id='name'>{course.name}</p>
+                                                    <p id='teacher'>استاد {course.instructor_lastname}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </Slider>
                                 </div>
                             </Grid>
                         </Container>
