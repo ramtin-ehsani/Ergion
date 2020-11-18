@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -46,7 +46,10 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth',
     'rest_auth.registration',
-    'Users',
+    'users',
+    'teacher_dashboard',
+    'student_dashboard',
+    'course',
 
 
 
@@ -130,12 +133,12 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 
 }
-AUTH_USER_MODEL = 'Users.CustomUser'
+AUTH_USER_MODEL = 'users.CustomUser'
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'Users.serializers.UserSerializer',
+    'USER_DETAILS_SERIALIZER': 'users.serializers.UserSerializer',
 }
 REST_AUTH_REGISTER_SERIALIZERS ={
-    'REGISTER_SERIALIZER': 'Users.serializers.UserRegistrationSerializer',
+    'REGISTER_SERIALIZER': 'users.serializers.UserRegistrationSerializer',
 }
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
@@ -150,7 +153,7 @@ ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/?verification=1'
 
 SITE_ID = 1
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-ACCOUNT_ADAPTER = 'Users.adapter.CustomAccountAdapter'
+ACCOUNT_ADAPTER = 'users.adapter.CustomAccountAdapter'
 # EMAIL_USE_TLS = True
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_PORT = 587
@@ -191,3 +194,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
