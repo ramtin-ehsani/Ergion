@@ -158,6 +158,7 @@ const settings = {
     speed: 300,
     slidesToShow: 3,
     slidesToScroll: 1,
+    infinite: true,
     autoplay: true,
     autoplaySpeed: 2500,
     rtl: true,
@@ -168,7 +169,48 @@ const settings = {
             settings: {
                 slidesToShow: 3,
                 slidesToScroll: 3,
-                // infinite: true,
+                dots: true
+            }
+        },
+        {
+            breakpoint: 760,
+            settings: {
+                slidesToShow: 2,
+                slidesToScroll: 2,
+                initialSlide: 2,
+                dots: true
+            }
+        },
+        {
+            breakpoint: 500,
+            settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                dots: false,
+                autoplaySpeed: 4000,
+                autoplay: true,
+            }
+        }
+    ]
+
+}
+
+const settingsLessThan3Mode = {
+    dots: true,
+    speed: 300,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    infinite: false,
+    autoplay: true,
+    autoplaySpeed: 2500,
+    rtl: true,
+    pauseOnHover: true,
+    responsive: [
+        {
+            breakpoint: 1024,
+            settings: {
+                slidesToShow: 3,
+                slidesToScroll: 3,
                 dots: true
             }
         },
@@ -187,8 +229,10 @@ const settings = {
             settings: {
                 slidesToShow: 1,
                 slidesToScroll: 1,
-                dots: false,
-                autoplaySpeed: 5000,
+                dots: true,
+                autoplaySpeed: 4000,
+                autoplay: true,
+
             }
         }
     ]
@@ -204,20 +248,26 @@ const Suggestions = () => {
     let slider = useRef();
 
     const [suggested, setSuggested] = useState(null);
-    const [hovered, setHovered] = useState([]);
+    const [arrSize, setArrSize] = useState(0);
 
     const config = {
         headers: {
             "Authorization": `Token ${localStorage.getItem('api_key')}`,
         },
     }
+
     useEffect(() => {
         const api = "http://127.0.0.1:8000/api/suggested-courses/";
         axios.get(api, config)
             .then((response) => {
                 setSuggested(response.data);
+                // (suggested && suggested.map(() => (
+                //     test = suggested.toString().length
+                // )))
+                const suggestedCourseSize = response.data.length
+                setArrSize(suggestedCourseSize)
                 console.log(response.data)
-                console.log("test")
+                console.log(response.data.length)
             })
     }, []);
 
@@ -262,28 +312,40 @@ const Suggestions = () => {
                                 </Grid>
                             </Grid>
                             <Grid container dir="rtl" lg={10} item={true} spacing={2}>
-                                <div style={{width: "100%", dir: "rtl", marginTop: "5px"}}>
-                                    <Slider ref={c => (slider = c)} {...settings}>
-                                        {suggested && suggested.map((course) => (
-                                            <div
-                                                key={course.id}
-                                                className="slider-items"
-                                                onClick={() => {
-                                                    history.push('/course/' + course.id)
-                                                }}
-                                            >
-                                                <img
-                                                    className={classes.test}
-                                                    src={course.course_cover}
-                                                    alt={course.name}
-                                                />
-                                                <div className='info'>
-                                                    <p id='name'>{course.name}</p>
-                                                    <p id='teacher'>استاد {course.instructor_lastname}</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </Slider>
+                                <div className="slider-items-parent"
+                                     style={{width: "100%", dir: "rtl", marginTop: "5px"}}>
+                                    {
+                                        arrSize === 0 ? (
+                                            <Typography className='typo' component="div">
+                                                <Box fontSize={20} m={4}>
+                                                    <p className="notFound">کلاسی یافت نشد!</p>
+                                                </Box>
+                                            </Typography>
+                                        ) : (
+                                            <Slider
+                                                ref={c => (slider = c)} {...arrSize > 3 ? {...settings} : {...settingsLessThan3Mode}}>
+                                                {suggested && suggested.map((course) => (
+                                                    <div
+                                                        key={course.id}
+                                                        className="slider-items"
+                                                        onClick={() => {
+                                                            history.push(`/student_dashboard/added_courses/${course.id}`)
+                                                        }}
+                                                    >
+                                                        <img
+                                                            className={classes.test}
+                                                            src={course.course_cover}
+                                                            alt={course.name}
+                                                        />
+                                                        <div className='info'>
+                                                            <p id='name'>{course.name}</p>
+                                                            <p id='teacher'>استاد {course.instructor_lastname}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </Slider>
+                                        )
+                                    }
                                 </div>
                             </Grid>
                         </Container>

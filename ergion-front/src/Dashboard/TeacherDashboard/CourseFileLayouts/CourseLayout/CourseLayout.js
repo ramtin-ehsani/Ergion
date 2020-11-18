@@ -22,7 +22,9 @@ import Divider from '@material-ui/core/Divider';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../../../store/actions';
-import { Box } from '@material-ui/core';
+import { Box, ButtonGroup } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
@@ -72,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(1),
     },
     cardActions: {
-        padding: theme.spacing(0.5),
+        padding: theme.spacing(0),
     },
     footer: {
         backgroundColor: theme.palette.background.paper,
@@ -633,8 +635,11 @@ function CourseLayout(props) {
                     </Grid>
                     {/* End hero unit */}
                     <Grid container spacing={2} dir="rtl" lg={11} item={true} >
-                        {props.courses.map((list) => (
-                            <Grid item key={list.id} xs={12} sm={6} md={3} >
+                        {props.courses.length === 0 ? (
+                            <CircularProgress />
+                        ):
+                        props.courses.map((list) => (
+                            <Grid item key={list.id} xs={12} sm={6} md={4} >
                                 <Card className="layout">
                                     <CardMedia
                                         className={classes.cardMedia}
@@ -655,20 +660,33 @@ function CourseLayout(props) {
                                     <Divider />
                                     <Divider />
                                     <CardActions className={classes.cardActions}>
-                                        <Grid
+                                        <ButtonGroup dir="ltr" fullWidth>
+                                            <Button
+                                            startIcon={<DeleteIcon/>}
+                                             size="small" variant='contained' color="primary" onClick={handleClickOpen} className='toSee'>
+                                                    حذف
+                                            </Button>
+                                            <Button size="small" variant='contained' color="primary" className='toSee' href={`/student_dashboard/added_courses/${list.id}`}>
+                                                    مشاهده
+                                                </Button>
+                                        </ButtonGroup>
+                                        {/* <Grid
                                             container
                                             direction="row"
                                             justify="space-evenly"
                                             alignItems="center">
-                                            <Button size="small" color="primary" onClick={handleClickOpen}>
-                                                <p className="toSee">حذف</p>
+                                            <Link to={`/teacher_dashboard/added_courses/${list.id}`} style={{ textDecoration: 'none' }}>
+                                            <Button size="small" color="primary" className='toSee' variant='outlined'>
+                                                مشاهده
                                             </Button>
-                                            <Link to={list.link} style={{ textDecoration: 'none' }}>
-                                                <Button size="small" color="primary">
-                                                    <p className="toSee">مشاهده</p>
-                                                </Button>
                                             </Link>
-                                        </Grid>
+                                            <Button
+                                            
+                                             size="small" color="primary" variant='outlined' onClick={handleClickOpen} className='toSee'>
+                                                حذف
+                                            </Button>
+                                            
+                                        </Grid> */}
                                     </CardActions>
                                 </Card>
                             </Grid>

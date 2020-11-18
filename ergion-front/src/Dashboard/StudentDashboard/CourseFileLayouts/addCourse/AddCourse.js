@@ -22,6 +22,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import ShareIcon from '@material-ui/icons/Share';
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+import { ButtonGroup } from "@material-ui/core";
 // import copy from "copy-to-clipboard";
 
 
@@ -65,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cardActions: {
         // height: 50,
-        padding: theme.spacing(0.5),
+        padding: theme.spacing(0),
     },
     footer: {
         backgroundColor: theme.palette.background.paper,
@@ -233,28 +234,23 @@ const AddCourse = () => {
                                             <Divider/>
                                             <Divider/>
                                             <CardActions className={classes.cardActions}>
-                                                <Grid
-                                                    container
-                                                    direction="row"
-                                                    dir="rtl"
-                                                    justify="space-evenly"
-                                                    alignItems="center">
-                                                    <Button href={courseLinkHandler(course.id)}
+                                            <ButtonGroup fullWidth>
+                                            <Button href={`/student_dashboard/added_courses/${course.id}`}
                                                             className="toSeeButton" size="small"
-                                                            color="primary">
-                                                        <p className="toSee">مشاهده</p>
+                                                            color="primary" variant='contained'>
+                                                        مشاهده
                                                     </Button>
-                                                    {/*<Button size="small" color="primary" onClick={copyToClipboard}>*/}
-                                                    {/*    <ShareIcon/>*/}
-                                                    {/*</Button>*/}
-                                                    <div className={classes.root}>
-                                                        <Button size="small" color="primary"
-                                                                onClick={() => copyToClipboard(course.id)}
-                                                                action={localStorage.setItem('id', course.id)}
+                                            <Button size="small" color="primary"
+                                                            onClick={() => copyToClipboard(course.id)}
+                                                            action={localStorage.setItem('id', course.id)}
+                                                            endIcon={<ShareIcon/>}
+                                                            variant='contained'
+                                                            className="toSeeButton" 
                                                         >
-                                                            <ShareIcon/>
+                                                            اشتراک
                                                         </Button>
-                                                        <Snackbar className={classes.snackBAr} dir="rtl" open={open}
+                                            </ButtonGroup>
+                                            <Snackbar className={classes.snackBAr} dir="rtl" open={open}
                                                                   autoHideDuration={1500}
                                                                   onClose={handleClose}>
                                                             <Alert className={classes.alertText} onClose={handleClose}
@@ -262,8 +258,7 @@ const AddCourse = () => {
                                                                 لینک کلاس کپی شد
                                                             </Alert>
                                                         </Snackbar>
-                                                    </div>
-                                                </Grid>
+                                                
                                             </CardActions>
                                         </Card>
                                     </Grid>

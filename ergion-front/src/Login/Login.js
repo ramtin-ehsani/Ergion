@@ -177,7 +177,7 @@ function Login(props) {
                     usedispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
 
                     localStorage.setItem('api_key', response.data.key)
-                    setUserSession(response.data.key, response.data.user);
+                    //setUserSession(response.data.key, response.data.user);
                     const promise1 = axios.get('http://127.0.0.1:8000/api/student-courses/',
                       config)
                     promise1.then(
@@ -211,7 +211,7 @@ function Login(props) {
                     usedispatch({ type: actionTypes.LOGIN, firstName: firstName, lastName: lastName, profilePicture: avatarImage })
 
                     localStorage.setItem('api_key', response.data.key)
-                    setUserSession(response.data.key, response.data.user);
+                    //setUserSession(response.data.key, response.data.user);
                     setLoading(false);
                     window.location = '/teacher_dashboard'
                     const promise1 = axios.get('http://127.0.0.1:8000/api/teacher-courses/',
