@@ -22,6 +22,7 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import NavBar from './Tabs'
 
 import Information from './information';
 import Generalinformation from './generalinformation';
@@ -81,6 +82,12 @@ const useStyles = makeStyles((theme) => ({
     marginBottom:theme.spacing(2),
     padding:0,
     
+  },
+  tabStyle:{
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
+
   }
 }));
 
@@ -146,8 +153,9 @@ const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
 
            
             <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Subjects course={course}/>
+              <Paper className={classes.tabStyle} elevation={3}>
+                {/* <Subjects course={course}/> */}
+                <NavBar course={course}/>
                 
               </Paper>
             </Grid>
