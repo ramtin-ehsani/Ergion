@@ -34,6 +34,8 @@ import { withStyles } from '@material-ui/core/styles';
 import PDFViewer from 'mgr-pdf-viewer-react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import axios from 'axios';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Fade from '@material-ui/core/Fade';
 import {
     TextField,
 } from '@material-ui/core';
@@ -99,7 +101,8 @@ const styles = (theme) => ({
     pdfStyle: {
         // height: 250,
         // width: '100%',
-    }
+    },
+
 });
 
 
@@ -123,6 +126,9 @@ class NestedList extends React.Component {
             isButtonShown: false,
             courseId: '',
             loading: true,
+            removeDialog: false,
+            editDialog: false,
+            chapterEditName: '',
 
 
 
@@ -239,6 +245,7 @@ class NestedList extends React.Component {
                         id: chapters.id,
                         name: chapters.name,
                         isOpened: false,
+                        buttonShown: false,
                         episodes: chapters.episodes,
 
 
@@ -258,6 +265,24 @@ class NestedList extends React.Component {
             })
     }
 
+    chapterRemove = () => {
+        axios.delete(('http://127.0.0.1:8000/api/course-chapters/?chapter_id=') + (this.state.list)[this.state.positionOfEpisode].id, this.config)
+            .then((response) => {
+                // handle success
+                const { list } = this.state
+                list.splice(this.state.positionOfEpisode, 1)
+                this.setState({ list: list, removeDialog: false })
+
+
+
+            })
+            .catch((error) => {
+                // handle error
+                console.log(error);
+            })
+
+    }
+
 
 
     font = 20;
@@ -273,6 +298,34 @@ class NestedList extends React.Component {
             return item;
         });
         this.setState({ list: results })
+
+    }
+
+    showButtons = (index) => {
+        const results = this.state.list.map((item, idx) => {
+            if (index === idx) {
+                return {
+                    ...item,
+                    buttonShown: true
+                };
+            }
+            return item;
+        });
+        this.setState({ list: results })
+
+    }
+    hideButtons = (index) => {
+        const results = this.state.list.map((item, idx) => {
+            if (index === idx) {
+                return {
+                    ...item,
+                    buttonShown: false
+                };
+            }
+            return item;
+        });
+        this.setState({ list: results })
+
     }
 
     onChange = (event) => {
@@ -295,7 +348,7 @@ class NestedList extends React.Component {
                 // handle success
                 const l = [
                     ...this.state.list,
-                    { name: response.data.name, isOpened: false, id: response.data.id, episodes: [] }
+                    { name: response.data.name, isOpened: false, buttonShown: false, id: response.data.id, episodes: [] }
                 ]
                 this.setState({ newChapterValue: "", isButtonShown: false, list: l })
 
@@ -311,8 +364,126 @@ class NestedList extends React.Component {
     };
 
     dialogOnclose = () => {
-        this.setState({ dialogOpen: false })
+        this.setState({ dialogOpen: false, removeDialog: false, editDialog: false })
 
+    }
+
+    chapterRemoveButton = (index) => {
+        this.setState({ positionOfEpisode: index, removeDialog: true })
+
+    }
+
+    chapterEditButton = (index) => {
+        this.setState({ chapterEditName: (this.state.list)[index].name, positionOfEpisode: index, editDialog: true })
+
+
+    }
+
+    chapterEditButtonSaveChanges = () => {
+        axios.patch(('http://127.0.0.1:8000/api/course-chapters/?chapter_id=') + (this.state.list)[this.state.positionOfEpisode].id, { name: this.newEpisodeName.current.value }, this.config)
+            .then((response) => {
+                // handle success
+                console.log(response.data)
+                // const l = [
+                //     ...this.state.list,
+                //     { name: response.data.name, isOpened: false, buttonShown: false, id: response.data.id, episodes: [] }
+                // ]
+                // this.setState({ newChapterValue: "", isButtonShown: false, list: l })
+
+
+
+            })
+            .catch((error) => {
+                // handle error
+                console.log(error);
+            })
+
+    }
+
+    EditDialog = () => {
+        const { classes } = this.props;
+        return (
+            <Dialog
+                open={this.state.editDialog}
+                onClose={this.dialogOnclose}
+                aria-labelledby="error-dialog"
+                className={classes.newEpisodeRoot}
+
+            >
+                <ValidatorForm form="form" onSubmit={this.chapterEditButtonSaveChanges} >
+
+                    <DialogTitle id="error-dialog" dir='rtl' className={classes.newEpisodeTitle}>
+                        ویرایش
+                    </DialogTitle>
+
+                    <Divider />
+                    <Divider />
+
+
+                    <DialogContent style={{ padding: '10px' }}>
+
+
+                        <CardContent>
+                            <Grid
+                                container
+                                spacing={2}
+                                dir='rtl'
+                            >
+
+
+                                <Grid
+                                    item
+                                    md={12}
+                                    xs={12}
+                                >
+                                    <TextValidator
+                                        fullWidth
+                                        label="نام"
+                                        name="name"
+                                        defaultValue={this.state.chapterEditName}
+                                        inputRef={this.newEpisodeName}
+                                        required
+                                        variant="outlined"
+                                    />
+                                </Grid>
+
+                            </Grid>
+                        </CardContent>
+
+
+                    </DialogContent>
+
+                    <Divider />
+                    <Divider />
+
+                    <DialogActions className={classes.newEpisodeButtonContent}>
+
+
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={this.dialogOnclose}
+                            style={{ margin: '8px' }}
+                        >
+                            لغو
+                        </Button>
+
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            style={{ margin: '8px' }}
+                        >
+                            ذخیره
+                            </Button>
+                    </DialogActions>
+                </ValidatorForm>
+
+
+
+            </Dialog>
+
+        )
     }
 
     TypeOfFile = (props) => {
@@ -520,6 +691,45 @@ class NestedList extends React.Component {
 
                 </Dialog>
 
+                <Dialog
+                    open={this.state.removeDialog}
+                    onClose={this.dialogOnclose}
+                    aria-labelledby="error-dialog"
+                    className={classes.newEpisodeRoot}
+                >
+
+                    <DialogTitle id="error-dialog" dir='rtl' >
+                        حذف
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText dir="rtl" style={{ padding: '10px' }}>
+                            آیا میخواهید این سرفصل را حذف کنید؟
+                        </DialogContentText>
+                    </DialogContent>
+
+                    <DialogActions className={classes.newEpisodeButtonContent}>
+                        <Button
+                            variant="outlined"
+                            color="secondary"
+                            onClick={this.dialogOnclose}
+                            style={{ margin: '8px' }}
+                        >
+                            لغو
+                        </Button>
+
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={this.chapterRemove}
+                            style={{ margin: '8px' }}
+                        >
+                            حذف
+                            </Button>
+                    </DialogActions>
+                </Dialog>
+
+                <this.EditDialog />
+
 
 
 
@@ -537,13 +747,13 @@ class NestedList extends React.Component {
                     subheader={
                         <ListSubheader component="div" id="nested-list-subheader">
                             سرفصل های درسی
-                    </ListSubheader>
+                        </ListSubheader>
                     }
 
                 >
                     {this.state.list.map((item, index) =>
-                        (<div className={classes.paperStyle} key={item.id}>
-                            <Paper >
+                        (<div className={classes.paperStyle} key={item.id} >
+                            <Paper onMouseEnter={() => this.showButtons(index)} onMouseLeave={() => this.hideButtons(index)}>
                                 <ListItem button onClick={() => this.toggle(index)} >
                                     <ListItemIcon>
                                         <LibraryBooksIcon />
@@ -555,9 +765,27 @@ class NestedList extends React.Component {
                                             </Box>
                                         </Typography>
                                     </ListItemText>
-
                                     {item.isOpened ? <ExpandLess /> : <ExpandMore />}
                                 </ListItem>
+                                {this.state.isOwner && item.buttonShown && (
+                                    <Fade in={item.buttonShown} timeout={750}>
+                                        <div>
+                                            <Button variant="outlined"
+                                                dir="rtl"
+                                                color="secondary"
+                                                style={{ margin: '10px' }}
+                                                onClick={() => this.chapterRemoveButton(index)}>
+                                                حذف کردن
+
+                                    </Button>
+                                            <Button variant="outlined"
+                                                dir="rtl"
+                                                color="primary"
+                                                style={{ margin: '10px' }}
+                                                onClick={() => this.chapterEditButton(index)}>
+                                                ویرایش
+
+                                    </Button></div></Fade>)}
                             </Paper>
                             <Collapse in={item.isOpened} timeout="auto" unmountOnExit
                                 style={{ marginLeft: '14px', marginRight: '14px' }}
