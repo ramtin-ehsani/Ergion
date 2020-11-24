@@ -98,11 +98,11 @@ export default function NavTabs(props) {
                         index={value}
                         onChangeIndex={handleChange}
                     >
-                    <TabPanel value={value} index={0}>
-                        <Content course={props.course}/>
-                    </TabPanel>
-                    <TabPanel value={value} index={1}>
-                        اخبار
+                        <TabPanel value={value} index={0}>
+                            <Content course={props.course} />
+                        </TabPanel>
+                        <TabPanel value={value} index={1}>
+                            اخبار
                         </TabPanel>
                     </SwipeableViews>
                 </div>

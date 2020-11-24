@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
@@ -36,9 +35,45 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import axios from 'axios';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Fade from '@material-ui/core/Fade';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import {
     TextField,
 } from '@material-ui/core';
+
+const StyledMenu = withStyles({
+    paper: {
+        border: '1px solid #d3d4d5',
+    },
+})((props) => (
+    <Menu
+        elevation={0}
+        getContentAnchorEl={null}
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+        }}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+        }}
+        {...props}
+    />
+));
+
+const StyledMenuItem = withStyles((theme) => ({
+    root: {
+        '&:focus': {
+            backgroundColor: "#fff",
+            '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+                color: "#000",
+            },
+        },
+    },
+}))(MenuItem);
 
 const styles = (theme) => ({
     root: {
@@ -102,6 +137,11 @@ const styles = (theme) => ({
         // height: 250,
         // width: '100%',
     },
+    veticalDots: {
+        color: "#000",
+        width: 35,
+        height: 35,
+    }
 
 });
 
@@ -127,8 +167,7 @@ class NestedList extends React.Component {
             courseId: '',
             loading: true,
             removeDialog: false,
-            editDialog: false,
-            chapterEditName: '',
+            anchorEl: null,
 
 
 
@@ -141,33 +180,64 @@ class NestedList extends React.Component {
         const listItem = {
             ...this.state.list[this.state.positionOfEpisode]
         }
-        // const data=new FormData()
-        // data.append('chapter_id', listItem.id)
-        // data.append('name', this.newEpisodeName.current.value)
-        // data.append('episode_description', this.newEpisodeDescription.current.value)
-        // data.append('episode_file', files)
 
-        const data = {
-            chapter_id: listItem.id,
-            name: this.newEpisodeName.current.value,
-            episode_description: this.newEpisodeDescription.current.value,
-            episode_file: files[0]
-        }
+        const data = new FormData()
+        data.append('chapter_id', listItem.id)
+        data.append('name', this.newEpisodeName.current.value)
+        data.append('episode_description', this.newEpisodeDescription.current.value)
+        data.append('files', files[0])
+
         axios.post('http://127.0.0.1:8000/api/chapter-episodes/', data, this.config)
             .then((response) => {
                 // handle success
-                console.log(response.data)
-                // listItem.episodes.push({
-                //     name: response.data.name,
-                //     episode_description:response.data.episode_description,
-                //     files: response.data.files,
-                //     id:response.data.id
 
-                // })
+                const responseFile = []
+                if (files.length > 0) {
+                    let promises = []
+                    files.map((file) => {
+                        const fileData = new FormData()
+                        fileData.append('episode_id', response.data.id)
+                        fileData.append("file", file)
+                        promises.push(axios.post('http://127.0.0.1:8000/api/episode/', fileData, this.config)
+                            .then((res) => {
+                                responseFile.push(res.data)
+                            })
+                            .catch((error) => {
+                                // handle error
+                                console.log(error);
+                            }))
 
-                // const list = [...this.state.list]
-                // list[this.state.positionOfEpisode] = listItem
-                // this.setState({ dialogOpen: false,list:list })
+                    })
+                    Promise.all(promises).then(() => {
+                        listItem.episodes.push({
+                            name: response.data.name,
+                            episode_description: response.data.episode_description,
+                            files: responseFile,
+                            id: response.data.id
+
+                        })
+
+                        const list = [...this.state.list]
+                        list[this.state.positionOfEpisode] = listItem
+                        this.setState({ dialogOpen: false, list: list })
+                    })
+
+                } else {
+                    listItem.episodes.push({
+                        name: response.data.name,
+                        episode_description: response.data.episode_description,
+                        files: responseFile,
+                        id: response.data.id
+
+                    })
+
+                    const list = [...this.state.list]
+                    list[this.state.positionOfEpisode] = listItem
+                    this.setState({
+                        dialogOpen: false, list: list
+                    })
+                }
+
 
 
 
@@ -240,12 +310,14 @@ class NestedList extends React.Component {
             .then((response) => {
                 // handle success
                 const l = []
+                console.log(response.data)
                 response.data.map((chapters) => {
                     const chapter = {
                         id: chapters.id,
                         name: chapters.name,
                         isOpened: false,
                         buttonShown: false,
+                        isTextMode: false,
                         episodes: chapters.episodes,
 
 
@@ -324,6 +396,20 @@ class NestedList extends React.Component {
             }
             return item;
         });
+        this.setState({ list: results, anchorEl: null })
+
+    }
+
+    textModeSwitcher = (index) => {
+        const results = this.state.list.map((item, idx) => {
+            if (index === idx) {
+                return {
+                    ...item,
+                    isTextMode: !item.isTextMode
+                };
+            }
+            return item;
+        });
         this.setState({ list: results })
 
     }
@@ -339,7 +425,8 @@ class NestedList extends React.Component {
     }
 
 
-    handleClick = () => {
+    handleClick = (e) => {
+        e.preventDefault();
         const data = new FormData()
         data.append('course_id', this.state.courseId)
         data.append('name', this.state.newChapterValue)
@@ -348,7 +435,14 @@ class NestedList extends React.Component {
                 // handle success
                 const l = [
                     ...this.state.list,
-                    { name: response.data.name, isOpened: false, buttonShown: false, id: response.data.id, episodes: [] }
+                    {
+                        name: response.data.name,
+                        isOpened: false,
+                        buttonShown: false,
+                        isTextMode: false,
+                        id: response.data.id,
+                        episodes: []
+                    }
                 ]
                 this.setState({ newChapterValue: "", isButtonShown: false, list: l })
 
@@ -364,31 +458,37 @@ class NestedList extends React.Component {
     };
 
     dialogOnclose = () => {
-        this.setState({ dialogOpen: false, removeDialog: false, editDialog: false })
+        this.setState({ dialogOpen: false, removeDialog: false })
 
     }
 
-    chapterRemoveButton = (index) => {
+    chapterRemoveButton = (e, index) => {
+        e.stopPropagation()
         this.setState({ positionOfEpisode: index, removeDialog: true })
 
     }
 
-    chapterEditButton = (index) => {
-        this.setState({ chapterEditName: (this.state.list)[index].name, positionOfEpisode: index, editDialog: true })
+    chapterEditButton = (e, index) => {
+        e.stopPropagation()
+        this.textModeSwitcher(index)
 
 
     }
 
-    chapterEditButtonSaveChanges = () => {
-        axios.patch(('http://127.0.0.1:8000/api/course-chapters/?chapter_id=') + (this.state.list)[this.state.positionOfEpisode].id, { name: this.newEpisodeName.current.value }, this.config)
+    chapterEditButtonSaveChanges = (index) => {
+        axios.patch('http://127.0.0.1:8000/api/course-chapters/', {
+            name: this.newEpisodeName.current.value,
+            chapter_id: (this.state.list)[index].id
+        }, this.config)
             .then((response) => {
-                // handle success
-                console.log(response.data)
-                // const l = [
-                //     ...this.state.list,
-                //     { name: response.data.name, isOpened: false, buttonShown: false, id: response.data.id, episodes: [] }
-                // ]
-                // this.setState({ newChapterValue: "", isButtonShown: false, list: l })
+                const listItem = {
+                    ...this.state.list[index]
+                }
+                listItem.name = response.data.name
+                listItem.isTextMode = !listItem.isTextMode
+                const list = [...this.state.list]
+                list[index] = listItem
+                this.setState({ list: list })
 
 
 
@@ -400,91 +500,29 @@ class NestedList extends React.Component {
 
     }
 
-    EditDialog = () => {
-        const { classes } = this.props;
-        return (
-            <Dialog
-                open={this.state.editDialog}
-                onClose={this.dialogOnclose}
-                aria-labelledby="error-dialog"
-                className={classes.newEpisodeRoot}
+    listOnClick = (index) => {
+        if (!this.state.list[index].isTextMode) {
+            this.toggle(index)
+        }
 
-            >
-                <ValidatorForm form="form" onSubmit={this.chapterEditButtonSaveChanges} >
-
-                    <DialogTitle id="error-dialog" dir='rtl' className={classes.newEpisodeTitle}>
-                        ویرایش
-                    </DialogTitle>
-
-                    <Divider />
-                    <Divider />
-
-
-                    <DialogContent style={{ padding: '10px' }}>
-
-
-                        <CardContent>
-                            <Grid
-                                container
-                                spacing={2}
-                                dir='rtl'
-                            >
-
-
-                                <Grid
-                                    item
-                                    md={12}
-                                    xs={12}
-                                >
-                                    <TextValidator
-                                        fullWidth
-                                        label="نام"
-                                        name="name"
-                                        defaultValue={this.state.chapterEditName}
-                                        inputRef={this.newEpisodeName}
-                                        required
-                                        variant="outlined"
-                                    />
-                                </Grid>
-
-                            </Grid>
-                        </CardContent>
-
-
-                    </DialogContent>
-
-                    <Divider />
-                    <Divider />
-
-                    <DialogActions className={classes.newEpisodeButtonContent}>
-
-
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={this.dialogOnclose}
-                            style={{ margin: '8px' }}
-                        >
-                            لغو
-                        </Button>
-
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                            style={{ margin: '8px' }}
-                        >
-                            ذخیره
-                            </Button>
-                    </DialogActions>
-                </ValidatorForm>
-
-
-
-            </Dialog>
-
-        )
     }
+
+    textOnBlur = (event, index) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+            this.textModeSwitcher(index)
+        }
+    }
+
+    menuHandleClick = (event) => {
+        event.stopPropagation()
+        this.setState({ anchorEl: event.currentTarget });
+    };
+
+    menuHandleClose = (event) => {
+        event.stopPropagation()
+        this.setState({ anchorEl: null });
+    };
+
 
     TypeOfFile = (props) => {
 
@@ -500,7 +538,10 @@ class NestedList extends React.Component {
             name = name.substring(0, 15) + type
         }
 
-        if (String(src).includes('.jpg') || String(src).includes('.JPG') || String(src).includes('.png')) {
+        if (type === '.jpg' ||
+            type === '.JPG' ||
+            type === '.png' ||
+            type === '.jpeg') {
             return (
                 <div>
                     <Paper className={classes.mediaCardPaperStyle} elevation={5}>
@@ -512,14 +553,14 @@ class NestedList extends React.Component {
 
                     </Paper>
                     <Typography >
-                        <Box fontSize={16} fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
+                        <Box fontSize={16} dir="ltr" fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
                             {name}
                         </Box>
 
                     </Typography></div>
 
             )
-        } else if (String(src).includes('.mp4')) {
+        } else if (type === '.mp4') {
             return (
                 <div>
                     <Paper className={classes.mediaCardPaperStyle} elevation={5}>
@@ -530,13 +571,13 @@ class NestedList extends React.Component {
                         />
                     </Paper>
                     <Typography >
-                        <Box fontSize={16} fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
+                        <Box fontSize={16} dir="ltr" fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
                             {name}
                         </Box>
 
                     </Typography></div>
             )
-        } else if (String(src).includes('.pdf')) {
+        } else if (type === '.pdf') {
             return (
                 <div>
                     <Paper className={classes.mediaCardPaperStyle} elevation={5}>
@@ -545,7 +586,7 @@ class NestedList extends React.Component {
                         }} scale={0.38} loader='در حال آماده سازی لطفا صبر کنید' />
                     </Paper>
                     <Typography >
-                        <Box fontSize={16} fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
+                        <Box fontSize={16} dir="ltr" fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
                             {name}
                         </Box>
 
@@ -563,7 +604,7 @@ class NestedList extends React.Component {
                     />
                 </Paper>
                 <Typography >
-                    <Box fontSize={16} fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
+                    <Box fontSize={16} dir="ltr" fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
                         {name}
                     </Box>
 
@@ -576,6 +617,7 @@ class NestedList extends React.Component {
     render() {
         const { classes } = this.props;
         return (
+
             <div className={classes.root}>
 
                 <Dialog
@@ -647,6 +689,8 @@ class NestedList extends React.Component {
                                     >
                                         <DropzoneArea
                                             filesLimit={6}
+                                            showPreviews={true}
+                                            showPreviewsInDropzone={false}
                                             maxFileSize={5000000}
                                             dropzoneParagraphClass={classes.dropZoneTextStyle}
                                             dropzoneText="برای اضافه کردن فایل، می‌توانید فایل‌های خود را بکشید و در این اینجا رها کنید. "
@@ -709,8 +753,7 @@ class NestedList extends React.Component {
 
                     <DialogActions className={classes.newEpisodeButtonContent}>
                         <Button
-                            variant="outlined"
-                            color="secondary"
+                            color="primary"
                             onClick={this.dialogOnclose}
                             style={{ margin: '8px' }}
                         >
@@ -718,8 +761,8 @@ class NestedList extends React.Component {
                         </Button>
 
                         <Button
-                            variant="outlined"
-                            color="primary"
+                            variant="contained"
+                            color="secondary"
                             onClick={this.chapterRemove}
                             style={{ margin: '8px' }}
                         >
@@ -728,7 +771,6 @@ class NestedList extends React.Component {
                     </DialogActions>
                 </Dialog>
 
-                <this.EditDialog />
 
 
 
@@ -753,39 +795,111 @@ class NestedList extends React.Component {
                 >
                     {this.state.list.map((item, index) =>
                         (<div className={classes.paperStyle} key={item.id} >
-                            <Paper onMouseEnter={() => this.showButtons(index)} onMouseLeave={() => this.hideButtons(index)}>
-                                <ListItem button onClick={() => this.toggle(index)} >
+                            <Paper
+                                onMouseEnter={() => this.showButtons(index)} onMouseLeave={() => this.hideButtons(index)}
+                            >
+                                <ListItem button={!item.isTextMode} onClick={() => this.listOnClick(index)} >
                                     <ListItemIcon>
                                         <LibraryBooksIcon />
                                     </ListItemIcon>
                                     <ListItemText  >
-                                        <Typography >
-                                            <Box fontSize={this.font} fontWeight="fontWeightBold" >
-                                                {item.name}
-                                            </Box>
-                                        </Typography>
+
+                                        {!item.isTextMode ?
+                                            (<div
+                                                style={{
+                                                    display: 'flex',
+                                                }}
+                                            >
+                                                <Typography >
+
+                                                    <Box fontSize={this.font} fontWeight="fontWeightBold" >
+                                                        {item.name}
+                                                    </Box>
+
+
+                                                </Typography>
+                                                {this.state.isOwner && item.buttonShown && !item.isTextMode && (
+                                                    <Fade in={item.buttonShown} timeout={750} >
+                                                        <Button
+                                                            onClick={(e) => this.chapterEditButton(e, index)}
+                                                            className={classes.veticalDots}
+                                                            style={{ marginRight: '15px', marginBottom: '-5px' }}
+                                                        >
+                                                            <EditIcon />
+                                                        </Button>
+                                                    </Fade>
+                                                )}
+                                            </div>
+                                            ) :
+
+                                            (<ValidatorForm onSubmit={() => this.chapterEditButtonSaveChanges(index)} >
+                                                <TextValidator
+                                                    fullWidth
+                                                    autoFocus
+                                                    dir='rtl'
+                                                    label=""
+                                                    name="name"
+                                                    required
+                                                    onBlur={(event) => this.textOnBlur(event, index)}
+                                                    defaultValue={item.name}
+                                                    inputRef={this.newEpisodeName}
+                                                />
+                                            </ValidatorForm>)}
+
+
+
                                     </ListItemText>
+                                    {this.state.isOwner && item.buttonShown && !item.isTextMode && (
+                                        <Fade in={item.buttonShown} timeout={750} >
+                                            <div>
+                                                <Button
+                                                    aria-controls="customized-menu"
+                                                    aria-haspopup="true"
+                                                    onClick={(e) => this.menuHandleClick(e)}
+                                                    className={classes.veticalDots}
+                                                    style={{ marginLeft: '10px' }} >
+                                                    <MoreVertIcon
+                                                    />
+                                                </Button>
+                                                <StyledMenu
+                                                    id="customized-menu"
+                                                    anchorEl={this.state.anchorEl}
+                                                    keepMounted
+                                                    open={Boolean(this.state.anchorEl)}
+                                                    onClose={(e) => this.menuHandleClose(e)}
+                                                >
+
+                                                    <StyledMenuItem onClick={(e) => this.chapterRemoveButton(e, index)} >
+                                                        <ListItemIcon>
+                                                            <DeleteIcon />
+                                                        </ListItemIcon>
+                                                        <ListItemText primary="حذف کردن" />
+                                                    </StyledMenuItem>
+                                                </StyledMenu>
+                                            </div>
+                                            {/* <div>
+                                                <Button variant="outlined"
+                                                    dir="rtl"
+                                                    color="secondary"
+                                                    style={{ marginLeft: '10px' }}
+                                                    onClick={(e) => this.chapterRemoveButton(e, index)}>
+                                                    حذف کردن
+
+                                                </Button>
+                                                <Button variant="outlined"
+                                                    dir="rtl"
+                                                    color="primary"
+                                                    style={{ marginLeft: '10px' }}
+                                                    onClick={(e) => this.chapterEditButton(e, index)}>
+                                                    ویرایش
+
+                                    </Button></div> */}
+
+                                        </Fade>
+                                    )}
                                     {item.isOpened ? <ExpandLess /> : <ExpandMore />}
                                 </ListItem>
-                                {this.state.isOwner && item.buttonShown && (
-                                    <Fade in={item.buttonShown} timeout={750}>
-                                        <div>
-                                            <Button variant="outlined"
-                                                dir="rtl"
-                                                color="secondary"
-                                                style={{ margin: '10px' }}
-                                                onClick={() => this.chapterRemoveButton(index)}>
-                                                حذف کردن
 
-                                    </Button>
-                                            <Button variant="outlined"
-                                                dir="rtl"
-                                                color="primary"
-                                                style={{ margin: '10px' }}
-                                                onClick={() => this.chapterEditButton(index)}>
-                                                ویرایش
-
-                                    </Button></div></Fade>)}
                             </Paper>
                             <Collapse in={item.isOpened} timeout="auto" unmountOnExit
                                 style={{ marginLeft: '14px', marginRight: '14px' }}
@@ -827,7 +941,7 @@ class NestedList extends React.Component {
                                                 <Grid item md={12} lg={12}
                                                     xs={12}>
 
-                                                    <Grid container spacing={2} dir="rtl"
+                                                    <Grid container spacing={3} dir="rtl"
                                                         justify="center"
                                                         alignItems="center"
                                                         style={{ marginTop: '12px', padding: '20px' }}
@@ -856,7 +970,6 @@ class NestedList extends React.Component {
                                     <Button variant="outlined"
                                         dir="rtl"
                                         color="primary"
-                                        // className={classes.newEpisodeButton}
                                         style={{ marginTop: '12px' }}
                                         onClick={() => this.episodeButtonFunction(index)}>
                                         + ایجاد اپیزود
@@ -869,30 +982,38 @@ class NestedList extends React.Component {
                     )}
 
 
-                </List>) : ""}
-
-                {this.state.isOwner && (
-                    <FormControl fullWidth className={classes.textFieldStyle}>
-                        <InputLabel htmlFor="standard-adornment">+ ایجاد سرفصل جدید</InputLabel>
-                        <Input
-                            id="standard-basic"
-                            onChange={this.onChange}
-                            value={this.state.newChapterValue}
-                            endAdornment={
-                                <InputAdornment position="end" >
-                                    <IconButton
-                                        aria-label="creating new chapter"
-                                        onClick={this.handleClick}
-                                    >
-                                        {this.state.isButtonShown && (<AddBoxIcon className={classes.newChapterButtonStyle} />)}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                        />
-                    </FormControl>)}
+                </List>) : ""
+                }
 
 
-            </div>
+                {
+                    this.state.isOwner && (
+                        <ValidatorForm onSubmit={this.handleClick}>
+                            <FormControl fullWidth className={classes.textFieldStyle}>
+                                <InputLabel htmlFor="standard-adornment">+ ایجاد سرفصل جدید</InputLabel>
+                                <Input
+                                    id="standard-basic"
+                                    required
+                                    onChange={this.onChange}
+                                    value={this.state.newChapterValue}
+                                    endAdornment={
+                                        <InputAdornment position="end" >
+                                            <IconButton
+                                                aria-label="creating new chapter"
+                                                type='submit'
+                                            >
+                                                {this.state.isButtonShown && (<AddBoxIcon className={classes.newChapterButtonStyle} />)}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                />
+                            </FormControl>
+                        </ValidatorForm>)
+                }
+
+
+            </div >
+
         )
     }
 }
