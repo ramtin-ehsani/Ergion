@@ -40,9 +40,15 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import {
     TextField,
 } from '@material-ui/core';
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const StyledMenu = withStyles({
     paper: {
@@ -77,7 +83,9 @@ const StyledMenuItem = withStyles((theme) => ({
 
 const styles = (theme) => ({
     root: {
+        height: 'auto',
         width: '100%',
+        flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
     },
     nested: {
@@ -141,7 +149,15 @@ const styles = (theme) => ({
         color: "#000",
         width: 35,
         height: 35,
-    }
+    },
+    alertStyle: {
+        display: 'flex',
+        font: '20'
+    },
+    progressBar: {
+        margin: theme.spacing(0, 1, 0),
+        color: 'orange',
+    },
 
 });
 
@@ -168,14 +184,23 @@ class NestedList extends React.Component {
             loading: true,
             removeDialog: false,
             anchorEl: null,
+            newEpisodeLoading: false,
+            snackBarOpen: false,
 
 
 
         };
     }
 
+    onSnackBarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ snackBarOpen: false })
+    }
 
     addEpisodeButton = () => {
+        this.setState({ newEpisodeLoading: true })
         const { files } = this.state
         const listItem = {
             ...this.state.list[this.state.positionOfEpisode]
@@ -219,7 +244,7 @@ class NestedList extends React.Component {
 
                         const list = [...this.state.list]
                         list[this.state.positionOfEpisode] = listItem
-                        this.setState({ dialogOpen: false, list: list })
+                        this.setState({ dialogOpen: false, list: list, snackBarOpen: true, newEpisodeLoading: false })
                     })
 
                 } else {
@@ -234,7 +259,7 @@ class NestedList extends React.Component {
                     const list = [...this.state.list]
                     list[this.state.positionOfEpisode] = listItem
                     this.setState({
-                        dialogOpen: false, list: list
+                        dialogOpen: false, list: list, snackBarOpen: true
                     })
                 }
 
@@ -343,7 +368,7 @@ class NestedList extends React.Component {
                 // handle success
                 const { list } = this.state
                 list.splice(this.state.positionOfEpisode, 1)
-                this.setState({ list: list, removeDialog: false })
+                this.setState({ list: list, removeDialog: false, snackBarOpen: true })
 
 
 
@@ -444,7 +469,7 @@ class NestedList extends React.Component {
                         episodes: []
                     }
                 ]
-                this.setState({ newChapterValue: "", isButtonShown: false, list: l })
+                this.setState({ newChapterValue: "", isButtonShown: false, list: l, snackBarOpen: true })
 
 
 
@@ -488,7 +513,7 @@ class NestedList extends React.Component {
                 listItem.isTextMode = !listItem.isTextMode
                 const list = [...this.state.list]
                 list[index] = listItem
-                this.setState({ list: list })
+                this.setState({ list: list, snackBarOpen: true })
 
 
 
@@ -620,6 +645,19 @@ class NestedList extends React.Component {
 
             <div className={classes.root}>
 
+                <Snackbar
+                    open={this.state.snackBarOpen}
+                    autoHideDuration={1500}
+                    onClose={this.onSnackBarClose}
+                    dir='rtl'
+                >
+
+                    <Alert onClose={this.onSnackBarClose} severity="success" className={classes.alertStyle} >
+                        انجام شد
+
+                    </Alert>
+                </Snackbar>
+
                 <Dialog
                     open={this.state.dialogOpen}
                     onClose={this.dialogOnclose}
@@ -691,6 +729,7 @@ class NestedList extends React.Component {
                                             filesLimit={6}
                                             showPreviews={true}
                                             showPreviewsInDropzone={false}
+                                            previewText='فایل ها :'
                                             maxFileSize={5000000}
                                             dropzoneParagraphClass={classes.dropZoneTextStyle}
                                             dropzoneText="برای اضافه کردن فایل، می‌توانید فایل‌های خود را بکشید و در این اینجا رها کنید. "
@@ -727,6 +766,10 @@ class NestedList extends React.Component {
                                 style={{ margin: '8px' }}
                             >
                                 ایجاد
+                                {this.state.newEpisodeLoading && (
+                                    <CircularProgress thickness={5} size={25} className={classes.progressBar} />
+
+                                )}
                             </Button>
                         </DialogActions>
                     </ValidatorForm>
@@ -734,6 +777,8 @@ class NestedList extends React.Component {
 
 
                 </Dialog>
+
+
 
                 <Dialog
                     open={this.state.removeDialog}
@@ -913,29 +958,60 @@ class NestedList extends React.Component {
                                             <Grid container spacing={2} dir="rtl"
 
                                             >
+                                                <Grid item lg={12} md={12} sm={12} xs={12} maxWidth="lg" >
 
-                                                <Grid item md={12}
-                                                    xs={12}>
-                                                    <Typography >
-                                                        <Box fontSize={26} fontWeight="fontWeightBold" textAlign='center'
-                                                            style={{ marginTop: '12px' }}
-                                                        >
-                                                            {file.name}
-                                                        </Box>
+                                                    <Grid container spacing={2}
+                                                        direction="row"
+                                                        justify="space-between"
+                                                        alignItems="center"
+                                                        
+                                                    >
 
-                                                    </Typography>
 
-                                                </Grid>
-                                                <Grid item md={12}
-                                                    xs={12}>
+                                                        <Grid item md={4} lg={4} sm={4}
+                                                            xs={4} >
+                                                            <Button
+                                                                onClick={(e) => this.chapterEditButton(e, index)}
+                                                                className={classes.veticalDots}
 
-                                                    <Typography style={{ marginTop: '12px' }}>
-                                                        <Box fontSize={18}  >
-                                                            توضیحات: {file.episode_description}
-                                                        </Box>
+                                                            >
+                                                                <DeleteIcon />
+                                                            </Button>
+                                                        </Grid>
+                                                        <Grid item md={4} lg={4} sm={4} style={{ marginTop: '12px' }}
+                                                            xs={4} >
+                                                            <Typography >
+                                                                <Box fontSize={26} fontWeight="fontWeightBold"
+                                                                // textAlign='center'
 
-                                                    </Typography>
+                                                                >
+                                                                    {file.name}
+                                                                </Box>
 
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Grid item md={4} lg={4} sm={4}
+                                                            xs={4} >
+                                                            <Button
+                                                                onClick={(e) => this.chapterEditButton(e, index)}
+                                                                className={classes.veticalDots}
+                                                            >
+                                                                <EditIcon />
+                                                            </Button>
+                                                        </Grid>
+
+                                                    </Grid>
+                                                    <Grid item md={12}
+                                                        xs={12}>
+
+                                                        <Typography style={{ marginTop: '12px' }}>
+                                                            <Box fontSize={18}  >
+                                                                توضیحات: {file.episode_description}
+                                                            </Box>
+
+                                                        </Typography>
+
+                                                    </Grid>
                                                 </Grid>
 
                                                 <Grid item md={12} lg={12}
