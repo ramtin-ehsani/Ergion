@@ -29,6 +29,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
 import CardContent from '@material-ui/core/CardContent';
 import { DropzoneArea } from 'material-ui-dropzone'
+import InputBase from '@material-ui/core/InputBase';
 import { withStyles } from '@material-ui/core/styles';
 import PDFViewer from 'mgr-pdf-viewer-react';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -40,15 +41,12 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+import { connect } from 'react-redux';
+import * as actionTypes from '../store/actions'
 import {
     TextField,
 } from '@material-ui/core';
 
-function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const StyledMenu = withStyles({
     paper: {
@@ -120,6 +118,17 @@ const styles = (theme) => ({
         borderRadius: 10
 
     },
+    underline:{
+        '&:hover': {
+            '&:before': {
+              borderBottom: ['rgba(0, 188, 212, 0.7)', '!important'],
+            }
+          },
+          '&:before': {
+            borderBottom: 'rgba(0, 188, 212, 0.7)',
+          }
+
+    },
     newEpisodeRoot: {
         height: 'auto',
     },
@@ -161,6 +170,19 @@ const styles = (theme) => ({
 
 });
 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        dispatchUser: (snackBarOpenOrClose) =>
+            dispatch({ type: actionTypes.SNACKBAR, snackBarOpenOrClose: snackBarOpenOrClose })
+
+    };
+};
+
+const mapStateToProps = state => ({
+    snackBar: state.snackBar,
+
+});
+
 
 
 
@@ -175,6 +197,7 @@ class NestedList extends React.Component {
         this.state = {
             files: [],
             dialogOpen: false,
+            positionOfEpisodeChapter: 0,
             positionOfEpisode: 0,
             isOwner: false,
             list: [],
@@ -183,27 +206,23 @@ class NestedList extends React.Component {
             courseId: '',
             loading: true,
             removeDialog: false,
-            anchorEl: null,
             newEpisodeLoading: false,
-            snackBarOpen: false,
+            isChapterToDelete: false,
+            episodeEditDialog: false,
+            episodeEditingName: '',
+            episodeEditingDescription: '',
 
 
 
         };
     }
 
-    onSnackBarClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        this.setState({ snackBarOpen: false })
-    }
 
     addEpisodeButton = () => {
         this.setState({ newEpisodeLoading: true })
         const { files } = this.state
         const listItem = {
-            ...this.state.list[this.state.positionOfEpisode]
+            ...this.state.list[this.state.positionOfEpisodeChapter]
         }
 
         const data = new FormData()
@@ -243,8 +262,9 @@ class NestedList extends React.Component {
                         })
 
                         const list = [...this.state.list]
-                        list[this.state.positionOfEpisode] = listItem
-                        this.setState({ dialogOpen: false, list: list, snackBarOpen: true, newEpisodeLoading: false })
+                        list[this.state.positionOfEpisodeChapter] = listItem
+                        this.props.dispatchUser(true)
+                        this.setState({ dialogOpen: false, list: list, newEpisodeLoading: false })
                     })
 
                 } else {
@@ -257,9 +277,10 @@ class NestedList extends React.Component {
                     })
 
                     const list = [...this.state.list]
-                    list[this.state.positionOfEpisode] = listItem
+                    list[this.state.positionOfEpisodeChapter] = listItem
+                    this.props.dispatchUser(true)
                     this.setState({
-                        dialogOpen: false, list: list, snackBarOpen: true
+                        dialogOpen: false, list: list, newEpisodeLoading: false
                     })
                 }
 
@@ -289,7 +310,7 @@ class NestedList extends React.Component {
 
 
     episodeButtonFunction = (position) => {
-        this.setState({ positionOfEpisode: position, dialogOpen: true })
+        this.setState({ positionOfEpisodeChapter: position, dialogOpen: true })
     }
 
 
@@ -343,6 +364,7 @@ class NestedList extends React.Component {
                         isOpened: false,
                         buttonShown: false,
                         isTextMode: false,
+                        anchorEl: false,
                         episodes: chapters.episodes,
 
 
@@ -362,21 +384,50 @@ class NestedList extends React.Component {
             })
     }
 
-    chapterRemove = () => {
-        axios.delete(('http://127.0.0.1:8000/api/course-chapters/?chapter_id=') + (this.state.list)[this.state.positionOfEpisode].id, this.config)
-            .then((response) => {
-                // handle success
-                const { list } = this.state
-                list.splice(this.state.positionOfEpisode, 1)
-                this.setState({ list: list, removeDialog: false, snackBarOpen: true })
+    chapterOrEpisodeRemove = () => {
+        if (this.state.isChapterToDelete) {
+            axios.delete(('http://127.0.0.1:8000/api/course-chapters/?chapter_id=') + (this.state.list)[this.state.positionOfEpisodeChapter].id, this.config)
+                .then((response) => {
+                    // handle success
+                    const { list } = this.state
+                    list.splice(this.state.positionOfEpisodeChapter, 1)
+                    this.props.dispatchUser(true)
+                    this.setState({ list: list, removeDialog: false })
 
 
 
-            })
-            .catch((error) => {
-                // handle error
-                console.log(error);
-            })
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+        } else {
+            axios.delete(('http://127.0.0.1:8000/api/chapter-episodes/?episode_id=') + (((this.state.list)[this.state.positionOfEpisodeChapter]).episodes[this.state.positionOfEpisode]).id, this.config)
+                .then((response) => {
+                    // handle success
+
+
+                    const listItem = {
+                        ...this.state.list[this.state.positionOfEpisodeChapter]
+                    }
+                    const episodeItem = listItem.episodes
+
+                    episodeItem.splice(this.state.positionOfEpisode, 1)
+
+                    listItem.episodes = episodeItem
+                    const list = [...this.state.list]
+                    list[this.state.positionOfEpisodeChapter] = listItem
+                    this.props.dispatchUser(true)
+                    this.setState({ list: list, removeDialog: false })
+
+
+
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+        }
 
     }
 
@@ -416,12 +467,13 @@ class NestedList extends React.Component {
             if (index === idx) {
                 return {
                     ...item,
-                    buttonShown: false
+                    buttonShown: false,
+                    anchorEl: null
                 };
             }
             return item;
         });
-        this.setState({ list: results, anchorEl: null })
+        this.setState({ list: results })
 
     }
 
@@ -466,10 +518,12 @@ class NestedList extends React.Component {
                         buttonShown: false,
                         isTextMode: false,
                         id: response.data.id,
+                        anchorEl: false,
                         episodes: []
                     }
                 ]
-                this.setState({ newChapterValue: "", isButtonShown: false, list: l, snackBarOpen: true })
+                this.props.dispatchUser(true)
+                this.setState({ newChapterValue: "", isButtonShown: false, list: l })
 
 
 
@@ -483,13 +537,19 @@ class NestedList extends React.Component {
     };
 
     dialogOnclose = () => {
-        this.setState({ dialogOpen: false, removeDialog: false })
+        this.setState({ dialogOpen: false, removeDialog: false, episodeEditDialog: false })
 
     }
 
-    chapterRemoveButton = (e, index) => {
-        e.stopPropagation()
-        this.setState({ positionOfEpisode: index, removeDialog: true })
+    chapterOrEpisodeRemoveButton = (e, chapterIndex, episodeIndex, isChapter) => {
+        if (isChapter) {
+            e.stopPropagation()
+            this.setState({ positionOfEpisodeChapter: chapterIndex, isChapterToDelete: true, removeDialog: true })
+        } else {
+
+            this.setState({ positionOfEpisodeChapter: chapterIndex, isChapterToDelete: false, positionOfEpisode: episodeIndex, removeDialog: true })
+        }
+
 
     }
 
@@ -513,7 +573,8 @@ class NestedList extends React.Component {
                 listItem.isTextMode = !listItem.isTextMode
                 const list = [...this.state.list]
                 list[index] = listItem
-                this.setState({ list: list, snackBarOpen: true })
+                this.props.dispatchUser(true)
+                this.setState({ list: list })
 
 
 
@@ -538,15 +599,80 @@ class NestedList extends React.Component {
         }
     }
 
-    menuHandleClick = (event) => {
+    menuHandleClick = (event, index) => {
         event.stopPropagation()
-        this.setState({ anchorEl: event.currentTarget });
+        const results = this.state.list.map((item, idx) => {
+            if (index === idx) {
+                return {
+                    ...item,
+                    anchorEl: event.currentTarget
+                };
+            }
+            return item;
+        });
+        this.setState({ list: results })
     };
 
-    menuHandleClose = (event) => {
+    menuHandleClose = (event, index) => {
         event.stopPropagation()
-        this.setState({ anchorEl: null });
+        const results = this.state.list.map((item, idx) => {
+            if (index === idx) {
+                return {
+                    ...item,
+                    anchorEl: null
+                };
+            }
+            return item;
+        });
+        this.setState({ list: results })
     };
+
+    editEpisodeDialogOpener = (chapterIndex, episodeIndex) => {
+        this.setState({
+            positionOfEpisodeChapter: chapterIndex,
+            episodeEditDialog: true,
+            positionOfEpisode: episodeIndex,
+            episodeEditingName: (((this.state.list)[chapterIndex]).episodes[episodeIndex]).name,
+            episodeEditingDescription: (((this.state.list)[chapterIndex]).episodes[episodeIndex]).episode_description
+        })
+
+    }
+
+    editEpisodeButton = () => {
+
+        const data = new FormData()
+        data.append('name', this.newEpisodeName.current.value)
+        data.append('episode_description', this.newEpisodeDescription.current.value)
+        data.append('episode_id', (((this.state.list)[this.state.positionOfEpisodeChapter]).episodes[this.state.positionOfEpisode]).id)
+
+        axios.patch('http://127.0.0.1:8000/api/chapter-episodes/', data, this.config)
+            .then((response) => {
+                const listItem = {
+                    ...this.state.list[this.state.positionOfEpisodeChapter]
+                }
+                const episodeItem = {
+                    ...listItem.episodes[this.state.positionOfEpisode]
+                }
+
+                episodeItem.name = response.data.name
+                episodeItem.episode_description = response.data.episode_description
+
+                listItem.episodes[this.state.positionOfEpisode] = episodeItem
+                const list = [...this.state.list]
+                list[this.state.positionOfEpisodeChapter] = listItem
+                this.props.dispatchUser(true)
+                this.setState({ list: list, episodeEditDialog: false })
+
+
+
+            })
+            .catch((error) => {
+                // handle error
+                console.log(error);
+            })
+
+    }
+
 
 
     TypeOfFile = (props) => {
@@ -638,6 +764,117 @@ class NestedList extends React.Component {
 
     }
 
+    EpisodeEditDialog = () => {
+        const { classes } = this.props;
+        return (
+
+
+            <Dialog
+                open={this.state.episodeEditDialog}
+                onClose={this.dialogOnclose}
+                aria-labelledby="error-dialog"
+                className={classes.newEpisodeRoot}
+            >
+                <ValidatorForm form="form" onSubmit={this.editEpisodeButton} >
+
+                    <DialogTitle id="error-dialog" dir='rtl' className={classes.newEpisodeTitle}>
+                        ویرایش اپیزود
+                    </DialogTitle>
+
+                    <Divider />
+                    <Divider />
+
+
+                    <DialogContent>
+
+
+
+                        <CardContent>
+                            <Grid
+                                container
+                                spacing={2}
+                                dir='rtl'
+                            >
+
+
+                                <Grid
+                                    item
+                                    md={12}
+                                    xs={12}
+                                >
+                                    <TextValidator
+                                        fullWidth
+                                        label="نام"
+                                        name="name"
+                                        inputRef={this.newEpisodeName}
+                                        defaultValue={this.state.episodeEditingName}
+                                        required
+                                        variant="outlined"
+                                    />
+                                </Grid>
+
+                                <Grid
+                                    item
+                                    md={12}
+                                    xs={12}
+
+                                >
+                                    <TextField
+                                        fullWidth
+                                        dir='rtl'
+                                        label="توضیحات"
+                                        name="description"
+                                        defaultValue={this.state.episodeEditingDescription}
+                                        inputRef={this.newEpisodeDescription}
+                                        variant="outlined"
+                                        multiline={true}
+                                        rows={5}
+                                    />
+
+                                </Grid>
+
+                            </Grid>
+                        </CardContent>
+
+
+                    </DialogContent>
+
+                    <Divider />
+                    <Divider />
+
+                    <DialogActions className={classes.newEpisodeButtonContent}>
+
+
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={this.dialogOnclose}
+                            style={{ margin: '8px' }}
+                        >
+                            لغو
+                        </Button>
+
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            style={{ margin: '8px' }}
+                        >
+                            ایجاد
+                                {this.state.newEpisodeLoading && (
+                                <CircularProgress thickness={5} size={25} className={classes.progressBar} />
+
+                            )}
+                        </Button>
+                    </DialogActions>
+                </ValidatorForm>
+
+
+
+            </Dialog>)
+
+    }
+
 
     render() {
         const { classes } = this.props;
@@ -645,18 +882,7 @@ class NestedList extends React.Component {
 
             <div className={classes.root}>
 
-                <Snackbar
-                    open={this.state.snackBarOpen}
-                    autoHideDuration={1500}
-                    onClose={this.onSnackBarClose}
-                    dir='rtl'
-                >
-
-                    <Alert onClose={this.onSnackBarClose} severity="success" className={classes.alertStyle} >
-                        انجام شد
-
-                    </Alert>
-                </Snackbar>
+                <this.EpisodeEditDialog />
 
                 <Dialog
                     open={this.state.dialogOpen}
@@ -792,7 +1018,7 @@ class NestedList extends React.Component {
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText dir="rtl" style={{ padding: '10px' }}>
-                            آیا میخواهید این سرفصل را حذف کنید؟
+                            آیا میخواهید این {this.state.isChapterToDelete ? "سرفصل" : "اپیزود"} را حذف کنید؟
                         </DialogContentText>
                     </DialogContent>
 
@@ -808,7 +1034,7 @@ class NestedList extends React.Component {
                         <Button
                             variant="contained"
                             color="secondary"
-                            onClick={this.chapterRemove}
+                            onClick={this.chapterOrEpisodeRemove}
                             style={{ margin: '8px' }}
                         >
                             حذف
@@ -841,9 +1067,10 @@ class NestedList extends React.Component {
                     {this.state.list.map((item, index) =>
                         (<div className={classes.paperStyle} key={item.id} >
                             <Paper
-                                onMouseEnter={() => this.showButtons(index)} onMouseLeave={() => this.hideButtons(index)}
+                                onMouseEnter={() => this.showButtons(index)}
+                                onMouseLeave={() => this.hideButtons(index)}
                             >
-                                <ListItem button={!item.isTextMode} onClick={() => this.listOnClick(index)} >
+                                <ListItem button={!item.isTextMode} onClick={() => this.listOnClick(index)}  >
                                     <ListItemIcon>
                                         <LibraryBooksIcon />
                                     </ListItemIcon>
@@ -864,7 +1091,7 @@ class NestedList extends React.Component {
 
                                                 </Typography>
                                                 {this.state.isOwner && item.buttonShown && !item.isTextMode && (
-                                                    <Fade in={item.buttonShown} timeout={750} >
+                                                    <Fade in={item.buttonShown} timeout={400} >
                                                         <Button
                                                             onClick={(e) => this.chapterEditButton(e, index)}
                                                             className={classes.veticalDots}
@@ -878,12 +1105,14 @@ class NestedList extends React.Component {
                                             ) :
 
                                             (<ValidatorForm onSubmit={() => this.chapterEditButtonSaveChanges(index)} >
-                                                <TextValidator
+                                                <InputBase
                                                     fullWidth
                                                     autoFocus
                                                     dir='rtl'
-                                                    label=""
+                                                    autoComplete='off'
                                                     name="name"
+                                                    style= {{ fontSize: this.font, fontWeight: 900,marginBottom: '-3px',marginTop:'-3px' }}
+                                                    InputProps={{ 'aria-label': 'naked' }}
                                                     required
                                                     onBlur={(event) => this.textOnBlur(event, index)}
                                                     defaultValue={item.name}
@@ -895,12 +1124,13 @@ class NestedList extends React.Component {
 
                                     </ListItemText>
                                     {this.state.isOwner && item.buttonShown && !item.isTextMode && (
-                                        <Fade in={item.buttonShown} timeout={750} >
+                                        <Fade in={item.buttonShown} timeout={400} >
                                             <div>
                                                 <Button
+                                                    component="span"
                                                     aria-controls="customized-menu"
                                                     aria-haspopup="true"
-                                                    onClick={(e) => this.menuHandleClick(e)}
+                                                    onClick={(e) => this.menuHandleClick(e, index)}
                                                     className={classes.veticalDots}
                                                     style={{ marginLeft: '10px' }} >
                                                     <MoreVertIcon
@@ -908,13 +1138,13 @@ class NestedList extends React.Component {
                                                 </Button>
                                                 <StyledMenu
                                                     id="customized-menu"
-                                                    anchorEl={this.state.anchorEl}
+                                                    anchorEl={item.anchorEl}
                                                     keepMounted
-                                                    open={Boolean(this.state.anchorEl)}
-                                                    onClose={(e) => this.menuHandleClose(e)}
+                                                    open={Boolean(item.anchorEl)}
+                                                    onClose={(e) => this.menuHandleClose(e, index)}
                                                 >
 
-                                                    <StyledMenuItem onClick={(e) => this.chapterRemoveButton(e, index)} >
+                                                    <StyledMenuItem onClick={(e) => this.chapterOrEpisodeRemoveButton(e, index, 0, true)} >
                                                         <ListItemIcon>
                                                             <DeleteIcon />
                                                         </ListItemIcon>
@@ -922,23 +1152,6 @@ class NestedList extends React.Component {
                                                     </StyledMenuItem>
                                                 </StyledMenu>
                                             </div>
-                                            {/* <div>
-                                                <Button variant="outlined"
-                                                    dir="rtl"
-                                                    color="secondary"
-                                                    style={{ marginLeft: '10px' }}
-                                                    onClick={(e) => this.chapterRemoveButton(e, index)}>
-                                                    حذف کردن
-
-                                                </Button>
-                                                <Button variant="outlined"
-                                                    dir="rtl"
-                                                    color="primary"
-                                                    style={{ marginLeft: '10px' }}
-                                                    onClick={(e) => this.chapterEditButton(e, index)}>
-                                                    ویرایش
-
-                                    </Button></div> */}
 
                                         </Fade>
                                     )}
@@ -958,49 +1171,43 @@ class NestedList extends React.Component {
                                             <Grid container spacing={2} dir="rtl"
 
                                             >
-                                                <Grid item lg={12} md={12} sm={12} xs={12} maxWidth="lg" >
+                                                <Grid item lg={12} md={12} sm={12} xs={12}  >
 
-                                                    <Grid container spacing={2}
-                                                        direction="row"
-                                                        justify="space-between"
-                                                        alignItems="center"
-                                                        
+
+                                                    <div
+                                                        style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
                                                     >
-
-
-                                                        <Grid item md={4} lg={4} sm={4}
-                                                            xs={4} >
-                                                            <Button
-                                                                onClick={(e) => this.chapterEditButton(e, index)}
-                                                                className={classes.veticalDots}
-
+                                                        {this.state.isOwner && (
+                                                            <div style={{ alignSelf: 'center' }}
                                                             >
-                                                                <DeleteIcon />
-                                                            </Button>
-                                                        </Grid>
-                                                        <Grid item md={4} lg={4} sm={4} style={{ marginTop: '12px' }}
-                                                            xs={4} >
-                                                            <Typography >
-                                                                <Box fontSize={26} fontWeight="fontWeightBold"
-                                                                // textAlign='center'
+                                                                <Button
+                                                                    onClick={(e) => this.chapterOrEpisodeRemoveButton(e, index, indx, false)}
+                                                                    className={classes.veticalDots}
 
                                                                 >
-                                                                    {file.name}
-                                                                </Box>
+                                                                    <DeleteIcon />
+                                                                </Button>
+                                                            </div>)}
+                                                        <Typography style={{ alignSelf: 'center' }}>
+                                                            <Box fontSize={30} fontWeight="fontWeightBold"
 
-                                                            </Typography>
-                                                        </Grid>
-                                                        <Grid item md={4} lg={4} sm={4}
-                                                            xs={4} >
+                                                            >
+                                                                {file.name}
+                                                            </Box>
+
+                                                        </Typography>
+                                                        <div style={{ alignSelf: 'center' }}>
                                                             <Button
-                                                                onClick={(e) => this.chapterEditButton(e, index)}
+                                                                onClick={() => this.editEpisodeDialogOpener(index, indx)}
                                                                 className={classes.veticalDots}
                                                             >
                                                                 <EditIcon />
                                                             </Button>
-                                                        </Grid>
+                                                        </div>
 
-                                                    </Grid>
+
+                                                    </div>
+                                                    <Grid></Grid>
                                                     <Grid item md={12}
                                                         xs={12}>
 
@@ -1070,6 +1277,7 @@ class NestedList extends React.Component {
                                 <Input
                                     id="standard-basic"
                                     required
+                                    autoComplete='off'
                                     onChange={this.onChange}
                                     value={this.state.newChapterValue}
                                     endAdornment={
@@ -1093,4 +1301,7 @@ class NestedList extends React.Component {
         )
     }
 }
-export default withStyles(styles)(NestedList);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withStyles(styles)(NestedList));

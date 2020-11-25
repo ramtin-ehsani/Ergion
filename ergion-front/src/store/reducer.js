@@ -8,6 +8,7 @@ const initialState = {
         lastName: '',
         profilePicture: '',
     },
+    snackBar: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -28,6 +29,11 @@ const reducer = (state = initialState, action) => {
                     lastName: action.lastName,
                     profilePicture: action.profilePicture,
                 }
+            };
+        case actionTypes.SNACKBAR:
+            return {
+                ...state,
+                snackBar: action.snackBarOpenOrClose
             };
         default:
             return state;
