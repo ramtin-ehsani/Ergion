@@ -34,7 +34,7 @@ const lightTheme = createMuiTheme({
   }
 });
 
-const useStyles = makeStyles((theme)=>({
+const useStyles = makeStyles((theme) => ({
   spacing: {
     marginTop: "50px",
     marginBottom: "30px",
@@ -150,50 +150,53 @@ function CommentMain() {
                 <Comments />
               </Grid>
             </Grid>
-            <Grid alignContent='flex-start' item container className={classes.spacing} lg={3} spacing={4} style={{ padding: '16px' }}>
+            <Grid alignContent='flex-start' alignItems='stretch' item container className={classes.spacing} lg={3} spacing={4}>
               {/* <Paper style={{ padding: '32px' }}>
                 <Typography className={classes.header} variant="h4" gutterBottom>
                   Episodes
                 </Typography>
               </Paper> */}
-              <Paper className={classes.root} style={{position:'sticky'}}>
-              <ListItem button onClick={handleClick} dir='rtl'>
-                <ListItemIcon>
-                  <ClassIcon />
-                </ListItemIcon>
-                <ListItemText dir='rtl'>
-                  <Typography className='title' style={{textAlign:'right'}}>
-                    سایر جلسات
+              <Grid item xs={12} className='stick'>
+                <Paper>
+                  <ListItem button onClick={handleClick} dir='rtl'>
+                    <ListItemIcon>
+                      <ClassIcon />
+                    </ListItemIcon>
+                    <ListItemText dir='rtl'>
+                      <Typography className='title' style={{ textAlign: 'right' }}>
+                        سایر جلسات
                   </Typography>
-                </ListItemText>
-                {open ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse in={open} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      <SchoolIcon />
-                    </ListItemIcon>
-                    <ListItemText>
-                      <Typography className='title' style={{textAlign:'right'}}>
-                        جلسه اول
-                      </Typography>
                     </ListItemText>
+                    {open ? <ExpandLess /> : <ExpandMore />}
                   </ListItem>
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      <SchoolIcon />
-                    </ListItemIcon>
-                    <ListItemText>
-                      <Typography className='title' style={{textAlign:'right'}}>
-                        جلسه دوم
+                  <Collapse in={open} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      <ListItem button className={classes.nested}>
+                        <ListItemIcon>
+                          <SchoolIcon />
+                        </ListItemIcon>
+                        <ListItemText>
+                          <Typography className='title' style={{ textAlign: 'right' }}>
+                            جلسه اول
                       </Typography>
-                    </ListItemText>
-                  </ListItem>
-                </List>
-              </Collapse>
-              </Paper>
-              
+                        </ListItemText>
+                      </ListItem>
+                      <ListItem button className={classes.nested}>
+                        <ListItemIcon>
+                          <SchoolIcon />
+                        </ListItemIcon>
+                        <ListItemText>
+                          <Typography className='title' style={{ textAlign: 'right' }}>
+                            جلسه دوم
+                      </Typography>
+                        </ListItemText>
+                      </ListItem>
+                    </List>
+                  </Collapse>
+                </Paper>
+              </Grid>
+
+
             </Grid>
           </Grid>
         </Container>

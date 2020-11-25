@@ -13,3 +13,9 @@
     -webkit-transform: scaleX(-1);
     -ms-transform: scaleX(-1);
 }
+
+.stick{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 80px;
+}
