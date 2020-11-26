@@ -74,8 +74,8 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
-    height: 'auto',
+    // flexGrow: 1,
+    // height: 'auto',
     display: 'flex',
     margin: theme.spacing(2),
 

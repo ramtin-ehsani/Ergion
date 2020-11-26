@@ -9,16 +9,17 @@ import Collapse from '@material-ui/core/Collapse';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import CardMedia from '@material-ui/core/CardMedia';
+import SwipeableViews from "react-swipeable-views";
+import PropTypes from 'prop-types';
 import { Box } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import AddBoxIcon from '@material-ui/icons/AddBox';
+import ReactPlayer from 'react-player'
 import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
-import purple from '@material-ui/core/colors/purple';
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
@@ -31,18 +32,20 @@ import CardContent from '@material-ui/core/CardContent';
 import { DropzoneArea } from 'material-ui-dropzone'
 import InputBase from '@material-ui/core/InputBase';
 import { withStyles } from '@material-ui/core/styles';
-import PDFViewer from 'mgr-pdf-viewer-react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import axios from 'axios';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Fade from '@material-ui/core/Fade';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { connect } from 'react-redux';
+import Download from '@axetroy/react-download';
 import * as actionTypes from '../store/actions'
+import MovieCreationTwoToneIcon from '@material-ui/icons/MovieCreationTwoTone';
+import { Tab, Tabs } from "@material-ui/core";
 import {
     TextField,
 } from '@material-ui/core';
@@ -68,6 +71,8 @@ const StyledMenu = withStyles({
     />
 ));
 
+
+
 const StyledMenuItem = withStyles((theme) => ({
     root: {
         '&:focus': {
@@ -81,9 +86,9 @@ const StyledMenuItem = withStyles((theme) => ({
 
 const styles = (theme) => ({
     root: {
-        height: 'auto',
+        // height: 'auto',
         width: '100%',
-        flexGrow: 1,
+        // flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
     },
     nested: {
@@ -96,8 +101,12 @@ const styles = (theme) => ({
         marginLeft: theme.spacing(2),
         paddingRight: theme.spacing(4),
     },
+    previewChip: {
+        minWidth: 160,
+        maxWidth: 210
+    },
     newChapterButtonStyle: {
-        color: purple[900],
+        color: '#000',
     },
     paperStyle: {
         marginBottom: theme.spacing(2),
@@ -114,19 +123,7 @@ const styles = (theme) => ({
     mediaCardStyle: {
         height: 350,
         width: '100%',
-        objectFit: 'cover',
         borderRadius: 10
-
-    },
-    underline:{
-        '&:hover': {
-            '&:before': {
-              borderBottom: ['rgba(0, 188, 212, 0.7)', '!important'],
-            }
-          },
-          '&:before': {
-            borderBottom: 'rgba(0, 188, 212, 0.7)',
-          }
 
     },
     newEpisodeRoot: {
@@ -135,6 +132,9 @@ const styles = (theme) => ({
     mediaCardPaperStyle: {
         borderRadius: 10,
         boxShadow: 20
+    },
+    tabFont: {
+        fontSize: 16,
     },
     newEpisodeButtonContent: {
         // justifyContent:'space-between',
@@ -149,6 +149,7 @@ const styles = (theme) => ({
     dropZoneTextStyle: {
         fontSize: '1rem',
         padding: theme.spacing(1),
+        textAlign: "center",
     },
     pdfStyle: {
         // height: 250,
@@ -169,6 +170,40 @@ const styles = (theme) => ({
     },
 
 });
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            style={{ minHeight: "6rem" }}
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box p={3}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.any.isRequired,
+    value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -257,7 +292,8 @@ class NestedList extends React.Component {
                             name: response.data.name,
                             episode_description: response.data.episode_description,
                             files: responseFile,
-                            id: response.data.id
+                            id: response.data.id,
+                            tabValue: 0
 
                         })
 
@@ -272,7 +308,8 @@ class NestedList extends React.Component {
                         name: response.data.name,
                         episode_description: response.data.episode_description,
                         files: responseFile,
-                        id: response.data.id
+                        id: response.data.id,
+                        tabValue: 0
 
                     })
 
@@ -301,11 +338,43 @@ class NestedList extends React.Component {
 
 
     fileChange = (files) => {
+        const f = this.state.files
+        if (f.length > 0) {
+            if (f[0].type.includes('video')) {
+                f.length = 1;
+                f.splice(1, 0, ...files);
+                this.setState({
+                    files: f
+                });
+            } else {
+                this.setState({
+                    files: files
+                });
+            }
+        } else {
+            this.setState({
+                files: files
+            });
+        }
+
+
+
+    }
+
+    videoFileChange = (files) => {
+        const f = this.state.files
+        if (files.length > 0) {
+            f.splice(0, 0, files[0]);
+
+        } else {
+            f.splice(0, 1);
+        }
         this.setState({
-            files: files
+            files: f
         });
 
     }
+
 
 
 
@@ -356,8 +425,11 @@ class NestedList extends React.Component {
             .then((response) => {
                 // handle success
                 const l = []
-                console.log(response.data)
                 response.data.map((chapters) => {
+                    const episodes = chapters.episodes
+                    episodes.map((episode) => {
+                        episode.tabValue = 0
+                    })
                     const chapter = {
                         id: chapters.id,
                         name: chapters.name,
@@ -365,11 +437,12 @@ class NestedList extends React.Component {
                         buttonShown: false,
                         isTextMode: false,
                         anchorEl: false,
-                        episodes: chapters.episodes,
+                        episodes: episodes,
 
 
                     }
                     l.push(chapter)
+                    console.log(l)
                 })
                 if (this._isMounted) {
                     this.setState({ list: l, loading: false })
@@ -552,6 +625,26 @@ class NestedList extends React.Component {
 
 
     }
+    handleTabChange = (newValue, chapterIndex, episodeIndex) => {
+        const results = this.state.list.map((item, idx) => {
+            if (chapterIndex === idx) {
+                const episodes = item.episodes
+                episodes.map((episode, epIndex) => {
+                    if (episodeIndex === epIndex) {
+                        episode.tabValue = newValue
+
+
+                    }
+                })
+                return {
+                    ...item,
+                    episodes: episodes
+                }
+            }
+            return item;
+        });
+        this.setState({ list: results })
+    };
 
     chapterEditButton = (e, index) => {
         e.stopPropagation()
@@ -590,6 +683,19 @@ class NestedList extends React.Component {
         if (!this.state.list[index].isTextMode) {
             this.toggle(index)
         }
+
+    }
+
+    fileNameExtractor = (src) => {
+        const lastIndexOfSlash = String(src).lastIndexOf('/')
+        const lastIndexOfDot = String(src).lastIndexOf('.')
+        let name = String(src).substring(lastIndexOfSlash + 1)
+        const type = String(src).substring(lastIndexOfDot)
+
+        if (name.length > 15) {
+            name = name.substring(0, 15) + type
+        }
+        return name
 
     }
 
@@ -689,52 +795,16 @@ class NestedList extends React.Component {
             name = name.substring(0, 15) + type
         }
 
-        if (type === '.jpg' ||
-            type === '.JPG' ||
-            type === '.png' ||
-            type === '.jpeg') {
+        if (type === '.mp4') {
             return (
-                <div>
-                    <Paper className={classes.mediaCardPaperStyle} elevation={5}>
-                        <CardMedia
+                <div >
+                    <Paper className={classes.mediaCardPaperStyle} elevation={5} style={{ margin: '10px' }}>
+                        <ReactPlayer
                             className={classes.mediaCardStyle}
-                            component='img'
-                            image={src}
-                        />
-
-                    </Paper>
-                    <Typography >
-                        <Box fontSize={16} dir="ltr" fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
-                            {name}
-                        </Box>
-
-                    </Typography></div>
-
-            )
-        } else if (type === '.mp4') {
-            return (
-                <div>
-                    <Paper className={classes.mediaCardPaperStyle} elevation={5}>
-                        <CardMedia
-                            className={classes.mediaCardStyle}
-                            component='iframe'
-                            image={src}
-                        />
-                    </Paper>
-                    <Typography >
-                        <Box fontSize={16} dir="ltr" fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
-                            {name}
-                        </Box>
-
-                    </Typography></div>
-            )
-        } else if (type === '.pdf') {
-            return (
-                <div>
-                    <Paper className={classes.mediaCardPaperStyle} elevation={5}>
-                        <PDFViewer document={{
-                            url: src
-                        }} scale={0.38} loader='در حال آماده سازی لطفا صبر کنید' />
+                            width='100%'
+                            height={350}
+                            url={src}
+                            controls />
                     </Paper>
                     <Typography >
                         <Box fontSize={16} dir="ltr" fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
@@ -745,24 +815,11 @@ class NestedList extends React.Component {
             )
         }
 
-        return (
-            <div>
-                <Paper className={classes.mediaCardPaperStyle} elevation={5}>
-                    <CardMedia
-                        className={classes.mediaCardStyle}
-                        component='img'
-                        title='این فرمت ساپورت نمیشود'
-                    />
-                </Paper>
-                <Typography >
-                    <Box fontSize={16} dir="ltr" fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
-                        {name}
-                    </Box>
-
-                </Typography></div>)
+        return null
 
 
     }
+
 
     EpisodeEditDialog = () => {
         const { classes } = this.props;
@@ -951,14 +1008,52 @@ class NestedList extends React.Component {
                                         xs={12}
 
                                     >
+                                        <Typography style={{ marginRight: '4px', marginBottom: '8px' }}>
+                                            <Box >
+                                                فایل ویدیو
+                                            </Box>
+
+                                        </Typography>
+                                        <DropzoneArea
+                                            filesLimit={1}
+                                            showPreviews={true}
+                                            showPreviewsInDropzone={false}
+                                            previewText='فایل :'
+                                            maxFileSize={20000000}
+                                            useChipsForPreview
+                                            previewGridProps={{ container: { spacing: 1, direction: 'row' } }}
+                                            previewChipProps={{ classes: { root: classes.previewChip } }}
+                                            Icon={MovieCreationTwoToneIcon}
+                                            acceptedFiles={['video/*']}
+                                            dropzoneParagraphClass={classes.dropZoneTextStyle}
+                                            dropzoneText="محل قرار دادن ویدیوی آموزشی"
+                                            onChange={this.videoFileChange.bind(this)}
+                                        />
+
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        md={12}
+                                        xs={12}
+
+                                    >
+                                        <Typography style={{ marginRight: '4px', marginBottom: '8px' }}>
+                                            <Box >
+                                                فایل های ضمیمه
+                                            </Box>
+
+                                        </Typography>
                                         <DropzoneArea
                                             filesLimit={6}
                                             showPreviews={true}
                                             showPreviewsInDropzone={false}
                                             previewText='فایل ها :'
                                             maxFileSize={5000000}
+                                            useChipsForPreview
+                                            previewGridProps={{ container: { spacing: 1, direction: 'row' } }}
+                                            previewChipProps={{ classes: { root: classes.previewChip } }}
                                             dropzoneParagraphClass={classes.dropZoneTextStyle}
-                                            dropzoneText="برای اضافه کردن فایل، می‌توانید فایل‌های خود را بکشید و در این اینجا رها کنید. "
+                                            dropzoneText="محل قرار دادن فایل های ضمیمه"
                                             onChange={this.fileChange.bind(this)}
                                         />
 
@@ -1111,7 +1206,7 @@ class NestedList extends React.Component {
                                                     dir='rtl'
                                                     autoComplete='off'
                                                     name="name"
-                                                    style= {{ fontSize: this.font, fontWeight: 900,marginBottom: '-3px',marginTop:'-3px' }}
+                                                    style={{ fontSize: this.font, fontWeight: 900, marginBottom: '-3px', marginTop: '-3px' }}
                                                     InputProps={{ 'aria-label': 'naked' }}
                                                     required
                                                     onBlur={(event) => this.textOnBlur(event, index)}
@@ -1133,7 +1228,7 @@ class NestedList extends React.Component {
                                                     onClick={(e) => this.menuHandleClick(e, index)}
                                                     className={classes.veticalDots}
                                                     style={{ marginLeft: '10px' }} >
-                                                    <MoreVertIcon
+                                                    <MoreHorizIcon
                                                     />
                                                 </Button>
                                                 <StyledMenu
@@ -1163,10 +1258,10 @@ class NestedList extends React.Component {
                                 style={{ marginLeft: '14px', marginRight: '14px' }}
                             >
 
-                                {item.episodes.map((file, indx) =>
+                                {item.episodes.map((episode, indx) =>
                                     (
                                         <Paper className={classes.mediaCardPaperStyle} elevation={5}
-                                            style={{ padding: '12px', marginBottom: '12px', marginTop: '12px' }} key={file.id}
+                                            style={{ padding: '12px', marginBottom: '12px', marginTop: '12px' }} key={episode.id}
                                         >
                                             <Grid container spacing={2} dir="rtl"
 
@@ -1192,7 +1287,7 @@ class NestedList extends React.Component {
                                                             <Box fontSize={30} fontWeight="fontWeightBold"
 
                                                             >
-                                                                {file.name}
+                                                                {episode.name}
                                                             </Box>
 
                                                         </Typography>
@@ -1208,39 +1303,82 @@ class NestedList extends React.Component {
 
                                                     </div>
                                                     <Grid></Grid>
-                                                    <Grid item md={12}
-                                                        xs={12}>
-
-                                                        <Typography style={{ marginTop: '12px' }}>
-                                                            <Box fontSize={18}  >
-                                                                توضیحات: {file.episode_description}
-                                                            </Box>
-
-                                                        </Typography>
-
-                                                    </Grid>
                                                 </Grid>
 
                                                 <Grid item md={12} lg={12}
+                                                    // dir='ltr'
+                                                    style={{ marginTop: '12px', padding: '20px' }}
                                                     xs={12}>
 
-                                                    <Grid container spacing={3} dir="rtl"
-                                                        justify="center"
-                                                        alignItems="center"
-                                                        style={{ marginTop: '12px', padding: '20px' }}
+                                                    {episode.files.map((file, indxx) =>
+
+                                                        <this.TypeOfFile src={file.file} key={file.id} />
+
+                                                    )}
+
+
+                                                </Grid>
+                                                <Grid item md={12} lg={12} sm={12}
+                                                    style={{ marginTop: '12px', padding: '20px' }}
+                                                    xs={12}>
+                                                    <Tabs
+                                                        indicatorColor="primary"
+                                                        textColor="primary"
+                                                        value={episode.tabValue}
+                                                        onChange={() => this.handleTabChange(1 - episode.tabValue, index, indx)}>
+                                                        <Tab label="توضیحات" {...a11yProps(0)} className={classes.tabFont} />
+                                                        <Tab label="فایل ها" {...a11yProps(1)} className={classes.tabFont} />
+                                                    </Tabs>
+
+                                                    <SwipeableViews
+                                                        style={{ width: '100%' }}
+                                                        axis={'x-reverse'}
+                                                        index={episode.tabValue}
+                                                        onChangeIndex={() => this.handleTabChange(1 - episode.tabValue, index, indx)}
                                                     >
-                                                        {file.files.map((filess, indx) =>
-                                                            (
-                                                                <Grid item md={4} dir="ltr" lg={4} sm={12} zeroMinWidth key={filess.id}
-                                                                    xs={12}>
-                                                                    <this.TypeOfFile src={filess.file} />
+                                                        <TabPanel value={episode.tabValue} index={0} >
+                                                            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'start' }}
+                                                            >
+                                                                <Typography
+                                                                    style={{ marginTop: '12px' }} >
+                                                                    <Box fontSize={18}  >
+                                                                        {episode.episode_description}
+                                                                    </Box>
+
+                                                                </Typography>
+                                                            </div>
+                                                        </TabPanel>
+                                                        <TabPanel value={episode.tabValue} index={1}>
+                                                            {episode.files.map((tabFile, tabIndx) => (
+                                                                <Grid container spacing={2} dir="rtl" key={tabFile.id}>
+                                                                    <Grid item lg={12} md={12} sm={12} xs={12} >
+                                                                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                                                            <Typography style={{ alignSelf: 'center' }}>
+                                                                                <Box>
+                                                                                    {this.fileNameExtractor(tabFile.file)}
+                                                                                </Box>
+                                                                            </Typography>
+                                                                            <div style={{ alignSelf: 'center' }} />
+                                                                            <div style={{ alignSelf: 'center' }}>
+                                                                                <Download file={tabFile.file} content="download">
+                                                                                    <Button variant="contained" color="primary">
+                                                                                        دانلود
+                                                                                </Button>
+                                                                                </Download >
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </Grid>
+                                                                    <Divider />
 
 
-                                                                </Grid>))}
+                                                                </Grid>
 
-                                                    </Grid>
+                                                            ))}
 
 
+                                                        </TabPanel>
+                                                    </SwipeableViews>
                                                 </Grid>
 
 
@@ -1259,24 +1397,25 @@ class NestedList extends React.Component {
 
                                     </Button>)}
                             </Collapse>
-                        </div>)
+                        </div>))}
 
 
-                    )}
+
+
 
 
                 </List>) : ""
                 }
 
-
                 {
-                    this.state.isOwner && (
+                    this.state.isOwner && !this.state.loading && (
                         <ValidatorForm onSubmit={this.handleClick}>
-                            <FormControl fullWidth className={classes.textFieldStyle}>
-                                <InputLabel htmlFor="standard-adornment">+ ایجاد سرفصل جدید</InputLabel>
-                                <Input
-                                    id="standard-basic"
+                            <FormControl fullWidth className={classes.textFieldStyle} variant="outlined">
+                                <InputLabel htmlFor="outlined-adornment">+ ایجاد سرفصل جدید</InputLabel>
+                                <OutlinedInput
+                                    id="outlined-adornment"
                                     required
+                                    label="+ ایجاد سرفصل جدید"
                                     autoComplete='off'
                                     onChange={this.onChange}
                                     value={this.state.newChapterValue}
@@ -1292,8 +1431,12 @@ class NestedList extends React.Component {
                                     }
                                 />
                             </FormControl>
-                        </ValidatorForm>)
+                        </ValidatorForm>
+                    )
                 }
+
+
+
 
 
             </div >

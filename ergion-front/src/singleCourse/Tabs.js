@@ -48,9 +48,9 @@ function a11yProps(index) {
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 1,
-        height: 'auto',
-        backgroundColor: theme.palette.background.paper,
+        // flexGrow: 1,
+        // height: 'auto',
+        // backgroundColor: theme.palette.background.paper,
     },
     tabFont: {
         fontSize: 18,
