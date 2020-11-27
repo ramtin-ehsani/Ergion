@@ -35,8 +35,8 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import AppBar from "@material-ui/core/AppBar";
 import DownloadIcon from "@material-ui/icons/CloudDownload";
-import { func } from "prop-types";
-import { Divider } from "@material-ui/core";
+import Divider from "@material-ui/core/Divider"
+
 
 const getWidth = () =>
     window.innerWidth ||
@@ -47,9 +47,9 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             fontFamily: "IRANSans",
-            // maxWidth: "75%",
+            minWidth: "100%",
             justifyContent: "center",
-            // backgroundColor: "pink",
+            // backgroundColor: "blue", 
             alignItems: "center",
             textAlign: "center",
         },
@@ -164,87 +164,87 @@ const PostPage = () => {
                                 backgroundColor: "none",
                             }}
                         >
-                            <div className={classes.tab} dir="rtl">
-                                <AppBar position="static" color="default">
-                                    <Tabs
-                                        value={value}
-                                        onChange={handleChange}
-                                        indicatorColor="primary"
-                                        textColor="primary"
-                                        aria-label="scrollable auto tabs example"
-                                        style={{
-                                            width: "100%",
-                                            display: "flex",
-                                        }}
-                                    >
-                                        <Tab
-                                            label="فایل اصلی"
-                                            className="post-tabs"
-                                            {...a11yProps[0]}
-                                        />
-                                        <Tab
-                                            label="فایل های ضمیمه"
-                                            className="post-tabs"
-                                            {...a11yProps[1]}
-                                        />
-                                    </Tabs>
-                                </AppBar>
-
-                                <TabPanel value={value} index={0}>
-                                    <Card className={classes.root} dir="rtl">
-                                        <CardHeader
-                                            className={classes.title}
-                                            avatar={
-                                                <Avatar
-                                                    aria-label="recipe"
-                                                    className={classes.avatar}
-                                                    src={img}
-                                                >
-                                                    R
-                                                </Avatar>
-                                            }
-                                            action={
-                                                <IconButton aria-label="settings">
-                                                    <MoreVertIcon />
-                                                </IconButton>
-                                            }
-                                            title={
-                                                <Typography
-                                                    className="instructor"
-                                                    component="h4"
-                                                >
-                                                    صادق جعفری
-                                                </Typography>
-                                            }
-                                            subheader={
-                                                <Typography
-                                                    className="date"
-                                                    component="h6"
-                                                >
-                                                    شنبه ۱۳۹۹/۱۱/۱۱
-                                                </Typography>
-                                            }
-                                        />
-
-                                        <CardMedia
-                                            className={classes.media}
-                                            // image={img}
-                                            title="Paella dish"
+                            <Card className={classes.root} dir="rtl">
+                                <CardHeader
+                                    className={classes.title}
+                                    avatar={
+                                        <Avatar
+                                            aria-label="recipe"
+                                            className={classes.avatar}
+                                            src={img}
                                         >
-                                            <video
-                                                width="100%"
-                                                height="400"
-                                                controls
-                                            >
-                                                <source
-                                                    src={vid}
-                                                    type="video/mp4"
-                                                />
-                                                Sorry, your browser doesn't
-                                                support embedded videos.
-                                            </video>
-                                        </CardMedia>
+                                            R
+                                        </Avatar>
+                                    }
+                                    action={
+                                        <IconButton aria-label="settings">
+                                            <MoreVertIcon />
+                                        </IconButton>
+                                    }
+                                    title={
+                                        <Typography
+                                            className="instructor"
+                                            component="h4"
+                                        >
+                                            صادق جعفری
+                                        </Typography>
+                                    }
+                                    subheader={
+                                        <Typography
+                                            className="date"
+                                            component="h6"
+                                        >
+                                            شنبه ۱۳۹۹/۱۱/۱۱
+                                        </Typography>
+                                    }
+                                />
 
+                                <CardMedia
+                                    className={classes.media}
+                                    // image={img}
+                                    title="Paella dish"
+                                >
+                                    <video
+                                        width="100%"
+                                        height="400"
+                                        controls
+                                    >
+                                        <source
+                                            src={vid}
+                                            type="video/mp4"
+                                        />
+                                        Sorry, your browser doesn't
+                                        support embedded videos.
+                                    </video>
+                                </CardMedia>
+                                
+                                <div className={classes.tab} dir="rtl">
+                                    <AppBar position="static" color="default">
+                                        <Tabs
+                                            value={value}
+                                            onChange={handleChange}
+                                            indicatorColor="primary"
+                                            textColor="primary"
+                                            aria-label="scrollable auto tabs example"
+                                            style={{
+                                                width: "100%",
+                                                display: "flex",
+                                            }}
+                                        >
+                                            <Tab
+                                                label="خبر"
+                                                className="post-tabs"
+                                                {...a11yProps[0]}
+                                            />
+                                            <Tab
+                                                label="فایل های ضمیمه"
+                                                className="post-tabs"
+                                                {...a11yProps[1]}
+                                            />
+                                        </Tabs>
+                                    </AppBar>
+
+                                    <TabPanel value={value} index={0}>
                                         <CardContent>
                                             <Typography
                                                 variant="body2"
@@ -267,60 +267,63 @@ const PostPage = () => {
                                                 علوم دیگر دارد
                                             </Typography>
                                         </CardContent>
-
                                         <CardActions
                                             className="post-footer"
                                             dir="ltr"
                                         >
                                             <div className="icon-footer">
                                                 <IconButton className="comment-icon">
-                                                    <CommentIcon />
+                                                    <ShareIcon />
                                                 </IconButton>
                                                 <span className="span-footer"></span>
                                                 <div className="share-like-icon">
                                                     <IconButton>
-                                                        <ShareIcon />
+                                                        <CommentIcon />
                                                     </IconButton>
                                                     <IconButton
                                                         onClick={() =>
                                                             setIsRed(!isRed)
                                                         }
                                                     >
-                                                        {/* <FavoriteIcon {...isRed ? style={color: "none"} : style={color: "red"}}/> */}
                                                         <FavoriteIcon
                                                             style={{
                                                                 color: isRed
                                                                     ? "red"
-                                                                    : "gray",
+                                                                    : "rgba(0, 0, 0, 0.54)",
                                                             }}
                                                         />
                                                     </IconButton>
                                                 </div>
                                             </div>
                                         </CardActions>
-                                    </Card>
-                                </TabPanel>
-                                <TabPanel value={value} index={1}>
-                                    {test.map((item) => (
-                                        <Card className="attachment" dir="rtl">
-                                            <div className="files-attachment">
-                                                {item.name}
+                                    </TabPanel>
+                                
+                                    <TabPanel value={value} index={1} className="second-tab">
+                                        {test.map((item) => (
+                                            <div className="attachment" dir="rtl">
+                                                <div className="files-attachment">
+                                                    {item.name}
+                                                </div>
+                                                <Button
+                                                    href={item.value}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    download
+                                                    className="download-files"
+                                                >
+                                                    دریافت فایل
+                                                    <Box ml={1} />
+                                                    <DownloadIcon />
+                                                </Button>
+                                                <Divider />
                                             </div>
-                                            <Button
-                                                href={item.value}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                download
-                                                className="download-files"
-                                            >
-                                                دریافت فایل
-                                                <Box ml={1} />
-                                                <DownloadIcon />
-                                            </Button>
-                                        </Card>
-                                    ))}
-                                </TabPanel>
-                            </div>
+                                            
+                                         ))}
+                                    </TabPanel>
+                                
+                                </div>   
+
+                            </Card>
                         </Grid>
                     </Container>
                 </div>
@@ -330,3 +333,34 @@ const PostPage = () => {
 };
 
 export default PostPage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

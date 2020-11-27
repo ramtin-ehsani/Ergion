@@ -1,36 +1,41 @@
 .post-page-main {
-    .attachment {
-        // position: fixed;
-        // background-color: rgb(194, 215, 223);
-        // background-color: skyblue;
-        // margin-top: 3px;
-        height: 70px;
-        display: flex;
-        justify-content: center;
-        align-items: right;
-        text-align: right;
-        .files-attachment {
-            display: flex;
-            flex: 1;
-            font-family: IRANSans;
-            // background-color: skyblue;
-            padding-right: 5px;
-            // width: 50%;
-            // justify-content: center;
-            text-align: center;
-            font-size: 16px;
-            font-weight: 500;
+    // background-color: skyblue;
 
-            align-items: center;
-        }
-        .download-files {
-            font-family: IRANSans;
-            font-size: 16px;
-            // background-color: slateblue;
+    .second-tab { 
+
+        // background-color: skyblue;
+        width: 100% !important;
+        // width: 100% !important;
+
+        .attachment {
+            height: 70px;
+            display: flex;
+            // width: 100%;
+            justify-content: center;
+            align-items: right;
+            text-align: right;
+            // background-color: pink;
+            // width: inherit;
+
+            .files-attachment {
+                display: flex;
+                flex: 1;
+                font-family: IRANSans;
+                padding-right: 5px;
+                text-align: center;
+                font-size: 16px;
+                font-weight: 500;
+                align-items: center;
+            }
+            .download-files {
+                font-family: IRANSans;
+                font-size: 16px;
+            }
         }
     }
 
     .post-tabs {
+        // background-color: skyblue;
         font-family: IRANSans;
         text-align: center;
         justify-content: center;
@@ -57,26 +62,40 @@
         width: 100%;
         display: flex;
         position: relative;
+        padding: 0 !important;
 
-        .span-footer {
-            flex: 1;
-        }
+        // .span-footer {
+        //     flex: 1;
+        // }
 
         .icon-footer {
             display: flex;
             flex: 1;
+            // background-color: pink;
 
             .comment-icon {
                 z-index: 100;
             }
+
+            .span-footer {
+                flex: 1;
+            }
+
+            .share-like-icon {
+                position: absolute;
+                width: 100%;
+                justify-content: center;
+                align-items: center;
+                display: flex;
+            }
         }
-        .share-like-icon {
-            position: absolute;
-            width: 100%;
-            justify-content: center;
-            align-items: center;
-            display: flex;
-        }
+        // .share-like-icon {
+        //     position: absolute;
+        //     width: 100%;
+        //     justify-content: center;
+        //     align-items: center;
+        //     display: flex;
+        // }
     }
 
     .MuiCardActions-spacing > :not(:first-child) {
