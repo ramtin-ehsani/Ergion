@@ -1,114 +1,69 @@
 .post-page-main {
-    // background-color: skyblue;
 
-    .second-tab { 
+	.post-tabs {
+		background-color: skyblue;
+		font-family: IRANSans;
+		text-align: center;
+		justify-content: center;
+		align-items: center;
+		font-weight: 450;
+		font-size: 17px;
+		flex: 1;
+		max-width: none;
+	}
 
-        // background-color: skyblue;
-        width: 100% !important;
-        // width: 100% !important;
+	.instructor {
+		font-family: IRANSans;
+	}
 
-        .attachment {
-            height: 70px;
-            display: flex;
-            // width: 100%;
-            justify-content: center;
-            align-items: right;
-            text-align: right;
-            // background-color: pink;
-            // width: inherit;
+	.aboutPost {
+		font-family: IRANSans;
+		text-align: right;
+		font-weight: normal;
+		color: black;
+	}
 
-            .files-attachment {
-                display: flex;
-                flex: 1;
-                font-family: IRANSans;
-                padding-right: 5px;
-                text-align: center;
-                font-size: 16px;
-                font-weight: 500;
-                align-items: center;
-            }
-            .download-files {
-                font-family: IRANSans;
-                font-size: 16px;
-            }
-        }
-    }
+	.post-footer {
+		font-family: IRANSans;
+		width: 100%;
+		display: flex;
+		position: relative;
+		padding: 0 !important;
 
-    .post-tabs {
-        // background-color: skyblue;
-        font-family: IRANSans;
-        text-align: center;
-        justify-content: center;
-        align-items: center;
-        font-weight: 450;
-        font-size: 17px;
-        flex: 1;
-        max-width: none;
-    }
+		.icon-footer {
+			display: flex;
+			flex: 1;
+			// background-color: pink;
 
-    .instructor {
-        font-family: IRANSans;
-    }
+			.comment-icon {
+				z-index: 100;
+			}
 
-    .aboutPost {
-        font-family: IRANSans;
-        text-align: right;
-        font-weight: normal;
-        color: black;
-    }
+			.span-footer {
+				flex: 1;
+			}
 
-    .post-footer {
-        font-family: IRANSans;
-        width: 100%;
-        display: flex;
-        position: relative;
-        padding: 0 !important;
+			.share-like-icon {
+				position: absolute;
+				width: 100%;
+				justify-content: center;
+				align-items: center;
+				display: flex;
+			}
+		}
+	}
 
-        // .span-footer {
-        //     flex: 1;
-        // }
+	.MuiCardActions-spacing > :not(:first-child) {
+		margin-left: 0;
+	}
 
-        .icon-footer {
-            display: flex;
-            flex: 1;
-            // background-color: pink;
+	.date {
+		font-family: IRANSans;
+		font-weight: lighter;
+	}
 
-            .comment-icon {
-                z-index: 100;
-            }
-
-            .span-footer {
-                flex: 1;
-            }
-
-            .share-like-icon {
-                position: absolute;
-                width: 100%;
-                justify-content: center;
-                align-items: center;
-                display: flex;
-            }
-        }
-        // .share-like-icon {
-        //     position: absolute;
-        //     width: 100%;
-        //     justify-content: center;
-        //     align-items: center;
-        //     display: flex;
-        // }
-    }
-
-    .MuiCardActions-spacing > :not(:first-child) {
-        margin-left: 0;
-    }
-
-    .date {
-        font-family: IRANSans;
-        font-weight: lighter;
-    }
-
-    .img-test {
-        width: 50%;
-        height: 50%;
-    }
+	.img-test {
+		width: 50%;
+		height: 50%;
+	}
 }
