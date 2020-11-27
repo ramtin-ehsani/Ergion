@@ -42,10 +42,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { connect } from 'react-redux';
-import Download from '@axetroy/react-download';
 import * as actionTypes from '../store/actions'
 import MovieCreationTwoToneIcon from '@material-ui/icons/MovieCreationTwoTone';
 import { Tab, Tabs } from "@material-ui/core";
+import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
 import {
     TextField,
 } from '@material-ui/core';
@@ -646,6 +646,24 @@ class NestedList extends React.Component {
         this.setState({ list: results })
     };
 
+    handleDownload = (file) => {
+        axios({
+            url: file,
+            method: 'GET',
+            responseType: 'blob', // important
+        }).then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', this.fileNameExtractor(file));
+            document.body.appendChild(link);
+            link.click();
+        }).catch((error) => {
+            console.log(error)
+        })
+
+    }
+
     chapterEditButton = (e, index) => {
         e.stopPropagation()
         this.textModeSwitcher(index)
@@ -797,15 +815,13 @@ class NestedList extends React.Component {
 
         if (type === '.mp4') {
             return (
-                <div >
-                    <Paper className={classes.mediaCardPaperStyle} elevation={5} style={{ margin: '10px' }}>
-                        <ReactPlayer
-                            className={classes.mediaCardStyle}
-                            width='100%'
-                            height={350}
-                            url={src}
-                            controls />
-                    </Paper>
+                <div style={{ margin: '10px' }}>
+                    <ReactPlayer
+                        width='100%'
+                        height={350}
+                        url={src}
+                        controls
+                        style={{ backgroundColor: '#000' }} />
                     <Typography >
                         <Box fontSize={16} dir="ltr" fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
                             {name}
@@ -1306,7 +1322,6 @@ class NestedList extends React.Component {
                                                 </Grid>
 
                                                 <Grid item md={12} lg={12}
-                                                    // dir='ltr'
                                                     style={{ marginTop: '12px', padding: '20px' }}
                                                     xs={12}>
 
@@ -1331,7 +1346,6 @@ class NestedList extends React.Component {
                                                     </Tabs>
 
                                                     <SwipeableViews
-                                                        style={{ width: '100%' }}
                                                         axis={'x-reverse'}
                                                         index={episode.tabValue}
                                                         onChangeIndex={() => this.handleTabChange(1 - episode.tabValue, index, indx)}
@@ -1349,32 +1363,44 @@ class NestedList extends React.Component {
                                                             </div>
                                                         </TabPanel>
                                                         <TabPanel value={episode.tabValue} index={1}>
-                                                            {episode.files.map((tabFile, tabIndx) => (
-                                                                <Grid container spacing={2} dir="rtl" key={tabFile.id}>
-                                                                    <Grid item lg={12} md={12} sm={12} xs={12} >
-                                                                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                                                            <Typography style={{ alignSelf: 'center' }}>
-                                                                                <Box>
-                                                                                    {this.fileNameExtractor(tabFile.file)}
-                                                                                </Box>
-                                                                            </Typography>
-                                                                            <div style={{ alignSelf: 'center' }} />
-                                                                            <div style={{ alignSelf: 'center' }}>
-                                                                                <Download file={tabFile.file} content="download">
-                                                                                    <Button variant="contained" color="primary">
-                                                                                        دانلود
-                                                                                </Button>
-                                                                                </Download >
-                                                                            </div>
+                                                            {episode.files.length > 0 ? (
+                                                                <div>
+                                                                    {episode.files.map((tabFile, tabIndx) => (
+                                                                        <Grid container spacing={2} dir="rtl" key={tabFile.id}>
+                                                                            <Grid item lg={12} md={12} sm={12} xs={12} >
+                                                                                <div style={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                                                                    <Typography style={{ alignSelf: 'center' }}>
+                                                                                        <Box>
+                                                                                            {this.fileNameExtractor(tabFile.file)}
+                                                                                        </Box>
+                                                                                    </Typography>
+                                                                                    <div style={{ alignSelf: 'center' }} />
+                                                                                    <div style={{ alignSelf: 'center' }}>
+                                                                                        <Button variant="contained" onClick={() => this.handleDownload(tabFile.file)}>
+                                                                                            دانلود
+                                                                                            <GetAppRoundedIcon />
+                                                                                        </Button>
+                                                                                    </div>
 
-                                                                        </div>
-                                                                    </Grid>
-                                                                    <Divider />
+                                                                                </div>
+                                                                                <Divider />
+                                                                            </Grid>
 
 
-                                                                </Grid>
 
-                                                            ))}
+                                                                        </Grid>
+
+                                                                    ))}</div>) : (
+                                                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                                        <Typography
+                                                                            style={{ marginTop: '12px' }} >
+                                                                            <Box fontSize={18}  >
+                                                                                فایلی وجود ندارد
+                                                                    </Box>
+
+                                                                        </Typography>
+                                                                    </div>
+                                                                )}
 
 
                                                         </TabPanel>
