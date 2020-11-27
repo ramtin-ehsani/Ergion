@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
     List,
@@ -23,6 +23,9 @@ import SendIcon from '@material-ui/icons/Send';
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import './Comment.scss';
+import { connect } from 'react-redux';
+import * as actionTypes from '../store/actions';
+import axios from "axios";
 
 
 const useStyles = makeStyles(theme => ({
@@ -42,11 +45,8 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const Comment = ({ comments }) => {
-    const [open, setOpen] = React.useState({ 1: false, 2: false, 3: false, 4: false, 5: false });
+const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, reduxLikes, reduxOpens, onOpenReply}) => {
     const [nCommentString, setnCommentString] = React.useState('');
-    const [replies, setReplies] = React.useState({ 1: [], 2: [], 3: [], 4: [], 5: [] });
-    const [liked, setLiked] = React.useState({ 1: false, 2: false, 3: false, 4: false, 5: false })
 
     const onChangeHandler = (event) => {
         setnCommentString(
@@ -55,27 +55,44 @@ const Comment = ({ comments }) => {
     }
 
     const onSubmit = (id) => {
-        const newComment = {
-            "postId": 1,
-            "id": 1,
-            "name": "id labore ex et quam laborum",
-            "email": "Eliseo@gardner.biz",
-            "body": nCommentString
+        const config = {
+            headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
         }
         if (nCommentString.length !== 0) {
-            setReplies({
-                ...replies, [id]: [...replies[id], newComment]
+            axios.post('http://127.0.0.1:8000/api/episode-comments/', {
+                parent_comment_id: id,
+                comment_text: nCommentString
+            }, config).then((res) => {
+                console.log(res)
+                if(reduxReply[id]){
+                    const oldreplies = reduxReply[id]
+                    oldreplies.push(res.data)
+                    console.log(oldreplies)
+                    onReply(id, oldreplies)
+                }
+                else{
+                    onReply(id, [res.data])
+                }
+                setnCommentString('')
             })
-            setnCommentString('')
         }
     }
 
     const handleClick = (id) => {
-        setOpen({ ...open, [id]: !open[id] });
+        onOpenReply(id, !reduxOpens[id])
     };
 
     const handleClickLike = (id) => {
-        setLiked({ ...liked, [id]: !liked[id] });
+        const config = {
+            headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
+        }
+        axios.put('http://127.0.0.1:8000/api/comment-likes/',{
+            comment_id: id
+        },config).then((res)=>{
+            console.log(res)
+            onLikeComment(id, res.data.liked)
+            console.log(reduxLikes)
+        })
     };
 
     const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
@@ -84,12 +101,11 @@ const Comment = ({ comments }) => {
         <StylesProvider jss={jss}>
             <List className={classes.root} dir='rtl'>
                 {comments.map(comment => {
-                    console.log("Comment", comment);
                     return (
                         <React.Fragment key={comment.id}>
                             <ListItem key={comment.id} alignItems="flex-start">
                                 <ListItemAvatar>
-                                    <Avatar alt="avatar" src={Faker.image.people()} />
+                                    <Avatar alt="avatar" src={comment.picture} />
                                 </ListItemAvatar>
                                 <ListItemText
                                     style={{ textAlign: 'right' }}
@@ -107,9 +123,9 @@ const Comment = ({ comments }) => {
                                                 className={classes.inline}
                                                 color="textPrimary"
                                             >
-                                                {comment.email}
+                                                {comment.body}
                                             </Typography>
-                                            {` - ${comment.body}`}
+                                            {/* {` - ${comment.body}`} */}
                                         </>
                                     }
                                 ></ListItemText>
@@ -117,24 +133,25 @@ const Comment = ({ comments }) => {
                                     <IconButton onClick={() => handleClick(comment.id)}>
                                         <ReplyIcon />
                                     </IconButton>
-                                    <IconButton onClick={()=> handleClickLike(comment.id)}>
-                                        {liked[comment.id] ? <FavoriteIcon color='secondary'/> : <FavoriteBorderOutlinedIcon/>}
+                                    <IconButton onClick={() => handleClickLike(comment.id)}>
+                                        {reduxLikes[comment.id] ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
                                     </IconButton>
                                 </ListItemIcon>
                             </ListItem>
-                            <Collapse in={open[comment.id]} timeout="auto" unmountOnExit>
+                            <Collapse in={reduxOpens[comment.id]} timeout="auto" unmountOnExit>
                                 <List component="div" disablePadding dir='rtl'>
-                                    {replies[comment.id].map(reply => {
+                                    {
+                                    reduxReply[comment.id]?.map(reply => {
                                         return (
                                             <ListItem key={reply.id} alignItems="flex-start" className={classes.nested}>
                                                 <ListItemAvatar>
-                                                    <Avatar alt="avatar" src={Faker.image.people()} />
+                                                    <Avatar alt="avatar" src={reply.profile_picture} />
                                                 </ListItemAvatar>
                                                 <ListItemText
                                                     style={{ textAlign: 'right' }}
                                                     primary={
                                                         <Typography className={classes.fonts}>
-                                                            {reply.name}
+                                                            {`${reply.user_firstname} ${reply.user_lastname}`}
                                                         </Typography>
                                                     }
                                                     secondary={
@@ -146,20 +163,21 @@ const Comment = ({ comments }) => {
                                                                 className={classes.inline}
                                                                 color="textPrimary"
                                                             >
-                                                                {reply.email}
+                                                                {reply.comment_text}
                                                             </Typography>
-                                                            {` - ${reply.body}`}
+                                                            {/* {` - ${reply.body}`} */}
                                                         </>
                                                     }
                                                 />
                                             </ListItem>
                                         )
-                                    })}
+                                    })
+                                    }
                                     <ListItem className={classes.nested} dir='rtl'>
                                         <Grid container wrap="nowrap" alignItems='center' style={{ minHeight: "5rem" }}>
                                             <Grid item xs zeroMinWidth>
                                                 <InputBase
-                                                    style={{padding:'8px'}}
+                                                    style={{ padding: '8px' }}
                                                     value={nCommentString}
                                                     onChange={onChangeHandler}
                                                     rowsMax={2}
@@ -170,8 +188,8 @@ const Comment = ({ comments }) => {
                                                 />
                                             </Grid>
                                             <Grid item>
-                                                <IconButton color="primary" className={classes.iconButton} onClick={()=> onSubmit(comment.id)}>
-                                                    <SendIcon className='icon'/>
+                                                <IconButton color="primary" className={classes.iconButton} onClick={() => onSubmit(comment.id)}>
+                                                    <SendIcon className='icon' />
                                                 </IconButton>
                                             </Grid>
 
@@ -189,4 +207,20 @@ const Comment = ({ comments }) => {
     );
 };
 
-export default Comment;
+const mapStateToProps = state => {
+    return {
+        reduxReply: state.replies,
+        reduxComments: state.comments,
+        reduxLikes: state.likes,
+        reduxOpens: state.open,
+    };
+};
+const mapDispatchToProps = dispatch => {
+    return {
+        onReply: (id, reply) => dispatch({ type: actionTypes.REPLY, payload: reply, id:id }),
+        onLikeComment: (id, like) => dispatch({type: actionTypes.LIKE_COMMENT, id:id, like:like }),
+        onOpenReply: (id, open) => dispatch({type: actionTypes.OPEN_REPLAY, id:id, open:open }),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Comment);

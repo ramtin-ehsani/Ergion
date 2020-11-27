@@ -89,7 +89,7 @@ const Dashboard = () => {
                     <Route path='/teacher_dashboard/profile' exact component={TeacherProfile} />
                     <Route path='/teacher_dashboard/added_courses' exact component={CourseFileLayouts} />
                     <Route path='/teacher_dashboard/added_courses/:id' exact component={SingleCourse} />
-                    <Route path='/teacher_dashboard/added_courses/:id/episode/12' exact component={CommentsMain} />
+                    <Route path='/teacher_dashboard/added_courses/:id/episode/:id' exact component={CommentsMain} />
                 </Switch>
 
             </main>

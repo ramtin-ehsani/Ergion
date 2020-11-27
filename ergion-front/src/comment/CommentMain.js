@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   makeStyles,
@@ -27,6 +27,7 @@ import Comments from "./Comments";
 import './Comments.scss'
 import { Button, CssBaseline, Grid, Paper, Tab, Tabs, withStyles } from "@material-ui/core";
 import SwipeableViews from "react-swipeable-views";
+import axios from "axios";
 
 const lightTheme = createMuiTheme({
   palette: {
@@ -62,7 +63,7 @@ function TabPanel(props) {
 
   return (
     <div
-      style={{ minHeight: "6rem" }}
+      style={{ height: "8rem" }}
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
@@ -95,6 +96,10 @@ function CommentMain() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [open, setOpen] = React.useState(true);
+  const [media, setMedia] = useState('');
+  const [files, setFiles] = useState([]);
+  const [episodes, setEpisodes] = useState([])
+  const [description, setDescription] = useState('')
 
   const handleClick = () => {
     setOpen(!open);
@@ -107,21 +112,107 @@ function CommentMain() {
     setValue(index);
   };
 
+  const fileNameExtractor = (src) => {
+    const lastIndexOfSlash = String(src).lastIndexOf('/')
+    const lastIndexOfDot = String(src).lastIndexOf('.')
+    let name = String(src).substring(lastIndexOfSlash + 1)
+    const type = String(src).substring(lastIndexOfDot)
+
+    if (name.length > 15) {
+        name = name.substring(0, 15) + type
+    }
+    return name
+
+  }
+  const handleDownload = (file) => {
+    axios({
+        url: file,
+        method: 'GET',
+        responseType: 'blob', // important
+    }).then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileNameExtractor(file));
+        document.body.appendChild(link);
+        link.click();
+    }).catch((error) => {
+        console.log(error)
+    })
+
+}
+
+  useEffect(()=>{
+    const episode_id = window.location.href.split('/')[7];
+    const chapter_id = window.location.href.split('/')[5];
+    const config = {
+      headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
+    }
+    axios.get(`http://127.0.0.1:8000/api/episode/?episode_id=${episode_id}`,config)
+    .then((res)=>{
+      res.data.map((file)=>{
+        const src = file.file
+        const lastIndexOfDot = String(src).lastIndexOf('.')
+        const type = String(src).substring(lastIndexOfDot)
+        if(type === '.mp4'){
+          setMedia(src)
+        }
+        else{
+          const newFile = {
+            src: src,
+            id: file.id
+          }
+          const oldFiles = files
+          oldFiles.push(newFile)
+          setFiles(oldFiles)
+        }
+      })
+    })
+    axios.get(`http://127.0.0.1:8000/api/chapter-episodes/?chapter_id=${chapter_id}`,config)
+    .then((res)=>{
+      //console.log(res)
+      res.data.map((episode)=>{
+        const newEpisode = {
+          id: episode.id,
+          name: episode.name,
+          chapter_id: episode.chapter_id,
+          description: episode.episode_description,
+          selected: false
+        }
+        if(String(newEpisode.id) === String(episode_id)){
+          newEpisode.selected = true
+        }
+        const oldEps = episodes
+        oldEps.push(newEpisode)
+        setEpisodes(oldEps)
+      })
+    res.data.map((newEpisode)=>{
+      if(String(newEpisode.id) === String(episode_id)){
+        setDescription(newEpisode.episode_description)
+      }
+    })
+    })
+  },[])
+
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline>
         <Container>
           <Grid container item className={classes.spacing} lg={10} direction='row' justify="space-evenly">
             <Grid container item={true} justify="space-between" className={classes.spacing} lg={9} spacing={4}>
-              <Grid item container>
+            {media === '' ? (
+              <Typography></Typography>):
+              (<Grid item container>
                 <Player>
-                  <source src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4" />
+                  <source src={media} />
                 </Player>
-              </Grid>
+                </Grid>
+                )}
+                
               <Grid item xs={12}>
                 <AppBar position="static" dir='rtl' color='transparent'>
                   <Tabs value={value} onChange={handleChange}>
-                    <Tab className='title' label="توضیحات" {...a11yProps(0)} />
+                    <Tab  className='title' label="توضیحات" {...a11yProps(0)} />
                     <Tab className='title' label="فایل ها" {...a11yProps(1)} />
                   </Tabs>
                 </AppBar>
@@ -133,20 +224,42 @@ function CommentMain() {
                   >
                     <TabPanel value={value} index={0}>
                       <Typography className='title' component="div">
+                        {description === '' ? (
+                          <Box fontSize={20}>
+                          </Box>
+                        ):(
                         <Box fontSize={20}>
-                          در این جلسه مبحث فلان درس داده میشود
-                      </Box>
+                          {description}
+                        </Box>
+                        )}
                       </Typography>
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                      <Button href='./favicon.ico' className='text' variant='contained' color='primary' download>
-                        دانلود
-                    </Button>
+                    {files.map((tabFile) => (
+                    <Grid container spacing={2} dir="rtl" key={tabFile.id}>
+                        <Grid item lg={12} md={12} sm={12} xs={12} >
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Typography style={{ alignSelf: 'center' }} component='div'>
+                                    <Box>
+                                        {fileNameExtractor(tabFile.src)}
+                                    </Box>
+                                </Typography>
+                                <div style={{ alignSelf: 'center' }} />
+                                <div style={{ alignSelf: 'center' }}>
+                                    <Button className='text' variant="contained" color="primary" onClick={()=>handleDownload(tabFile.src)}>
+                                            دانلود
+                                    </Button>
+                                </div>
+
+                            </div>
+                        </Grid>
+                    </Grid>
+                    ))}
                     </TabPanel>
                   </SwipeableViews>
                 </Paper>
               </Grid>
-              <Grid item>
+              <Grid item xs={12}>
                 <Comments />
               </Grid>
             </Grid>
@@ -171,26 +284,21 @@ function CommentMain() {
                   </ListItem>
                   <Collapse in={open} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                      <ListItem button className={classes.nested}>
-                        <ListItemIcon>
-                          <SchoolIcon />
-                        </ListItemIcon>
-                        <ListItemText>
-                          <Typography className='title' style={{ textAlign: 'right' }}>
-                            جلسه اول
-                      </Typography>
-                        </ListItemText>
-                      </ListItem>
-                      <ListItem button className={classes.nested}>
-                        <ListItemIcon>
-                          <SchoolIcon />
-                        </ListItemIcon>
-                        <ListItemText>
-                          <Typography className='title' style={{ textAlign: 'right' }}>
-                            جلسه دوم
-                      </Typography>
-                        </ListItemText>
-                      </ListItem>
+                      {episodes.map((episode)=>{
+                        return(
+                        <ListItem button className={classes.nested} key={episode.id} selected={episode.selected}
+                        onClick={()=>{window.location=`/teacher_dashboard/added_courses/${episode.chapter_id}/episode/${episode.id}`}}>
+                          <ListItemIcon>
+                            <SchoolIcon />
+                          </ListItemIcon>
+                          <ListItemText>
+                            <Typography className='title' style={{ textAlign: 'right' }}>
+                              {episode.name}
+                            </Typography>
+                          </ListItemText>
+                        </ListItem>
+                        )
+                      })}
                     </List>
                   </Collapse>
                 </Paper>
