@@ -110,7 +110,7 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
                                 <ListItemText
                                     style={{ textAlign: 'right' }}
                                     primary={
-                                        <Typography className={classes.fonts}>
+                                        <Typography className='text1'>
                                             {comment.name}
                                         </Typography>
                                     }
@@ -120,7 +120,7 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
                                                 dir='rtl'
                                                 component="span"
                                                 variant="body2"
-                                                className={classes.inline}
+                                                className='text2'
                                                 color="textPrimary"
                                             >
                                                 {comment.body}
@@ -150,7 +150,7 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
                                                 <ListItemText
                                                     style={{ textAlign: 'right' }}
                                                     primary={
-                                                        <Typography className={classes.fonts}>
+                                                        <Typography className='text1'>
                                                             {`${reply.user_firstname} ${reply.user_lastname}`}
                                                         </Typography>
                                                     }
@@ -160,7 +160,7 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
                                                                 dir='rtl'
                                                                 component="span"
                                                                 variant="body2"
-                                                                className={classes.inline}
+                                                                className='text2'
                                                                 color="textPrimary"
                                                             >
                                                                 {reply.comment_text}
