@@ -176,7 +176,7 @@ function TabPanel(props) {
 
     return (
         <div
-            style={{ minHeight: "6rem" }}
+            style={{ height: "10rem" }}
             role="tabpanel"
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
@@ -309,7 +309,11 @@ class NestedList extends React.Component {
                         episode_description: response.data.episode_description,
                         files: responseFile,
                         id: response.data.id,
-                        tabValue: 0
+                        tabValue: 0,
+                        isNameButtonShown: false,
+                        isNameTextModeON: false,
+                        isDescButtonShown: false,
+                        isDescTextModeON: false,
 
                     })
 
@@ -384,7 +388,7 @@ class NestedList extends React.Component {
 
 
 
-    componentDidMount() {
+    componentDidMount() { 
         this._isMounted = true;
         this.ownerChecker()
 
@@ -406,12 +410,13 @@ class NestedList extends React.Component {
                 if ((JSON.parse(localStorage.getItem('user'))['role']) === "T") {
                     if ((JSON.parse(localStorage.getItem('user'))['id']) === this.props.course.instructor_id) {
                         if (this._isMounted) {
-                            this.setState({ isOwner: true, courseId: this.props.course.id })
+                            this.setState({ isOwner: true })
                         }
                     }
                 }
 
             }
+            this.setState({ courseId: this.props.course.id })
             this.getValues()
 
 
@@ -429,6 +434,11 @@ class NestedList extends React.Component {
                     const episodes = chapters.episodes
                     episodes.map((episode) => {
                         episode.tabValue = 0
+                        episode.isNameButtonShown = false
+                        episode.isNameTextModeON = false
+                        episode.isDescButtonShown = false
+                        episode.isDescTextModeON = false
+
                     })
                     const chapter = {
                         id: chapters.id,
@@ -625,6 +635,131 @@ class NestedList extends React.Component {
 
 
     }
+
+    handleNameTextSwitcher = (chapterIndex, episodeIndex) => {
+        const results = this.state.list.map((item, idx) => {
+            if (chapterIndex === idx) {
+                const episodes = item.episodes
+                episodes.map((episode, epIndex) => {
+                    if (episodeIndex === epIndex) {
+                        episode.isNameTextModeON = !episode.isNameTextModeON
+
+
+                    }
+                })
+                return {
+                    ...item,
+                    episodes: episodes
+                }
+            }
+            return item;
+        });
+        this.setState({ list: results })
+    };
+
+    showNameEditButton = (chapterIndex, episodeIndex) => {
+        const results = this.state.list.map((item, idx) => {
+            if (chapterIndex === idx) {
+                const episodes = item.episodes
+                episodes.map((episode, epIndex) => {
+                    if (episodeIndex === epIndex) {
+                        episode.isNameButtonShown = true
+
+
+                    }
+                })
+                return {
+                    ...item,
+                    episodes: episodes
+                }
+            }
+            return item;
+        });
+        this.setState({ list: results })
+    };
+    hideNameEditButton = (chapterIndex, episodeIndex) => {
+        const results = this.state.list.map((item, idx) => {
+            if (chapterIndex === idx) {
+                const episodes = item.episodes
+                episodes.map((episode, epIndex) => {
+                    if (episodeIndex === epIndex) {
+                        episode.isNameButtonShown = false
+
+
+                    }
+                })
+                return {
+                    ...item,
+                    episodes: episodes
+                }
+            }
+            return item;
+        });
+        this.setState({ list: results })
+    };
+
+    handleDescTextSwitcher = (chapterIndex, episodeIndex) => {
+        const results = this.state.list.map((item, idx) => {
+            if (chapterIndex === idx) {
+                const episodes = item.episodes
+                episodes.map((episode, epIndex) => {
+                    if (episodeIndex === epIndex) {
+                        episode.isDescTextModeON = !episode.isDescTextModeON
+
+
+                    }
+                })
+                return {
+                    ...item,
+                    episodes: episodes
+                }
+            }
+            return item;
+        });
+        this.setState({ list: results })
+    };
+
+    showDescEditButton = (chapterIndex, episodeIndex) => {
+        const results = this.state.list.map((item, idx) => {
+            if (chapterIndex === idx) {
+                const episodes = item.episodes
+                episodes.map((episode, epIndex) => {
+                    if (episodeIndex === epIndex) {
+                        episode.isDescButtonShown = true
+
+
+                    }
+                })
+                return {
+                    ...item,
+                    episodes: episodes
+                }
+            }
+            return item;
+        });
+        this.setState({ list: results })
+    };
+    hideDescEditButton = (chapterIndex, episodeIndex) => {
+        const results = this.state.list.map((item, idx) => {
+            if (chapterIndex === idx) {
+                const episodes = item.episodes
+                episodes.map((episode, epIndex) => {
+                    if (episodeIndex === epIndex) {
+                        episode.isDescButtonShown = false
+
+
+                    }
+                })
+                return {
+                    ...item,
+                    episodes: episodes
+                }
+            }
+            return item;
+        });
+        this.setState({ list: results })
+    };
+
     handleTabChange = (newValue, chapterIndex, episodeIndex) => {
         const results = this.state.list.map((item, idx) => {
             if (chapterIndex === idx) {
@@ -667,6 +802,89 @@ class NestedList extends React.Component {
     chapterEditButton = (e, index) => {
         e.stopPropagation()
         this.textModeSwitcher(index)
+
+
+    }
+
+    episodeNameEditButtonSaveChanges(index, indx) {
+        const data = new FormData()
+        data.append('name', this.newEpisodeName.current.value)
+        data.append('episode_id', (((this.state.list)[index]).episodes[indx]).id)
+
+        axios.patch('http://127.0.0.1:8000/api/chapter-episodes/', data, this.config)
+            .then((response) => {
+                const listItem = {
+                    ...this.state.list[index]
+                }
+                const episodeItem = {
+                    ...listItem.episodes[indx]
+                }
+
+                episodeItem.name = response.data.name
+                episodeItem.isNameButtonShown = false
+                episodeItem.isNameTextModeON = false
+
+                listItem.episodes[indx] = episodeItem
+                const list = [...this.state.list]
+                list[index] = listItem
+                this.props.dispatchUser(true)
+                this.setState({ list: list })
+
+
+
+            })
+            .catch((error) => {
+                // handle error
+                console.log(error);
+            })
+
+    }
+
+    episodeDescEditButtonSaveChanges(index, indx) {
+        console.log(index + indx)
+        const data = new FormData()
+        data.append('episode_description', this.newEpisodeDescription.current.value)
+        data.append('episode_id', (((this.state.list)[index]).episodes[indx]).id)
+
+        axios.patch('http://127.0.0.1:8000/api/chapter-episodes/', data, this.config)
+            .then((response) => {
+                const listItem = {
+                    ...this.state.list[index]
+                }
+                const episodeItem = {
+                    ...listItem.episodes[indx]
+                }
+
+                episodeItem.episode_description = response.data.episode_description
+                episodeItem.isDescButtonShown = false
+                episodeItem.isDescTextModeON = false
+
+                listItem.episodes[indx] = episodeItem
+                const list = [...this.state.list]
+                list[index] = listItem
+                this.props.dispatchUser(true)
+                this.setState({ list: list })
+
+
+
+            })
+            .catch((error) => {
+                // handle error
+                console.log(error);
+            })
+
+    }
+
+    episodeNameEditButton = (e, index, indx) => {
+        e.stopPropagation()
+        this.handleNameTextSwitcher(index, indx)
+
+
+    }
+
+    episodeDescEditButton = (e, index, indx) => {
+        e.stopPropagation()
+        this.handleDescTextSwitcher(index, indx)
 
 
     }
@@ -723,6 +941,20 @@ class NestedList extends React.Component {
         }
     }
 
+    nameTextOnBlur = (event, index, indx) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+            this.hideNameEditButton(index, indx)
+            this.handleNameTextSwitcher(index, indx)
+        }
+    }
+
+    descTextOnBlur = (event, index, indx) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+            this.hideDescEditButton(index, indx)
+            this.handleDescTextSwitcher(index, indx)
+        }
+    }
+
     menuHandleClick = (event, index) => {
         event.stopPropagation()
         const results = this.state.list.map((item, idx) => {
@@ -762,43 +994,6 @@ class NestedList extends React.Component {
 
     }
 
-    editEpisodeButton = () => {
-
-        const data = new FormData()
-        data.append('name', this.newEpisodeName.current.value)
-        data.append('episode_description', this.newEpisodeDescription.current.value)
-        data.append('episode_id', (((this.state.list)[this.state.positionOfEpisodeChapter]).episodes[this.state.positionOfEpisode]).id)
-
-        axios.patch('http://127.0.0.1:8000/api/chapter-episodes/', data, this.config)
-            .then((response) => {
-                const listItem = {
-                    ...this.state.list[this.state.positionOfEpisodeChapter]
-                }
-                const episodeItem = {
-                    ...listItem.episodes[this.state.positionOfEpisode]
-                }
-
-                episodeItem.name = response.data.name
-                episodeItem.episode_description = response.data.episode_description
-
-                listItem.episodes[this.state.positionOfEpisode] = episodeItem
-                const list = [...this.state.list]
-                list[this.state.positionOfEpisodeChapter] = listItem
-                this.props.dispatchUser(true)
-                this.setState({ list: list, episodeEditDialog: false })
-
-
-
-            })
-            .catch((error) => {
-                // handle error
-                console.log(error);
-            })
-
-    }
-
-
-
     TypeOfFile = (props) => {
 
         const { src } = props
@@ -837,116 +1032,7 @@ class NestedList extends React.Component {
     }
 
 
-    EpisodeEditDialog = () => {
-        const { classes } = this.props;
-        return (
-
-
-            <Dialog
-                open={this.state.episodeEditDialog}
-                onClose={this.dialogOnclose}
-                aria-labelledby="error-dialog"
-                className={classes.newEpisodeRoot}
-            >
-                <ValidatorForm form="form" onSubmit={this.editEpisodeButton} >
-
-                    <DialogTitle id="error-dialog" dir='rtl' className={classes.newEpisodeTitle}>
-                        ویرایش اپیزود
-                    </DialogTitle>
-
-                    <Divider />
-                    <Divider />
-
-
-                    <DialogContent>
-
-
-
-                        <CardContent>
-                            <Grid
-                                container
-                                spacing={2}
-                                dir='rtl'
-                            >
-
-
-                                <Grid
-                                    item
-                                    md={12}
-                                    xs={12}
-                                >
-                                    <TextValidator
-                                        fullWidth
-                                        label="نام"
-                                        name="name"
-                                        inputRef={this.newEpisodeName}
-                                        defaultValue={this.state.episodeEditingName}
-                                        required
-                                        variant="outlined"
-                                    />
-                                </Grid>
-
-                                <Grid
-                                    item
-                                    md={12}
-                                    xs={12}
-
-                                >
-                                    <TextField
-                                        fullWidth
-                                        dir='rtl'
-                                        label="توضیحات"
-                                        name="description"
-                                        defaultValue={this.state.episodeEditingDescription}
-                                        inputRef={this.newEpisodeDescription}
-                                        variant="outlined"
-                                        multiline={true}
-                                        rows={5}
-                                    />
-
-                                </Grid>
-
-                            </Grid>
-                        </CardContent>
-
-
-                    </DialogContent>
-
-                    <Divider />
-                    <Divider />
-
-                    <DialogActions className={classes.newEpisodeButtonContent}>
-
-
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={this.dialogOnclose}
-                            style={{ margin: '8px' }}
-                        >
-                            لغو
-                        </Button>
-
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                            style={{ margin: '8px' }}
-                        >
-                            ایجاد
-                                {this.state.newEpisodeLoading && (
-                                <CircularProgress thickness={5} size={25} className={classes.progressBar} />
-
-                            )}
-                        </Button>
-                    </DialogActions>
-                </ValidatorForm>
-
-
-
-            </Dialog>)
-
-    }
+    
 
 
     render() {
@@ -955,7 +1041,6 @@ class NestedList extends React.Component {
 
             <div className={classes.root}>
 
-                <this.EpisodeEditDialog />
 
                 <Dialog
                     open={this.state.dialogOpen}
@@ -1288,32 +1373,83 @@ class NestedList extends React.Component {
                                                     <div
                                                         style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
                                                     >
-                                                        {this.state.isOwner && (
-                                                            <div style={{ alignSelf: 'center' }}
-                                                            >
+                                                        <div style={{ alignSelf: 'center', height: 50, width: 50, marginTop: '10px' }}
+                                                        >
+                                                            {this.state.isOwner && (
+
                                                                 <Button
                                                                     onClick={(e) => this.chapterOrEpisodeRemoveButton(e, index, indx, false)}
                                                                     className={classes.veticalDots}
+                                                                    style={{ alignSelf: 'center' }}
 
                                                                 >
                                                                     <DeleteIcon />
                                                                 </Button>
-                                                            </div>)}
-                                                        <Typography style={{ alignSelf: 'center' }}>
-                                                            <Box fontSize={30} fontWeight="fontWeightBold"
-
+                                                            )}
+                                                        </div>
+                                                        {!episode.isNameTextModeON ?
+                                                            (<div
+                                                                style={{
+                                                                    alignSelf: 'center',
+                                                                    display: 'flex'
+                                                                }}
+                                                                onMouseEnter={() => this.showNameEditButton(index, indx)}
+                                                                onMouseLeave={() => this.hideNameEditButton(index, indx)}
                                                             >
-                                                                {episode.name}
-                                                            </Box>
 
-                                                        </Typography>
-                                                        <div style={{ alignSelf: 'center' }}>
-                                                            <Button
-                                                                onClick={() => this.editEpisodeDialogOpener(index, indx)}
-                                                                className={classes.veticalDots}
-                                                            >
-                                                                <EditIcon />
-                                                            </Button>
+                                                                <Typography
+                                                                    style={{
+                                                                        alignSelf: 'center'
+                                                                    }}
+
+                                                                >
+                                                                    <Box fontSize={30} fontWeight="fontWeightBold"
+
+                                                                    >
+                                                                        {episode.name}
+
+                                                                    </Box>
+                                                                </Typography>
+                                                                {this.state.isOwner && episode.isNameButtonShown && !episode.isNameTextModeON && (
+                                                                    <Fade in={episode.isNameButtonShown} timeout={400}
+                                                                        style={{ alignSelf: 'center' }}
+                                                                    >
+                                                                        <Button
+                                                                            onClick={(e) => this.episodeNameEditButton(e, index, indx)}
+                                                                            className={classes.veticalDots}
+                                                                        >
+                                                                            <EditIcon />
+                                                                        </Button>
+                                                                    </Fade>
+                                                                )}
+
+
+
+                                                            </div>
+                                                            ) :
+
+                                                            (
+                                                                <ValidatorForm
+                                                                    onSubmit={() => this.episodeNameEditButtonSaveChanges(index, indx)} >
+                                                                    <InputBase
+                                                                        autoFocus
+                                                                        dir='rtl'
+                                                                        autoComplete='off'
+                                                                        name="name"
+                                                                        style={{ fontSize: 30, fontWeight: 900 }}
+                                                                        InputProps={{ 'aria-label': 'naked' }}
+                                                                        inputProps={{ style: { textAlign: 'center', marginTop: '6px' } }}
+                                                                        required
+                                                                        onBlur={(event) => this.nameTextOnBlur(event, index, indx)}
+                                                                        defaultValue={episode.name}
+                                                                        inputRef={this.newEpisodeName}
+                                                                    />
+                                                                </ValidatorForm>)
+                                                        }
+
+
+
+                                                        <div style={{ alignSelf: 'center', height: 50, width: 50 }}>
                                                         </div>
 
 
@@ -1333,7 +1469,8 @@ class NestedList extends React.Component {
 
 
                                                 </Grid>
-                                                <Grid item md={12} lg={12} sm={12}
+                                                <Grid item
+                                                    md={12} lg={12} sm={12}
                                                     style={{ marginTop: '12px', padding: '20px' }}
                                                     xs={12}>
                                                     <Tabs
@@ -1345,66 +1482,124 @@ class NestedList extends React.Component {
                                                         <Tab label="فایل ها" {...a11yProps(1)} className={classes.tabFont} />
                                                     </Tabs>
 
-                                                    <SwipeableViews
-                                                        axis={'x-reverse'}
-                                                        index={episode.tabValue}
-                                                        onChangeIndex={() => this.handleTabChange(1 - episode.tabValue, index, indx)}
-                                                    >
-                                                        <TabPanel value={episode.tabValue} index={0} >
-                                                            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'start' }}
-                                                            >
-                                                                <Typography
-                                                                    style={{ marginTop: '12px' }} >
-                                                                    <Box fontSize={18}  >
-                                                                        {episode.episode_description}
-                                                                    </Box>
+                                                    <div style={{ width: '100%', overflow: 'auto', wordBreak: 'break-all' }}>
+                                                        <SwipeableViews
+                                                            axis={'x-reverse'}
+                                                            index={episode.tabValue}
+                                                            onChangeIndex={() => this.handleTabChange(1 - episode.tabValue, index, indx)}
+                                                        >
+                                                            <TabPanel value={episode.tabValue} index={0} >
+                                                                {!episode.isDescTextModeON ?
+                                                                    (<div
+                                                                        style={{
+                                                                            alignSelf: 'center',
+                                                                            padding: '6px'
+                                                                        }}
+                                                                        onMouseEnter={() => this.showDescEditButton(index, indx)}
+                                                                        onMouseLeave={() => this.hideDescEditButton(index, indx)}
+                                                                    >
 
-                                                                </Typography>
-                                                            </div>
-                                                        </TabPanel>
-                                                        <TabPanel value={episode.tabValue} index={1}>
-                                                            {episode.files.length > 0 ? (
-                                                                <div>
-                                                                    {episode.files.map((tabFile, tabIndx) => (
-                                                                        <Grid container spacing={2} dir="rtl" key={tabFile.id}>
-                                                                            <Grid item lg={12} md={12} sm={12} xs={12} >
-                                                                                <div style={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                                                                    <Typography style={{ alignSelf: 'center' }}>
-                                                                                        <Box>
-                                                                                            {this.fileNameExtractor(tabFile.file)}
-                                                                                        </Box>
-                                                                                    </Typography>
-                                                                                    <div style={{ alignSelf: 'center' }} />
-                                                                                    <div style={{ alignSelf: 'center' }}>
-                                                                                        <Button variant="contained" onClick={() => this.handleDownload(tabFile.file)}>
-                                                                                            دانلود
-                                                                                            <GetAppRoundedIcon />
-                                                                                        </Button>
-                                                                                    </div>
-
-                                                                                </div>
-                                                                                <Divider />
-                                                                            </Grid>
-
-
-
-                                                                        </Grid>
-
-                                                                    ))}</div>) : (
-                                                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                        <Typography
-                                                                            style={{ marginTop: '12px' }} >
-                                                                            <Box fontSize={18}  >
-                                                                                فایلی وجود ندارد
-                                                                    </Box>
+                                                                        <Typography component='div'
+                                                                        >
+                                                                            <Box fontSize={18} textAlign='center' >
+                                                                                {episode.episode_description !== '' ? episode.episode_description : '(توضیحی وجود ندارد)'}
+                                                                            </Box>
 
                                                                         </Typography>
+                                                                        {this.state.isOwner && episode.isDescButtonShown && !episode.isDescTextModeON && (
+                                                                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                                                <Fade in={episode.isDescButtonShown} timeout={400}
+                                                                                    style={{ alignSelf: 'center' }}
+                                                                                >
+                                                                                    <Button
+                                                                                        onClick={(e) => this.episodeDescEditButton(e, index, indx)}
+                                                                                        className={classes.veticalDots}
+                                                                                    >
+                                                                                        <EditIcon />
+                                                                                    </Button>
+                                                                                </Fade>
+                                                                            </div>
+                                                                        )}
+
+
+
                                                                     </div>
-                                                                )}
+                                                                    ) :
+
+                                                                    (
+                                                                        
+                                                                        <div style={{ justifyContent: 'center' }}
+
+                                                                            onBlur={(event) => this.descTextOnBlur(event, index, indx)}>
+                                                                            <div >
+                                                                                <InputBase
+                                                                                    fullWidth
+                                                                                    autoFocus
+                                                                                    dir="rtl"
+                                                                                    multiline
+                                                                                    autoComplete='off'
+                                                                                    name="desc"
+                                                                                    style={{ fontSize: 18 }}
+                                                                                    inputProps={{ 'aria-label': 'naked', style: { textAlign: 'center' } }}
+                                                                                    defaultValue={episode.episode_description}
+                                                                                    inputRef={this.newEpisodeDescription}
+                                                                                />
+                                                                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                                                    <Button variant="outlined" color="primary"
+                                                                                        onClick={() => this.episodeDescEditButtonSaveChanges(index, indx)}>
+                                                                                        ذخیره
+                                                                                    </Button>
+                                                                                </div>
+                                                                            </div>
 
 
-                                                        </TabPanel>
-                                                    </SwipeableViews>
+                                                                        </div>)
+                                                                }
+                                                            </TabPanel>
+                                                            <TabPanel value={episode.tabValue} index={1}>
+                                                                {episode.files.length > 0 ? (
+                                                                    <div>
+                                                                        {episode.files.map((tabFile, tabIndx) => (
+                                                                            <Grid container spacing={2} dir="rtl" key={tabFile.id}>
+                                                                                <Grid item lg={12} md={12} sm={12} xs={12} >
+                                                                                    <div style={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                                                                        <Typography style={{ alignSelf: 'center' }}>
+                                                                                            <Box>
+                                                                                                {this.fileNameExtractor(tabFile.file)}
+                                                                                            </Box>
+                                                                                        </Typography>
+                                                                                        <div style={{ alignSelf: 'center' }} />
+                                                                                        <div style={{ alignSelf: 'center' }}>
+                                                                                            <Button variant="contained" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
+                                                                                                دانلود
+                                                                                            <GetAppRoundedIcon />
+                                                                                            </Button>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                    <Divider />
+                                                                                </Grid>
+
+
+
+                                                                            </Grid>
+
+                                                                        ))}</div>) : (
+                                                                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                                            <Typography
+                                                                                style={{ marginTop: '12px' }} >
+                                                                                <Box fontSize={18}  >
+                                                                                    (فایلی وجود ندارد)
+                                                                                </Box>
+
+                                                                            </Typography>
+                                                                        </div>
+                                                                    )}
+
+
+                                                            </TabPanel>
+                                                        </SwipeableViews>
+                                                    </div>
                                                 </Grid>
 
 
