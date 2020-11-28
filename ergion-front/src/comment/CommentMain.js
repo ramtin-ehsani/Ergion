@@ -21,6 +21,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import ImageIcon from '@material-ui/icons/Image';
+import { AttachFile, Description, PictureAsPdf, MovieCreationOutlined } from '@material-ui/icons';
 
 
 import Comments from "./Comments";
@@ -63,7 +65,7 @@ function TabPanel(props) {
 
   return (
     <div
-      style={{ height: "8rem" }}
+      style={{ height: "10rem" }}
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
@@ -141,6 +143,25 @@ function CommentMain() {
     })
 
 }
+  const HandlePreviewIcon = (props) => {
+    const { src } = props
+
+    const type = fileNameExtractor(src)
+
+    if (type.includes("mp4")) return <MovieCreationOutlined color='primary'/>
+    if (type.includes("jpg")
+        || type.includes("jpeg")
+        || type.includes("png")) {
+        return <ImageIcon color='primary'/>
+    }
+    if (type.includes("zip")) return <Description color='primary'/>
+
+    if (type.includes("pdf")) return <PictureAsPdf color='primary'/>
+
+    return <AttachFile color='primary'/>
+
+  }
+
 
   useEffect(()=>{
     const episode_id = window.location.href.split('/')[7];
@@ -211,7 +232,7 @@ function CommentMain() {
                 
               <Grid item xs={12}>
                 <AppBar position="static" dir='rtl' color='transparent'>
-                  <Tabs value={value} onChange={handleChange}>
+                  <Tabs value={value} onChange={handleChange} indicatorColor='primary'>
                     <Tab  className='title' label="توضیحات" {...a11yProps(0)} />
                     <Tab className='title' label="فایل ها" {...a11yProps(1)} />
                   </Tabs>
@@ -239,10 +260,13 @@ function CommentMain() {
                     <Grid container spacing={2} dir="rtl" key={tabFile.id}>
                         <Grid item lg={12} md={12} sm={12} xs={12} >
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Typography style={{ alignSelf: 'center' }} component='div'>
-                                    <Box>
+                                <Typography style={{ alignSelf: 'center' }} component='div' noWrap>
+                                <div style={{ display: 'flex' }}>
+                                <HandlePreviewIcon src={fileNameExtractor(tabFile.src)} />
+                                    <Box style={{ marginRight: '10px' }}>
                                         {fileNameExtractor(tabFile.src)}
                                     </Box>
+                                  </div>
                                 </Typography>
                                 <div style={{ alignSelf: 'center' }} />
                                 <div style={{ alignSelf: 'center' }}>
