@@ -8,9 +8,7 @@ const initialState = {
         lastName: '',
         profilePicture: '',
     },
-<<<<<<< HEAD
     snackBar: false,
-=======
     replies: {
 
     },
@@ -23,7 +21,6 @@ const initialState = {
     open: {
 
     },
->>>>>>> 68f93a2ae928ed705c48838832f3e59fd4aa6087
 };
 
 const reducer = (state = initialState, action) => {
