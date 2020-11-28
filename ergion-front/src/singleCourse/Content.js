@@ -46,6 +46,8 @@ import * as actionTypes from '../store/actions'
 import MovieCreationTwoToneIcon from '@material-ui/icons/MovieCreationTwoTone';
 import { Tab, Tabs } from "@material-ui/core";
 import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
+import ImageIcon from '@material-ui/icons/Image';
+import { AttachFile, Description, PictureAsPdf, MovieCreationOutlined } from '@material-ui/icons';
 import {
     TextField,
 } from '@material-ui/core';
@@ -100,6 +102,9 @@ const styles = (theme) => ({
     textFieldStyle: {
         marginLeft: theme.spacing(2),
         paddingRight: theme.spacing(4),
+    },
+    previewIconColor: {
+        color: '#3f50b5'
     },
     previewChip: {
         minWidth: 160,
@@ -243,9 +248,6 @@ class NestedList extends React.Component {
             removeDialog: false,
             newEpisodeLoading: false,
             isChapterToDelete: false,
-            episodeEditDialog: false,
-            episodeEditingName: '',
-            episodeEditingDescription: '',
 
 
 
@@ -386,9 +388,28 @@ class NestedList extends React.Component {
         this.setState({ positionOfEpisodeChapter: position, dialogOpen: true })
     }
 
+    HandlePreviewIcon = (props) => {
+        const { src } = props
+        const { classes } = this.props
+
+        const type = this.fileNameExtractor(src)
+
+        if (type.includes("mp4")) return <MovieCreationOutlined className={classes.previewIconColor} />
+        if (type.includes("jpg")
+            || type.includes("jpeg")
+            || type.includes("png")) {
+            return <ImageIcon className={classes.previewIconColor} />
+        }
+        if (type.includes("zip")) return <Description className={classes.previewIconColor} />
+
+        if (type.includes("pdf")) return <PictureAsPdf className={classes.previewIconColor} />
+
+        return <AttachFile className={classes.previewIconColor}/>
+
+    }
 
 
-    componentDidMount() { 
+    componentDidMount() {
         this._isMounted = true;
         this.ownerChecker()
 
@@ -518,13 +539,32 @@ class NestedList extends React.Component {
 
     font = 20;
 
-    toggle = (index) => {
+    toggle = (index, type) => {
         const results = this.state.list.map((item, idx) => {
             if (index === idx) {
-                return {
-                    ...item,
-                    isOpened: !item.isOpened
-                };
+                if (type === 'is open toggle') {
+                    return {
+                        ...item,
+                        isOpened: !item.isOpened
+                    };
+                } else if (type === 'button on') {
+                    return {
+                        ...item,
+                        buttonShown: true
+                    };
+
+                } else if (type === 'button off') {
+                    return {
+                        ...item,
+                        buttonShown: false,
+                        anchorEl: null
+                    };
+                } else {
+                    return {
+                        ...item,
+                        isTextMode: !item.isTextMode
+                    };
+                }
             }
             return item;
         });
@@ -532,47 +572,6 @@ class NestedList extends React.Component {
 
     }
 
-    showButtons = (index) => {
-        const results = this.state.list.map((item, idx) => {
-            if (index === idx) {
-                return {
-                    ...item,
-                    buttonShown: true
-                };
-            }
-            return item;
-        });
-        this.setState({ list: results })
-
-    }
-    hideButtons = (index) => {
-        const results = this.state.list.map((item, idx) => {
-            if (index === idx) {
-                return {
-                    ...item,
-                    buttonShown: false,
-                    anchorEl: null
-                };
-            }
-            return item;
-        });
-        this.setState({ list: results })
-
-    }
-
-    textModeSwitcher = (index) => {
-        const results = this.state.list.map((item, idx) => {
-            if (index === idx) {
-                return {
-                    ...item,
-                    isTextMode: !item.isTextMode
-                };
-            }
-            return item;
-        });
-        this.setState({ list: results })
-
-    }
 
     onChange = (event) => {
         this.setState({ newChapterValue: event.target.value })
@@ -620,7 +619,7 @@ class NestedList extends React.Component {
     };
 
     dialogOnclose = () => {
-        this.setState({ dialogOpen: false, removeDialog: false, episodeEditDialog: false })
+        this.setState({ dialogOpen: false, removeDialog: false })
 
     }
 
@@ -636,116 +635,25 @@ class NestedList extends React.Component {
 
     }
 
-    handleNameTextSwitcher = (chapterIndex, episodeIndex) => {
+    handleEpisodeEditButton = (chapterIndex, episodeIndex, type) => {
         const results = this.state.list.map((item, idx) => {
             if (chapterIndex === idx) {
                 const episodes = item.episodes
                 episodes.map((episode, epIndex) => {
                     if (episodeIndex === epIndex) {
-                        episode.isNameTextModeON = !episode.isNameTextModeON
-
-
-                    }
-                })
-                return {
-                    ...item,
-                    episodes: episodes
-                }
-            }
-            return item;
-        });
-        this.setState({ list: results })
-    };
-
-    showNameEditButton = (chapterIndex, episodeIndex) => {
-        const results = this.state.list.map((item, idx) => {
-            if (chapterIndex === idx) {
-                const episodes = item.episodes
-                episodes.map((episode, epIndex) => {
-                    if (episodeIndex === epIndex) {
-                        episode.isNameButtonShown = true
-
-
-                    }
-                })
-                return {
-                    ...item,
-                    episodes: episodes
-                }
-            }
-            return item;
-        });
-        this.setState({ list: results })
-    };
-    hideNameEditButton = (chapterIndex, episodeIndex) => {
-        const results = this.state.list.map((item, idx) => {
-            if (chapterIndex === idx) {
-                const episodes = item.episodes
-                episodes.map((episode, epIndex) => {
-                    if (episodeIndex === epIndex) {
-                        episode.isNameButtonShown = false
-
-
-                    }
-                })
-                return {
-                    ...item,
-                    episodes: episodes
-                }
-            }
-            return item;
-        });
-        this.setState({ list: results })
-    };
-
-    handleDescTextSwitcher = (chapterIndex, episodeIndex) => {
-        const results = this.state.list.map((item, idx) => {
-            if (chapterIndex === idx) {
-                const episodes = item.episodes
-                episodes.map((episode, epIndex) => {
-                    if (episodeIndex === epIndex) {
-                        episode.isDescTextModeON = !episode.isDescTextModeON
-
-
-                    }
-                })
-                return {
-                    ...item,
-                    episodes: episodes
-                }
-            }
-            return item;
-        });
-        this.setState({ list: results })
-    };
-
-    showDescEditButton = (chapterIndex, episodeIndex) => {
-        const results = this.state.list.map((item, idx) => {
-            if (chapterIndex === idx) {
-                const episodes = item.episodes
-                episodes.map((episode, epIndex) => {
-                    if (episodeIndex === epIndex) {
-                        episode.isDescButtonShown = true
-
-
-                    }
-                })
-                return {
-                    ...item,
-                    episodes: episodes
-                }
-            }
-            return item;
-        });
-        this.setState({ list: results })
-    };
-    hideDescEditButton = (chapterIndex, episodeIndex) => {
-        const results = this.state.list.map((item, idx) => {
-            if (chapterIndex === idx) {
-                const episodes = item.episodes
-                episodes.map((episode, epIndex) => {
-                    if (episodeIndex === epIndex) {
-                        episode.isDescButtonShown = false
+                        if (type === 'desc button off') {
+                            episode.isDescButtonShown = false
+                        } else if (type === 'desc button on') {
+                            episode.isDescButtonShown = true
+                        } else if (type === 'desc text') {
+                            episode.isDescTextModeON = !episode.isDescTextModeON
+                        } else if (type === 'name button off') {
+                            episode.isNameButtonShown = false
+                        } else if (type === 'name button on') {
+                            episode.isNameButtonShown = true
+                        } else if (type === 'name text') {
+                            episode.isNameTextModeON = !episode.isNameTextModeON
+                        }
 
 
                     }
@@ -767,8 +675,6 @@ class NestedList extends React.Component {
                 episodes.map((episode, epIndex) => {
                     if (episodeIndex === epIndex) {
                         episode.tabValue = newValue
-
-
                     }
                 })
                 return {
@@ -801,14 +707,20 @@ class NestedList extends React.Component {
 
     chapterEditButton = (e, index) => {
         e.stopPropagation()
-        this.textModeSwitcher(index)
+        this.toggle(index, 'time')
 
 
     }
 
-    episodeNameEditButtonSaveChanges(index, indx) {
+
+
+    episodeEditButtonSaveChanges(index, indx, isName) {
         const data = new FormData()
-        data.append('name', this.newEpisodeName.current.value)
+        if (isName) {
+            data.append('name', this.newEpisodeName.current.value)
+        } else {
+            data.append('episode_description', this.newEpisodeDescription.current.value)
+        }
         data.append('episode_id', (((this.state.list)[index]).episodes[indx]).id)
 
         axios.patch('http://127.0.0.1:8000/api/chapter-episodes/', data, this.config)
@@ -819,10 +731,16 @@ class NestedList extends React.Component {
                 const episodeItem = {
                     ...listItem.episodes[indx]
                 }
+                if (isName) {
+                    episodeItem.name = response.data.name
+                    episodeItem.isNameButtonShown = false
+                    episodeItem.isNameTextModeON = false
+                } else {
+                    episodeItem.episode_description = response.data.episode_description
+                    episodeItem.isDescButtonShown = false
+                    episodeItem.isDescTextModeON = false
+                }
 
-                episodeItem.name = response.data.name
-                episodeItem.isNameButtonShown = false
-                episodeItem.isNameTextModeON = false
 
                 listItem.episodes[indx] = episodeItem
                 const list = [...this.state.list]
@@ -840,54 +758,18 @@ class NestedList extends React.Component {
 
     }
 
-    episodeDescEditButtonSaveChanges(index, indx) {
-        console.log(index + indx)
-        const data = new FormData()
-        data.append('episode_description', this.newEpisodeDescription.current.value)
-        data.append('episode_id', (((this.state.list)[index]).episodes[indx]).id)
-
-        axios.patch('http://127.0.0.1:8000/api/chapter-episodes/', data, this.config)
-            .then((response) => {
-                const listItem = {
-                    ...this.state.list[index]
-                }
-                const episodeItem = {
-                    ...listItem.episodes[indx]
-                }
-
-                episodeItem.episode_description = response.data.episode_description
-                episodeItem.isDescButtonShown = false
-                episodeItem.isDescTextModeON = false
-
-                listItem.episodes[indx] = episodeItem
-                const list = [...this.state.list]
-                list[index] = listItem
-                this.props.dispatchUser(true)
-                this.setState({ list: list })
-
-
-
-            })
-            .catch((error) => {
-                // handle error
-                console.log(error);
-            })
-
-    }
-
-    episodeNameEditButton = (e, index, indx) => {
+    episodePropagationEditButton = (e, index, indx, isName) => {
         e.stopPropagation()
-        this.handleNameTextSwitcher(index, indx)
+        if (isName) {
+            this.handleEpisodeEditButton(index, indx, 'name text')
+        } else {
+            this.handleEpisodeEditButton(index, indx, 'desc text')
+        }
 
-
-    }
-
-    episodeDescEditButton = (e, index, indx) => {
-        e.stopPropagation()
-        this.handleDescTextSwitcher(index, indx)
 
 
     }
+
 
     chapterEditButtonSaveChanges = (index) => {
         axios.patch('http://127.0.0.1:8000/api/course-chapters/', {
@@ -917,7 +799,7 @@ class NestedList extends React.Component {
 
     listOnClick = (index) => {
         if (!this.state.list[index].isTextMode) {
-            this.toggle(index)
+            this.toggle(index, 'is open toggle')
         }
 
     }
@@ -937,62 +819,46 @@ class NestedList extends React.Component {
 
     textOnBlur = (event, index) => {
         if (!event.currentTarget.contains(event.relatedTarget)) {
-            this.textModeSwitcher(index)
+            this.toggle(index, 'time')
         }
     }
 
-    nameTextOnBlur = (event, index, indx) => {
+    episodeTextOnBlur = (event, index, indx, isName) => {
         if (!event.currentTarget.contains(event.relatedTarget)) {
-            this.hideNameEditButton(index, indx)
-            this.handleNameTextSwitcher(index, indx)
+            if (isName) {
+                this.handleEpisodeEditButton(index, indx, 'name button off')
+                this.handleEpisodeEditButton(index, indx, 'name text')
+            } else {
+                this.handleEpisodeEditButton(index, indx, 'desc button off')
+                this.handleEpisodeEditButton(index, indx, 'desc text')
+            }
         }
     }
 
-    descTextOnBlur = (event, index, indx) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) {
-            this.hideDescEditButton(index, indx)
-            this.handleDescTextSwitcher(index, indx)
-        }
-    }
 
-    menuHandleClick = (event, index) => {
+    menuHandleClick = (event, index, open) => {
         event.stopPropagation()
         const results = this.state.list.map((item, idx) => {
             if (index === idx) {
-                return {
-                    ...item,
-                    anchorEl: event.currentTarget
-                };
+                if (open) {
+                    return {
+                        ...item,
+                        anchorEl: event.currentTarget
+                    };
+                } else {
+                    return {
+                        ...item,
+                        anchorEl: null
+                    };
+                }
             }
             return item;
         });
         this.setState({ list: results })
     };
 
-    menuHandleClose = (event, index) => {
-        event.stopPropagation()
-        const results = this.state.list.map((item, idx) => {
-            if (index === idx) {
-                return {
-                    ...item,
-                    anchorEl: null
-                };
-            }
-            return item;
-        });
-        this.setState({ list: results })
-    };
 
-    editEpisodeDialogOpener = (chapterIndex, episodeIndex) => {
-        this.setState({
-            positionOfEpisodeChapter: chapterIndex,
-            episodeEditDialog: true,
-            positionOfEpisode: episodeIndex,
-            episodeEditingName: (((this.state.list)[chapterIndex]).episodes[episodeIndex]).name,
-            episodeEditingDescription: (((this.state.list)[chapterIndex]).episodes[episodeIndex]).episode_description
-        })
 
-    }
 
     TypeOfFile = (props) => {
 
@@ -1032,7 +898,7 @@ class NestedList extends React.Component {
     }
 
 
-    
+
 
 
     render() {
@@ -1263,8 +1129,8 @@ class NestedList extends React.Component {
                     {this.state.list.map((item, index) =>
                         (<div className={classes.paperStyle} key={item.id} >
                             <Paper
-                                onMouseEnter={() => this.showButtons(index)}
-                                onMouseLeave={() => this.hideButtons(index)}
+                                onMouseEnter={() => this.toggle(index, 'button on')}
+                                onMouseLeave={() => this.toggle(index, 'button off')}
                             >
                                 <ListItem button={!item.isTextMode} onClick={() => this.listOnClick(index)}  >
                                     <ListItemIcon>
@@ -1326,7 +1192,7 @@ class NestedList extends React.Component {
                                                     component="span"
                                                     aria-controls="customized-menu"
                                                     aria-haspopup="true"
-                                                    onClick={(e) => this.menuHandleClick(e, index)}
+                                                    onClick={(e) => this.menuHandleClick(e, index, true)}
                                                     className={classes.veticalDots}
                                                     style={{ marginLeft: '10px' }} >
                                                     <MoreHorizIcon
@@ -1337,7 +1203,7 @@ class NestedList extends React.Component {
                                                     anchorEl={item.anchorEl}
                                                     keepMounted
                                                     open={Boolean(item.anchorEl)}
-                                                    onClose={(e) => this.menuHandleClose(e, index)}
+                                                    onClose={(e) => this.menuHandleClick(e, index, false)}
                                                 >
 
                                                     <StyledMenuItem onClick={(e) => this.chapterOrEpisodeRemoveButton(e, index, 0, true)} >
@@ -1393,8 +1259,8 @@ class NestedList extends React.Component {
                                                                     alignSelf: 'center',
                                                                     display: 'flex'
                                                                 }}
-                                                                onMouseEnter={() => this.showNameEditButton(index, indx)}
-                                                                onMouseLeave={() => this.hideNameEditButton(index, indx)}
+                                                                onMouseEnter={() => this.handleEpisodeEditButton(index, indx, 'name button on')}
+                                                                onMouseLeave={() => this.handleEpisodeEditButton(index, indx, 'name button off')}
                                                             >
 
                                                                 <Typography
@@ -1415,7 +1281,7 @@ class NestedList extends React.Component {
                                                                         style={{ alignSelf: 'center' }}
                                                                     >
                                                                         <Button
-                                                                            onClick={(e) => this.episodeNameEditButton(e, index, indx)}
+                                                                            onClick={(e) => this.episodePropagationEditButton(e, index, indx, true)}
                                                                             className={classes.veticalDots}
                                                                         >
                                                                             <EditIcon />
@@ -1430,7 +1296,7 @@ class NestedList extends React.Component {
 
                                                             (
                                                                 <ValidatorForm
-                                                                    onSubmit={() => this.episodeNameEditButtonSaveChanges(index, indx)} >
+                                                                    onSubmit={() => this.episodeEditButtonSaveChanges(index, indx, true)} >
                                                                     <InputBase
                                                                         autoFocus
                                                                         dir='rtl'
@@ -1440,7 +1306,7 @@ class NestedList extends React.Component {
                                                                         InputProps={{ 'aria-label': 'naked' }}
                                                                         inputProps={{ style: { textAlign: 'center', marginTop: '6px' } }}
                                                                         required
-                                                                        onBlur={(event) => this.nameTextOnBlur(event, index, indx)}
+                                                                        onBlur={(event) => this.episodeTextOnBlur(event, index, indx, true)}
                                                                         defaultValue={episode.name}
                                                                         inputRef={this.newEpisodeName}
                                                                     />
@@ -1495,8 +1361,8 @@ class NestedList extends React.Component {
                                                                             alignSelf: 'center',
                                                                             padding: '6px'
                                                                         }}
-                                                                        onMouseEnter={() => this.showDescEditButton(index, indx)}
-                                                                        onMouseLeave={() => this.hideDescEditButton(index, indx)}
+                                                                        onMouseEnter={() => this.handleEpisodeEditButton(index, indx, 'desc button on')}
+                                                                        onMouseLeave={() => this.handleEpisodeEditButton(index, indx, 'desc button off')}
                                                                     >
 
                                                                         <Typography component='div'
@@ -1512,7 +1378,7 @@ class NestedList extends React.Component {
                                                                                     style={{ alignSelf: 'center' }}
                                                                                 >
                                                                                     <Button
-                                                                                        onClick={(e) => this.episodeDescEditButton(e, index, indx)}
+                                                                                        onClick={(e) => this.episodePropagationEditButton(e, index, indx, false)}
                                                                                         className={classes.veticalDots}
                                                                                     >
                                                                                         <EditIcon />
@@ -1527,16 +1393,16 @@ class NestedList extends React.Component {
                                                                     ) :
 
                                                                     (
-                                                                        
+
                                                                         <div style={{ justifyContent: 'center' }}
 
-                                                                            onBlur={(event) => this.descTextOnBlur(event, index, indx)}>
+                                                                            onBlur={(event) => this.episodeTextOnBlur(event, index, indx, false)}>
                                                                             <div >
                                                                                 <InputBase
                                                                                     fullWidth
                                                                                     autoFocus
                                                                                     dir="rtl"
-                                                                                    multiline
+                                                                                    // multiline
                                                                                     autoComplete='off'
                                                                                     name="desc"
                                                                                     style={{ fontSize: 18 }}
@@ -1546,7 +1412,7 @@ class NestedList extends React.Component {
                                                                                 />
                                                                                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                                                                                     <Button variant="outlined" color="primary"
-                                                                                        onClick={() => this.episodeDescEditButtonSaveChanges(index, indx)}>
+                                                                                        onClick={() => this.episodeEditButtonSaveChanges(index, indx, false)}>
                                                                                         ذخیره
                                                                                     </Button>
                                                                                 </div>
@@ -1563,10 +1429,14 @@ class NestedList extends React.Component {
                                                                             <Grid container spacing={2} dir="rtl" key={tabFile.id}>
                                                                                 <Grid item lg={12} md={12} sm={12} xs={12} >
                                                                                     <div style={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                                                                        <Typography style={{ alignSelf: 'center' }}>
-                                                                                            <Box>
-                                                                                                {this.fileNameExtractor(tabFile.file)}
-                                                                                            </Box>
+
+                                                                                        <Typography style={{ alignSelf: 'center' }} >
+                                                                                            <div style={{ display: 'flex' }}>
+                                                                                                <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
+                                                                                                <Box style={{ marginRight: '10px' }}>
+                                                                                                    {this.fileNameExtractor(tabFile.file)}
+                                                                                                </Box>
+                                                                                            </div>
                                                                                         </Typography>
                                                                                         <div style={{ alignSelf: 'center' }} />
                                                                                         <div style={{ alignSelf: 'center' }}>
