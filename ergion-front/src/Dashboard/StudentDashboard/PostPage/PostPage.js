@@ -30,6 +30,11 @@ import { create } from 'jss';
 import rtl from 'jss-rtl';
 import Divider from '@material-ui/core/Divider';
 import Axios from 'axios';
+import Comments from './Comment/Comments';
+import Slider from "react-slick";
+import "../../../../node_modules/slick-carousel/slick/slick.css";
+import "../../../../node_modules/slick-carousel/slick/slick-theme.css";
+
 
 const getWidth = () => window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
@@ -39,10 +44,19 @@ const useStyles = makeStyles((theme) =>
 			fontFamily: 'IRANSans',
 			// minWidth: '30%',
 			justifyContent: 'center',
-			// backgroundColor: "blue",
+			// backgroundColor: "skyblue",
 			alignItems: 'center',
 			textAlign: 'center',
-			width: '80% !important'
+			width: '65% !important'
+		},
+		root1: {
+			fontFamily: 'IRANSans',
+			// minWidth: '30%',
+			justifyContent: 'center',
+			// backgroundColor: "skyblue",
+			alignItems: 'center',
+			textAlign: 'center',
+			width: '65% !important'
 		},
 		media: {
 			// paddingTop: "30%",
@@ -56,6 +70,16 @@ const useStyles = makeStyles((theme) =>
 		tab: {
 			flexGrow: 1,
 			backgroundColor: theme.palette.background.paper
+		},
+		spacing: {
+			marginTop: '30px'
+			// marginBottom: "30px",
+		},
+		test: {
+			minWidth: 327,
+			maxWidth: 327,
+			maxHeight: 300,
+			minHeight: 300,
 		}
 	})
 );
@@ -67,10 +91,12 @@ const PostPage = () => {
 	const classes = useStyles();
 	const [ isRed, setIsRed ] = useState(false);
 	const [ isImg, setIsImg ] = useState(false);
-	const [ isMultiImg, setisMultiImg ] = useState(false);
+	const [ isMultiImg, setisMultiImg ] = useState(true);
 	const [ isVideo, setIsVideo ] = useState(false);
-	const [ isPdf, setIsPdf ] = useState(true);
+	const [ isPdf, setIsPdf ] = useState(false);
 	const [ postPage, setPostPage ] = useState(null);
+
+	let slider = useRef();
 
 	const test = [
 		{
@@ -90,14 +116,73 @@ const PostPage = () => {
 		},
 		{
 			news: 'test for english classes and im busy now i actually dont care about anything',
-			media: [ img1, img2, img3, img1 ]
+			media: [ img1, img2, img3, img ]
 		},
 		{
 			news: 'null media',
 			media: null
 		}
 	];
-	// setIsPdf(true)
+
+	const settings = {
+		dots: true,
+		speed: 300,
+		slidesToShow: 3,
+		slidesToScroll: 1,
+		infinite: true,
+		// autoplay: true,
+		autoplaySpeed: 2500,
+		rtl: true,
+		pauseOnHover: true,
+		responsive: [
+			{
+				breakpoint: 1024,
+				settings: {
+					slidesToShow: 2,
+					slidesToScroll: 2,
+					dots: true
+				}
+			},
+			{
+				breakpoint: 760,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1,
+					// initialSlide: 2,
+					dots: true
+				}
+			},
+			{
+				breakpoint: 500,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1,
+					dots: true,
+					autoplaySpeed: 4000,
+					autoplay: true,
+				}
+			}
+		]
+	
+	}
+
+	const slier = ( 
+		<Slider
+			ref={c => (slider = c)} {...settings}>
+			{test[3].media.map((item) => (
+				<div style={{display: "flex", justifyContent: "center", 
+						position: "relative", width: "80%"}}>
+					<img
+						className={classes.test}
+						src={item}
+						alt="test"
+					/>
+				</div>
+			))}
+		</Slider>
+	)
+
+
 
 	const config = {
 		headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
@@ -108,10 +193,10 @@ const PostPage = () => {
 			setWidth(getWidth());
 		});
 
-		const api = '';
-		axios.get(api, config).then((response) => {
-			setPostPage(response.data)
-		});
+		// const api = '';
+		// axios.get(api, config).then((response) => {
+		// 	setPostPage(response.data)
+		// });
 	}, []);
 
 	return (
@@ -132,8 +217,11 @@ const PostPage = () => {
 					}
 					className="post-page-main"
 				>
-					<Container style={{ backgroundColor: 'none', paddingTop: 20 }}>
+					<Grid container item className={classes.spacing}>
 						<Grid
+							container
+							item={true}
+							className={classes.spacing}
 							style={{
 								dir: 'rtl',
 								display: 'flex',
@@ -167,9 +255,7 @@ const PostPage = () => {
 										</Typography>
 									}
 								/>
-
 								<Divider />
-
 								<CardContent>
 									<Typography
 										variant="body2"
@@ -189,13 +275,14 @@ const PostPage = () => {
 									// image={img}
 									title="news-media"
 								>
+									{/* {
+										isMultiImg ? (slier) : ''
+									} */}
 									{isMultiImg ? (
 										test[3].media.map((item) => (
 											<img src={item} alt="test" width="24.5%" height="280" />
-										))
-									) : (
-										''
-									)}
+										))) : ('')
+									}
 									{isPdf ? <iframe src={test[2].media} height="400" width="100%" /> : ''}
 									{isImg ? <img src={img1} alt="test" width="35%" height="280" /> : ''}
 									{isVideo ? (
@@ -207,7 +294,6 @@ const PostPage = () => {
 										''
 									)}
 								</CardMedia>
-
 								<CardActions className="post-footer" dir="ltr">
 									<div className="icon-footer">
 										<IconButton className="comment-icon">
@@ -229,8 +315,11 @@ const PostPage = () => {
 									</div>
 								</CardActions>
 							</Card>
+							<div className={classes.root1} dir="rtl">
+								<Comments />
+							</div>
 						</Grid>
-					</Container>
+					</Grid>
 				</div>
 			</StylesProvider>
 		</React.Fragment>
