@@ -9,6 +9,7 @@ import { makeStyles, Theme, createStyles, StylesProvider, ThemeProvider, jssPres
 import clsx from 'clsx';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import axios from 'axios';
 import CommentIcon from '@material-ui/icons/Comment';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CardContent from '@material-ui/core/CardContent';
@@ -28,6 +29,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
 import Divider from '@material-ui/core/Divider';
+import Axios from 'axios';
 
 const getWidth = () => window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
@@ -49,6 +51,7 @@ const useStyles = makeStyles((theme) =>
 		},
 		title: {
 			fontFamily: 'IRANSans'
+			// height: 50
 		},
 		tab: {
 			flexGrow: 1,
@@ -64,8 +67,10 @@ const PostPage = () => {
 	const classes = useStyles();
 	const [ isRed, setIsRed ] = useState(false);
 	const [ isImg, setIsImg ] = useState(false);
-	const [ isVideo, setIsVideo ] = useState(true);
-	const [ isPdf, setIsPdf ] = useState(false);
+	const [ isMultiImg, setisMultiImg ] = useState(false);
+	const [ isVideo, setIsVideo ] = useState(false);
+	const [ isPdf, setIsPdf ] = useState(true);
+	const [ postPage, setPostPage ] = useState(null);
 
 	const test = [
 		{
@@ -85,7 +90,7 @@ const PostPage = () => {
 		},
 		{
 			news: 'test for english classes and im busy now i actually dont care about anything',
-			media: [ img1, img2, img3 ]
+			media: [ img1, img2, img3, img1 ]
 		},
 		{
 			news: 'null media',
@@ -94,9 +99,18 @@ const PostPage = () => {
 	];
 	// setIsPdf(true)
 
+	const config = {
+		headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
+	};
+
 	useEffect(() => {
 		window.addEventListener('resize', () => {
 			setWidth(getWidth());
+		});
+
+		const api = '';
+		axios.get(api, config).then((response) => {
+			setPostPage(response.data)
 		});
 	}, []);
 
@@ -133,8 +147,8 @@ const PostPage = () => {
 								<CardHeader
 									className={classes.title}
 									avatar={
-										<Avatar aria-label="recipe" className={classes.avatar} src={img}>
-											R
+										<Avatar aria-label="recipe" className={classes.avatar}>
+											<img src={img1} alt="tessacehr" minWidth="50" height="50" poster="R" />
 										</Avatar>
 									}
 									action={
@@ -175,8 +189,15 @@ const PostPage = () => {
 									// image={img}
 									title="news-media"
 								>
+									{isMultiImg ? (
+										test[3].media.map((item) => (
+											<img src={item} alt="test" width="24.5%" height="280" />
+										))
+									) : (
+										''
+									)}
 									{isPdf ? <iframe src={test[2].media} height="400" width="100%" /> : ''}
-									{isImg ? <img src={img1} alt="test" width="50%" height="400" /> : ''}
+									{isImg ? <img src={img1} alt="test" width="35%" height="280" /> : ''}
 									{isVideo ? (
 										<video width="100%" height="400" controls>
 											<source src={vid} type="video/mp4" />

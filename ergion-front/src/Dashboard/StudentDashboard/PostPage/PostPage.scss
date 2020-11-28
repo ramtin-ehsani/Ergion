@@ -21,6 +21,7 @@
 		text-align: right;
 		font-weight: normal;
 		color: black;
+		font-size: 17px;
 	}
 
 	.post-footer {
@@ -55,6 +56,14 @@
 
 	.MuiCardActions-spacing > :not(:first-child) {
 		margin-left: 0;
+	}
+
+	.MuiCardHeader-root {
+		padding: 0 !important;
+	}
+
+	.MuiCardHeader-action {
+		margin-top: 0 !important;
 	}
 
 	.date {
