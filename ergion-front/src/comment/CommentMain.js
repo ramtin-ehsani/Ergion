@@ -6,7 +6,6 @@ import {
   ThemeProvider
 } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Player } from 'video-react';
 import "./Player.scss";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from 'prop-types';
@@ -30,6 +29,7 @@ import './Comments.scss'
 import { Button, CssBaseline, Grid, Paper, Tab, Tabs, withStyles } from "@material-ui/core";
 import SwipeableViews from "react-swipeable-views";
 import axios from "axios";
+import ReactPlayer from "react-player";
 
 const lightTheme = createMuiTheme({
   palette: {
@@ -224,9 +224,13 @@ function CommentMain() {
             {media === '' ? (
               <Typography></Typography>):
               (<Grid item container>
-                <Player>
-                  <source src={media} />
-                </Player>
+                <ReactPlayer
+                width='100%'
+                height='100%'
+                url={media}
+                controls
+                style={{ backgroundColor: '#000' }}
+                />
                 </Grid>
                 )}
                 
