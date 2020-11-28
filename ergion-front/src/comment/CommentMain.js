@@ -197,9 +197,9 @@ function CommentMain() {
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline>
-        <Container>
-          <Grid container item className={classes.spacing} lg={10} direction='row' justify="space-evenly">
-            <Grid container item={true} justify="space-between" className={classes.spacing} lg={9} spacing={4}>
+        {/* <Container> */}
+          <Grid container item className={classes.spacing} lg={10} md={12} direction='row' justify="space-evenly">
+            <Grid container item={true} justify="space-between" className={classes.spacing} style={{margin:'2px'}} md={8} lg={8} spacing={4}>
             {media === '' ? (
               <Typography></Typography>):
               (<Grid item container>
@@ -263,7 +263,7 @@ function CommentMain() {
                 <Comments />
               </Grid>
             </Grid>
-            <Grid alignContent='flex-start' alignItems='stretch' item container className={classes.spacing} lg={3} spacing={4}>
+            <Grid alignContent='flex-start' alignItems='stretch' style={{margin:'2px'}} item container className={classes.spacing} md={3} lg={3} spacing={4}>
               {/* <Paper style={{ padding: '32px' }}>
                 <Typography className={classes.header} variant="h4" gutterBottom>
                   Episodes
@@ -307,7 +307,7 @@ function CommentMain() {
 
             </Grid>
           </Grid>
-        </Container>
+        {/* </Container> */}
       </CssBaseline>
     </ThemeProvider>
   );
