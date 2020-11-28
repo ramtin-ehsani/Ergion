@@ -103,9 +103,6 @@ const styles = (theme) => ({
         marginLeft: theme.spacing(2),
         paddingRight: theme.spacing(4),
     },
-    previewIconColor: {
-        color: '#3f50b5'
-    },
     previewChip: {
         minWidth: 160,
         maxWidth: 210
@@ -394,17 +391,17 @@ class NestedList extends React.Component {
 
         const type = this.fileNameExtractor(src)
 
-        if (type.includes("mp4")) return <MovieCreationOutlined className={classes.previewIconColor} />
+        if (type.includes("mp4")) return <MovieCreationOutlined color='primary' />
         if (type.includes("jpg")
             || type.includes("jpeg")
             || type.includes("png")) {
-            return <ImageIcon className={classes.previewIconColor} />
+            return <ImageIcon color='primary' />
         }
-        if (type.includes("zip")) return <Description className={classes.previewIconColor} />
+        if (type.includes("zip")) return <Description color='primary' />
 
-        if (type.includes("pdf")) return <PictureAsPdf className={classes.previewIconColor} />
+        if (type.includes("pdf")) return <PictureAsPdf color='primary' />
 
-        return <AttachFile className={classes.previewIconColor}/>
+        return <AttachFile color='primary' />
 
     }
 
@@ -1109,8 +1106,8 @@ class NestedList extends React.Component {
 
 
                 {this.state.loading && (
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <CircularProgress style={{ marginTop: '10px' }} />
+                    <div style={{ display: 'flex', justifyContent: 'center',padding:'20px' }}>
+                        <CircularProgress />
                     </div>
 
                 )}
@@ -1410,7 +1407,7 @@ class NestedList extends React.Component {
                                                                                     defaultValue={episode.episode_description}
                                                                                     inputRef={this.newEpisodeDescription}
                                                                                 />
-                                                                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                                                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                                                                                     <Button variant="outlined" color="primary"
                                                                                         onClick={() => this.episodeEditButtonSaveChanges(index, indx, false)}>
                                                                                         ذخیره
