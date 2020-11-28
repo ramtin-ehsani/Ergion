@@ -1,10 +1,10 @@
-import react, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import react, {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
 //import { getSingleCourse } from "../actions/course";
-import React, { Fragment } from "react";
+import React, {Fragment} from "react";
 
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import Box from '@material-ui/core/Box';
@@ -39,16 +39,16 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 
 function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
+    return (
+        <Typography variant="body2" color="textSecondary" align="center">
+            {'Copyright © '}
+            <Link color="inherit" href="https://material-ui.com/">
+                Your Website
+            </Link>{' '}
+            {new Date().getFullYear()}
+            {'.'}
+        </Typography>
+    );
 }
 
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
@@ -148,6 +148,39 @@ const SingleCourse = ({ match }) => {
         }
       )
 
+            <Container maxWidth="lg" className={classes.container}>
+                <Grid container spacing={3}>
+
+                    <Grid item xs={12} md={8} lg={9}>
+                        <Paper className={fixedHeightPaper1}>
+                            <Information course={course}/>
+                        </Paper>
+                    </Grid>
+
+                    <Grid item xs={12} md={4} lg={3}>
+
+
+                        <Paper className={fixedHeightPaper2}>
+                            <Coursemedia course={course}/>
+                        </Paper>
+                        <Paper className={fixedHeightPaper}>
+                            <Generalinformation course={course}/>
+                        </Paper>
+                    </Grid>
+
+
+                    <Grid item xs={12}>
+                        <Paper className={classes.paper}>
+                            <Subjects course={course}/>
+
+                        </Paper>
+                    </Grid>
+
+                </Grid>
+                <Box pt={4}>
+                </Box>
+            </Container>
+        </main>
 
     }
       , 500)

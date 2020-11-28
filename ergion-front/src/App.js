@@ -10,7 +10,7 @@ import StudentDashboard from "./Dashboard/StudentDashboard/StudentDashboard";
 import TeacherDashboard from "./Dashboard/TeacherDashboard/TeacherDashboard";
 import Error404 from "./404/404";
 import SingleCourse from './singleCourse/singlecoursecontainer';
-
+import postPage from "./Dashboard/StudentDashboard/PostPage/PostPage";
 
 const history = createBrowserHistory();
 
@@ -23,10 +23,11 @@ class App extends Component {
                         <Route path='/' exact component={HomePage}/>
                         <Route path='/signup' exact component={SignUp}/>
                         <Route path='/login' exact component={Login}/>
-                        <Route path='/student_dashboard'  component={StudentDashboard}/>
-                        <Route path='/teacher_dashboard'  component={TeacherDashboard}/>
-                        {/* <Route path='*' component={Error404}/> */}
+                        <Route path='/student_dashboard' component={StudentDashboard}/>
+                        <Route path='/teacher_dashboard' component={TeacherDashboard}/>
+                        <Route path='*' component={Error404}/>
                         <Route path="/course/:id" component={SingleCourse}/>
+                        <Route path="/post/:id" component={postPage}/>
                     </Switch>
                 </Router>
             </div>
