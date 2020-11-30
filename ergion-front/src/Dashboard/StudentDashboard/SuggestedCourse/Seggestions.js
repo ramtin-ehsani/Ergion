@@ -7,6 +7,7 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import { create } from "jss";
 import rtl from "jss-rtl";
+import Paper from '@material-ui/core/Paper';
 import Typography from "@material-ui/core/Typography";
 import { Box } from "@material-ui/core";
 import { useHistory } from 'react-router-dom';
@@ -16,6 +17,7 @@ import "../../../../node_modules/slick-carousel/slick/slick.css";
 import "../../../../node_modules/slick-carousel/slick/slick-theme.css";
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
+import Tabs from '../TimeLine/Tabs.js'
 
 const theme = createMuiTheme({
     '@global': {
@@ -301,7 +303,7 @@ const Suggestions = () => {
             <StylesProvider jss={jss}>
                 <ThemeProvider theme={theme}>
                     <CssBaseline />
-                    <div className={classes.root}>
+                    <div className={classes.root} >
                         <Container maxWidth="md" className={classes.cardGrid}>
                             <Grid container dir="rtl" lg={10} item={true} className={classes.gridTitle} spacing={3}
                                 justify="flex-start" alignItems="baseline">
@@ -325,13 +327,13 @@ const Suggestions = () => {
                                     {loading && (
                                         <CircularProgress />
                                     )}
-                                    {isEmpty && (<Grid item >
+                                    {isEmpty && (<div  style={{ display: 'flex', justifyContent: 'center'}}>
                                         <Typography className='typo' component="div">
                                             <Box fontSize={20} m={1}>
                                                 کلاسی یافت نشد
                                             </Box>
                                         </Typography>
-                                    </Grid>
+                                    </div>
                                     )}
                                     <Slider
                                         ref={c => (slider = c)} {...arrSize > 3 ? { ...settings } : { ...settingsLessThan3Mode }}>
@@ -357,7 +359,24 @@ const Suggestions = () => {
                                     </Slider>
                                 </div>
                             </Grid>
+
+
                         </Container>
+                        <Grid container lg={10} item={true}
+                            style={{ marginTop: '100px', marginBottom: '100px',marginRight:'30px',marginLeft:'30px' }}
+                        >
+                            <Grid lg={10} md={12} xs={12} sm={12}>
+                                <Paper style={{ borderRadius: 10 }} elevation={5}>
+                                    <Tabs />
+
+                                </Paper>
+
+
+                            </Grid>
+
+
+                        </Grid>
+
                     </div>
                 </ThemeProvider>
             </StylesProvider>

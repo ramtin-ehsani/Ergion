@@ -876,10 +876,9 @@ class NestedList extends React.Component {
                 <div style={{ margin: '10px' }}>
                     <ReactPlayer
                         width='100%'
-                        height={350}
+                        height='100%'
                         url={src}
-                        controls
-                        style={{ backgroundColor: '#000' }} />
+                        controls />
                     <Typography >
                         <Box fontSize={16} dir="ltr" fontWeight="fontWeightBold" textAlign='center' style={{ marginTop: '10px', marginBottom: '10px' }}>
                             {name}
@@ -914,7 +913,7 @@ class NestedList extends React.Component {
                     <ValidatorForm form="form" onSubmit={this.addEpisodeButton} >
 
                         <DialogTitle id="error-dialog" dir='rtl' className={classes.newEpisodeTitle}>
-                            ایجاد یک اپیزود جدید
+                            ایجاد یک جلسه جدید
                     </DialogTitle>
 
                         <Divider />
@@ -1077,7 +1076,7 @@ class NestedList extends React.Component {
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText dir="rtl" style={{ padding: '10px' }}>
-                            آیا میخواهید این {this.state.isChapterToDelete ? "سرفصل" : "اپیزود"} را حذف کنید؟
+                            آیا میخواهید این {this.state.isChapterToDelete ? "سرفصل" : "جلسه"} را حذف کنید؟
                         </DialogContentText>
                     </DialogContent>
 
@@ -1106,7 +1105,7 @@ class NestedList extends React.Component {
 
 
                 {this.state.loading && (
-                    <div style={{ display: 'flex', justifyContent: 'center',padding:'20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
                         <CircularProgress />
                     </div>
 
@@ -1481,7 +1480,7 @@ class NestedList extends React.Component {
                                         color="primary"
                                         style={{ marginTop: '12px' }}
                                         onClick={() => this.episodeButtonFunction(index)}>
-                                        + ایجاد اپیزود
+                                        + ایجاد جلسه
 
                                     </Button>)}
                             </Collapse>
@@ -1492,7 +1491,21 @@ class NestedList extends React.Component {
 
 
 
-                </List>) : ""
+                </List>) : (
+                        <div>
+                            {!this.state.loading && !this.state.isOwner && (
+                                <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+                                    <Typography >
+                                        <Box fontSize={18}  >
+                                            سرفصلی وجود ندارد
+                                        </Box>
+
+                                    </Typography>
+                                </div>
+
+                            )}
+                        </div>
+                    )
                 }
 
                 {

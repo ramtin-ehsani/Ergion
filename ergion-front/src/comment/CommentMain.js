@@ -229,7 +229,6 @@ function CommentMain() {
                 height='100%'
                 url={media}
                 controls
-                style={{ backgroundColor: '#000' }}
                 />
                 </Grid>
                 )}
@@ -315,7 +314,7 @@ function CommentMain() {
                       {episodes.map((episode)=>{
                         return(
                         <ListItem button className={classes.nested} key={episode.id} selected={episode.selected}
-                        onClick={()=>{window.location=`/teacher_dashboard/added_courses/${episode.chapter_id}/episode/${episode.id}`}}>
+                        onClick={()=>{window.location=`/student_dashboard/chapter/${episode.chapter_id}/episode/${episode.id}`}}>
                           <ListItemIcon>
                             <SchoolIcon />
                           </ListItemIcon>
