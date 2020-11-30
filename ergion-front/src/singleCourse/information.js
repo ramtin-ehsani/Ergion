@@ -14,19 +14,22 @@ import Box from '@material-ui/core/Box';
 import {Redirect, useHistoey} from "react-router-dom";
 import Axios from 'axios';
 import Mytypography from './mytypography';
+import Mytypography1 from './mytypography1';
+
 import { Router } from '@material-ui/icons';
 import {browserHistory} from "react-router";
 import Snackbar from '@material-ui/core/Snackbar';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import GroupIcon from '@material-ui/icons/Group';
+import PropTypes from 'prop-types';
+import Record from './records';
+import { Paper } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import ShareIcon from '@material-ui/icons/Share';
 const useStyles = makeStyles(theme => ({
 
-  titlestyle:{
-      fontFamily: "IRANSans",
-      fontSize: 22,
-      color:"secondary",
-alignItems:"center",
-textAlign:"right"	
-      
-  },  
+ 
     Button:{
       fontFamily: "IRANSans",
   },
@@ -175,24 +178,44 @@ const handleBio = (val) => {
     return (
       <React.Fragment>
         <ThemeProvider theme={theme}>
-          
-            
-          <div className={classes.Buttonpos}>
-            
+        <Container maxWidth="lg" >
+          <Grid container xs={12}  spacing={1}>
+           
+            {/* <Grid container item spacing={0} justify="flex-start" alignItems="flex-start"> */}
+        
+              <Grid item> 
+             
           {Add?
-        <Button size="medium" onClick={handleAdd} variant="contained" color="primary">
-          <div className={classes.title}>
+        
+            <Button size="large" onClick={handleAdd} variant="contained" color="primary">
+         
+       
+          <span className={classes.title}>
                           اضافه شدن
-                     </div> </Button>
+                     </span> </Button>
                       :
-                      <Button size="medium" onClick={handleAdd} variant="contained" color="secondary">
-                      <div className={classes.title}>
+                      <Button size="large" onClick={handleAdd} variant="contained" color="secondary">
+                      <span className={classes.title}>
                       حذف
-  </div>
+  </span>
                   </Button>
+                
                   
                   
-  } 
+  }  
+
+
+         </Grid> 
+         
+ <Grid item>
+ <IconButton color="secondary" aria-label="add an alarm">
+     <ShareIcon/>
+      </IconButton>
+ </Grid>
+
+        
+    
+
         <Snackbar
         anchorOrigin={{ vertical, horizontal }}
         open={open}
@@ -201,13 +224,44 @@ const handleBio = (val) => {
         key={vertical + horizontal}
       />
   
-   </div>
-   
-   <Title> {name} </Title>
- <Mytypography variant="h4"> {subject}</Mytypography>
- <p>
-<Mytypography>{bio}</Mytypography></p>
-  
+
+
+
+   <Grid container item justify="flex-end" alignItems="flex-start" > 
+   <Title> {name} فیزیک </Title></Grid>
+   <Grid container item justify="flex-end" alignItems="flex-start">
+ <Mytypography variant="h4"> 
+فیزیک یازدهم{subject}</Mytypography></Grid>
+ <Grid container item justify="flex-start" alignItems="flex-start">
+ 
+<Mytypography>{bio} 
+ کتاب "راه و رسم استخدام" که تیم جاب‌ویژن اونو تالیف کرده، مختصر و مفید مطالب مربوط به استخدام رو گفته و خوندنش ازتون وقت زیادی نمی‌گیره. رعایت کردن نکاتش هم کار سختی نیست. ولی همین نکات پایه‌ای می‌تونه شانستون رو برای استخدام شدن چند برابر کنه
+ کتاب "راه و رسم استخدام" که تیم جاب‌ویژن اونو تالیف کرده، مختصر و مفید مطالب مربوط به استخدام رو گفته و خوندنش ازتون وقت زیادی نمی‌گیره. رعایت کردن نکاتش هم کار سختی نیست. ولی همین نکات پایه‌ای می‌تونه شانستون رو برای استخدام شدن چند برابر کنه</Mytypography>
+
+</Grid>
+
+{/* <Grid container item justify='flex-end' alignItems='flex-end' >
+ <Grid item xs zeroMinWidth>
+ 
+
+ <Mytypography1 >دانش آموز </Mytypography1>
+ </Grid>
+
+ <Grid item xs zeroMinWidth> 
+
+ <Mytypography1 >ظرفیت</Mytypography1></Grid>
+ <Grid item xs zeroMinWidth>
+
+ <Mytypography1 >قسمت</Mytypography1>
+</Grid>
+
+</Grid> */}
+
+
+</Grid>
+
+
+</Container>
   </ThemeProvider>
       </React.Fragment>
     );
