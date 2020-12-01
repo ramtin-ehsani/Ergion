@@ -97,7 +97,7 @@ function a11yProps(index) {
 function CommentMain() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [media, setMedia] = useState('');
   const [files, setFiles] = useState([]);
   const [episodes, setEpisodes] = useState([])
@@ -169,26 +169,6 @@ function CommentMain() {
     const config = {
       headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
     }
-    axios.get(`http://127.0.0.1:8000/api/episode/?episode_id=${episode_id}`,config)
-    .then((res)=>{
-      res.data.map((file)=>{
-        const src = file.file
-        const lastIndexOfDot = String(src).lastIndexOf('.')
-        const type = String(src).substring(lastIndexOfDot)
-        if(type === '.mp4'){
-          setMedia(src)
-        }
-        else{
-          const newFile = {
-            src: src,
-            id: file.id
-          }
-          const oldFiles = files
-          oldFiles.push(newFile)
-          setFiles(oldFiles)
-        }
-      })
-    })
     axios.get(`http://127.0.0.1:8000/api/chapter-episodes/?chapter_id=${chapter_id}`,config)
     .then((res)=>{
       //console.log(res)
@@ -213,6 +193,27 @@ function CommentMain() {
       }
     })
     })
+    axios.get(`http://127.0.0.1:8000/api/episode/?episode_id=${episode_id}`,config)
+    .then((res)=>{
+      res.data.map((file)=>{
+        const src = file.file
+        const lastIndexOfDot = String(src).lastIndexOf('.')
+        const type = String(src).substring(lastIndexOfDot)
+        if(type === '.mp4'){
+          setMedia(src)
+        }
+        else{
+          const newFile = {
+            src: src,
+            id: file.id
+          }
+          const oldFiles = files
+          oldFiles.push(newFile)
+          setFiles(oldFiles)
+        }
+      })
+    })
+    
   },[])
 
   return (

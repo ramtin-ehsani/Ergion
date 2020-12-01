@@ -17,7 +17,7 @@ import "../../../../node_modules/slick-carousel/slick/slick.css";
 import "../../../../node_modules/slick-carousel/slick/slick-theme.css";
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
-import Tabs from '../TimeLine/Tabs.js'
+import TimeLine from '../TimeLine/TimeLine.js'
 
 const theme = createMuiTheme({
     '@global': {
@@ -327,7 +327,7 @@ const Suggestions = () => {
                                     {loading && (
                                         <CircularProgress />
                                     )}
-                                    {isEmpty && (<div  style={{ display: 'flex', justifyContent: 'center'}}>
+                                    {isEmpty && (<div style={{ display: 'flex', justifyContent: 'center' }}>
                                         <Typography className='typo' component="div">
                                             <Box fontSize={20} m={1}>
                                                 کلاسی یافت نشد
@@ -359,23 +359,16 @@ const Suggestions = () => {
                                     </Slider>
                                 </div>
                             </Grid>
+                            <Grid container dir="rtl" lg={10} item={true} justify="flex-start" alignItems="baseline" className={classes.gridTitle} spacing={3}>
+                                <Grid style={{ width: "100%", display: "flex", flex: 1 }} item>
+                                    <TimeLine />
 
-
-                        </Container>
-                        <Grid container lg={10} item={true}
-                            style={{ marginTop: '100px', marginBottom: '100px',marginRight:'30px',marginLeft:'30px' }}
-                        >
-                            <Grid lg={10} md={12} xs={12} sm={12}>
-                                <Paper style={{ borderRadius: 10 }} elevation={5}>
-                                    <Tabs />
-
-                                </Paper>
-
+                                </Grid>
 
                             </Grid>
 
 
-                        </Grid>
+                        </Container>
 
                     </div>
                 </ThemeProvider>
