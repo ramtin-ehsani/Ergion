@@ -1269,6 +1269,7 @@ class NestedList extends React.Component {
                                                                 onMouseEnter={() => this.handleEpisodeEditButton(index, indx, 'name button on')}
                                                                 onMouseLeave={() => this.handleEpisodeEditButton(index, indx, 'name button off')}
                                                             >
+                                                                <div style={{ width: 50, height: 50, alignSelf: 'center' }} />
 
                                                                 <Typography
                                                                     style={{
@@ -1283,18 +1284,20 @@ class NestedList extends React.Component {
 
                                                                     </Box>
                                                                 </Typography>
-                                                                {this.state.isOwner && episode.isNameButtonShown && !episode.isNameTextModeON && (
-                                                                    <Fade in={episode.isNameButtonShown} timeout={400}
-                                                                        style={{ alignSelf: 'center' }}
-                                                                    >
-                                                                        <Button
-                                                                            onClick={(e) => this.episodePropagationEditButton(e, index, indx, true)}
-                                                                            className={classes.veticalDots}
+                                                                <div style={{ width: 50, height: 50, alignSelf: 'center', marginTop: '10px' }} >
+                                                                    {this.state.isOwner && episode.isNameButtonShown && !episode.isNameTextModeON && (
+                                                                        <Fade in={episode.isNameButtonShown} timeout={400}
+                                                                            style={{ alignSelf: 'center' }}
                                                                         >
-                                                                            <EditIcon />
-                                                                        </Button>
-                                                                    </Fade>
-                                                                )}
+                                                                            <Button
+                                                                                onClick={(e) => this.episodePropagationEditButton(e, index, indx, true)}
+                                                                                className={classes.veticalDots}
+                                                                            >
+                                                                                <EditIcon />
+                                                                            </Button>
+                                                                        </Fade>
+                                                                    )}
+                                                                </div>
 
 
 
@@ -1404,7 +1407,8 @@ class NestedList extends React.Component {
                                                                         <div style={{ justifyContent: 'center' }}
 
                                                                             onBlur={(event) => this.episodeTextOnBlur(event, index, indx, false)}>
-                                                                            <div >
+                                                                            <ValidatorForm
+                                                                                onSubmit={() => this.episodeEditButtonSaveChanges(index, indx, false)} >
                                                                                 <InputBase
                                                                                     fullWidth
                                                                                     autoFocus
@@ -1419,11 +1423,11 @@ class NestedList extends React.Component {
                                                                                 />
                                                                                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                                                                                     <Button variant="outlined" color="primary"
-                                                                                        onClick={() => this.episodeEditButtonSaveChanges(index, indx, false)}>
+                                                                                    type='submit'>
                                                                                         ذخیره
                                                                                     </Button>
                                                                                 </div>
-                                                                            </div>
+                                                                            </ValidatorForm>
 
 
                                                                         </div>)

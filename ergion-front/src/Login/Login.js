@@ -212,8 +212,6 @@ function Login(props) {
 
                     localStorage.setItem('api_key', response.data.key)
                     //setUserSession(response.data.key, response.data.user);
-                    setLoading(false);
-                    window.location = '/teacher_dashboard'
                     const promise1 = axios.get('http://127.0.0.1:8000/api/teacher-courses/',
                       config)
                     promise1.then(

@@ -27,7 +27,6 @@ const styles = (theme) => ({
         // height: 'auto',
         width: '100%',
         // flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
     },
     paperStyle: {
         marginBottom: theme.spacing(2),
@@ -265,7 +264,6 @@ class TimeLine extends React.Component {
 
     }
 
-    numberOfItemsForPage = 2;
 
     render() {
         const { classes } = this.props;
