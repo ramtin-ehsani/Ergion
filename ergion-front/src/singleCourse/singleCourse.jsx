@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     height: 270,
   },
   fixedHeight1:{
-    height: 270 ,
+ 
   
   },
   fixedHeight2:{

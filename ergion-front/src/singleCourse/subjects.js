@@ -12,8 +12,9 @@ import Writenewnews from './TabItem/news/writenews';
 import theme from './theme';
 import Title from './Title';
 import Mytypography from './mytypography1';
-import PostPage from './TabItem/news/newscomponent';
-
+import News from './TabItem/news/newscomponent';
+import { Grid } from '@material-ui/core';
+import Write from './TabItem/news/newscomponent copy';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   const classes = useStyles();
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function FullWidthTabs() {
+export default function FullWidthTabs(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -91,12 +92,10 @@ export default function FullWidthTabs() {
         onChangeIndex={handleChangeIndex}
       >
         <TabPanel value={value} index={0} dir={theme.direction}>
-          <Writenewnews/>
         
-          <AutoGridNoWrap/>
-          <AutoGridNoWrap/>
-          <AutoGridNoWrap/>
-          <AutoGridNoWrap/>
+   <Write course={props.course}/>
+      <News course={props.course} />
+
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
           Item Two

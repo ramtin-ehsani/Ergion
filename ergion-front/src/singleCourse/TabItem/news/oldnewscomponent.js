@@ -105,22 +105,30 @@ const [ isMultiImg, setisMultiImg ] = React.useState(true);
 const [ isVideo, setIsVideo ] = React.useState(false);
 const [ isPdf, setIsPdf ] = React.useState(false);
   return (
-    <div className={classes.root}>
+    <React.Fragment>
+   
         <ThemeProvider theme={theme}>
-                  <Container xs={12} className={classes.container}>
+                  <Container xs={12}  md={4} lg={3} className={classes.container}>
 
       <Paper className={classes.paper}>
-        <Grid container xs={12} spacing={2} justify='flex-end' direction='row-reverse'>
-          <Grid item spacing={3}> 
+        <Grid container xs={12} spacing={2}  justify='flex-end' direction='row-reverse'>
+      
+          <Grid  spacing={3}> 
             <Avatar></Avatar>
            
           </Grid>
+
+        
 
           <Grid item xs zeroMinWidth spacing={2}>
 
 
           <Title variant="h4" color="primary">
 کلاس فیزیک</Title>
+<Grid item spacing={3}> 
+            <Avatar></Avatar>
+           
+          </Grid>
           
             <Typography >{message}</Typography>
             
@@ -199,6 +207,7 @@ const [ isPdf, setIsPdf ] = React.useState(false);
 
       </Container>
      </ThemeProvider>
-    </div>
+   
+    </React.Fragment>
   );
 }

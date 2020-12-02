@@ -30,20 +30,34 @@ import { create } from 'jss';
 import rtl from 'jss-rtl';
 import Divider from '@material-ui/core/Divider';
 import Axios from 'axios';
-import InputBase from '@material-ui/core/InputBase';
-import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
 import Paper from '@material-ui/core/Paper';
-
 import Slider from "react-slick";
 import "../../../../node_modules/slick-carousel/slick/slick.css";
 import "../../../../node_modules/slick-carousel/slick/slick-theme.css";
 import Title from '../../Title';
+import CropOriginalIcon from '@material-ui/icons/CropOriginal';
+import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import InputBase from '@material-ui/core/InputBase';
+import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
 
 
 const getWidth = () => window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
 const useStyles = makeStyles((theme) =>
 	createStyles({
+
+		root0: {
+			fontFamily: 'IRANSans',
+			display:'flex',
+			flexGrow: 1,
+			overflow: 'hidden',
+			padding: theme.spacing(0, 2),
+			margin:theme.spacing(1),
+		  },
+		input: {
+			display: 'none',
+		  },
 		root: {
 			fontFamily: 'IRANSans',
 			// minWidth: '30%',
@@ -87,7 +101,6 @@ const useStyles = makeStyles((theme) =>
 			minHeight: 300,
 		},
 		reply: {
-			fontFamily: 'IRANSans',
 			display: 'flex',
 		flexWrap: 'wrap',
 	   
@@ -97,20 +110,70 @@ const useStyles = makeStyles((theme) =>
 
 const jss = create({ plugins: [ ...jssPreset().plugins, rtl() ] });
 
-const PostPage = () => {
+const Write = () => {
 	let [ width, setWidth ] = useState(getWidth());
 	const classes = useStyles();
-	const [ isRed, setIsRed ] = useState(false);
-	const [ isImg, setIsImg ] = useState(false);
-	const [ isMultiImg, setisMultiImg ] = useState(true);
-	const [ isVideo, setIsVideo ] = useState(false);
-	const [ isPdf, setIsPdf ] = useState(false);
 	const [ postPage, setPostPage ] = useState(null);
-	const [openreply,setopenreply]=React.useState(false);
-	const handleopenreply=()=>
+	const [image1,setimage1]=React.useState();
+    const [image2,setimage2]=React.useState();
+    const [image3,setimage3]=React.useState();
+    const [image4,setimage4]=React.useState();
+    const [video,setvideo]=React.useState();
+    const [pdf,setpdf]=React.useState({});
+    const [isvideo,setisvideo]=React.useState(false);
+    const [ispdf,setispdf]=React.useState(false);
+    const [isimage,setisimage]=React.useState(0);
+    const [dpdf,setdpdf]=React.useState(false);
+    const [dvideo,setdvideo]=React.useState(false);
+	const [dimage,setdimage]=React.useState(false);
+	const[newstext,setnewstext]=React.useState("")
+    
+
+
+
+const onchangeimage=event=>
 {
-setopenreply(!openreply);
-};
+   
+   
+    switch(isimage)
+    {
+        case 0:setimage1(event.target.files[0]);
+        case 1:setimage2(event.target.files[0]);
+        case 2:setimage3(event.target.files[0]);
+        case 3:setimage4(event.target.files[0]); 
+
+
+    }
+    if (isimage===3) 
+    {
+        setdimage(true);
+    }
+    setisimage(isimage+1);
+    setdvideo(true);
+    setdpdf(true);
+    console.log(event.target.files[0]);
+    console.log(image1);
+
+
+}
+const onchangevideo=event=>
+{
+setvideo(event.target.files[0]);
+    setisvideo(true);
+    setdpdf(true);
+    setdimage(true);
+
+
+}
+const onchangepdf=event=>
+{
+setpdf(event.target.files[0]);
+    setispdf(true);
+    setdvideo(true);
+    setdimage(true);
+
+
+}
 
 	let slider = useRef();
 
@@ -198,11 +261,32 @@ setopenreply(!openreply);
 		</Slider>
 	)
 
+const	sendnewshandler=event=>
+	{console.log(newstext);
+		Axios.post('http://127.0.0.1:8000/api/course/course-news/',
+		{related_course:1,text:newstext}, 
+		{  headers :{
+			"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
+		setnewstext("");
+		console.log(response);	
+		}).catch((error)=>{console.log(error);})
+	}
+const	newstexthandler=event=>
+	{
+		setnewstext(event.target.value);
+	}
+	const config = {
+		headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
+	};
+
+	useEffect(() => {
 
 
-
-
-
+		// const api = '';
+		// axios.get(api, config).then((response) => {
+		// 	setPostPage(response.data)
+		// });
+	}, []);
 
 	return (
 		<React.Fragment>
@@ -239,90 +323,76 @@ setopenreply(!openreply);
 								/>
 						
 								<CardContent>
-									<Typography
-										variant="body2"
-										color="textSecondary"
-										component="p"
-										className="aboutPost"
-									>
-									همچنین طی هماهنگی های صورت گرفته توسط دکتر انتظاری، مسئول ACM و المپیاد دانشکده، با برخی از اساتید محترم دانشکده، دانشجویان دروس مبانی برنامه‌سازی، برنامه‌نویسی پیشرفته، ساختمان داده و تحلیل و طراحی الگوریتم می‌توانند با شرکت در این مسابقه و کسب رتبه برتر (تیم های اول تا سوم دانشکده) نمره امتیازی دریافت کنند. جزئیات این پوینت در هر درس متفاوت و طبق صلاحدید استاد است.
-									</Typography>
-								</CardContent>
-								<CardMedia
-									className={classes.media}
-									// image={img}
-									title="news-media"
-								>
-									{/* {
-										isMultiImg ? (slier) : ''
-									} */}
-									{isMultiImg ? (
-										test[3].media.map((item) => (
-											<img src={item} alt="test" width="20%" height="20%" />
-										))) : ('')
-									}
-									{isPdf ? <iframe src={test[2].media} height="400" width="100%" /> : ''}
-									{isImg ? <img src={img1} alt="test" width="35%" height="280" /> : ''}
-									{isVideo ? (
-										<video width="100%" height="400" controls>
-											<source src={vid} type="video/mp4" />
+								<Paper component="form" className={classes.root}>
+								<Container className={classes.container}>
+         <Grid container>
+         <Grid container item>
+
+      <InputBase
+        className="reply"
+        multiline={true}
+        fullWidth={true}
+        rows={4}
+        placeholder="خبر جدید اضافه کنید."
+		inputProps={{ 'aria-label': 'search google maps' }}
+		onChange={newstexthandler}
+		value={newstext}
+      />
+      {isimage}          <Grid item>
+{isimage>=1? <img src={URL.createObjectURL(image1)} alt="test" width="150" height="150" />: ""}
+          </Grid>
+          <Grid item>
+{isimage>=2? <img src={URL.createObjectURL(image2)} alt="test" width="150" height="150" />: ""}
+          </Grid>
+          <Grid item>
+{isimage>=3? <img src={URL.createObjectURL(image3)} alt="test" width="150" height="150" />: ""}
+          </Grid>
+          <Grid item>
+{isimage>=4? <img src={URL.createObjectURL(image4)} alt="test" width="150" height="150" />: ""}
+          </Grid>
+          <Grid item>
+{isvideo? 										<video width="100%" height="400" controls>
+											<source src={URL.createObjectURL(video)} type="video/mp4" />
 											Sorry, your browser doesn't support embedded videos.
-										</video>
-									) : (
-										''
-									)}
-								</CardMedia>
-								<CardActions className="post-footer" dir="ltr">
-									<div className="icon-footer">
-										<IconButton className="comment-icon">
-											<ShareIcon />
-										</IconButton>
-										<span className="span-footer" />
-										<div className="share-like-icon">
-											<IconButton onClick={handleopenreply}>
-												<CommentIcon />
-											</IconButton>
-											<IconButton onClick={() => setIsRed(!isRed)}>
-												{isRed ? (
-													<FavoriteIcon style={{ color: 'red' }} />
-												) : (
-													<FavoriteBorderIcon />
-												)}
-											</IconButton>
-										
+										</video>: ""}
+          </Grid>
+          <Grid item>
+              {ispdf? <iframe src={URL.createObjectURL(pdf)} height="400" width="100%" />:""}
+          </Grid>
+      </Grid>
+      <Grid container item>
 
 
-            
-        
-  
-										</div>
-										
-									</div>
-									
-								</CardActions>
-								{openreply&&
-
-
-
-<Paper component="form" className={classes.root}>
-	<Grid container>
-
-<Grid container item>
-<InputBase
-className={classes.reply}
-multiline={true}
-fullWidth={true}
-placeholder="نظر خود را وارد کنید."
-inputProps={{ 'aria-label': 'search google maps' }}
-/>
+      <Grid container item xs zeroMinWidth>
+      <input accept="application/pdf" className={classes.input} id="pdf" type="file" name="pdf" onChange={onchangepdf}/>
+      <label htmlFor="pdf">
+      <IconButton color="primary" aria-label="upload picture" component="span" disabled={dpdf}>
+        <InsertDriveFileIcon fontSize="default" />
+      </IconButton>
+      </label>
+      <input accept="image/*" className={classes.input} id="image" type="file" name="image" onChange={onchangeimage}/>
+      <label htmlFor="image">
+      <IconButton color="primary" aria-label="upload picture" component="span" disabled={dimage}> 
+        <CropOriginalIcon fontSize="default" />
+      </IconButton>
+      </label>
+      <input accept="video/*" className={classes.input} id="video" type="file" name="video" onChange={onchangevideo}/>
+      <label htmlFor="video">
+      <IconButton color="primary" aria-label="upload picture" component="span" disabled={dvideo}>
+        <VideoLibraryIcon fontSize="default" />
+      </IconButton>
+      </label>
 </Grid>
-<Grid item justify="flex-end">
-<IconButton className={classes.iconButton} aria-label="menu">
-<SendOutlinedIcon />
-</IconButton></Grid>
+            <Grid item>
+      <IconButton className={classes.iconButton} aria-label="menu" onClick={sendnewshandler}>
+        <SendOutlinedIcon />
+      </IconButton></Grid>
+      </Grid>
 </Grid>
-</Paper>
-}
+</Container>
+    </Paper>
+								</CardContent>
+								
 							</Card>
 						
 
@@ -332,4 +402,4 @@ inputProps={{ 'aria-label': 'search google maps' }}
 	);
 };
 
-export default PostPage;
+export default Write;

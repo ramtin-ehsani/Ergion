@@ -13,15 +13,18 @@
 	}
 
 	.instructor {
+        text-align: right;
 		font-family: IRANSans;
 	}
 
 	.aboutPost {
 		font-family: IRANSans;
-		text-align: right;
-		font-weight: normal;
+	
+		font-weight: 400;
 		color: black;
-		font-size: 17px;
+        font-size: 15px;
+        text-align: justify;
+        text-justify: inter-word;
 	}
 
 	.post-footer {
@@ -67,8 +70,10 @@
 	}
 
 	.date {
+        text-align: right;
 		font-family: IRANSans;
-		font-weight: lighter;
+        font-weight: lighter;
+        
 	}
 
 	.img-test {
@@ -84,4 +89,8 @@
 		width: 50%;
 		height: 280px;
 	}
+.reply{
+	font-family: IRANSans;
 }
+}
+

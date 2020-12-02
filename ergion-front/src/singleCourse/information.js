@@ -15,8 +15,8 @@ import {Redirect, useHistoey} from "react-router-dom";
 import Axios from 'axios';
 import Mytypography from './mytypography';
 import Mytypography1 from './mytypography1';
-
-import { Router } from '@material-ui/icons';
+import Avatar from '@material-ui/core/Avatar';
+import { Grade, Router } from '@material-ui/icons';
 import {browserHistory} from "react-router";
 import Snackbar from '@material-ui/core/Snackbar';
 import Container from '@material-ui/core/Container';
@@ -24,9 +24,10 @@ import Grid from '@material-ui/core/Grid';
 import GroupIcon from '@material-ui/icons/Group';
 import PropTypes from 'prop-types';
 import Record from './records';
-import { Paper } from '@material-ui/core';
+import { Divider, Paper } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import ShareIcon from '@material-ui/icons/Share';
+import Chip from '@material-ui/core/Chip';
 const useStyles = makeStyles(theme => ({
 
  
@@ -53,11 +54,11 @@ export default function Information(props) {
   const [name, setname] = React.useState(props.course.name);
   const [bio, setbio] = React.useState(props.course.about_course);
   const [subject, setsubject] = React.useState(props.course.subject);
-
+  const [grade, setgrade] = React.useState(props.course.grade);
   const [T,setT]=React.useState(false);
   const [S,setS]=React.useState(false);
   const[hascourse,sethasCourse]=React.useState(false);
-  const[isowner,setisowner]=React.useState(false);
+  const[isowner,setisowner]=React.useState(true);
   const[id,setid]=React.useState('');
   const [snackbar, setsnackbar] = React.useState({
     open: false,
@@ -74,6 +75,7 @@ export default function Information(props) {
   React.useEffect(()=>
   {
     setname(props.course.name);
+    setgrade(props.course.grade)
     setbio(props.course.about_course);
     setsubject(props.course.subject);
     setid(props.course.id);
@@ -158,19 +160,49 @@ const handleBio = (val) => {
     <React.Fragment>
       <ThemeProvider theme={theme}>
         
-          
-        <div className={classes.Buttonpos}>
-{isowner &&
- <Box r={1}><AddButtonAndPopUp classes={classes.EditButton} name={name} bio={bio} handleNewName={handleName} handleNewBio={handleBio}/>
-         </Box>  }
+      <Grid container>  
         
- </div>
- <Title> {name} </Title>
- <Typography variant="h4"> {subject}</Typography>
- <p>
-<Mytypography>{bio}</Mytypography></p>
-      
+{isowner &&<Grid container item>
 
+<AddButtonAndPopUp classes={classes.EditButton} name={name} bio={bio} handleNewName={handleName} handleNewBio={handleBio}/>
+     
+ <IconButton color="secondary" aria-label="add an alarm">
+     <ShareIcon/>
+      </IconButton>
+      <Grid  item alignItems='flex-end' justify='flex-end' direction='row-reverse' xs zeroMinWidth>
+ <Typography variant='h5' inline color='primary' > {name} </Typography> 
+</Grid> </Grid>
+}
+
+</Grid> 
+        
+
+ <Grid container>
+
+<Grid container justify='flex-end'>
+<Typography inline variant='body2'>/{subject}</Typography> <Typography variant="h4"> {subject}</Typography>
+</Grid>
+<Grid container justify='flex-end' direction='row-reverse'>
+ <p>
+<Mytypography>{bio} </Mytypography></p></Grid>
+
+      <Grid container>
+ <Grid item xs zeroMinWidth>
+ 
+ 
+ <Typography variant="h4" color="primary" inline>۱۲ نفر دانش آموز</Typography>
+ </Grid>
+
+ <Grid item xs zeroMinWidth> 
+
+ <Mytypography1 >۱۲ نفر ظرفیت</Mytypography1></Grid>
+ <Grid item xs zeroMinWidth>
+
+ <Mytypography1 >۱۲ قسمت</Mytypography1>
+</Grid>
+
+</Grid>
+</Grid>
 </ThemeProvider>
     </React.Fragment>
   );}
@@ -229,6 +261,7 @@ const handleBio = (val) => {
 
    <Grid container item justify="flex-end" alignItems="flex-start" > 
    <Title> {name} فیزیک </Title></Grid>
+
    <Grid container item justify="flex-end" alignItems="flex-start">
  <Mytypography variant="h4"> 
 فیزیک یازدهم{subject}</Mytypography></Grid>
