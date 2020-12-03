@@ -1409,14 +1409,15 @@ class NestedList extends React.Component {
                                                                     >
 
                                                                         <Typography component='div'
+                                                                            style={{ display: 'flex' }}
                                                                         >
-                                                                            <Box fontSize={18} textAlign='center' >
+                                                                            <Box fontSize={18} >
                                                                                 {episode.episode_description !== '' ? episode.episode_description : '(توضیحی وجود ندارد)'}
                                                                             </Box>
 
                                                                         </Typography>
                                                                         {this.state.isOwner && episode.isDescButtonShown && !episode.isDescTextModeON && (
-                                                                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                                            <div style={{ display: 'flex' }}>
                                                                                 <Fade in={episode.isDescButtonShown} timeout={400}
                                                                                     style={{ alignSelf: 'center' }}
                                                                                 >
@@ -1437,7 +1438,8 @@ class NestedList extends React.Component {
 
                                                                     (
 
-                                                                        <div style={{ justifyContent: 'center' }}
+                                                                        <div
+                                                                            style={{ wordBreak: 'break-all' }}
 
                                                                             onBlur={(event) => this.episodeTextOnBlur(event, index, indx, false)}>
                                                                             <ValidatorForm
@@ -1450,11 +1452,11 @@ class NestedList extends React.Component {
                                                                                     autoComplete='off'
                                                                                     name="desc"
                                                                                     style={{ fontSize: 18 }}
-                                                                                    inputProps={{ 'aria-label': 'naked', style: { textAlign: 'center' } }}
+                                                                                    inputProps={{ 'aria-label': 'naked' }}
                                                                                     defaultValue={episode.episode_description}
                                                                                     inputRef={this.newEpisodeDescription}
                                                                                 />
-                                                                                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                                                                                <div style={{ display: 'flex', marginTop: '10px' }}>
                                                                                     <Button variant="outlined" color="primary"
                                                                                         type='submit'>
                                                                                         ذخیره
@@ -1468,48 +1470,48 @@ class NestedList extends React.Component {
                                                             </TabPanel>
                                                             <TabPanel value={episode.tabValue} index={1}>
                                                                 {episode.files.length > 0 ? (
-                                                                        <TableContainer dir="rtl" >
-                                                                            <Table aria-label="customized table" dir="rtl">
-                                                                                <TableHead dir="rtl">
-                                                                                    <TableRow dir="rtl">
-                                                                                        <StyledTableCell align="center">آیکون</StyledTableCell>
-                                                                                        <StyledTableCell align="center">اسم فایل</StyledTableCell>
-                                                                                        <StyledTableCell align="center">حجم</StyledTableCell>
-                                                                                        <StyledTableCell align="center">دانلود</StyledTableCell>
-                                                                                    </TableRow>
-                                                                                </TableHead>
-                                                                                <TableBody>
-                                                                                    {episode.files.map((tabFile, tabIndx) => (
+                                                                    <TableContainer dir="rtl" >
+                                                                        <Table aria-label="customized table" dir="rtl">
+                                                                            <TableHead dir="rtl">
+                                                                                <TableRow dir="rtl">
+                                                                                    <StyledTableCell align="center">آیکون</StyledTableCell>
+                                                                                    <StyledTableCell align="center">اسم فایل</StyledTableCell>
+                                                                                    <StyledTableCell align="center">حجم</StyledTableCell>
+                                                                                    <StyledTableCell align="center">دانلود</StyledTableCell>
+                                                                                </TableRow>
+                                                                            </TableHead>
+                                                                            <TableBody>
+                                                                                {episode.files.map((tabFile, tabIndx) => (
 
 
-                                                                                        <StyledTableRow dir="rtl" key={tabFile.id}>
-                                                                                            <StyledTableCell align="center">
-                                                                                                <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
-                                                                                            </StyledTableCell>
-                                                                                            <StyledTableCell align="center">
-                                                                                                <Box >
-                                                                                                    {this.fileNameExtractor(tabFile.file)}
+                                                                                    <StyledTableRow dir="rtl" key={tabFile.id}>
+                                                                                        <StyledTableCell align="center">
+                                                                                            <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
+                                                                                        </StyledTableCell>
+                                                                                        <StyledTableCell align="center">
+                                                                                            <Box >
+                                                                                                {this.fileNameExtractor(tabFile.file)}
+                                                                                            </Box>
+                                                                                        </StyledTableCell>
+                                                                                        <StyledTableCell align="center">
+                                                                                            <div dir='ltr'>
+                                                                                                <Box style={{ color: 'grey' }} fontSize={14}>
+                                                                                                    {this.bytesToSize(tabFile.size)}
                                                                                                 </Box>
-                                                                                            </StyledTableCell>
-                                                                                            <StyledTableCell align="center">
-                                                                                                <div dir='ltr'>
-                                                                                                    <Box style={{ color: 'grey' }} fontSize={14}>
-                                                                                                        {this.bytesToSize(tabFile.size)}
-                                                                                                    </Box>
-                                                                                                </div>
-                                                                                            </StyledTableCell>
-                                                                                            <StyledTableCell align="center">
-                                                                                                <Button variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
+                                                                                            </div>
+                                                                                        </StyledTableCell>
+                                                                                        <StyledTableCell align="center">
+                                                                                            <Button variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
 
-                                                                                                    <GetAppRoundedIcon />
-                                                                                                </Button>
-                                                                                            </StyledTableCell>
-                                                                                        </StyledTableRow>
+                                                                                                <GetAppRoundedIcon />
+                                                                                            </Button>
+                                                                                        </StyledTableCell>
+                                                                                    </StyledTableRow>
 
-                                                                                    ))}
-                                                                                </TableBody>
-                                                                            </Table>
-                                                                        </TableContainer>) : (
+                                                                                ))}
+                                                                            </TableBody>
+                                                                        </Table>
+                                                                    </TableContainer>) : (
                                                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                                                             <Typography
                                                                                 style={{ marginTop: '12px' }} >

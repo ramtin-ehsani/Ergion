@@ -1,14 +1,18 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import SwipeableViews from "react-swipeable-views";
-import PropTypes from 'prop-types';
 import { Box } from '@material-ui/core';
-import { Typography, IconButton } from '@material-ui/core';
-import ReactPlayer from 'react-player'
-import Slide from '@material-ui/core/Slide';
+import ReplyIcon from '@material-ui/icons/Reply';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import SendIcon from '@material-ui/icons/Send';
+import ReactPlayer from 'react-player';
+import TableHead from '@material-ui/core/TableHead';
+import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { create } from 'jss';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import rtl from 'jss-rtl';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -17,7 +21,6 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { withStyles } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -36,17 +39,32 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import ShareIcon from '@material-ui/icons/Share';
 import axios from 'axios';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import { Tab, Tabs, Avatar } from "@material-ui/core";
+import Zoom from '@material-ui/core/Zoom';
+import Grow from '@material-ui/core/Grow';
+import { Avatar } from "@material-ui/core";
 import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
 import ImageIcon from '@material-ui/icons/Image';
 import { AttachFile, Description, PictureAsPdf, MovieCreationOutlined } from '@material-ui/icons';
 import human from '@jacobmarshall/human-time';
+import {
+    Typography, IconButton, List,
+    ListItem,
+    ListItemText,
+    ListItemAvatar,
+    ListItemIcon,
+    InputBase,
+} from '@material-ui/core';
 
 const styles = (theme) => ({
     root: {
         // height: 'auto',
         width: '100%',
         // flexGrow: 1,
+    },
+    veticalDots: {
+        color: "#000",
+        width: 35,
+        height: 35,
     },
     paperStyle: {
         marginBottom: theme.spacing(2),
@@ -65,6 +83,36 @@ const styles = (theme) => ({
 
 });
 
+const StyledMenu = withStyles({
+    paper: {
+        border: '1px solid #d3d4d5',
+    },
+})((props) => (
+    <Menu
+        elevation={0}
+        getContentAnchorEl={null}
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+        }}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+        }}
+        {...props}
+    />
+));
+const StyledMenuItem = withStyles((theme) => ({
+    root: {
+        '&:focus': {
+            backgroundColor: "#fff",
+            '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+                color: "#000",
+            },
+        },
+    },
+}))(MenuItem);
+
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 const theme = createMuiTheme({
@@ -76,8 +124,8 @@ const theme = createMuiTheme({
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-        backgroundColor: '#3f50b5',
-        color: theme.palette.common.white,
+        backgroundColor: '#fff',
+        color: theme.palette.common.black,
     },
     body: {
         fontSize: 14,
@@ -86,9 +134,9 @@ const StyledTableCell = withStyles((theme) => ({
 
 const StyledTableRow = withStyles((theme) => ({
     root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
+        // '&:nth-of-type(odd)': {
+        //     backgroundColor: theme.palette.action.hover,
+        // },
     },
 }))(TableRow);
 function Alert(props) {
@@ -101,40 +149,6 @@ function Alert(props) {
         </StylesProvider>);
 }
 
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            style={{ height: "8rem" }}
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box p={1}>
-                    <Typography>{children}</Typography>
-                </Box>
-            )}
-        </div>
-    );
-}
-
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.any.isRequired,
-    value: PropTypes.any.isRequired,
-};
-
-
-function a11yProps(index) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
 
 
 
@@ -144,6 +158,7 @@ class TimeLine extends React.Component {
 
     constructor(props) {
         super(props);
+        this.commentRef = React.createRef('');
         this.state = {
             list: [],
             loading: true,
@@ -174,7 +189,8 @@ class TimeLine extends React.Component {
 
     }
 
-    openShareDialog = (shareLink) => {
+    openShareDialog = (e, index, isOpen, shareLink) => {
+        this.handleAnchorEl(e, index, isOpen)
         this.setState({ link: shareLink, shareDialogOpen: true })
 
     }
@@ -209,7 +225,7 @@ class TimeLine extends React.Component {
             .then((response) => {
                 // handle success
                 console.log(response.data)
-                const l = []
+                const episodeList = []
 
                 response.data.map((episode) => {
                     const episodeObject = {
@@ -223,17 +239,68 @@ class TimeLine extends React.Component {
                         episode_or_news_url: episode.episode_url,
                         course_url: episode.course_url,
                         files: episode.files,
+                        liked: episode.liked,
+                        likes_count: episode.likes_count,
                         time: episode.creation_time,
+                        comments: episode.comments,
+                        isCommentOpen: false,
+                        isEpisode: true,
+                        anchorEl: false,
 
 
 
                     }
-                    l.push(episodeObject)
+                    episodeList.push(episodeObject)
                 })
-                l.sort((a, b) => (a.time < b.time) ? 1 : -1)
-                if (this._isMounted) {
-                    this.setState({ list: l, loading: false })
-                }
+
+                axios.get('http://127.0.0.1:8000/api/student-updates/', this.config)
+                    .then((resp) => {
+                        // handle success
+                        console.log(resp.data)
+                        const updateList = []
+
+                        resp.data.map((update) => {
+                            const episodeObject = {
+                                id: update.id,
+                                name: 'خبر',
+                                description: update.text,
+                                tabValue: 0,
+                                instructor_firstName: update.instructor_firstname,
+                                instructor_lastName: update.instructor_lastname,
+                                instructor_profilePic: update.instructor_profile_picture,
+                                episode_or_news_url: update.update_url,
+                                course_url: update.course_url,
+                                files: update.files,
+                                time: update.created_at,
+                                comments: update.comments,
+                                liked: update.liked,
+                                likes_count: update.likes,
+                                isCommentOpen: false,
+                                isEpisode: false,
+                                anchorEl: false,
+
+
+
+                            }
+                            updateList.push(episodeObject)
+                        })
+
+                        const concactedList = episodeList.concat(updateList)
+
+
+                        concactedList.sort((a, b) => (a.time < b.time) ? 1 : -1)
+                        if (this._isMounted) {
+                            this.setState({ list: concactedList, loading: false })
+                        }
+
+
+
+                    })
+                    .catch((error) => {
+                        // handle error
+                        this.setState({ loading: false })
+                        console.log(error);
+                    })
 
 
 
@@ -248,19 +315,166 @@ class TimeLine extends React.Component {
 
     font = 28;
 
+    handleTimelineLike = (index, id, isEpisode) => {
+        const listItem = {
+            ...this.state.list[index]
+        }
+        if (listItem.liked) {
+            listItem.likes_count = listItem.likes_count - 1
+        } else {
+            listItem.likes_count = listItem.likes_count + 1
 
-    handleTabChange = (newValue, episodeIndex) => {
+        }
+        listItem.liked = !listItem.liked
+
+        const list = [...this.state.list]
+        list[index] = listItem
+        this.setState({ list: list })
+        if (isEpisode) {
+            axios.put('http://127.0.0.1:8000/api/episode-likes/', {
+                episode_id: id,
+            }, this.config).then((res) => {
+
+
+            }).catch((error) => {
+                console.log(error)
+                const listItem = {
+                    ...this.state.list[index]
+                }
+                if (listItem.liked) {
+                    listItem.likes_count = listItem.likes_count - 1
+                } else {
+                    listItem.likes_count = listItem.likes_count + 1
+
+                }
+                listItem.liked = !listItem.liked
+                const list = [...this.state.list]
+                list[index] = listItem
+                this.setState({ list: list })
+            })
+        } else {
+            axios.put('http://127.0.0.1:8000/api/update-likes/', {
+                update_id: id,
+            }, this.config).then((res) => {
+
+
+            }).catch((error) => {
+                console.log(error)
+                const listItem = {
+                    ...this.state.list[index]
+                }
+                if (listItem.liked) {
+                    listItem.likes_count = listItem.likes_count - 1
+                } else {
+                    listItem.likes_count = listItem.likes_count + 1
+
+                }
+                listItem.liked = !listItem.liked
+                const list = [...this.state.list]
+                list[index] = listItem
+                this.setState({ list: list })
+            })
+        }
+
+    }
+
+    handleAnchorEl = (event, index, isOpen) => {
         const results = this.state.list.map((item, idx) => {
-            if (episodeIndex === idx) {
-                return {
-                    ...item,
-                    tabValue: newValue
+            if (index === idx) {
+                if (isOpen) {
+                    return {
+                        ...item,
+                        anchorEl: event.currentTarget
+                    }
+                } else {
+                    return {
+                        ...item,
+                        anchorEl: null
+                    }
                 }
             }
             return item;
         });
         this.setState({ list: results })
-    };
+
+    }
+
+    handlePostComment = (index, timelineID, isEpisode) => {
+        if (this.commentRef.current.value !== '') {
+            if (isEpisode) {
+                axios.post('http://127.0.0.1:8000/api/episode-comments/', {
+                    episode_id: timelineID,
+                    comment_text: this.commentRef.current.value
+                }, this.config).then((res) => {
+                    const listItem = {
+                        ...this.state.list[index]
+                    }
+                    listItem.comments.push(res.data)
+                    const list = [...this.state.list]
+                    list[index] = listItem
+                    this.setState({ list: list })
+                    this.commentRef.current.value = ''
+
+
+                }).catch((error) => {
+                    console.log(error)
+                })
+            } else {
+                axios.post('http://127.0.0.1:8000/api/update-comments/', {
+                    update_id: timelineID,
+                    comment_text: this.commentRef.current.value
+                }, this.config).then((res) => {
+                    const listItem = {
+                        ...this.state.list[index]
+                    }
+                    listItem.comments.push(res.data)
+                    const list = [...this.state.list]
+                    list[index] = listItem
+                    this.setState({ list: list })
+                    this.commentRef.current.value = ''
+
+
+                }).catch((error) => {
+                    console.log(error)
+                })
+            }
+        }
+
+    }
+
+    handleClickLike = (Index, commentIndex) => {
+        this.handleLikeResponse(Index, commentIndex)
+        axios.put('http://127.0.0.1:8000/api/comment-likes/', {
+            comment_id: this.state.list[Index].comments[commentIndex].id
+        }, this.config).then((res) => {
+
+
+        }).catch(() => {
+            this.handleLikeResponse(Index, commentIndex)
+        })
+
+
+    }
+
+    handleLikeResponse = (Index, commentIndex) => {
+        const results = this.state.list.map((item, idx) => {
+            if (Index === idx) {
+                const comments = item.comments
+                comments.map((comment, idxx) => {
+                    if (commentIndex == idxx) {
+                        comment.liked = !comment.liked
+                    }
+                })
+                return {
+                    ...item,
+                    comments: comments
+                }
+            }
+            return item;
+        });
+        this.setState({ list: results })
+
+    }
 
     handleDownload = (file) => {
         axios({
@@ -277,6 +491,20 @@ class TimeLine extends React.Component {
         }).catch((error) => {
             console.log(error)
         })
+
+    }
+
+    commentOpener = (episodeIndex) => {
+        const results = this.state.list.map((item, idx) => {
+            if (episodeIndex === idx) {
+                return {
+                    ...item,
+                    isCommentOpen: !item.isCommentOpen
+                }
+            }
+            return item;
+        });
+        this.setState({ list: results })
 
     }
 
@@ -430,7 +658,7 @@ class TimeLine extends React.Component {
                                             {this.state.list.map((timeline, index) => (
 
                                                 <div className={classes.paperStyle} key={timeline.id}>
-                                                    <Slide direction="left" mountOnEnter unmountOnExit in={true} timeout={700} >
+                                                    <Zoom in={true} timeout={700} >
 
                                                         <Paper className={classes.mediaCardPaperStyle}
                                                             style={{ padding: '16px', marginBottom: '12px', marginTop: '12px' }}
@@ -462,7 +690,6 @@ class TimeLine extends React.Component {
                                                                                 </Typography>
 
                                                                                 <Typography
-                                                                                    // dir="ltr"
                                                                                     style={{
                                                                                         marginRight: '8px', alignSelf: 'flex-start', marginTop: '6px'
                                                                                     }}
@@ -503,17 +730,59 @@ class TimeLine extends React.Component {
                                                                                     </Box>
                                                                                 </Typography>
                                                                             </div>
+
                                                                         </div>
 
 
-
                                                                     </div>
+                                                                    <div style={{ alignSelf: 'flex-start' }}>
+                                                                        <Button
+                                                                            component="span"
+                                                                            aria-controls="customized-menu"
+                                                                            aria-haspopup="true"
+                                                                            onClick={(e) => this.handleAnchorEl(e, index, true)}
+                                                                            className={classes.veticalDots}
+                                                                            style={{ marginLeft: '4px' }} >
+                                                                            <MoreHorizIcon
+                                                                            />
+                                                                        </Button>
+                                                                        <StyledMenu
+                                                                            id="customized-menu"
+                                                                            anchorEl={timeline.anchorEl}
+                                                                            keepMounted
+                                                                            open={Boolean(timeline.anchorEl)}
+                                                                            onClose={(e) => this.handleAnchorEl(e, index, false)}
+                                                                        >
+
+                                                                            <StyledMenuItem onClick={() => this.openShareDialog(1, index, false, "http://localhost:3000/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post'))} >
+                                                                                <ListItemIcon>
+                                                                                    <ShareIcon />
+                                                                                </ListItemIcon>
+                                                                                <ListItemText primary="اشتراک گذاری" />
+                                                                            </StyledMenuItem>
+                                                                        </StyledMenu>
+                                                                    </div>
+
+
+                                                                </Grid>
+                                                                <Grid item
+                                                                    md={12} lg={12} sm={12}
+                                                                    style={{ paddingRight: '14px', display: 'flex', marginRight: 85, wordBreak: 'break-all' }}
+                                                                    xs={12}>
+                                                                    <Typography
+
+                                                                    >
+                                                                        <Box fontSize={18}  >
+                                                                            {timeline.description !== '' ? timeline.description : '(توضیحی وجود ندارد)'}
+                                                                        </Box>
+
+                                                                    </Typography>
 
                                                                 </Grid>
 
 
-                                                                <Grid item md={12} lg={12}
-                                                                    style={{ padding: '16px', marginRight: 85 }}
+                                                                <Grid item md={12} lg={12} sm={12}
+                                                                    style={{ padding: '14px', marginRight: 85 }}
                                                                     xs={12}>
 
                                                                     {timeline.files.map((file) =>
@@ -524,111 +793,71 @@ class TimeLine extends React.Component {
 
 
                                                                 </Grid>
+
                                                                 <Grid item
                                                                     md={12} lg={12} sm={12}
-                                                                    style={{ padding: '16px', marginRight: 85 }}
                                                                     xs={12}>
-                                                                    <Tabs
-                                                                        indicatorColor="primary"
-                                                                        textColor="primary"
-                                                                        value={timeline.tabValue}
-                                                                        onChange={(e, v) => this.handleTabChange(v, index)}>
-                                                                        <Tab label="توضیحات" {...a11yProps(0)} className={classes.tabFont} />
-                                                                        <Tab label="فایل ها" {...a11yProps(1)} className={classes.tabFont} />
-                                                                    </Tabs>
+                                                                    {timeline.files.length > 0 ? (
+                                                                        <div style={{ padding: '4px', marginRight: 85 }}>
+                                                                            <Typography
+                                                                                style={{ display: 'flex', marginBottom: '8px' }}
 
-                                                                    <div style={{ width: '100%', overflow: 'auto', wordBreak: 'break-all' }}>
-                                                                        <SwipeableViews
-                                                                            axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                                                                            index={timeline.tabValue}
-                                                                            onChangeIndex={(e, v) => this.handleTabChange(v, index)}
-                                                                        >
-                                                                            <TabPanel value={timeline.tabValue} index={0} >
+                                                                            >
+                                                                                <Box fontSize={18}  >
+                                                                                    فایل ها :
+                                                                            </Box>
 
-                                                                                <div
-                                                                                    style={{
-                                                                                        alignSelf: 'center',
-                                                                                        padding: '6px'
-                                                                                    }}
-                                                                                >
+                                                                            </Typography>
 
-                                                                                    <Typography component='div'
-                                                                                    >
-                                                                                        <Box fontSize={18} textAlign='center' >
-                                                                                            {timeline.description !== '' ? timeline.description : '(توضیحی وجود ندارد)'}
-                                                                                        </Box>
-
-                                                                                    </Typography>
+                                                                            <TableContainer dir="rtl" component={Paper}>
+                                                                                <Table aria-label="customized table" dir="rtl">
+                                                                                    <TableHead dir="rtl">
+                                                                                        <TableRow dir="rtl">
+                                                                                            <StyledTableCell align="center">آیکون</StyledTableCell>
+                                                                                            <StyledTableCell align="center">اسم فایل</StyledTableCell>
+                                                                                            <StyledTableCell align="center">حجم</StyledTableCell>
+                                                                                            <StyledTableCell align="center">دانلود</StyledTableCell>
+                                                                                        </TableRow>
+                                                                                    </TableHead>
+                                                                                    <TableBody>
+                                                                                        {timeline.files.map((tabFile, tabIndx) => (
 
 
-
-                                                                                </div>
-
-                                                                            </TabPanel>
-                                                                            <TabPanel value={timeline.tabValue} index={1}>
-                                                                                {timeline.files.length > 0 ? (
-                                                                                        <TableContainer  dir="rtl" >
-                                                                                            <Table  aria-label="customized table" dir="rtl">
-                                                                                                <TableHead dir="rtl">
-                                                                                                    <TableRow dir="rtl">
-                                                                                                        <StyledTableCell align="center">آیکون</StyledTableCell>
-                                                                                                        <StyledTableCell align="center">اسم فایل</StyledTableCell>
-                                                                                                        <StyledTableCell align="center">حجم</StyledTableCell>
-                                                                                                        <StyledTableCell align="center">دانلود</StyledTableCell>
-                                                                                                    </TableRow>
-                                                                                                </TableHead>
-                                                                                                <TableBody>
-                                                                                                    {timeline.files.map((tabFile, tabIndx) => (
-
-
-                                                                                                        <StyledTableRow dir="rtl" key={tabFile.id}>
-                                                                                                            <StyledTableCell align="center">
-                                                                                                                <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
-                                                                                                            </StyledTableCell>
-                                                                                                            <StyledTableCell align="center">
-                                                                                                                <Box >
-                                                                                                                    {this.fileNameExtractor(tabFile.file)}
-                                                                                                                </Box>
-                                                                                                            </StyledTableCell>
-                                                                                                            <StyledTableCell align="center">
-                                                                                                                <div dir='ltr'>
-                                                                                                                    <Box style={{  color: 'grey' }} fontSize={14}>
-                                                                                                                        {this.bytesToSize(tabFile.size)}
-                                                                                                                    </Box>
-                                                                                                                </div>
-                                                                                                            </StyledTableCell>
-                                                                                                            <StyledTableCell align="center">
-                                                                                                                <Button variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
-
-                                                                                                                    <GetAppRoundedIcon />
-                                                                                                                </Button>
-                                                                                                            </StyledTableCell>
-                                                                                                        </StyledTableRow>
-
-                                                                                                    ))}
-                                                                                        </TableBody>
-                                                                                            </Table>
-                                                                                        </TableContainer>
-                                                                                    ) : (
-                                                                                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                                            <Typography
-                                                                                                style={{ marginTop: '12px' }} >
-                                                                                                <Box fontSize={18}  >
-                                                                                                    (فایلی وجود ندارد)
+                                                                                            <StyledTableRow dir="rtl" key={tabFile.id}>
+                                                                                                <StyledTableCell align="center">
+                                                                                                    <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
+                                                                                                </StyledTableCell>
+                                                                                                <StyledTableCell align="center">
+                                                                                                    <Box >
+                                                                                                        {this.fileNameExtractor(tabFile.file)}
                                                                                                     </Box>
+                                                                                                </StyledTableCell>
+                                                                                                <StyledTableCell align="center">
+                                                                                                    <div dir='ltr'>
+                                                                                                        <Box style={{ color: 'grey' }} fontSize={14}>
+                                                                                                            {this.bytesToSize(tabFile.size)}
+                                                                                                        </Box>
+                                                                                                    </div>
+                                                                                                </StyledTableCell>
+                                                                                                <StyledTableCell align="center">
+                                                                                                    <Button variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
 
-                                                                                            </Typography>
-                                                                                        </div>
-                                                                                    )}
+                                                                                                        <GetAppRoundedIcon />
+                                                                                                    </Button>
+                                                                                                </StyledTableCell>
+                                                                                            </StyledTableRow>
 
+                                                                                        ))}
+                                                                                    </TableBody>
+                                                                                </Table>
+                                                                            </TableContainer>
+                                                                        </div>
+                                                                    ) : ''}
 
-                                                                            </TabPanel>
-                                                                        </SwipeableViews>
-                                                                    </div>
                                                                 </Grid>
                                                                 <Grid item
                                                                     md={12} lg={12} sm={12}
-                                                                    style={{ padding: '16px', marginRight: 85 }}
+                                                                    style={{ padding: '14px', marginRight: 85 }}
                                                                     xs={12}>
                                                                     <div
                                                                         style={{
@@ -636,13 +865,33 @@ class TimeLine extends React.Component {
                                                                             display: 'flex'
                                                                         }}
                                                                     >
-                                                                        <IconButton>
-                                                                            <CommentIcon />
-                                                                        </IconButton>
-                                                                        <IconButton onClick={() => this.openShareDialog("http://localhost:3000/student_dashboard" + timeline.episode_or_news_url)}>
-                                                                            <ShareIcon />
-                                                                        </IconButton>
-                                                                        <Button href={"/student_dashboard" + timeline.episode_or_news_url}
+                                                                        <div style={{ display: 'flex' }}>
+
+                                                                            <div style={{ alignSelf: 'center' }}>
+                                                                                <Box style={{ color: 'grey' }} fontSize={14}>
+                                                                                    {timeline.likes_count}
+                                                                                </Box>
+                                                                            </div>
+                                                                            <IconButton onClick={() => this.handleTimelineLike(index, timeline.id, timeline.isEpisode)}>
+                                                                                {timeline.liked ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
+                                                                            </IconButton>
+
+                                                                        </div>
+                                                                        <div style={{ display: 'flex' }}>
+
+                                                                            <div style={{ alignSelf: 'center' }}>
+                                                                                <Box style={{
+                                                                                    color: 'grey'
+                                                                                }} fontSize={14}>
+                                                                                    {timeline.comments.length}
+                                                                                </Box>
+                                                                            </div>
+                                                                            <IconButton onClick={() => this.commentOpener(index)}>
+                                                                                <CommentIcon />
+                                                                            </IconButton>
+
+                                                                        </div>
+                                                                        <Button href={"/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}
                                                                             style={{ marginLeft: '5px', alignSelf: 'center' }}
                                                                         >
                                                                             <AssignmentIcon style={{ marginRight: '4px' }} />
@@ -656,11 +905,96 @@ class TimeLine extends React.Component {
 
                                                                 </Grid>
 
+                                                                <Grid item
+                                                                    md={12} lg={12} sm={12}
+                                                                    style={{
+                                                                        transition: theme.transitions.create("all", {
+                                                                            easing: theme.transitions.easing.sharp,
+                                                                            duration: theme.transitions.duration.leavingScreen
+                                                                        })
+                                                                    }}
+
+                                                                    xs={12}>
+
+                                                                    {timeline.isCommentOpen ? (
+                                                                        <Grow in={timeline.isCommentOpen} timeout={700} style={{ paddingRight: '16px', marginRight: 85 }}>
+                                                                            <div>
+                                                                                <Grid container wrap="nowrap" alignItems='center' style={{ minHeight: "2rem" }}>
+                                                                                    <Grid item xs zeroMinWidth>
+                                                                                        <InputBase
+                                                                                            style={{ padding: '8px' }}
+                                                                                            inputRef={this.commentRef}
+                                                                                            rowsMax={2}
+                                                                                            multiline
+                                                                                            fullWidth
+                                                                                            className='input2'
+                                                                                            placeholder="متن پیام"
+                                                                                        />
+                                                                                    </Grid>
+                                                                                    <Grid item>
+                                                                                        <IconButton color="primary" className={classes.iconButton}
+                                                                                            onClick={() => this.handlePostComment(index, timeline.id, timeline.isEpisode)}
+                                                                                        >
+                                                                                            <SendIcon className='icon' />
+                                                                                        </IconButton>
+                                                                                    </Grid>
+
+                                                                                </Grid>
+                                                                                {timeline.comments.length > 0 &&
+                                                                                    (<List dir='rtl'>
+                                                                                        {timeline.comments.map((comment, commentIndex) => (
+                                                                                            <ListItem key={comment.id} alignItems="flex-start">
+                                                                                                <ListItemAvatar>
+                                                                                                    <Avatar alt="avatar" src={comment.profile_picture} />
+                                                                                                </ListItemAvatar>
+                                                                                                <ListItemText
+                                                                                                    style={{ textAlign: 'right' }}
+                                                                                                    primary={
+                                                                                                        <Typography className='text1'>
+                                                                                                            {comment.user_firstname + " " + comment.user_lastname}
+                                                                                                        </Typography>
+                                                                                                    }
+                                                                                                    secondary={
+                                                                                                        <>
+                                                                                                            <Typography
+                                                                                                                dir='rtl'
+                                                                                                                component="span"
+                                                                                                                variant="body2"
+                                                                                                                className='text2'
+                                                                                                                color="textPrimary"
+                                                                                                                style={{ wordBreak: 'break-all' }}
+                                                                                                            >
+                                                                                                                {comment.comment_text}
+                                                                                                            </Typography>
+                                                                                                        </>
+                                                                                                    }
+                                                                                                ></ListItemText>
+                                                                                                <ListItemIcon >
+                                                                                                    <IconButton
+                                                                                                        onClick={() => window.location = "http://localhost:3000/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}
+                                                                                                    >
+                                                                                                        <ReplyIcon />
+                                                                                                    </IconButton>
+                                                                                                    <IconButton
+                                                                                                        onClick={() => this.handleClickLike(index, commentIndex)}
+                                                                                                    >
+
+                                                                                                        {comment.liked ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
+                                                                                                    </IconButton>
+                                                                                                </ListItemIcon>
+                                                                                            </ListItem>
+                                                                                        ))}
+                                                                                    </List>)}
+                                                                            </div>
+
+                                                                        </Grow>) : ""}
+                                                                </Grid>
+
 
 
                                                             </Grid>
                                                         </Paper>
-                                                    </Slide>
+                                                    </Zoom>
 
 
                                                 </div>

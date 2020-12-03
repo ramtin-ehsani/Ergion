@@ -78,8 +78,9 @@ class Comments extends Component {
         this.props.onLikeComment(comment.id, comment.liked)
         this.props.onReply(comment.id ,comment.replies)
         this.props.onOpenReply(comment.id, false)
+        this.props.onNewText(comment.id, '')
       })
-      
+      console.log(this.props.reduxNewText)
     })
   }
 
@@ -110,6 +111,7 @@ class Comments extends Component {
       }
       this.props.onLikeComment(res.data.id, false)
       this.props.onOpenReply(res.data.id, false)
+      this.props.onNewText(res.data.id, '')
       this.setState({
           comments:[...this.state.comments, newComment],
           isFetching: false,
@@ -191,6 +193,7 @@ const mapStateToProps = state => {
   return {
       reduxReply: state.replies,
       reduxComments: state.comments,
+      reduxNewText: state.nCommentString,
   };
 };
 const mapDispatchToProps = dispatch => {
@@ -198,7 +201,8 @@ const mapDispatchToProps = dispatch => {
     onReply: (id, reply) => dispatch({ type: actionTypes.REPLY, payload: reply, id:id }),
     onAddComment: (comment) => dispatch({type: actionTypes.ADD_COMMENT, payload:comment }),
     onLikeComment: (id, like) => dispatch({type: actionTypes.LIKE_COMMENT, id:id, like:like }),
-    onOpenReply: (id, open) => dispatch({type: actionTypes.OPEN_REPLAY, id:id, open:open })
+    onOpenReply: (id, open) => dispatch({type: actionTypes.OPEN_REPLAY, id:id, open:open }),
+    onNewText: (id, txt) => dispatch({type: actionTypes.NEW_COMMENT_TEXT, id:id, txt:txt }),
   }
 }
 
