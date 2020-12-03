@@ -12,7 +12,6 @@ import Typography from "@material-ui/core/Typography";
 import { Box } from "@material-ui/core";
 import { useHistory } from 'react-router-dom';
 import Slider from "react-slick";
-import CircularProgress from '@material-ui/core/CircularProgress';
 import "../../../../node_modules/slick-carousel/slick/slick.css";
 import "../../../../node_modules/slick-carousel/slick/slick-theme.css";
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
@@ -246,7 +245,6 @@ const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 const Suggestions = () => {
     const classes = useStyles();
     const history = useHistory();
-    const [loading, setLoading] = React.useState(true);
     const [isEmpty, setEmpty] = React.useState(false);
 
     let slider = useRef();
@@ -270,7 +268,6 @@ const Suggestions = () => {
                 } else {
                     setEmpty(true)
                 }
-                setLoading(false)
                 setArrSize(response.data.length)
                 // (suggested && suggested.map(() => (
                 //     test = suggested.toString().length
@@ -323,9 +320,6 @@ const Suggestions = () => {
                             <Grid container dir="rtl" lg={10} item={true} spacing={2}>
                                 <div className="slider-items-parent"
                                     style={{ width: "100%", dir: "rtl", marginTop: "5px" }}>
-                                    {loading && (
-                                        <CircularProgress />
-                                    )}
                                     {isEmpty && (<div style={{ display: 'flex', justifyContent: 'center' }}>
                                         <Typography className='typo' component="div">
                                             <Box fontSize={20} m={1}>

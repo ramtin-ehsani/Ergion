@@ -25,6 +25,7 @@ import Divider from '@material-ui/core/Divider';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
+import Grow from '@material-ui/core/Grow';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
@@ -1135,6 +1136,7 @@ class NestedList extends React.Component {
                 >
                     {this.state.list.map((item, index) =>
                         (<div className={classes.paperStyle} key={item.id} >
+                            <Grow in={!this.state.loading} timeout={1000}>
                             <Paper
                                 onMouseEnter={() => this.toggle(index, 'button on')}
                                 onMouseLeave={() => this.toggle(index, 'button off')}
@@ -1228,6 +1230,7 @@ class NestedList extends React.Component {
                                 </ListItem>
 
                             </Paper>
+                            </Grow>
                             <Collapse in={item.isOpened} timeout="auto" unmountOnExit
                                 style={{ marginLeft: '14px', marginRight: '14px' }}
                             >
@@ -1353,7 +1356,7 @@ class NestedList extends React.Component {
                                                         indicatorColor="primary"
                                                         textColor="primary"
                                                         value={episode.tabValue}
-                                                        onChange={() => this.handleTabChange(1 - episode.tabValue, index, indx)}>
+                                                        onChange={(e,v) => this.handleTabChange(v, index, indx)}>
                                                         <Tab label="توضیحات" {...a11yProps(0)} className={classes.tabFont} />
                                                         <Tab label="فایل ها" {...a11yProps(1)} className={classes.tabFont} />
                                                     </Tabs>
@@ -1362,7 +1365,7 @@ class NestedList extends React.Component {
                                                         <SwipeableViews
                                                             axis={'x-reverse'}
                                                             index={episode.tabValue}
-                                                            onChangeIndex={() => this.handleTabChange(1 - episode.tabValue, index, indx)}
+                                                            onChangeIndex={(e,v) => this.handleTabChange(v, index, indx)}
                                                         >
                                                             <TabPanel value={episode.tabValue} index={0} >
                                                                 {!episode.isDescTextModeON ?
@@ -1451,8 +1454,8 @@ class NestedList extends React.Component {
                                                                                         </Typography>
                                                                                         <div style={{ alignSelf: 'center' }} />
                                                                                         <div style={{ alignSelf: 'center' }}>
-                                                                                            <Button variant="contained" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
-                                                                                                دانلود
+                                                                                            <Button variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
+                                                                                                
                                                                                             <GetAppRoundedIcon />
                                                                                             </Button>
                                                                                         </div>
@@ -1486,7 +1489,8 @@ class NestedList extends React.Component {
 
 
                                             </Grid>
-                                        </Paper>)
+                                        </Paper>
+                                        )
                                 )}
 
                                 {this.state.isOwner && (
