@@ -7,6 +7,7 @@
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@momsfriendlydevco/readable": "^1.2.1",
     "axios": "^0.21.0",
     "faker": "^5.1.0",
     "jss-rtl": "^0.3.0",

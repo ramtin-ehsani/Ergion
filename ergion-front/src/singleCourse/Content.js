@@ -6,6 +6,12 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -74,7 +80,23 @@ const StyledMenu = withStyles({
     />
 ));
 
+const StyledTableCell = withStyles((theme) => ({
+    head: {
+        backgroundColor: '#3f50b5',
+        color: theme.palette.common.white,
+    },
+    body: {
+        fontSize: 14,
+    },
+}))(TableCell);
 
+const StyledTableRow = withStyles((theme) => ({
+    root: {
+        '&:nth-of-type(odd)': {
+            backgroundColor: theme.palette.action.hover,
+        },
+    },
+}))(TableRow);
 
 const StyledMenuItem = withStyles((theme) => ({
     root: {
@@ -198,7 +220,7 @@ function TabPanel(props) {
             {...other}
         >
             {value === index && (
-                <Box p={3}>
+                <Box p={1}>
                     <Typography>{children}</Typography>
                 </Box>
             )}
@@ -263,6 +285,13 @@ class NestedList extends React.Component {
         };
     }
 
+    bytesToSize(bytes) {
+        var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        if (bytes == 0) return '0 Byte';
+        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+        return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+    }
+
 
     addEpisodeButton = () => {
         this.setState({ newEpisodeLoading: true })
@@ -288,6 +317,7 @@ class NestedList extends React.Component {
                         const fileData = new FormData()
                         fileData.append('episode_id', response.data.id)
                         fileData.append("file", file)
+                        fileData.append("size", file.size)
                         promises.push(axios.post('http://127.0.0.1:8000/api/episode/', fileData, this.config)
                             .then((res) => {
                                 responseFile.push(res.data)
@@ -1137,99 +1167,99 @@ class NestedList extends React.Component {
                     {this.state.list.map((item, index) =>
                         (<div className={classes.paperStyle} key={item.id} >
                             <Grow in={!this.state.loading} timeout={1000}>
-                            <Paper
-                                onMouseEnter={() => this.toggle(index, 'button on')}
-                                onMouseLeave={() => this.toggle(index, 'button off')}
-                            >
-                                <ListItem button={!item.isTextMode} onClick={() => this.listOnClick(index)}  >
-                                    <ListItemIcon>
-                                        <LibraryBooksIcon />
-                                    </ListItemIcon>
-                                    <ListItemText  >
+                                <Paper
+                                    onMouseEnter={() => this.toggle(index, 'button on')}
+                                    onMouseLeave={() => this.toggle(index, 'button off')}
+                                >
+                                    <ListItem button={!item.isTextMode} onClick={() => this.listOnClick(index)}  >
+                                        <ListItemIcon>
+                                            <LibraryBooksIcon />
+                                        </ListItemIcon>
+                                        <ListItemText  >
 
-                                        {!item.isTextMode ?
-                                            (<div
-                                                style={{
-                                                    display: 'flex',
-                                                }}
-                                            >
-                                                <Typography >
-
-                                                    <Box fontSize={this.font} fontWeight="fontWeightBold" >
-                                                        {item.name}
-                                                    </Box>
-
-
-                                                </Typography>
-                                                {this.state.isOwner && item.buttonShown && !item.isTextMode && (
-                                                    <Fade in={item.buttonShown} timeout={400} >
-                                                        <Button
-                                                            onClick={(e) => this.chapterEditButton(e, index)}
-                                                            className={classes.veticalDots}
-                                                            style={{ marginRight: '15px', marginBottom: '-5px' }}
-                                                        >
-                                                            <EditIcon />
-                                                        </Button>
-                                                    </Fade>
-                                                )}
-                                            </div>
-                                            ) :
-
-                                            (<ValidatorForm onSubmit={() => this.chapterEditButtonSaveChanges(index)} >
-                                                <InputBase
-                                                    fullWidth
-                                                    autoFocus
-                                                    dir='rtl'
-                                                    autoComplete='off'
-                                                    name="name"
-                                                    style={{ fontSize: this.font, fontWeight: 900, marginBottom: '-3px', marginTop: '-3px' }}
-                                                    InputProps={{ 'aria-label': 'naked' }}
-                                                    required
-                                                    onBlur={(event) => this.textOnBlur(event, index)}
-                                                    defaultValue={item.name}
-                                                    inputRef={this.newEpisodeName}
-                                                />
-                                            </ValidatorForm>)}
-
-
-
-                                    </ListItemText>
-                                    {this.state.isOwner && item.buttonShown && !item.isTextMode && (
-                                        <Fade in={item.buttonShown} timeout={400} >
-                                            <div>
-                                                <Button
-                                                    component="span"
-                                                    aria-controls="customized-menu"
-                                                    aria-haspopup="true"
-                                                    onClick={(e) => this.menuHandleClick(e, index, true)}
-                                                    className={classes.veticalDots}
-                                                    style={{ marginLeft: '10px' }} >
-                                                    <MoreHorizIcon
-                                                    />
-                                                </Button>
-                                                <StyledMenu
-                                                    id="customized-menu"
-                                                    anchorEl={item.anchorEl}
-                                                    keepMounted
-                                                    open={Boolean(item.anchorEl)}
-                                                    onClose={(e) => this.menuHandleClick(e, index, false)}
+                                            {!item.isTextMode ?
+                                                (<div
+                                                    style={{
+                                                        display: 'flex',
+                                                    }}
                                                 >
+                                                    <Typography >
 
-                                                    <StyledMenuItem onClick={(e) => this.chapterOrEpisodeRemoveButton(e, index, 0, true)} >
-                                                        <ListItemIcon>
-                                                            <DeleteIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText primary="حذف کردن" />
-                                                    </StyledMenuItem>
-                                                </StyledMenu>
-                                            </div>
+                                                        <Box fontSize={this.font} fontWeight="fontWeightBold" >
+                                                            {item.name}
+                                                        </Box>
 
-                                        </Fade>
-                                    )}
-                                    {item.isOpened ? <ExpandLess /> : <ExpandMore />}
-                                </ListItem>
 
-                            </Paper>
+                                                    </Typography>
+                                                    {this.state.isOwner && item.buttonShown && !item.isTextMode && (
+                                                        <Fade in={item.buttonShown} timeout={400} >
+                                                            <Button
+                                                                onClick={(e) => this.chapterEditButton(e, index)}
+                                                                className={classes.veticalDots}
+                                                                style={{ marginRight: '15px', marginBottom: '-5px' }}
+                                                            >
+                                                                <EditIcon />
+                                                            </Button>
+                                                        </Fade>
+                                                    )}
+                                                </div>
+                                                ) :
+
+                                                (<ValidatorForm onSubmit={() => this.chapterEditButtonSaveChanges(index)} >
+                                                    <InputBase
+                                                        fullWidth
+                                                        autoFocus
+                                                        dir='rtl'
+                                                        autoComplete='off'
+                                                        name="name"
+                                                        style={{ fontSize: this.font, fontWeight: 900, marginBottom: '-3px', marginTop: '-3px' }}
+                                                        InputProps={{ 'aria-label': 'naked' }}
+                                                        required
+                                                        onBlur={(event) => this.textOnBlur(event, index)}
+                                                        defaultValue={item.name}
+                                                        inputRef={this.newEpisodeName}
+                                                    />
+                                                </ValidatorForm>)}
+
+
+
+                                        </ListItemText>
+                                        {this.state.isOwner && item.buttonShown && !item.isTextMode && (
+                                            <Fade in={item.buttonShown} timeout={400} >
+                                                <div>
+                                                    <Button
+                                                        component="span"
+                                                        aria-controls="customized-menu"
+                                                        aria-haspopup="true"
+                                                        onClick={(e) => this.menuHandleClick(e, index, true)}
+                                                        className={classes.veticalDots}
+                                                        style={{ marginLeft: '10px' }} >
+                                                        <MoreHorizIcon
+                                                        />
+                                                    </Button>
+                                                    <StyledMenu
+                                                        id="customized-menu"
+                                                        anchorEl={item.anchorEl}
+                                                        keepMounted
+                                                        open={Boolean(item.anchorEl)}
+                                                        onClose={(e) => this.menuHandleClick(e, index, false)}
+                                                    >
+
+                                                        <StyledMenuItem onClick={(e) => this.chapterOrEpisodeRemoveButton(e, index, 0, true)} >
+                                                            <ListItemIcon>
+                                                                <DeleteIcon />
+                                                            </ListItemIcon>
+                                                            <ListItemText primary="حذف کردن" />
+                                                        </StyledMenuItem>
+                                                    </StyledMenu>
+                                                </div>
+
+                                            </Fade>
+                                        )}
+                                        {item.isOpened ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItem>
+
+                                </Paper>
                             </Grow>
                             <Collapse in={item.isOpened} timeout="auto" unmountOnExit
                                 style={{ marginLeft: '14px', marginRight: '14px' }}
@@ -1356,7 +1386,7 @@ class NestedList extends React.Component {
                                                         indicatorColor="primary"
                                                         textColor="primary"
                                                         value={episode.tabValue}
-                                                        onChange={(e,v) => this.handleTabChange(v, index, indx)}>
+                                                        onChange={(e, v) => this.handleTabChange(v, index, indx)}>
                                                         <Tab label="توضیحات" {...a11yProps(0)} className={classes.tabFont} />
                                                         <Tab label="فایل ها" {...a11yProps(1)} className={classes.tabFont} />
                                                     </Tabs>
@@ -1365,7 +1395,7 @@ class NestedList extends React.Component {
                                                         <SwipeableViews
                                                             axis={'x-reverse'}
                                                             index={episode.tabValue}
-                                                            onChangeIndex={(e,v) => this.handleTabChange(v, index, indx)}
+                                                            onChangeIndex={(e, v) => this.handleTabChange(v, index, indx)}
                                                         >
                                                             <TabPanel value={episode.tabValue} index={0} >
                                                                 {!episode.isDescTextModeON ?
@@ -1426,7 +1456,7 @@ class NestedList extends React.Component {
                                                                                 />
                                                                                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                                                                                     <Button variant="outlined" color="primary"
-                                                                                    type='submit'>
+                                                                                        type='submit'>
                                                                                         ذخیره
                                                                                     </Button>
                                                                                 </div>
@@ -1438,37 +1468,48 @@ class NestedList extends React.Component {
                                                             </TabPanel>
                                                             <TabPanel value={episode.tabValue} index={1}>
                                                                 {episode.files.length > 0 ? (
-                                                                    <div>
-                                                                        {episode.files.map((tabFile, tabIndx) => (
-                                                                            <Grid container spacing={2} dir="rtl" key={tabFile.id}>
-                                                                                <Grid item lg={12} md={12} sm={12} xs={12} >
-                                                                                    <div style={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                                                        <TableContainer dir="rtl" >
+                                                                            <Table aria-label="customized table" dir="rtl">
+                                                                                <TableHead dir="rtl">
+                                                                                    <TableRow dir="rtl">
+                                                                                        <StyledTableCell align="center">آیکون</StyledTableCell>
+                                                                                        <StyledTableCell align="center">اسم فایل</StyledTableCell>
+                                                                                        <StyledTableCell align="center">حجم</StyledTableCell>
+                                                                                        <StyledTableCell align="center">دانلود</StyledTableCell>
+                                                                                    </TableRow>
+                                                                                </TableHead>
+                                                                                <TableBody>
+                                                                                    {episode.files.map((tabFile, tabIndx) => (
 
-                                                                                        <Typography style={{ alignSelf: 'center' }} >
-                                                                                            <div style={{ display: 'flex' }}>
+
+                                                                                        <StyledTableRow dir="rtl" key={tabFile.id}>
+                                                                                            <StyledTableCell align="center">
                                                                                                 <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
-                                                                                                <Box style={{ marginRight: '10px' }}>
+                                                                                            </StyledTableCell>
+                                                                                            <StyledTableCell align="center">
+                                                                                                <Box >
                                                                                                     {this.fileNameExtractor(tabFile.file)}
                                                                                                 </Box>
-                                                                                            </div>
-                                                                                        </Typography>
-                                                                                        <div style={{ alignSelf: 'center' }} />
-                                                                                        <div style={{ alignSelf: 'center' }}>
-                                                                                            <Button variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
-                                                                                                
-                                                                                            <GetAppRoundedIcon />
-                                                                                            </Button>
-                                                                                        </div>
+                                                                                            </StyledTableCell>
+                                                                                            <StyledTableCell align="center">
+                                                                                                <div dir='ltr'>
+                                                                                                    <Box style={{ color: 'grey' }} fontSize={14}>
+                                                                                                        {this.bytesToSize(tabFile.size)}
+                                                                                                    </Box>
+                                                                                                </div>
+                                                                                            </StyledTableCell>
+                                                                                            <StyledTableCell align="center">
+                                                                                                <Button variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
 
-                                                                                    </div>
-                                                                                    <Divider />
-                                                                                </Grid>
+                                                                                                    <GetAppRoundedIcon />
+                                                                                                </Button>
+                                                                                            </StyledTableCell>
+                                                                                        </StyledTableRow>
 
-
-
-                                                                            </Grid>
-
-                                                                        ))}</div>) : (
+                                                                                    ))}
+                                                                                </TableBody>
+                                                                            </Table>
+                                                                        </TableContainer>) : (
                                                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                                                             <Typography
                                                                                 style={{ marginTop: '12px' }} >
@@ -1490,7 +1531,7 @@ class NestedList extends React.Component {
 
                                             </Grid>
                                         </Paper>
-                                        )
+                                    )
                                 )}
 
                                 {this.state.isOwner && (

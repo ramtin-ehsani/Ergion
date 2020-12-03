@@ -12,15 +12,18 @@ import { create } from 'jss';
 import rtl from 'jss-rtl';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import { withStyles } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import BallotIcon from '@material-ui/icons/Ballot';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -70,6 +73,24 @@ const theme = createMuiTheme({
     },
     direction: 'rtl'
 });
+
+const StyledTableCell = withStyles((theme) => ({
+    head: {
+        backgroundColor: '#3f50b5',
+        color: theme.palette.common.white,
+    },
+    body: {
+        fontSize: 14,
+    },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+    root: {
+        '&:nth-of-type(odd)': {
+            backgroundColor: theme.palette.action.hover,
+        },
+    },
+}))(TableRow);
 function Alert(props) {
 
     return (
@@ -93,7 +114,7 @@ function TabPanel(props) {
             {...other}
         >
             {value === index && (
-                <Box p={3}>
+                <Box p={1}>
                     <Typography>{children}</Typography>
                 </Box>
             )}
@@ -128,7 +149,7 @@ class TimeLine extends React.Component {
             loading: true,
             shareDialogOpen: false,
             link: '',
-            snackBarOpen:false,
+            snackBarOpen: false,
 
         };
     }
@@ -167,6 +188,13 @@ class TimeLine extends React.Component {
     componentWillUnmount() {
         this._isMounted = false;
 
+    }
+
+    bytesToSize(bytes) {
+        var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        if (bytes == 0) return '0 Byte';
+        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+        return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
     }
 
     config = {
@@ -271,7 +299,7 @@ class TimeLine extends React.Component {
         this.setState({ snackBarOpen: true })
     }
 
-    onSnackBarClose = (event,reason) => {
+    onSnackBarClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -539,40 +567,49 @@ class TimeLine extends React.Component {
                                                                             </TabPanel>
                                                                             <TabPanel value={timeline.tabValue} index={1}>
                                                                                 {timeline.files.length > 0 ? (
-                                                                                    <div>
-                                                                                        {timeline.files.map((tabFile, tabIndx) => (
-                                                                                            <Grid container spacing={2} dir="rtl" key={tabFile.id}>
-                                                                                                <Grid item lg={12} md={12} sm={12} xs={12} >
-                                                                                                    <div style={{ display: 'flex', padding: '4px', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                                                                        <TableContainer  dir="rtl" >
+                                                                                            <Table  aria-label="customized table" dir="rtl">
+                                                                                                <TableHead dir="rtl">
+                                                                                                    <TableRow dir="rtl">
+                                                                                                        <StyledTableCell align="center">آیکون</StyledTableCell>
+                                                                                                        <StyledTableCell align="center">اسم فایل</StyledTableCell>
+                                                                                                        <StyledTableCell align="center">حجم</StyledTableCell>
+                                                                                                        <StyledTableCell align="center">دانلود</StyledTableCell>
+                                                                                                    </TableRow>
+                                                                                                </TableHead>
+                                                                                                <TableBody>
+                                                                                                    {timeline.files.map((tabFile, tabIndx) => (
 
-                                                                                                        <Typography style={{ alignSelf: 'center' }} >
-                                                                                                            <div style={{ display: 'flex' }}>
+
+                                                                                                        <StyledTableRow dir="rtl" key={tabFile.id}>
+                                                                                                            <StyledTableCell align="center">
                                                                                                                 <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
-                                                                                                                <Box style={{ marginRight: '10px' }}>
+                                                                                                            </StyledTableCell>
+                                                                                                            <StyledTableCell align="center">
+                                                                                                                <Box >
                                                                                                                     {this.fileNameExtractor(tabFile.file)}
                                                                                                                 </Box>
-                                                                                                                <div>
-                                                                                                                    {tabFile.size}
+                                                                                                            </StyledTableCell>
+                                                                                                            <StyledTableCell align="center">
+                                                                                                                <div dir='ltr'>
+                                                                                                                    <Box style={{  color: 'grey' }} fontSize={14}>
+                                                                                                                        {this.bytesToSize(tabFile.size)}
+                                                                                                                    </Box>
                                                                                                                 </div>
-                                                                                                            </div>
-                                                                                                        </Typography>
-                                                                                                        <div style={{ alignSelf: 'center' }} />
-                                                                                                        <div style={{ alignSelf: 'center' }}>
-                                                                                                            <Button variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
+                                                                                                            </StyledTableCell>
+                                                                                                            <StyledTableCell align="center">
+                                                                                                                <Button variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
 
-                                                                                                                <GetAppRoundedIcon />
-                                                                                                            </Button>
-                                                                                                        </div>
+                                                                                                                    <GetAppRoundedIcon />
+                                                                                                                </Button>
+                                                                                                            </StyledTableCell>
+                                                                                                        </StyledTableRow>
 
-                                                                                                    </div>
-                                                                                                    <Divider />
-                                                                                                </Grid>
-
-
-
-                                                                                            </Grid>
-
-                                                                                        ))}</div>) : (
+                                                                                                    ))}
+                                                                                        </TableBody>
+                                                                                            </Table>
+                                                                                        </TableContainer>
+                                                                                    ) : (
                                                                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                                                                             <Typography
                                                                                                 style={{ marginTop: '12px' }} >
@@ -600,23 +637,20 @@ class TimeLine extends React.Component {
                                                                         }}
                                                                     >
                                                                         <IconButton>
-                                                                            <FavoriteBorderIcon />
-                                                                        </IconButton>
-                                                                        <IconButton>
                                                                             <CommentIcon />
                                                                         </IconButton>
                                                                         <IconButton onClick={() => this.openShareDialog("http://localhost:3000/student_dashboard" + timeline.episode_or_news_url)}>
                                                                             <ShareIcon />
                                                                         </IconButton>
-                                                                        <Button  href={"/student_dashboard" + timeline.episode_or_news_url}
+                                                                        <Button href={"/student_dashboard" + timeline.episode_or_news_url}
                                                                             style={{ marginLeft: '5px', alignSelf: 'center' }}
                                                                         >
-                                                                        <AssignmentIcon style={{ marginRight: '4px' }} />
+                                                                            <AssignmentIcon style={{ marginRight: '4px' }} />
                                                                         </Button>
-                                                                        <Button  href={"/student_dashboard" + timeline.course_url.replace('course', 'added_courses')}
+                                                                        <Button href={"/student_dashboard" + timeline.course_url.replace('course', 'added_courses')}
                                                                             style={{ marginRight: '5px', alignSelf: 'center' }}
                                                                         >
-                                                                        <BallotIcon style={{ marginRight: '4px' }} />
+                                                                            <BallotIcon style={{ marginRight: '4px' }} />
                                                                         </Button>
                                                                     </div>
 
