@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
     List,
@@ -14,7 +14,6 @@ import {
     Grid,
     InputBase
 } from "@material-ui/core";
-import Faker from "faker";
 import rtl from "jss-rtl";
 import { create } from 'jss';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
@@ -59,11 +58,12 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
             headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
         }
         if (nCommentString.length !== 0) {
-            axios.post('http://127.0.0.1:8000/api/episode-comments/', {
+            axios.post('http://127.0.0.1:8000/api/update-comments/', {
                 parent_comment_id: id,
                 comment_text: nCommentString
             }, config).then((res) => {
                 console.log(res)
+                console.log("test")
                 if(reduxReply[id]){
                     const oldreplies = reduxReply[id]
                     oldreplies.push(res.data)
@@ -122,6 +122,7 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
                                                 variant="body2"
                                                 className='text2'
                                                 color="textPrimary"
+                                                style={{wordBreak: "break-all"}}
                                             >
                                                 {comment.body}
                                             </Typography>
@@ -164,7 +165,6 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
                                                             >
                                                                 {reply.comment_text}
                                                             </Typography>
-                                                            {/* {` - ${reply.body}`} */}
                                                         </>
                                                     }
                                                 />
@@ -176,7 +176,7 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
                                         <Grid container wrap="nowrap" alignItems='center' style={{ minHeight: "5rem" }}>
                                             <Grid item xs zeroMinWidth>
                                                 <InputBase
-                                                    style={{ padding: '8px' }}
+                                                    style={{ padding: '8px', backgroundColor: "gainsboro"  }}
                                                     value={nCommentString}
                                                     onChange={onChangeHandler}
                                                     rowsMax={2}

@@ -1,39 +1,14 @@
-import { Box, Grid, Typography } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 import React, { Component } from 'react';
 import Comment from './Comment';
 import SendIcon from '@material-ui/icons/Send';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
 import InputBase from '@material-ui/core/InputBase';
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import './Comments.scss';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../../../store/actions';
 import axios from 'axios';
-
-const useStyles = makeStyles((theme) => ({
-	root: {
-		//   padding: '2px 4px',
-		//   display: 'flex',
-		//   alignItems: 'center',
-		//   width: 400,
-	},
-	input: {
-		marginLeft: theme.spacing(1),
-		flex: 1
-	},
-	iconButton: {
-		//   padding: 10,
-	},
-	divider: {
-		//   height: 28,
-		//   margin: 4,
-	},
-	color: {
-		backgroundColor: 'white'
-	}
-}));
 
 class Comments extends Component {
 	state = {
@@ -54,11 +29,11 @@ class Comments extends Component {
 		const config = {
 			headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
 		};
-		const episode_id = window.location.href.split('/')[7];
-		axios.get(`http://127.0.0.1:8000/api/episode-comments/?episode_id=${episode_id}`, config).then((res) => {
+		const update_id = window.location.href.split('/')[5];
+		axios.get(`http://127.0.0.1:8000/api/update-comments/?update_id=${update_id}`, config).then((res) => {
 			res.data.map((comment) => {
 				const newComment = {
-					postId: episode_id,
+					postId: update_id,
 					id: comment.id,
 					name: `${comment.user_firstname} ${comment.user_lastname}`,
 					picture: comment.profile_picture,
@@ -89,23 +64,23 @@ class Comments extends Component {
 	};
 
 	onSubmit = () => {
-		const episode_id = window.location.href.split('/')[7];
+		const update_id = window.location.href.split('/')[5];
 		const config = {
 			headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
 		};
 		if (this.state.nCommentString.length !== 0) {
 			axios
 				.post(
-					'http://127.0.0.1:8000/api/episode-comments/',
+					'http://127.0.0.1:8000/api/update-comments/',
 					{
-						episode_id: episode_id,
+						update_id: update_id,
 						comment_text: this.state.nCommentString
 					},
 					config
 				)
 				.then((res) => {
 					const newComment = {
-						postId: episode_id,
+						postId: update_id,
 						id: res.data.id,
 						name: `${res.data.user_firstname} ${res.data.user_lastname}`,
 						picture: res.data.profile_picture,
@@ -155,7 +130,7 @@ class Comments extends Component {
 				<Grid container wrap="nowrap" alignItems="center" style={{ minHeight: '5rem' }}>
 					<Grid item xs zeroMinWidth>
 						<InputBase
-							style={{ padding: '8px' }}
+							style={{ padding: '8px', backgroundColor: "gainsboro" , marginRight: "7px"}}
 							value={formData.nCommentString}
 							onChange={this.onChangeHandler}
 							rowsMax={2}

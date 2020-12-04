@@ -68,20 +68,17 @@
 
 	.date {
 		font-family: IRANSans;
+		// justify-content: center;
+		// align-items: center;
+		// text-align: center;
+		// display: flex;
+		// margin-top: 9px;
+		// margin-left: 2px;
 		font-weight: lighter;
 	}
 
 	.img-test {
 		width: 50%;
 		height: 50%;
-	}
-
-	.awssld__content > img, .awssld__content > video {
-		object-fit: none !important;
-		position: relative !important;
-		top: 0 !important;
-		left: 0 !important;
-		width: 50%;
-		height: 280px;
 	}
 }
