@@ -7,15 +7,16 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import { create } from "jss";
 import rtl from "jss-rtl";
+import Paper from '@material-ui/core/Paper';
 import Typography from "@material-ui/core/Typography";
 import { Box } from "@material-ui/core";
 import { useHistory } from 'react-router-dom';
 import Slider from "react-slick";
-import CircularProgress from '@material-ui/core/CircularProgress';
 import "../../../../node_modules/slick-carousel/slick/slick.css";
 import "../../../../node_modules/slick-carousel/slick/slick-theme.css";
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
+import TimeLine from '../TimeLine/TimeLine.js'
 
 const theme = createMuiTheme({
     '@global': {
@@ -49,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
         flexWrap: 'wrap',
         justifyContent: 'space-around',
         overflow: 'hidden',
-        backgroundColor: theme.palette.background.paper,
     },
     gridList: {
         flexWrap: 'nowrap',
@@ -245,7 +245,6 @@ const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 const Suggestions = () => {
     const classes = useStyles();
     const history = useHistory();
-    const [loading, setLoading] = React.useState(true);
     const [isEmpty, setEmpty] = React.useState(false);
 
     let slider = useRef();
@@ -269,7 +268,6 @@ const Suggestions = () => {
                 } else {
                     setEmpty(true)
                 }
-                setLoading(false)
                 setArrSize(response.data.length)
                 // (suggested && suggested.map(() => (
                 //     test = suggested.toString().length
@@ -301,7 +299,7 @@ const Suggestions = () => {
             <StylesProvider jss={jss}>
                 <ThemeProvider theme={theme}>
                     <CssBaseline />
-                    <div className={classes.root}>
+                    <div className={classes.root} >
                         <Container maxWidth="md" className={classes.cardGrid}>
                             <Grid container dir="rtl" lg={10} item={true} className={classes.gridTitle} spacing={3}
                                 justify="flex-start" alignItems="baseline">
@@ -322,16 +320,13 @@ const Suggestions = () => {
                             <Grid container dir="rtl" lg={10} item={true} spacing={2}>
                                 <div className="slider-items-parent"
                                     style={{ width: "100%", dir: "rtl", marginTop: "5px" }}>
-                                    {loading && (
-                                        <CircularProgress />
-                                    )}
-                                    {isEmpty && (<Grid item >
+                                    {isEmpty && (<div style={{ display: 'flex', justifyContent: 'center' }}>
                                         <Typography className='typo' component="div">
                                             <Box fontSize={20} m={1}>
                                                 کلاسی یافت نشد
                                             </Box>
                                         </Typography>
-                                    </Grid>
+                                    </div>
                                     )}
                                     <Slider
                                         ref={c => (slider = c)} {...arrSize > 3 ? { ...settings } : { ...settingsLessThan3Mode }}>
@@ -357,7 +352,17 @@ const Suggestions = () => {
                                     </Slider>
                                 </div>
                             </Grid>
+                            <Grid container dir="rtl" lg={10} item={true} justify="flex-start" alignItems="baseline" className={classes.gridTitle} spacing={3}>
+                                <Grid style={{ width: "100%", display: "flex", flex: 1 }} item>
+                                    <TimeLine />
+
+                                </Grid>
+
+                            </Grid>
+
+
                         </Container>
+
                     </div>
                 </ThemeProvider>
             </StylesProvider>

@@ -1,10 +1,10 @@
-import react, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import react, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 //import { getSingleCourse } from "../actions/course";
-import React, {Fragment} from "react";
+import React, { Fragment } from "react";
 
 import clsx from 'clsx';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import Box from '@material-ui/core/Box';
@@ -39,16 +39,16 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 
 function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {'Copyright © '}
+      <Link color="inherit" href="https://material-ui.com/">
+        Your Website
             </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
 }
 
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
@@ -66,8 +66,8 @@ function Alert(props) {
     <StylesProvider jss={jss} >
       <ThemeProvider theme={theme} >
         <MuiAlert elevation={6} variant="filled" {...props} />
-        </ThemeProvider>
-        </StylesProvider>);
+      </ThemeProvider>
+    </StylesProvider>);
 }
 
 const drawerWidth = 240;
@@ -134,56 +134,21 @@ const SingleCourse = ({ match }) => {
   //     console.log(course);
   // }, []);
   useEffect(() => {
-    setTimeout(() => {
-      console.log(match.params.id);
-      const promise
-        = Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`)
-      promise.then(
-        response => {
+    console.log(match.params.id);
+    const promise
+      = Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`)
+    promise.then(
+      response => {
 
-          setcourse(response.data)
-          console.log(response.data)
-
-
-        }
-      )
-
-            <Container maxWidth="lg" className={classes.container}>
-                <Grid container spacing={3}>
-
-                    <Grid item xs={12} md={8} lg={9}>
-                        <Paper className={fixedHeightPaper1}>
-                            <Information course={course}/>
-                        </Paper>
-                    </Grid>
-
-                    <Grid item xs={12} md={4} lg={3}>
+        setcourse(response.data)
+        console.log(response.data)
 
 
-                        <Paper className={fixedHeightPaper2}>
-                            <Coursemedia course={course}/>
-                        </Paper>
-                        <Paper className={fixedHeightPaper}>
-                            <Generalinformation course={course}/>
-                        </Paper>
-                    </Grid>
+      }
+    )
 
 
-                    <Grid item xs={12}>
-                        <Paper className={classes.paper}>
-                            <Subjects course={course}/>
 
-                        </Paper>
-                    </Grid>
-
-                </Grid>
-                <Box pt={4}>
-                </Box>
-            </Container>
-        </main>
-
-    }
-      , 500)
   }
     , [])
 

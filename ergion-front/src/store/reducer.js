@@ -21,6 +21,9 @@ const initialState = {
     open: {
 
     },
+    nCommentString: {
+
+    },
 };
 
 const reducer = (state = initialState, action) => {
@@ -52,13 +55,13 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 replies: {
                     ...state.replies,
-                    [action.id] : action.payload
+                    [action.id]: action.payload
                 }
             }
         case actionTypes.ADD_COMMENT:
             return {
                 ...state,
-                comments:[
+                comments: [
                     ...state.comments,
                     action.payload
                 ]
@@ -66,9 +69,9 @@ const reducer = (state = initialState, action) => {
         case actionTypes.LIKE_COMMENT:
             return {
                 ...state,
-                likes:{
+                likes: {
                     ...state.likes,
-                    [action.id] : action.like
+                    [action.id]: action.like
                 }
             }
         case actionTypes.OPEN_REPLAY:
@@ -76,7 +79,15 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 open: {
                     ...state.open,
-                    [action.id] : action.open
+                    [action.id]: action.open
+                }
+            }
+        case actionTypes.NEW_COMMENT_TEXT:
+            return {
+                ...state,
+                nCommentString: {
+                    ...state.nCommentString,
+                    [action.id]: action.txt
                 }
             }
         default:

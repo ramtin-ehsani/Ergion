@@ -14,6 +14,7 @@ import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
 import AddCourse from './CourseFileLayouts/addCourse/AddCourse';
 import SingleCourse from '../../singleCourse/singlecoursecontainer';
 import postPage from './PostPage/PostPage';
+import CommentsMain from '../../comment/CommentMain'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -79,6 +80,7 @@ const Dashboard = () => {
 					<Route path="/student_dashboard/find-your-course" exact component={AddCourse} />
 					<Route path="/student_dashboard/added_courses/:id" exact component={SingleCourse} />
 					<Route path="/student_dashboard/post/:id" exact component={postPage} />
+					<Route path='/student_dashboard/chapter/:id/episode/:id' exact component={CommentsMain} />
 				</Switch>
 			</main>
 		</div>

@@ -252,7 +252,7 @@ class Profile extends Component {
     data.append('profile_picture', null)
 
 
-    axios.put('http://127.0.0.1:8000/api/student-profile/', data,
+    axios.put('http://127.0.0.1:8000/api/student-profile/', {profile_picture:null},
       this.config).then(response => {
 
         if (response.status === 200) {

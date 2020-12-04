@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
     List,
@@ -14,7 +14,6 @@ import {
     Grid,
     InputBase
 } from "@material-ui/core";
-import Faker from "faker";
 import rtl from "jss-rtl";
 import { create } from 'jss';
 import { StylesProvider, jssPreset } from '@material-ui/core/styles';
@@ -24,7 +23,7 @@ import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutline
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import './Comment.scss';
 import { connect } from 'react-redux';
-import * as actionTypes from '../store/actions';
+import * as actionTypes from '../../../../store/actions';
 import axios from "axios";
 
 
@@ -45,38 +44,34 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, reduxLikes, reduxOpens, onOpenReply, reduxNewText, onNewText}) => {
+const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, reduxLikes, reduxOpens, onOpenReply}) => {
     const [nCommentString, setnCommentString] = React.useState('');
 
-    const onChangeHandler = (event ,id) => {
-        console.log(reduxNewText)
-        console.log(id)
-        // setnCommentString(
-        //     event.target.value
-        // )
-        onNewText(id, event.target.value)
+    const onChangeHandler = (event) => {
+        setnCommentString(
+            event.target.value
+        )
     }
 
     const onSubmit = (id) => {
         const config = {
             headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
         }
-        if (reduxNewText[id].length !== 0) {
-            axios.post('http://127.0.0.1:8000/api/episode-comments/', {
+        if (nCommentString.length !== 0) {
+            axios.post('http://127.0.0.1:8000/api/update-comments/', {
                 parent_comment_id: id,
-                comment_text: reduxNewText[id]
+                comment_text: nCommentString
             }, config).then((res) => {
                 console.log(res)
+                console.log("test")
                 if(reduxReply[id]){
                     const oldreplies = reduxReply[id]
                     oldreplies.push(res.data)
                     console.log(oldreplies)
                     onReply(id, oldreplies)
-                    onNewText(id, '')
                 }
                 else{
                     onReply(id, [res.data])
-                    onNewText(id, '')
                 }
                 setnCommentString('')
             })
@@ -127,10 +122,10 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
                                                 variant="body2"
                                                 className='text2'
                                                 color="textPrimary"
+                                                style={{wordBreak: "break-all"}}
                                             >
                                                 {comment.body}
                                             </Typography>
-                                            {/* {` - ${comment.body}`} */}
                                         </>
                                     }
                                 ></ListItemText>
@@ -170,7 +165,6 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
                                                             >
                                                                 {reply.comment_text}
                                                             </Typography>
-                                                            {/* {` - ${reply.body}`} */}
                                                         </>
                                                     }
                                                 />
@@ -182,9 +176,9 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
                                         <Grid container wrap="nowrap" alignItems='center' style={{ minHeight: "5rem" }}>
                                             <Grid item xs zeroMinWidth>
                                                 <InputBase
-                                                    style={{ padding: '8px' }}
-                                                    value={reduxNewText[comment.id]}
-                                                    onChange={(event)=> onChangeHandler(event, comment.id)}
+                                                    style={{ padding: '8px', backgroundColor: "gainsboro"  }}
+                                                    value={nCommentString}
+                                                    onChange={onChangeHandler}
                                                     rowsMax={2}
                                                     multiline
                                                     fullWidth
@@ -218,7 +212,6 @@ const mapStateToProps = state => {
         reduxComments: state.comments,
         reduxLikes: state.likes,
         reduxOpens: state.open,
-        reduxNewText: state.nCommentString,
     };
 };
 const mapDispatchToProps = dispatch => {
@@ -226,7 +219,6 @@ const mapDispatchToProps = dispatch => {
         onReply: (id, reply) => dispatch({ type: actionTypes.REPLY, payload: reply, id:id }),
         onLikeComment: (id, like) => dispatch({type: actionTypes.LIKE_COMMENT, id:id, like:like }),
         onOpenReply: (id, open) => dispatch({type: actionTypes.OPEN_REPLAY, id:id, open:open }),
-        onNewText: (id, txt) => dispatch({type: actionTypes.NEW_COMMENT_TEXT, id:id, txt:txt }),
     }
 }
 
