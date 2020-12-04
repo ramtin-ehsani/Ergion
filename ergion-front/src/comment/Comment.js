@@ -45,23 +45,26 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, reduxLikes, reduxOpens, onOpenReply}) => {
+const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, reduxLikes, reduxOpens, onOpenReply, reduxNewText, onNewText}) => {
     const [nCommentString, setnCommentString] = React.useState('');
 
-    const onChangeHandler = (event) => {
-        setnCommentString(
-            event.target.value
-        )
+    const onChangeHandler = (event ,id) => {
+        console.log(reduxNewText)
+        console.log(id)
+        // setnCommentString(
+        //     event.target.value
+        // )
+        onNewText(id, event.target.value)
     }
 
     const onSubmit = (id) => {
         const config = {
             headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
         }
-        if (nCommentString.length !== 0) {
+        if (reduxNewText[id].length !== 0) {
             axios.post('http://127.0.0.1:8000/api/episode-comments/', {
                 parent_comment_id: id,
-                comment_text: nCommentString
+                comment_text: reduxNewText[id]
             }, config).then((res) => {
                 console.log(res)
                 if(reduxReply[id]){
@@ -69,9 +72,11 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
                     oldreplies.push(res.data)
                     console.log(oldreplies)
                     onReply(id, oldreplies)
+                    onNewText(id, '')
                 }
                 else{
                     onReply(id, [res.data])
+                    onNewText(id, '')
                 }
                 setnCommentString('')
             })
@@ -178,8 +183,8 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
                                             <Grid item xs zeroMinWidth>
                                                 <InputBase
                                                     style={{ padding: '8px' }}
-                                                    value={nCommentString}
-                                                    onChange={onChangeHandler}
+                                                    value={reduxNewText[comment.id]}
+                                                    onChange={(event)=> onChangeHandler(event, comment.id)}
                                                     rowsMax={2}
                                                     multiline
                                                     fullWidth
@@ -213,6 +218,7 @@ const mapStateToProps = state => {
         reduxComments: state.comments,
         reduxLikes: state.likes,
         reduxOpens: state.open,
+        reduxNewText: state.nCommentString,
     };
 };
 const mapDispatchToProps = dispatch => {
@@ -220,6 +226,7 @@ const mapDispatchToProps = dispatch => {
         onReply: (id, reply) => dispatch({ type: actionTypes.REPLY, payload: reply, id:id }),
         onLikeComment: (id, like) => dispatch({type: actionTypes.LIKE_COMMENT, id:id, like:like }),
         onOpenReply: (id, open) => dispatch({type: actionTypes.OPEN_REPLAY, id:id, open:open }),
+        onNewText: (id, txt) => dispatch({type: actionTypes.NEW_COMMENT_TEXT, id:id, txt:txt }),
     }
 }
 

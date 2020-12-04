@@ -22,11 +22,14 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ImageIcon from '@material-ui/icons/Image';
 import { AttachFile, Description, PictureAsPdf, MovieCreationOutlined } from '@material-ui/icons';
+import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
+import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 
 import Comments from "./Comments";
 import './Comments.scss'
-import { Button, CssBaseline, Grid, Paper, Tab, Tabs, withStyles } from "@material-ui/core";
+import { Button, CssBaseline, Grid, IconButton, Paper, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, withStyles } from "@material-ui/core";
 import SwipeableViews from "react-swipeable-views";
 import axios from "axios";
 import ReactPlayer from "react-player";
@@ -40,7 +43,7 @@ const lightTheme = createMuiTheme({
 const useStyles = makeStyles((theme) => ({
   spacing: {
     marginTop: "50px",
-    marginBottom: "30px",
+    marginBottom: "100px",
   },
   header: {
     marginTop: "40px",
@@ -73,8 +76,8 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
+        <Box p={1}>
+          {children}
         </Box>
       )}
     </div>
@@ -97,11 +100,13 @@ function a11yProps(index) {
 function CommentMain() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [media, setMedia] = useState('');
   const [files, setFiles] = useState([]);
   const [episodes, setEpisodes] = useState([])
   const [description, setDescription] = useState('')
+  const [like, setLiked] = useState(false)
+  const [likes, setLikes] = useState()
 
   const handleClick = () => {
     setOpen(!open);
@@ -114,6 +119,29 @@ function CommentMain() {
     setValue(index);
   };
 
+  const handleLikeEpisode = ()=>{
+    const episode_id = window.location.href.split('/')[7];
+    const config = {
+      headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
+    }
+    axios.put('http://127.0.0.1:8000/api/episode-likes/',{
+      episode_id:episode_id
+    },config)
+    if(!like){
+      setLikes(likes+1)
+    }
+    else{
+      setLikes(likes-1)
+    }
+    setLiked(!like)
+  }
+
+  const bytesToSize = (bytes) => {
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return '0 Byte';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+  }
   const fileNameExtractor = (src) => {
     const lastIndexOfSlash = String(src).lastIndexOf('/')
     const lastIndexOfDot = String(src).lastIndexOf('.')
@@ -126,6 +154,24 @@ function CommentMain() {
     return name
 
   }
+  const StyledTableCell = withStyles((theme) => ({
+    head: {
+        backgroundColor: '#3f50b5',
+        color: theme.palette.common.white,
+    },
+    body: {
+        fontSize: 14,
+    },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+    root: {
+        '&:nth-of-type(odd)': {
+            backgroundColor: theme.palette.action.hover,
+        },
+    },
+}))(TableRow);
+
   const handleDownload = (file) => {
     axios({
         url: file,
@@ -181,7 +227,8 @@ function CommentMain() {
         else{
           const newFile = {
             src: src,
-            id: file.id
+            id: file.id,
+            size: file.size,
           }
           const oldFiles = files
           oldFiles.push(newFile)
@@ -198,7 +245,9 @@ function CommentMain() {
           name: episode.name,
           chapter_id: episode.chapter_id,
           description: episode.episode_description,
-          selected: false
+          selected: false,
+          liked: episode.liked,
+          likes: episode.likes_count
         }
         if(String(newEpisode.id) === String(episode_id)){
           newEpisode.selected = true
@@ -210,6 +259,8 @@ function CommentMain() {
     res.data.map((newEpisode)=>{
       if(String(newEpisode.id) === String(episode_id)){
         setDescription(newEpisode.episode_description)
+        setLiked(newEpisode.liked)
+        setLikes(newEpisode.likes_count)
       }
     })
     })
@@ -219,8 +270,8 @@ function CommentMain() {
     <ThemeProvider theme={lightTheme}>
       <CssBaseline>
         {/* <Container> */}
-          <Grid container item className={classes.spacing} lg={10} md={12} direction='row' justify="space-evenly">
-            <Grid container item={true} justify="space-between" className={classes.spacing} style={{margin:'2px'}} md={8} lg={8} spacing={4}>
+          <Grid container item className={classes.spacing} lg={10} md={12} direction='row' spacing={3} justify="space-evenly"  >
+            <Grid container item={true} xs={12} md={8} lg={8} spacing={4}>
             {media === '' ? (
               <Typography></Typography>):
               (<Grid item container>
@@ -250,48 +301,93 @@ function CommentMain() {
                     <TabPanel value={value} index={0}>
                       <Typography className='title' component="div">
                         {description === '' ? (
-                          <Box fontSize={20}>
+                          <Box fontSize={20} p={3}>
+                            توضیحی وجود ندارد
                           </Box>
                         ):(
-                        <Box fontSize={20}>
+                        <Box fontSize={20} p={3}>
                           {description}
                         </Box>
                         )}
                       </Typography>
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                    {files.map((tabFile) => (
-                    <Grid container spacing={2} dir="rtl" key={tabFile.id}>
-                        <Grid item lg={12} md={12} sm={12} xs={12} >
-                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Typography style={{ alignSelf: 'center' }} component='div' noWrap>
-                                <div style={{ display: 'flex' }}>
-                                <HandlePreviewIcon src={fileNameExtractor(tabFile.src)} />
-                                    <Box style={{ marginRight: '10px' }}>
-                                        {fileNameExtractor(tabFile.src)}
-                                    </Box>
-                                  </div>
-                                </Typography>
-                                <div style={{ alignSelf: 'center' }} />
-                                <div style={{ alignSelf: 'center' }}>
-                                    <Button className='text' variant="contained" color="primary" onClick={()=>handleDownload(tabFile.src)}>
-                                            دانلود
-                                    </Button>
-                                </div>
+                    {files.length > 0 ? (
+                      <TableContainer dir="rtl">
+                          <Table aria-label="customized table" dir="rtl">
+                              <TableHead dir="rtl">
+                                  <TableRow dir="rtl" className='title'>
+                                      <StyledTableCell align="center"><Typography className='title'>آیکون</Typography></StyledTableCell>
+                                      <StyledTableCell align="center"><Typography className='title'>اسم فایل</Typography></StyledTableCell>
+                                      <StyledTableCell align="center"><Typography className='title'>حجم</Typography></StyledTableCell>
+                                      <StyledTableCell align="center"><Typography className='title'>دانلود</Typography></StyledTableCell>
+                                  </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                  {files.map((tabFile) => (
+                                      <StyledTableRow dir="rtl" key={tabFile.id}>
+                                          <StyledTableCell align="center">
+                                              <HandlePreviewIcon src={fileNameExtractor(tabFile.src)} />
+                                          </StyledTableCell>
+                                          <StyledTableCell align="center">
+                                              <Box >
+                                                  {fileNameExtractor(tabFile.src)}
+                                              </Box>
+                                          </StyledTableCell>
+                                          <StyledTableCell align="center">
+                                              <div dir='ltr'>
+                                                  <Box style={{ color: 'grey' }} fontSize={14}>
+                                                      {bytesToSize(tabFile.size)}
+                                                  </Box>
+                                              </div>
+                                          </StyledTableCell>
+                                          <StyledTableCell align="center">
+                                              <Button variant="outlined" color='primary' onClick={() => handleDownload(tabFile.src)}>
 
-                            </div>
-                        </Grid>
-                    </Grid>
-                    ))}
+                                                  <GetAppRoundedIcon />
+                                              </Button>
+                                          </StyledTableCell>
+                                      </StyledTableRow>
+                                  ))}
+                              </TableBody>
+                          </Table>
+                      </TableContainer>) : (
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                          <Typography
+                              style={{ marginTop: '12px' }} className='title' >
+                              <Box fontSize={18}  >
+                                 فایلی وجود ندارد
+                              </Box>
+
+                          </Typography>
+                      </div>
+                  )}
                     </TabPanel>
                   </SwipeableViews>
+                  <Grid container spacing={3} style={{margin:'3px'}} alignItems='center' justify='flex-start'>
+                    <Grid item style={{padding:'4px'}}>
+                      <IconButton onClick={handleLikeEpisode}>
+                      {like ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
+                      </IconButton>
+                    </Grid>
+                    <Grid item style={{padding:'4px'}}>
+                      <Typography className='title' dir='rtl'>
+                        {likes}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid>
+              <Grid item xs={12}>
+                <Paper>
+                  
                 </Paper>
               </Grid>
               <Grid item xs={12}>
                 <Comments />
               </Grid>
             </Grid>
-            <Grid alignContent='flex-start' alignItems='stretch' style={{margin:'2px'}} item container className={classes.spacing} md={3} lg={3} spacing={4}>
+            <Grid alignContent='flex-start' alignItems='stretch' item container md={3} lg={3} spacing={4}>
               {/* <Paper style={{ padding: '32px' }}>
                 <Typography className={classes.header} variant="h4" gutterBottom>
                   Episodes
@@ -315,7 +411,7 @@ function CommentMain() {
                       {episodes.map((episode)=>{
                         return(
                         <ListItem button className={classes.nested} key={episode.id} selected={episode.selected}
-                        onClick={()=>{window.location=`/teacher_dashboard/added_courses/${episode.chapter_id}/episode/${episode.id}`}}>
+                        onClick={()=>{window.location=`/student_dashboard/chapter/${episode.chapter_id}/episode/${episode.id}`}}>
                           <ListItemIcon>
                             <SchoolIcon />
                           </ListItemIcon>
