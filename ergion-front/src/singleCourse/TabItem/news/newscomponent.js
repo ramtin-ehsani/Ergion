@@ -19,12 +19,6 @@ import Avatar from '@material-ui/core/Avatar';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
-import img from '../../../Pics/b59d9ae6fbaa82f17894fd7ed5f8ede0.jpg';
-import img1 from '../../../Pics/math.jpg';
-import img2 from '../../../Pics/prof.jpeg';
-import img3 from '../../../Pics/riazi.jpeg';
-import vid from '../../../Pics/test.mp4';
-import pddf from '../../../Pics/HW.pdf';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
@@ -49,11 +43,11 @@ const useStyles = makeStyles((theme) =>
 			fontFamily: 'IRANSans',
 			// minWidth: '30%',
 			justifyContent: 'center',
-		
+
 			alignItems: 'center',
 			textAlign: 'center',
-            width: '100% ',
-            margin:theme.spacing(2) ,
+			width: '100% ',
+			margin: theme.spacing(2),
 		},
 		root1: {
 			fontFamily: 'IRANSans',
@@ -90,95 +84,122 @@ const useStyles = makeStyles((theme) =>
 		reply: {
 			fontFamily: 'IRANSans',
 			display: 'flex',
-		flexWrap: 'wrap',
-	   
-	  },
+			flexWrap: 'wrap',
+
+		},
 	})
 );
 
-const jss = create({ plugins: [ ...jssPreset().plugins, rtl() ] });
+const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 const PostPage = (props) => {
-	let [ width, setWidth ] = useState(getWidth());
+	let [width, setWidth] = useState(getWidth());
 	const classes = useStyles();
-	const [ isRed, setIsRed ] = useState(false);
-	const [ isImg, setIsImg ] = useState(false);
-	const [ isMultiImg, setisMultiImg ] = useState(true);
-	const [ isVideo, setIsVideo ] = useState(false);
-	const [ isPdf, setIsPdf ] = useState(false);
-	
-	const [openreply,setopenreply]=React.useState(false);
-	const [T,setT]=React.useState(false);
-	const [S,setS]=React.useState(false);
-	const[update,setupdate]=React.useState({});
-	const[updatefiles,setupdatefiles]=React.useState([]);
-const[liked,setliked]=React.useState([false]);
-const[likes,setlikes]=React.useState(0);
-	const[ownerid,setownerid]=React.useState(0);
+	const [isRed, setIsRed] = useState(false);
+	const [isImg, setIsImg] = useState(false);
+	const [isMultiImg, setisMultiImg] = useState(true);
+	const [isVideo, setIsVideo] = useState(false);
+	const [isPdf, setIsPdf] = useState(false);
 
-	const[isowner,setisowner]=React.useState(false);
-	const likehandler=()=>{
-		axios.put('http://127.0.0.1:8000/api/update-likes/',{
-			update_id:props.update.id
-		},{  headers :{
-			"Authorization": `Token ${localStorage.getItem('token')}`}})
-			.then((response)=>{
+	const [openreply, setopenreply] = React.useState(false);
+	const [T, setT] = React.useState(false);
+	const [S, setS] = React.useState(false);
+	const [update, setupdate] = React.useState([]);
+	const [updatefiles, setupdatefiles] = React.useState([]);
+	const [liked, setliked] = React.useState([false]);
+	const [likes, setlikes] = React.useState(0);
+	const [ownerid, setownerid] = React.useState(0);
+
+	const [isowner, setisowner] = React.useState(false);
+	const likehandler = () => {
+		axios.put('http://127.0.0.1:8000/api/update-likes/', {
+			update_id: props.update.id
+		}, {
+			headers: {
+				"Authorization": `Token ${localStorage.getItem('token')}`
+			}
+		})
+			.then((response) => {
 				setIsRed(!isRed);
-			}).catch(error=>console.log(error))
+			}).catch(error => console.log(error))
 
 	}
-	const promise=Axios.get('http://127.0.0.1:8000/api/course-news/',{params:{update_id:props.update.id},
-		  headers:{"Authorization": `Token ${localStorage.getItem('token')}`}})
-		  promise.then(response=>{
-		 
-		setupdate(response.data[0])
 
-		// update.files.map((file)=>{
-		// 	setupdatefiles([file.file]);
-		// })
+	React.useEffect(() => {
+		setownerid(props.update.instructor);
+		if (JSON.parse(localStorage.getItem('user')) !== null) {
+			if ((JSON.parse(localStorage.getItem('user'))['role']) === "T") {
+				setT(true);
 
-		
-		  }).catch(error=>console.log(error))
-	React.useEffect(()=>
-	{ setownerid(props.update.instructor);
-		if(JSON.parse(localStorage.getItem('user'))!==null)
-    {
-      if((JSON.parse(localStorage.getItem('user'))['role'])==="T")
-      {
-        setT(true);
-       
-       
-        if((JSON.parse(localStorage.getItem('user'))['id'])===ownerid)
-        {
-          setisowner(true);
-        }
-	  }
-	  else setS(true);
 
-		setTimeout(() => {
-			const promise=axios.get('http://127.0.0.1:8000/api/update-details/',{params:{update_id:props.update.id},
-			headers:{"Authorization": `Token ${localStorage.getItem('token')}`}})
-			promise.then((response)=>{setliked(response.data.liked);
-			setlikes(response.data.likes)
-			
-			})
-		}, 1000)
+				if ((JSON.parse(localStorage.getItem('user'))['id']) === ownerid) {
+					setisowner(true);
+				}
+			}
+			else setS(true);
 
-	}
-	})
-	
-	const handleopenreply=()=>
-{
-setopenreply(!openreply);
-};
+			// setTimeout(() => {
+				const promise = Axios.get('http://127.0.0.1:8000/api/course-news/', {
+					params: { update_id: props.update.id },
+					headers: { "Authorization": `Token ${localStorage.getItem('token')}` }
+				})
+				promise.then(response => {
+					console.log(response.data[0].files)
+					setupdate(response.data[0].files)
+
+					// update.files.map((file)=>{
+					// 	setupdatefiles([file.file]);
+					// })
+
+
+				}).catch(error => console.log(error))
+				const promise1 = axios.get('http://127.0.0.1:8000/api/update-details/', {
+					params: { update_id: props.update.id },
+					headers: { "Authorization": `Token ${localStorage.getItem('token')}` }
+				})
+				promise1.then((response) => {
+					setliked(response.data.liked);
+					setlikes(response.data.likes)
+
+				})
+			// }, 1000)
+
+		}
+	}, [])
+
+	const handleopenreply = () => {
+		setopenreply(!openreply);
+	};
 
 	let slider = useRef();
 
+
+
+	const fileNameExtractor = (src) => {
+		const lastIndexOfSlash = String(src).lastIndexOf('/');
+		const lastIndexOfDot = String(src).lastIndexOf('.');
+		let name = String(src).substring(lastIndexOfSlash + 1);
+		const type = String(src).substring(lastIndexOfDot);
+
+		if (name.length > 15) {
+			name = name.substring(0, 15) + type;
+		}
+		return type;
+	};
+
+
+	const imgDetecter=(src)=> {
+		if (
+			fileNameExtractor(src) === '.jpg' ||
+			fileNameExtractor(src) === '.jpeg' ||
+			fileNameExtractor(src) === '.png'
+		) {
+			return true;
+		}
+		return false
+	}
+
 	
-
-
-
-
 
 
 
@@ -193,60 +214,63 @@ setopenreply(!openreply);
 					className="post-page-main"
 				>
 
-							<Card className={classes.root} dir="rtl">
-								<CardHeader
-									className={classes.title}
-									avatar={
-										<Avatar aria-label="recipe" className={classes.avatar}>
-											<img src={props.update.instructor_profile_picture}  alt="tessacehr" minWidth="50" height="50" poster="R" />
-										</Avatar>
-									}
-									action={
-										<IconButton aria-label="settings">
-											<MoreVertIcon />
-										</IconButton>
-									}
-									title={
-                                        <Typography className="instructor" variant="h6" color="primary">
-                                    {props.update.instructor_firstname} {props.update.instructor_lastname}
-								
-										/{props.course.name}
-									
-									</Typography>
-									
+					<Card className={classes.root} dir="rtl">
+						<CardHeader
+							className={classes.title}
+							avatar={
+								<Avatar aria-label="recipe" className={classes.avatar}>
+									<img src={props.update.instructor_profile_picture} alt="tessacehr" minWidth="50" height="50" poster="R" />
+								</Avatar>
+							}
+							action={
+								<IconButton aria-label="settings">
+									<MoreVertIcon />
+								</IconButton>
+							}
+							title={
+								<Typography className="instructor" variant="h6" color="primary">
+									{props.update.instructor_firstname} {props.update.instructor_lastname}
 
-									}
-									subheader={
-										<Typography className="date" component="h6">
-{props.update.created_at}										</Typography>
-									}
-								/>
-						
-								<CardContent>
-									<Typography
-										variant="body2"
-										color="textSecondary"
-										component="p"
-										className="aboutPost"
-									>
-			{props.update.text}
-									</Typography>
-								</CardContent>
-								<CardMedia
-									className={classes.media}
-									// image={img}
-									title="news-media"
-								>
-									{/* {
+										/{props.course.name}
+
+								</Typography>
+
+
+							}
+							subheader={
+								<Typography className="date" component="h6">
+									{props.update.created_at}										</Typography>
+							}
+						/>
+
+						<CardContent>
+							<Typography
+								variant="body2"
+								color="textSecondary"
+								component="p"
+								className="aboutPost"
+							>
+								{props.update.text}
+							</Typography>
+						</CardContent>
+						<CardMedia
+							className={classes.media}
+							// image={img}
+							title="news-media"
+						>
+							{/* {
 										isMultiImg ? (slier) : ''
 									} */}
-									{isMultiImg ? (
-									update.files.map((item) => (
-											<img src={(item.file)} alt="test" width="20%" height="20%" />
-										))) : ('')
-									}
-									{isPdf ? <iframe src={test[2].media} height="400" width="100%" /> : ''}
-									{isImg ? <img src={img1} alt="test" width="35%" height="280" /> : ''}
+							{isMultiImg ? (
+								update.map((item) => (
+									<div>
+										{imgDetecter(item.file) && (
+											<img src={(item.file)} alt="test" width="60%" height="60%" />)}
+									</div>
+								))) : ('')
+							}
+							{/* {isPdf ? <iframe src={test[2].media} height="400" width="100%" /> : ''} */}
+							{/* {isImg ? <img src={} alt="test" width="35%" height="280" /> : ''}
 									{isVideo ? (
 										<video width="100%" height="400" controls>
 											<source src={vid} type="video/mp4" />
@@ -254,68 +278,68 @@ setopenreply(!openreply);
 										</video>
 									) : (
 										''
-									)}
-								</CardMedia>
-								<CardActions className="post-footer" dir="ltr">
-									<div className="icon-footer">
-										<IconButton className="comment-icon">
-											<ShareIcon />
-										</IconButton>
-										<span className="span-footer" />
-										<div className="share-like-icon">
-											<IconButton onClick={handleopenreply}>
-												<CommentIcon />
-											</IconButton>
-											{S &&
-											<IconButton onClick={likehandler
-											
-											}>
-												{isRed ? (
-													<FavoriteIcon style={{ color: 'red' }} />
-												) : (
+									)} */}
+						</CardMedia>
+						<CardActions className="post-footer" dir="ltr">
+							<div className="icon-footer">
+								<IconButton className="comment-icon">
+									<ShareIcon />
+								</IconButton>
+								<span className="span-footer" />
+								<div className="share-like-icon">
+									<IconButton onClick={handleopenreply}>
+										<CommentIcon />
+									</IconButton>
+									{S &&
+										<IconButton onClick={likehandler
+
+										}>
+											{isRed ? (
+												<FavoriteIcon style={{ color: 'red' }} />
+											) : (
 													<FavoriteBorderIcon />
 												)}
-											</IconButton>}
-										{T&&
-											<FavoriteIcon style={{ color: 'red' }} />
+										</IconButton>}
+									{T &&
+										<FavoriteIcon style={{ color: 'red' }} />
 
-										}
-										<Typography>{likes}</Typography>
-
-
-            
-        
-  
-										</div>
-										
-									</div>
-									
-								</CardActions>
-								{openreply&&
+									}
+									<Typography>{likes}</Typography>
 
 
 
-<Paper component="form" className={classes.root}>
-	<Grid container>
 
-<Grid container item>
-<InputBase
-className={classes.reply}
-multiline={true}
-fullWidth={true}
-placeholder="نظر خود را وارد کنید."
-inputProps={{ 'aria-label': 'search google maps' }}
-/>
-</Grid>
-<Grid item justify="flex-end">
-<IconButton className={classes.iconButton} aria-label="menu">
-<SendOutlinedIcon />
-</IconButton></Grid>
-</Grid>
-</Paper>
-}
-							</Card>
-						
+
+								</div>
+
+							</div>
+
+						</CardActions>
+						{openreply &&
+
+
+
+							<Paper component="form" className={classes.root}>
+								<Grid container>
+
+									<Grid container item>
+										<InputBase
+											className={classes.reply}
+											multiline={true}
+											fullWidth={true}
+											placeholder="نظر خود را وارد کنید."
+											inputProps={{ 'aria-label': 'search google maps' }}
+										/>
+									</Grid>
+									<Grid item justify="flex-end">
+										<IconButton className={classes.iconButton} aria-label="menu">
+											<SendOutlinedIcon />
+										</IconButton></Grid>
+								</Grid>
+							</Paper>
+						}
+					</Card>
+
 
 				</div>
 			</StylesProvider>

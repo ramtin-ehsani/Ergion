@@ -18,12 +18,6 @@ import Avatar from '@material-ui/core/Avatar';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
-import img from '../../../Pics/b59d9ae6fbaa82f17894fd7ed5f8ede0.jpg';
-import img1 from '../../../Pics/math.jpg';
-import img2 from '../../../Pics/prof.jpeg';
-import img3 from '../../../Pics/riazi.jpeg';
-import vid from '../../../Pics/test.mp4';
-import pddf from '../../../Pics/HW.pdf';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
@@ -182,12 +176,12 @@ const PostPage = () => {
 				</video>
 			);
 		} 
-		else if(fileNameExtractor(src)=== '.pdf') {
-			console.log(src)
-			return (
-				<Button color="primary" variant="contained" onClick={() => handleDownload(src)}> PDF </Button>
-			)
-		}
+		// else if(fileNameExtractor(src)=== '.pdf') {
+		// 	console.log(src)
+		// 	return (
+		// 		<Button color="primary" variant="contained" onClick={() => handleDownload(src)}> PDF </Button>
+		// 	)
+		// }
 		return null
 		
 		// if (imglist.length > 0 ){
@@ -252,31 +246,6 @@ const PostPage = () => {
 			});
 	};
 
-	const test = [
-		{
-			news:
-				'دانشجویان جدیدالورود، لطفا فایل FirstManual.pdf را قبل از ورود به سامانه سامیا به دقت مطالعه نمایید. در ضمن می‌توانید از فیلم‌های تهیه شده نیز به عنوان راهنما استفاده نمایید.',
-			media: vid
-		},
-		{
-			news:
-				'درس های من در سامانه گلستان ثبت شده است، اما در سامانه سامیا قابل مشاهده نیست؟ انتخاب واحد کردم، ولی درس های من هنوز اضافه نشده است؟ لطفا فایل راهنمای FAQ_GolestanSync را مطالعه فرمایید. ',
-			media: img
-		},
-		{
-			news:
-				'جهت اطلاع از آخرین اخبار و اطلاعیه ها در مورد کلاس های مجازی دانشجویان حضوری، پردیس و مجازی لطفا در کانال تلگرامی @IUST_LMS عضو شوید',
-			media: pddf
-		},
-		{
-			news: 'test for english classes and im busy now i actually dont care about anything',
-			media: [ img3, img, img2, img1 ]
-		},
-		{
-			news: 'null media',
-			media: null
-		}
-	];
 
 	const settings = {
 		dots: true,

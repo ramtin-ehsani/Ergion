@@ -79,24 +79,22 @@ export default function FullWidthTabs(props) {
     if (JSON.parse(localStorage.getItem('user')) !== null) {
       if ((JSON.parse(localStorage.getItem('user'))['role']) === "T") {
         setT(true);
-        console.log(props.course)
-        console.log(JSON.parse(localStorage.getItem('user')))
+        // console.log(props.course)
+        // console.log(JSON.parse(localStorage.getItem('user')))
         if ((JSON.parse(localStorage.getItem('user'))['id']) === props.course.instructor_id) {
           setisowner(true);
         }
       } else setS(true);
     }
-    const promise = Axios.get('http://127.0.0.1:8000/api/course-news/', {
-      params: { course_id: props.course.id },
-      headers: { "Authorization": `Token ${localStorage.getItem('token')}` }
-    })
-    promise.then(response => {
-      setnewslist(response.data);
-
-
-
-    })
-
+    setTimeout(() => {
+      const promise = Axios.get('http://127.0.0.1:8000/api/course-news/', {
+        params: { course_id: props.course.id },
+        headers: { "Authorization": `Token ${localStorage.getItem('token')}` }
+      })
+      promise.then(response => {
+        setnewslist(response.data);
+      })
+    }, 2000)
 
 
   })
@@ -113,7 +111,7 @@ export default function FullWidthTabs(props) {
   return (
     <div className={classes.root}>
       <ThemeProvider theme={theme}>
-        <AppBar position="static" color="default">
+        <AppBar position="static" color="default" dir='rtl'>
           <Tabs
             value={value}
             onChange={handleChange}

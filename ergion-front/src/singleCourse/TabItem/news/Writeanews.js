@@ -19,12 +19,6 @@ import Avatar from '@material-ui/core/Avatar';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
-import img from '../../../Pics/b59d9ae6fbaa82f17894fd7ed5f8ede0.jpg';
-import img1 from '../../../Pics/math.jpg';
-import img2 from '../../../Pics/prof.jpeg';
-import img3 from '../../../Pics/riazi.jpeg';
-import vid from '../../../Pics/test.mp4';
-import pddf from '../../../Pics/HW.pdf';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
@@ -251,18 +245,12 @@ const	sendnewshandler=event=>
 		{related_course:courseid,text:newstext}, 
 		{  headers :{
 			"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
-		setnewsid(response.data.id);	setnewstext("");
-		
-	
-		}).catch((error)=>{console.log(error);})
-		console.log(isimage);
-		console.log(ispdf);
-		console.log(isvideo);	
-
+		setnewsid(response.data.id);	
+		setnewstext("");
 		if(isimage===4)
 		{
 			const fileData=new FormData()
-			fileData.append('update_id',newsid)
+			fileData.append('update_id',response.data.id)
 			fileData.append("file",image4)
 			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
 			fileData,		{  headers :{
@@ -277,7 +265,7 @@ const	sendnewshandler=event=>
 		if(isimage===3)
 		{
 			const fileData=new FormData()
-			fileData.append('update_id',newsid)
+			fileData.append('update_id',response.data.id)
 			fileData.append("file",image3)
 			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
 			fileData,		{  headers :{
@@ -291,7 +279,7 @@ const	sendnewshandler=event=>
 		if(isimage===2)
 		{
 			const fileData=new FormData()
-			fileData.append('update_id',newsid)
+			fileData.append('update_id',response.data.id)
 			fileData.append("file",image2)
 			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
 			fileData,		{  headers :{
@@ -303,7 +291,7 @@ const	sendnewshandler=event=>
 		}
 		if(isimage===1)
 		{ const fileData=new FormData()
-			fileData.append("update_id",newsid)
+			fileData.append("update_id",response.data.id)
 			fileData.append("file",image1)
 			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
 			fileData,		{  headers :{
@@ -317,7 +305,7 @@ const	sendnewshandler=event=>
 		if(isvideo)
 		{
 			const fileData=new FormData()
-			fileData.append('update_id',newsid)
+			fileData.append('update_id',response.data.id)
 			fileData.append("file",video)
 			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
 			fileData,		{  headers :{
@@ -331,7 +319,7 @@ const	sendnewshandler=event=>
 		if(ispdf)
 		{
 			const fileData=new FormData()
-			fileData.append('update_id',newsid)
+			fileData.append('update_id',response.data.id)
 			fileData.append("file",pdf)
 			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
 			fileData,		{  headers :{
@@ -343,6 +331,14 @@ const	sendnewshandler=event=>
 		setdimage(false);
 		setdpdf(false);
 		setdvideo(false);
+		
+	
+		}).catch((error)=>{console.log(error);})
+		console.log(isimage);
+		console.log(ispdf);
+		console.log(isvideo);	
+
+		
 
 	}
 const	newstexthandler=event=>
@@ -372,7 +368,7 @@ const	newstexthandler=event=>
 									className={classes.title}
 									avatar={
 										<Avatar aria-label="recipe" className={classes.avatar}>
-											<img src={props.course.istructor_profile_picture} alt="tessacehr" minWidth="50" height="50" poster="R" />
+											<img src={props.course.instructor_profile_picture} alt="tessacehr" minWidth="50" height="50" poster="R" />
 										</Avatar>
 									}
 									action={
@@ -439,11 +435,11 @@ const	newstexthandler=event=>
 
       <Grid container item xs zeroMinWidth>
       <input accept="application/pdf" className={classes.input} id="pdf" type="file" name="pdf" onChange={onchangepdf}/>
-      <label htmlFor="pdf">
-      <IconButton color="primary" aria-label="upload picture" component="span" disabled={dpdf}>
+      {/* <label htmlFor="pdf"> */}
+      {/* <IconButton color="primary" aria-label="upload picture" component="span" disabled={dpdf}>
         <InsertDriveFileIcon fontSize="default" />
-      </IconButton>
-      </label>
+      </IconButton> */}
+      {/* </label> */}
       <input accept="image/*" className={classes.input} id="image" type="file" name="image" onChange={onchangeimage}/>
       <label htmlFor="image">
       <IconButton color="primary" aria-label="upload picture" component="span" disabled={dimage}> 

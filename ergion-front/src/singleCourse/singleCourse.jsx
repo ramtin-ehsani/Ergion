@@ -2,6 +2,11 @@ import react, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 //import { getSingleCourse } from "../actions/course";
 import React, { Fragment } from "react";
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { create } from 'jss';
+import rtl from 'jss-rtl';
+import { StylesProvider, jssPreset } from '@material-ui/core/styles';
+import * as actionTypes from '../store/actions'
 
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -22,6 +27,8 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import Information from './information';
 import Generalinformation from './generalinformation';
@@ -108,21 +115,21 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const usedispatch = useDispatch()
 
-const onSnackBarClose = (event, reason) => {
-  if (reason === 'clickaway') {
-    return;
-  }
-  usedispatch({ type: actionTypes.SNACKBAR, snackBarOpenOrClose: false })
-}
-
-const snackBar = useSelector(state => state.snackBar)
 
 const SingleCourse = ({ match }) => {
   //const course = useSelector(state => state.course);
   const [course, setcourse] = React.useState({});
-  const dispatch = useDispatch();
+  const usedispatch = useDispatch()
+
+  const onSnackBarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    usedispatch({ type: actionTypes.SNACKBAR, snackBarOpenOrClose: false })
+  }
+
+  const snackBar = useSelector(state => state.snackBar)
 
   // useEffect(() => {
   //     dispatch(getSingleCourse(match.params.id));
@@ -154,39 +161,40 @@ const SingleCourse = ({ match }) => {
   const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
 
   return (
-    <main className={classes.content}>
-      <Container maxWidth="lg" className={classes.container}>
+    
+        <main className={classes.content} >
+          <Container maxWidth="lg" className={classes.container}>
 
-        <Snackbar
-          open={snackBar}
-          autoHideDuration={1500}
-          onClose={onSnackBarClose}
-          dir='rtl'
-        >
+            <Snackbar
+              open={snackBar}
+              autoHideDuration={1500}
+              onClose={onSnackBarClose}
+              dir='rtl'
+            >
 
-          <Alert onClose={onSnackBarClose} severity="success" className={classes.alertStyle} >
-            انجام شد
+              <Alert onClose={onSnackBarClose} severity="success" className={classes.alertStyle} >
+                انجام شد
 
           </Alert>
-        </Snackbar>
-        <Grid container spacing={1}>
+            </Snackbar>
+            <Grid container spacing={1}>
 
-          <Grid item xs={12} >
+              <Grid item xs={12} >
 
-            <Paper className={fixedHeightPaper2}>
-              <Coursemedia course={course} />
-            </Paper>
+                <Paper className={fixedHeightPaper2}>
+                  <Coursemedia course={course} />
+                </Paper>
 
 
-          </Grid>
+              </Grid>
 
-          <Grid item xs={12} >
-            <Paper className={fixedHeightPaper1}>
-              <Information course={course} />
-            </Paper>
-          </Grid>
+              <Grid item xs={12} >
+                <Paper className={fixedHeightPaper1}>
+                  <Information course={course} />
+                </Paper>
+              </Grid>
 
-          {/* <Grid item xs={12} md={4} lg={3}>
+              {/* <Grid item xs={12} md={4} lg={3}>
 
             
             
@@ -197,17 +205,17 @@ const SingleCourse = ({ match }) => {
             </Grid> */}
 
 
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <Subjects course={course} />
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  <Subjects course={course} />
 
-            </Paper>
-          </Grid>
-        </Grid>
-        <Box pt={4}>
-        </Box>
-      </Container>
-    </main>
+                </Paper>
+              </Grid>
+            </Grid>
+            <Box pt={4}>
+            </Box>
+          </Container>
+        </main>
 
 
   );
