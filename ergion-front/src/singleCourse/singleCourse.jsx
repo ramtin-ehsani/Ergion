@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
+    
   
     display: 'flex',
     overflow: 'auto',
@@ -72,16 +73,20 @@ const useStyles = makeStyles((theme) => ({
     height: 270,
   },
   fixedHeight1:{
-    height: 400+theme.spacing(2) ,
+ 
+  
   },
   fixedHeight2:{
-    height:130,
+    height:180,
     alignItems:'right',
     justifyItems:'end',
-    marginBottom:theme.spacing(2),
+    marginBottom:theme.spacing(0),
+    marginTop:theme.spacing(0),
+    
     padding:0,
     
   }
+
 }));
 
 const SingleCourse = ({match}) => {
@@ -99,12 +104,13 @@ const [course,setcourse]=React.useState({});
     setTimeout(()=>
     {console.log(match.params.id);
           const promise
-     =  Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`)
+     =  Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`,{  headers :{
+      "Authorization": `Token ${localStorage.getItem('token')}`}})
      promise.then(
        response=>{
 
 setcourse(response.data)
-console.log(response.data)
+
 
          
        }
@@ -114,35 +120,42 @@ console.log(response.data)
     }
     ,500)}
     ,[])
-
     const classes = useStyles();
   
 const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 const fixedHeightPaper1 = clsx(classes.paper, classes.fixedHeight1);
 const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
+
     return(
         <main className={classes.content}>
         
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
+          <Grid container spacing={1}>
            
-            <Grid item xs={12} md={8} lg={9}>
+          <Grid item xs={12} >
+              
+              <Paper className={fixedHeightPaper2}>
+              <Coursemedia course={course}/>
+              </Paper>    
+                
+              
+            </Grid>
+           
+            <Grid item xs={12} >
               <Paper className={fixedHeightPaper1}>
                 <Information course={course}/>
               </Paper>
             </Grid>
             
-            <Grid item xs={12} md={4} lg={3}>
+            {/* <Grid item xs={12} md={4} lg={3}>
 
             
             
-              <Paper className={fixedHeightPaper2}>
-              <Coursemedia course={course}/>
-              </Paper>     
+ 
                        <Paper className={fixedHeightPaper}>
                 <Generalinformation  course={course}/>
               </Paper>
-            </Grid>
+            </Grid> */}
 
            
             <Grid item xs={12}>

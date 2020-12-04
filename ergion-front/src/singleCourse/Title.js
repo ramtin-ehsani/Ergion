@@ -20,7 +20,7 @@ export default function Title(props) {
   return (
    
     <ThemeProvider theme={theme}> <div className={classes.titlestyle} >
-    <Typography component="h2" variant="h5" color="primary" gutterBottom align="right">
+    <Typography inline component="h2" variant="h5" color="primary" gutterBottom align="right" >
       {props.children}
     </Typography></div></ThemeProvider>
   );

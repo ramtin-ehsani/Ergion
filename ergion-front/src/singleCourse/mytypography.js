@@ -19,10 +19,10 @@ export default function Title(props) {
   const classes = useStyles();
   return (
    
-    <ThemeProvider theme={theme}> <div className={classes.titlestyle} >
+    <ThemeProvider theme={theme}> 
     <Typography component="h3" variant="h3" color="gray" gutterBottom align="right">
       {props.children}
-    </Typography></div></ThemeProvider>
+    </Typography></ThemeProvider>
   );
 }
 

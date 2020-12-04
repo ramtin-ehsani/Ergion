@@ -19,13 +19,14 @@ export default function Title(props) {
   const classes = useStyles();
   return (
    
-    <ThemeProvider theme={theme}> <div className={classes.titlestyle} >
+    <ThemeProvider theme={theme}>
     <Typography component="h4" variant="h4" color="primary" gutterBottom align="right">
       {props.children}
-    </Typography></div></ThemeProvider>
+    </Typography></ThemeProvider>
   );
 }
 
-Title.propTypes = {
-  children: PropTypes.node,
-};
+// Title.propTypes = {
+//   children: PropTypes.node,
+//}
+;
