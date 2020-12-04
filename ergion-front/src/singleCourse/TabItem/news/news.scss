@@ -1,0 +1,96 @@
+.post-page-main {
+
+	.post-tabs {
+		background-color: skyblue;
+		font-family: IRANSans;
+		text-align: center;
+		justify-content: center;
+		align-items: center;
+		font-weight: 450;
+		font-size: 17px;
+		flex: 1;
+		max-width: none;
+	}
+
+	.instructor {
+        text-align: right;
+		font-family: IRANSans;
+	}
+
+	.aboutPost {
+		font-family: IRANSans;
+	
+		font-weight: 400;
+		color: black;
+        font-size: 15px;
+        text-align: justify;
+        text-justify: inter-word;
+	}
+
+	.post-footer {
+		font-family: IRANSans;
+		width: 100%;
+		display: flex;
+		position: relative;
+		padding: 0 !important;
+
+		.icon-footer {
+			display: flex;
+			flex: 1;
+			// background-color: pink;
+
+			.comment-icon {
+				z-index: 100;
+			}
+
+			.span-footer {
+				flex: 1;
+			}
+
+			.share-like-icon {
+				position: absolute;
+				width: 100%;
+				justify-content: center;
+				align-items: center;
+				display: flex;
+			}
+		}
+	}
+
+	.MuiCardActions-spacing > :not(:first-child) {
+		margin-left: 0;
+	}
+
+	.MuiCardHeader-root {
+		padding: 0 !important;
+	}
+
+	.MuiCardHeader-action {
+		margin-top: 0 !important;
+	}
+
+	.date {
+        text-align: right;
+		font-family: IRANSans;
+        font-weight: lighter;
+        
+	}
+
+	.img-test {
+		width: 50%;
+		height: 50%;
+	}
+
+	.awssld__content > img, .awssld__content > video {
+		object-fit: none !important;
+		position: relative !important;
+		top: 0 !important;
+		left: 0 !important;
+		width: 50%;
+		height: 280px;
+	}
+.reply{
+	font-family: IRANSans;
+}
+}
+

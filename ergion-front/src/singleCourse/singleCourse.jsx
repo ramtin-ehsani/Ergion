@@ -22,20 +22,12 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import Tab from './Tabs'
-import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { create } from 'jss';
-import rtl from 'jss-rtl';
-import { StylesProvider, jssPreset } from '@material-ui/core/styles';
-import * as actionTypes from '../store/actions'
 
 import Information from './information';
 import Generalinformation from './generalinformation';
 import Coursemedia from './coursemedia';
 import Subjects from './subjects';
 import Axios from "axios";
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 
 
 function Copyright() {
@@ -74,8 +66,6 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    // flexGrow: 1,
-    // height: 'auto',
     display: 'flex',
     margin: theme.spacing(2),
 
@@ -92,6 +82,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
 
+
     display: 'flex',
     overflow: 'auto',
     flexDirection: 'column',
@@ -101,27 +92,32 @@ const useStyles = makeStyles((theme) => ({
     height: 270,
   },
   fixedHeight1: {
-    height: 400 + theme.spacing(2),
+
+
   },
   fixedHeight2: {
-    height: 130,
+    height: 180,
     alignItems: 'right',
     justifyItems: 'end',
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(0),
+    marginTop: theme.spacing(0),
+
     padding: 0,
 
-  },
-  tabStyle: {
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
+  }
 
-  },
-  alertStyle: {
-    display: 'flex',
-    font: '20'
-  },
 }));
+
+const usedispatch = useDispatch()
+
+const onSnackBarClose = (event, reason) => {
+  if (reason === 'clickaway') {
+    return;
+  }
+  usedispatch({ type: actionTypes.SNACKBAR, snackBarOpenOrClose: false })
+}
+
+const snackBar = useSelector(state => state.snackBar)
 
 const SingleCourse = ({ match }) => {
   //const course = useSelector(state => state.course);
@@ -151,26 +147,14 @@ const SingleCourse = ({ match }) => {
 
   }
     , [])
-
-  const usedispatch = useDispatch()
-
-  const onSnackBarClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    usedispatch({ type: actionTypes.SNACKBAR, snackBarOpenOrClose: false })
-  }
-
-  const snackBar = useSelector(state => state.snackBar)
-
   const classes = useStyles();
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const fixedHeightPaper1 = clsx(classes.paper, classes.fixedHeight1);
   const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
+
   return (
     <main className={classes.content}>
-
       <Container maxWidth="lg" className={classes.container}>
 
         <Snackbar
@@ -185,32 +169,37 @@ const SingleCourse = ({ match }) => {
 
           </Alert>
         </Snackbar>
+        <Grid container spacing={1}>
 
-        <Grid container spacing={3}>
+          <Grid item xs={12} >
 
-          <Grid item xs={12} md={8} lg={9}>
+            <Paper className={fixedHeightPaper2}>
+              <Coursemedia course={course} />
+            </Paper>
+
+
+          </Grid>
+
+          <Grid item xs={12} >
             <Paper className={fixedHeightPaper1}>
               <Information course={course} />
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={4} lg={3}>
+          {/* <Grid item xs={12} md={4} lg={3}>
 
-
-
-            <Paper className={fixedHeightPaper2}>
-              <Coursemedia course={course} />
-            </Paper>
-            <Paper className={fixedHeightPaper}>
-              <Generalinformation course={course} />
-            </Paper>
-          </Grid>
+            
+            
+ 
+                       <Paper className={fixedHeightPaper}>
+                <Generalinformation  course={course}/>
+              </Paper>
+            </Grid> */}
 
 
           <Grid item xs={12}>
-            <Paper className={classes.tabStyle} elevation={3}>
-              {/* <Subjects course={course}/> */}
-              <Tab course={course} />
+            <Paper className={classes.paper}>
+              <Subjects course={course} />
 
             </Paper>
           </Grid>
