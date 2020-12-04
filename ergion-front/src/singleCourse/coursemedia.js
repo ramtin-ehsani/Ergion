@@ -12,9 +12,9 @@ import SkipNextIcon from '@material-ui/icons/SkipNext';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    width: '100%' ,
-    height:'100%',
-    margin:'auto',
+    width: '100%',
+    height: '100%',
+    margin: 'auto',
 
   },
   details: {
@@ -25,11 +25,11 @@ const useStyles = makeStyles((theme) => ({
     flex: '1 0 auto',
   },
   cover: {
-    width: '100%' ,
-    height:'100%',
+    width: '100%',
+    height: '100%',
     //objectFit:'fill',
-    padding:0,
-    
+    padding: 0,
+
   },
 
 }));
@@ -40,13 +40,13 @@ export default function Coursemedia(props) {
 
   return (
     <Card className="root">
-    <CardMedia
+      <CardMedia
         className={classes.caver}
         height="100%"
         component='img'
         image={props.course.course_cover}
         title={props.course.name}
-    />
+      />
     </Card>
 
   );

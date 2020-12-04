@@ -3,7 +3,6 @@ import { createMuiTheme } from '@material-ui/core/styles'
 
 const theme = createMuiTheme({
   typography: {
-   
     body1: {
       fontFamily: "IRANSans" ,
       fontWeight: 400,
@@ -35,7 +34,7 @@ const theme = createMuiTheme({
     h5: {
       fontFamily: "IRANSans" ,
       fontWeight: 400,
-      fontSize: 30,
+      fontSize: 22,
       
       direction: 'rtl',
       textAlign:"right"
@@ -54,20 +53,12 @@ const theme = createMuiTheme({
     },
     h4: {
       fontFamily: "IRANSans" ,
-      fontWeight: 600,
-      fontSize: 18,
-      direction: 'rtl',
-      textAlign:"right"
-    
-    },
-    subtitle1:{
-      fontFamily: "IRANSans" ,
       fontWeight: 400,
       fontSize: 16,
       direction: 'rtl',
       textAlign:"right"
-
-    },
+    
+    }
   },
 
 
