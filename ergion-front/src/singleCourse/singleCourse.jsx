@@ -104,12 +104,13 @@ const [course,setcourse]=React.useState({});
     setTimeout(()=>
     {console.log(match.params.id);
           const promise
-     =  Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`)
+     =  Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`,{  headers :{
+      "Authorization": `Token ${localStorage.getItem('token')}`}})
      promise.then(
        response=>{
 
 setcourse(response.data)
-console.log(response.data)
+
 
          
        }
@@ -119,7 +120,6 @@ console.log(response.data)
     }
     ,500)}
     ,[])
-
     const classes = useStyles();
   
 const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);

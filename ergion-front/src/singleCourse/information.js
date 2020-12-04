@@ -29,6 +29,14 @@ import IconButton from '@material-ui/core/IconButton';
 import ShareIcon from '@material-ui/icons/Share';
 import Chip from '@material-ui/core/Chip';
 const useStyles = makeStyles(theme => ({
+  chipo: {
+    display: 'flex',
+   
+    justifyContent: 'right',
+    flexWrap: 'wrap',
+    '& > *': {
+      margin: theme.spacing(0.5),
+    }},
 
  
     Button:{
@@ -169,9 +177,21 @@ const handleBio = (val) => {
  <IconButton color="secondary" aria-label="add an alarm">
      <ShareIcon/>
       </IconButton>
+      <Grid  item alignItems='flex-start' justify='flex-start'  >  
+  <div className={classes.chipo}> <Chip
+        avatar={<Avatar>M</Avatar>}
+        label="Clickable"
+        
+        variant="outlined"
+      /></div> 
+  </Grid>
       <Grid  item alignItems='flex-end' justify='flex-end' direction='row-reverse' xs zeroMinWidth>
  <Typography variant='h5' inline color='primary' > {name} </Typography> 
-</Grid> </Grid>
+
+
+</Grid>
+
+ </Grid>
 }
 
 </Grid> 

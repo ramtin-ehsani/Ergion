@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) =>
 
 const jss = create({ plugins: [ ...jssPreset().plugins, rtl() ] });
 
-const PostPage = () => {
+const PostPage = (props) => {
 	let [ width, setWidth ] = useState(getWidth());
 	const classes = useStyles();
 	const [ isRed, setIsRed ] = useState(false);
@@ -107,6 +107,47 @@ const PostPage = () => {
 	const [ isPdf, setIsPdf ] = useState(false);
 	const [ postPage, setPostPage ] = useState(null);
 	const [openreply,setopenreply]=React.useState(false);
+	const [T,setT]=React.useState(false);
+	const [S,setS]=React.useState(false);
+	const[filelist,setfilelist]=React.useState();
+
+	const[ownerid,setownerid]=React.useState(0);
+
+	const[isowner,setisowner]=React.useState(false);
+	React.useEffect(()=>
+	{ setownerid(props.update.instructor);
+		if(JSON.parse(localStorage.getItem('user'))!==null)
+    {
+      if((JSON.parse(localStorage.getItem('user'))['role'])==="T")
+      {
+        setT(true);
+       
+        console.log(JSON.parse(localStorage.getItem('user')))
+        if((JSON.parse(localStorage.getItem('user'))['id'])===ownerid)
+        {
+          setisowner(true);
+        }
+      }
+
+		setTimeout(() => {
+			const promise=axios.get('http://127.0.0.1:8000/api/update-details/',{params:{update_id:props.update.id},
+			headers:{"Authorization": `Token ${localStorage.getItem('token')}`}})
+			promise.then((response)=>{})
+		}, 1000)
+		setTimeout(() => {
+			const promise=Axios.get('http://127.0.0.1:8000/api/course-news/',{params:{course_id:props.update.id},
+		  headers:{"Authorization": `Token ${localStorage.getItem('token')}`}})
+		  promise.then(response=>{
+		 setfilelist(response.data); 
+		 console.log(filelist);
+			  
+
+		
+		  })
+		}, 1000)
+	}
+	})
+	
 	const handleopenreply=()=>
 {
 setopenreply(!openreply);
@@ -140,63 +181,8 @@ setopenreply(!openreply);
 		}
 	];
 
-	const settings = {
-		dots: true,
-		speed: 300,
-		slidesToShow: 3,
-		slidesToScroll: 1,
-		infinite: true,
-		// autoplay: true,
-		autoplaySpeed: 2500,
-		rtl: true,
-		pauseOnHover: true,
-		responsive: [
-			{
-				breakpoint: 1024,
-				settings: {
-					slidesToShow: 2,
-					slidesToScroll: 2,
-					dots: true
-				}
-			},
-			{
-				breakpoint: 760,
-				settings: {
-					slidesToShow: 1,
-					slidesToScroll: 1,
-					// initialSlide: 2,
-					dots: true
-				}
-			},
-			{
-				breakpoint: 500,
-				settings: {
-					slidesToShow: 1,
-					slidesToScroll: 1,
-					dots: true,
-					autoplaySpeed: 4000,
-					autoplay: true,
-				}
-			}
-		]
-	
-	}
 
-	const slier = ( 
-		<Slider
-			ref={c => (slider = c)} {...settings}>
-			{test[3].media.map((item) => (
-				<div style={{display: "flex", justifyContent: "center", 
-						position: "relative", width: "80%"}}>
-					<img
-						className={classes.test}
-						src={item}
-						alt="test"
-					/>
-				</div>
-			))}
-		</Slider>
-	)
+
 
 
 
@@ -218,7 +204,7 @@ setopenreply(!openreply);
 									className={classes.title}
 									avatar={
 										<Avatar aria-label="recipe" className={classes.avatar}>
-											<img src={img1} alt="tessacehr" minWidth="50" height="50" poster="R" />
+											<img src={filelist.instructor_instructor_profile_picture} alt="tessacehr" minWidth="50" height="50" poster="R" />
 										</Avatar>
 									}
 									action={
@@ -228,13 +214,12 @@ setopenreply(!openreply);
 									}
 									title={
                                         <Typography className="instructor" variant="h6" color="primary">
-                                        کلاس فیزیک</Typography>
+                                    {props.update.instructor_firstname} {props.update.instructor_lastname}</Typography>
 
 									}
 									subheader={
 										<Typography className="date" component="h6">
-											شنبه ۱۳۹۹/۱۱/۱۱
-										</Typography>
+{filelist.created_at}										</Typography>
 									}
 								/>
 						
@@ -245,7 +230,7 @@ setopenreply(!openreply);
 										component="p"
 										className="aboutPost"
 									>
-									همچنین طی هماهنگی های صورت گرفته توسط دکتر انتظاری، مسئول ACM و المپیاد دانشکده، با برخی از اساتید محترم دانشکده، دانشجویان دروس مبانی برنامه‌سازی، برنامه‌نویسی پیشرفته، ساختمان داده و تحلیل و طراحی الگوریتم می‌توانند با شرکت در این مسابقه و کسب رتبه برتر (تیم های اول تا سوم دانشکده) نمره امتیازی دریافت کنند. جزئیات این پوینت در هر درس متفاوت و طبق صلاحدید استاد است.
+			{props.update.text}
 									</Typography>
 								</CardContent>
 								<CardMedia
@@ -282,14 +267,19 @@ setopenreply(!openreply);
 											<IconButton onClick={handleopenreply}>
 												<CommentIcon />
 											</IconButton>
+											{S &&
 											<IconButton onClick={() => setIsRed(!isRed)}>
 												{isRed ? (
 													<FavoriteIcon style={{ color: 'red' }} />
 												) : (
 													<FavoriteBorderIcon />
 												)}
-											</IconButton>
-										
+											</IconButton>}
+										{T&&
+											<FavoriteIcon style={{ color: 'red' }} />
+
+										}
+										<Typography>23</Typography>
 
 
             

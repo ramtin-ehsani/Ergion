@@ -14,7 +14,8 @@ import Title from './Title';
 import Mytypography from './mytypography1';
 import News from './TabItem/news/newscomponent';
 import { Grid } from '@material-ui/core';
-import Write from './TabItem/news/newscomponent copy';
+import Write from './TabItem/news/Writeanews';
+import Axios from 'axios';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   const classes = useStyles();
@@ -60,7 +61,36 @@ export default function FullWidthTabs(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
+const [newslist,setnewslist]=React.useState([]);
+const [T,setT]=React.useState(false);
+const [S,setS]=React.useState(true);
+const[isowner,setisowner]=React.useState(false);
 
+React.useEffect(()=>{
+  if(JSON.parse(localStorage.getItem('user'))!==null)
+  {
+    if((JSON.parse(localStorage.getItem('user'))['role'])==="T")
+    {
+      setT(true);
+      console.log(props.course)
+      console.log(JSON.parse(localStorage.getItem('user')))
+      if((JSON.parse(localStorage.getItem('user'))['id'])===props.course.instructor_id)
+      {
+        setisowner(true);
+      }
+    }
+  }
+setTimeout(() => {
+    const promise=Axios.get('http://127.0.0.1:8000/api/course-news/',{params:{course_id:props.course.id},
+  headers:{"Authorization": `Token ${localStorage.getItem('token')}`}})
+  promise.then(response=>{
+ setnewslist(response.data);
+     
+  })
+}, 1000)
+
+
+})
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -93,8 +123,9 @@ export default function FullWidthTabs(props) {
       >
         <TabPanel value={value} index={0} dir={theme.direction}>
         
-   <Write course={props.course}/>
-      <News course={props.course} />
+{isowner&&   <Write course={props.course}/> }
+{newslist.reverse().map((news)=> <News update={news} /> )}
+     
 
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>

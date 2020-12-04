@@ -110,7 +110,7 @@ const useStyles = makeStyles((theme) =>
 
 const jss = create({ plugins: [ ...jssPreset().plugins, rtl() ] });
 
-const Write = () => {
+const Write = (props) => {
 	let [ width, setWidth ] = useState(getWidth());
 	const classes = useStyles();
 	const [ postPage, setPostPage ] = useState(null);
@@ -126,8 +126,37 @@ const Write = () => {
     const [dpdf,setdpdf]=React.useState(false);
     const [dvideo,setdvideo]=React.useState(false);
 	const [dimage,setdimage]=React.useState(false);
-	const[newstext,setnewstext]=React.useState("")
-    
+	const[newstext,setnewstext]=React.useState("");
+	const[newsid,setnewsid]=React.useState(0);
+	const [images,setimages]=React.useState([image1,image2,image3,image4])
+	const[courseid,setcourseid]=React.useState(0);
+React.useEffect(()=>
+	{	
+		setcourseid(props.course.id);
+		if(isvideo)
+	{
+setdimage(true);
+setdpdf(true);
+
+	}
+	if(ispdf)
+	{
+		setdimage(true);
+		setdvideo(true);
+	}
+	if(isimage>0)
+	{
+		setdimage(true);
+		setdpdf(true);
+
+		if(isimage===4)
+		{
+			setdimage(true);
+		}
+		}	}
+)
+
+
 
 
 
@@ -175,101 +204,116 @@ setpdf(event.target.files[0]);
 
 }
 
-	let slider = useRef();
 
-	const test = [
-		{
-			news:
-				'دانشجویان جدیدالورود، لطفا فایل FirstManual.pdf را قبل از ورود به سامانه سامیا به دقت مطالعه نمایید. در ضمن می‌توانید از فیلم‌های تهیه شده نیز به عنوان راهنما استفاده نمایید.',
-			media: vid
-		},
-		{
-			news:
-				'درس های من در سامانه گلستان ثبت شده است، اما در سامانه سامیا قابل مشاهده نیست؟ انتخاب واحد کردم، ولی درس های من هنوز اضافه نشده است؟ لطفا فایل راهنمای FAQ_GolestanSync را مطالعه فرمایید. ',
-			media: img
-		},
-		{
-			news:
-				'جهت اطلاع از آخرین اخبار و اطلاعیه ها در مورد کلاس های مجازی دانشجویان حضوری، پردیس و مجازی لطفا در کانال تلگرامی @IUST_LMS عضو شوید',
-			media: pddf
-		},
-		{
-			news: 'test for english classes and im busy now i actually dont care about anything',
-			media: [ img1, img2, img3, img ]
-		},
-		{
-			news: 'null media',
-			media: null
-		}
-	];
 
-	const settings = {
-		dots: true,
-		speed: 300,
-		slidesToShow: 3,
-		slidesToScroll: 1,
-		infinite: true,
-		// autoplay: true,
-		autoplaySpeed: 2500,
-		rtl: true,
-		pauseOnHover: true,
-		responsive: [
-			{
-				breakpoint: 1024,
-				settings: {
-					slidesToShow: 2,
-					slidesToScroll: 2,
-					dots: true
-				}
-			},
-			{
-				breakpoint: 760,
-				settings: {
-					slidesToShow: 1,
-					slidesToScroll: 1,
-					// initialSlide: 2,
-					dots: true
-				}
-			},
-			{
-				breakpoint: 500,
-				settings: {
-					slidesToShow: 1,
-					slidesToScroll: 1,
-					dots: true,
-					autoplaySpeed: 4000,
-					autoplay: true,
-				}
-			}
-		]
-	
-	}
 
-	const slier = ( 
-		<Slider
-			ref={c => (slider = c)} {...settings}>
-			{test[3].media.map((item) => (
-				<div style={{display: "flex", justifyContent: "center", 
-						position: "relative", width: "80%"}}>
-					<img
-						className={classes.test}
-						src={item}
-						alt="test"
-					/>
-				</div>
-			))}
-		</Slider>
-	)
 
 const	sendnewshandler=event=>
 	{console.log(newstext);
-		Axios.post('http://127.0.0.1:8000/api/course/course-news/',
-		{related_course:1,text:newstext}, 
+		Axios.post('http://127.0.0.1:8000/api/course-news/',
+		{related_course:courseid,text:newstext}, 
 		{  headers :{
 			"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
 		setnewstext("");
-		console.log(response);	
+		console.log(response.data.id);	
+		setnewsid(response.data.id);
 		}).catch((error)=>{console.log(error);})
+		console.log(isimage);
+		console.log(ispdf);
+		console.log(isvideo);
+
+		if(isimage===4)
+		{
+			const fileData=new FormData()
+			fileData.append('update_id',newsid)
+			fileData.append("file",image4)
+			Axios.post('http://127.0.0.1:8000/api/course-news/',
+			fileData,		{  headers :{
+				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
+			setnewstext("");
+			console.log(response.data.id);	
+			setnewsid(response.data.id);
+			}).catch((error)=>{console.log(4);})
+			setisimage(isimage-1);
+			setimage4();
+		}
+		if(isimage===3)
+		{
+			const fileData=new FormData()
+			fileData.append('update_id',newsid)
+			fileData.append("file",image3)
+			Axios.post('http://127.0.0.1:8000/api/course-news/',
+			fileData,		{  headers :{
+				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
+			setnewstext("");
+			console.log(response.data.id);	
+			setnewsid(response.data.id);
+			}).catch((error)=>{console.log(3);})
+			setisimage(isimage-1);
+			setimage3();
+		}
+		if(isimage===2)
+		{
+			const fileData=new FormData()
+			fileData.append('update_id',newsid)
+			fileData.append("file",image2)
+			Axios.post('http://127.0.0.1:8000/api/course-news/',
+			fileData,		{  headers :{
+				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
+			setnewstext("");
+			console.log(response.data.id);	
+			setnewsid(response.data.id);
+			}).catch((error)=>{console.log(2);})
+			setisimage(isimage-1);
+			setimage2();
+		}
+		if(isimage===1)
+		{ const fileData=new FormData()
+			fileData.append('update_id',newsid)
+			fileData.append("file",image1)
+			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			fileData,		{  headers :{
+				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
+			setnewstext("");
+			console.log("y");	
+			
+			}).catch((error)=>{console.log(error);})
+			setisimage(isimage-1);
+			setimage1();
+		}
+		if(isvideo)
+		{
+			const fileData=new FormData()
+			fileData.append('update_id',newsid)
+			fileData.append("file",video)
+			Axios.post('http://127.0.0.1:8000/api/course-news/',
+			fileData,		{  headers :{
+				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
+			setnewstext("");
+			console.log(response.data.id);	
+			setnewsid(response.data.id);
+			}).catch((error)=>{console.log(0);})
+			setvideo();
+
+		}
+		if(ispdf)
+		{
+			const fileData=new FormData()
+			fileData.append('update_id',newsid)
+			fileData.append("file",pdf)
+			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			fileData,		{  headers :{
+				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
+			setnewstext("");
+			console.log(response.data.id);	
+			setnewsid(response.data.id);
+			}).catch((error)=>{console.log(6);})
+			setpdf();
+		}
+		setdimage(false);
+		setdpdf(false);
+		setdvideo(false);
+
 	}
 const	newstexthandler=event=>
 	{
