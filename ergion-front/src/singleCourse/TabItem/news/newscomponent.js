@@ -38,6 +38,7 @@ import Slider from "react-slick";
 import "../../../../node_modules/slick-carousel/slick/slick.css";
 import "../../../../node_modules/slick-carousel/slick/slick-theme.css";
 import Title from '../../Title';
+import { Update } from '@material-ui/icons';
 
 
 const getWidth = () => window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -105,15 +106,39 @@ const PostPage = (props) => {
 	const [ isMultiImg, setisMultiImg ] = useState(true);
 	const [ isVideo, setIsVideo ] = useState(false);
 	const [ isPdf, setIsPdf ] = useState(false);
-	const [ postPage, setPostPage ] = useState(null);
+	
 	const [openreply,setopenreply]=React.useState(false);
 	const [T,setT]=React.useState(false);
 	const [S,setS]=React.useState(false);
-	const[filelist,setfilelist]=React.useState();
-
+	const[update,setupdate]=React.useState({});
+	const[updatefiles,setupdatefiles]=React.useState([]);
+const[liked,setliked]=React.useState([false]);
+const[likes,setlikes]=React.useState(0);
 	const[ownerid,setownerid]=React.useState(0);
 
 	const[isowner,setisowner]=React.useState(false);
+	const likehandler=()=>{
+		axios.put('http://127.0.0.1:8000/api/update-likes/',{
+			update_id:props.update.id
+		},{  headers :{
+			"Authorization": `Token ${localStorage.getItem('token')}`}})
+			.then((response)=>{
+				setIsRed(!isRed);
+			}).catch(error=>console.log(error))
+
+	}
+	const promise=Axios.get('http://127.0.0.1:8000/api/course-news/',{params:{update_id:props.update.id},
+		  headers:{"Authorization": `Token ${localStorage.getItem('token')}`}})
+		  promise.then(response=>{
+		 
+		setupdate(response.data[0])
+
+		// update.files.map((file)=>{
+		// 	setupdatefiles([file.file]);
+		// })
+
+		
+		  }).catch(error=>console.log(error))
 	React.useEffect(()=>
 	{ setownerid(props.update.instructor);
 		if(JSON.parse(localStorage.getItem('user'))!==null)
@@ -122,29 +147,23 @@ const PostPage = (props) => {
       {
         setT(true);
        
-        console.log(JSON.parse(localStorage.getItem('user')))
+       
         if((JSON.parse(localStorage.getItem('user'))['id'])===ownerid)
         {
           setisowner(true);
         }
-      }
+	  }
+	  else setS(true);
 
 		setTimeout(() => {
 			const promise=axios.get('http://127.0.0.1:8000/api/update-details/',{params:{update_id:props.update.id},
 			headers:{"Authorization": `Token ${localStorage.getItem('token')}`}})
-			promise.then((response)=>{})
+			promise.then((response)=>{setliked(response.data.liked);
+			setlikes(response.data.likes)
+			
+			})
 		}, 1000)
-		setTimeout(() => {
-			const promise=Axios.get('http://127.0.0.1:8000/api/course-news/',{params:{course_id:props.update.id},
-		  headers:{"Authorization": `Token ${localStorage.getItem('token')}`}})
-		  promise.then(response=>{
-		 setfilelist(response.data); 
-		 console.log(filelist);
-			  
 
-		
-		  })
-		}, 1000)
 	}
 	})
 	
@@ -155,33 +174,7 @@ setopenreply(!openreply);
 
 	let slider = useRef();
 
-	const test = [
-		{
-			news:
-				'دانشجویان جدیدالورود، لطفا فایل FirstManual.pdf را قبل از ورود به سامانه سامیا به دقت مطالعه نمایید. در ضمن می‌توانید از فیلم‌های تهیه شده نیز به عنوان راهنما استفاده نمایید.',
-			media: vid
-		},
-		{
-			news:
-				'درس های من در سامانه گلستان ثبت شده است، اما در سامانه سامیا قابل مشاهده نیست؟ انتخاب واحد کردم، ولی درس های من هنوز اضافه نشده است؟ لطفا فایل راهنمای FAQ_GolestanSync را مطالعه فرمایید. ',
-			media: img
-		},
-		{
-			news:
-				'جهت اطلاع از آخرین اخبار و اطلاعیه ها در مورد کلاس های مجازی دانشجویان حضوری، پردیس و مجازی لطفا در کانال تلگرامی @IUST_LMS عضو شوید',
-			media: pddf
-		},
-		{
-			news: 'test for english classes and im busy now i actually dont care about anything',
-			media: [ img1, img2, img3, img ]
-		},
-		{
-			news: 'null media',
-			media: null
-		}
-	];
-
-
+	
 
 
 
@@ -194,6 +187,7 @@ setopenreply(!openreply);
 		<React.Fragment>
 			<StylesProvider jss={jss}>
 				<CssBaseline />
+
 				<div
 
 					className="post-page-main"
@@ -204,7 +198,7 @@ setopenreply(!openreply);
 									className={classes.title}
 									avatar={
 										<Avatar aria-label="recipe" className={classes.avatar}>
-											<img src={filelist.instructor_instructor_profile_picture} alt="tessacehr" minWidth="50" height="50" poster="R" />
+											<img src={props.update.instructor_profile_picture}  alt="tessacehr" minWidth="50" height="50" poster="R" />
 										</Avatar>
 									}
 									action={
@@ -214,12 +208,17 @@ setopenreply(!openreply);
 									}
 									title={
                                         <Typography className="instructor" variant="h6" color="primary">
-                                    {props.update.instructor_firstname} {props.update.instructor_lastname}</Typography>
+                                    {props.update.instructor_firstname} {props.update.instructor_lastname}
+								
+										/{props.course.name}
+									
+									</Typography>
+									
 
 									}
 									subheader={
 										<Typography className="date" component="h6">
-{filelist.created_at}										</Typography>
+{props.update.created_at}										</Typography>
 									}
 								/>
 						
@@ -242,8 +241,8 @@ setopenreply(!openreply);
 										isMultiImg ? (slier) : ''
 									} */}
 									{isMultiImg ? (
-										test[3].media.map((item) => (
-											<img src={item} alt="test" width="20%" height="20%" />
+									update.files.map((item) => (
+											<img src={(item.file)} alt="test" width="20%" height="20%" />
 										))) : ('')
 									}
 									{isPdf ? <iframe src={test[2].media} height="400" width="100%" /> : ''}
@@ -268,7 +267,9 @@ setopenreply(!openreply);
 												<CommentIcon />
 											</IconButton>
 											{S &&
-											<IconButton onClick={() => setIsRed(!isRed)}>
+											<IconButton onClick={likehandler
+											
+											}>
 												{isRed ? (
 													<FavoriteIcon style={{ color: 'red' }} />
 												) : (
@@ -279,7 +280,7 @@ setopenreply(!openreply);
 											<FavoriteIcon style={{ color: 'red' }} />
 
 										}
-										<Typography>23</Typography>
+										<Typography>{likes}</Typography>
 
 
             

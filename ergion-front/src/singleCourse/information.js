@@ -178,12 +178,7 @@ const handleBio = (val) => {
      <ShareIcon/>
       </IconButton>
       <Grid  item alignItems='flex-start' justify='flex-start'  >  
-  <div className={classes.chipo}> <Chip
-        avatar={<Avatar>M</Avatar>}
-        label="Clickable"
-        
-        variant="outlined"
-      /></div> 
+  
   </Grid>
       <Grid  item alignItems='flex-end' justify='flex-end' direction='row-reverse' xs zeroMinWidth>
  <Typography variant='h5' inline color='primary' > {name} </Typography> 
@@ -210,15 +205,15 @@ const handleBio = (val) => {
  <Grid item xs zeroMinWidth>
  
  
- <Typography variant="h4" color="primary" inline>۱۲ نفر دانش آموز</Typography>
+ <Typography variant="h4" color="primary" inline>{props.course.students_count}نفر دانش آموز</Typography>
  </Grid>
 
  <Grid item xs zeroMinWidth> 
 
- <Mytypography1 >۱۲ نفر ظرفیت</Mytypography1></Grid>
+<Mytypography1 >{props.course.capacity}نفر ظرفیت</Mytypography1></Grid>
  <Grid item xs zeroMinWidth>
 
- <Mytypography1 >۱۲ قسمت</Mytypography1>
+ <Mytypography1 >{props.course.episodes_count}قسمت</Mytypography1>
 </Grid>
 
 </Grid>
@@ -229,95 +224,81 @@ const handleBio = (val) => {
   else{
     return (
       <React.Fragment>
-        <ThemeProvider theme={theme}>
-        <Container maxWidth="lg" >
-          <Grid container xs={12}  spacing={1}>
-           
-            {/* <Grid container item spacing={0} justify="flex-start" alignItems="flex-start"> */}
+      <ThemeProvider theme={theme}>
         
-              <Grid item> 
-             
-          {Add?
+      <Grid container>  
         
-            <Button size="large" onClick={handleAdd} variant="contained" color="primary">
-         
-       
-          <span className={classes.title}>
-                          اضافه شدن
-                     </span> </Button>
-                      :
-                      <Button size="large" onClick={handleAdd} variant="contained" color="secondary">
-                      <span className={classes.title}>
-                      حذف
-  </span>
-                  </Button>
-                
-                  
-                  
-  }  
+<Grid container item>
 
-
-         </Grid> 
-         
- <Grid item>
+  {Add?
+        
+        <Button size="large" onClick={handleAdd} variant="contained" color="primary">
+      
+      
+      <span className={classes.title}>
+                      اضافه شدن
+                 </span> </Button>
+                  :
+                  <Button size="large" onClick={handleAdd} variant="contained" color="secondary">
+                  <span className={classes.title}>
+                  حذف
+      </span>
+              </Button>
+            
+              
+              
+      }  
+     
  <IconButton color="secondary" aria-label="add an alarm">
      <ShareIcon/>
       </IconButton>
- </Grid>
+      <Grid  item alignItems='flex-start' justify='flex-start'  >  
 
-        
-    
+  </Grid>
+      <Grid  item alignItems='flex-end' justify='flex-end' direction='row-reverse' xs zeroMinWidth>
+ <Typography variant='h5' inline color='primary' > {name} </Typography> 
 
-        <Snackbar
-        anchorOrigin={{ vertical, horizontal }}
-        open={open}
-        onClose={handleClose}
-        message="شما به درس اضافه شدید"
-        key={vertical + horizontal}
-      />
-  
-
-
-
-   <Grid container item justify="flex-end" alignItems="flex-start" > 
-   <Title> {name} فیزیک </Title></Grid>
-
-   <Grid container item justify="flex-end" alignItems="flex-start">
- <Mytypography variant="h4"> 
-فیزیک یازدهم{subject}</Mytypography></Grid>
- <Grid container item justify="flex-start" alignItems="flex-start">
- 
-<Mytypography>{bio} 
- کتاب "راه و رسم استخدام" که تیم جاب‌ویژن اونو تالیف کرده، مختصر و مفید مطالب مربوط به استخدام رو گفته و خوندنش ازتون وقت زیادی نمی‌گیره. رعایت کردن نکاتش هم کار سختی نیست. ولی همین نکات پایه‌ای می‌تونه شانستون رو برای استخدام شدن چند برابر کنه
- کتاب "راه و رسم استخدام" که تیم جاب‌ویژن اونو تالیف کرده، مختصر و مفید مطالب مربوط به استخدام رو گفته و خوندنش ازتون وقت زیادی نمی‌گیره. رعایت کردن نکاتش هم کار سختی نیست. ولی همین نکات پایه‌ای می‌تونه شانستون رو برای استخدام شدن چند برابر کنه</Mytypography>
 
 </Grid>
 
-{/* <Grid container item justify='flex-end' alignItems='flex-end' >
+ </Grid>
+
+
+</Grid> 
+        
+
+ <Grid container>
+
+<Grid container justify='flex-end'>
+<Typography inline variant='body2'>/{subject}</Typography> <Typography variant="h4"> {subject}</Typography>
+</Grid>
+<Grid container justify='flex-end' direction='row-reverse'>
+ <p>
+<Mytypography>{bio} </Mytypography></p></Grid>
+
+      <Grid container>
  <Grid item xs zeroMinWidth>
  
-
- <Mytypography1 >دانش آموز </Mytypography1>
+ 
+ <Typography variant="h4" color="primary" inline>{props.course.students_count}نفر دانش آموز</Typography>
  </Grid>
 
  <Grid item xs zeroMinWidth> 
 
- <Mytypography1 >ظرفیت</Mytypography1></Grid>
+<Mytypography1 >{props.course.capacity}نفر ظرفیت</Mytypography1></Grid>
  <Grid item xs zeroMinWidth>
 
- <Mytypography1 >قسمت</Mytypography1>
+ <Mytypography1 >{props.course.episodes_count}قسمت</Mytypography1>
 </Grid>
 
-</Grid> */}
-
-
 </Grid>
-
-
-</Container>
-  </ThemeProvider>
-      </React.Fragment>
+</Grid>
+</ThemeProvider>
+    </React.Fragment>
     );
 
   }
 }
+
+
+

@@ -63,8 +63,10 @@ export default function FullWidthTabs(props) {
   const [value, setValue] = React.useState(0);
 const [newslist,setnewslist]=React.useState([]);
 const [T,setT]=React.useState(false);
-const [S,setS]=React.useState(true);
+const [S,setS]=React.useState(false);
 const[isowner,setisowner]=React.useState(false);
+
+
 
 React.useEffect(()=>{
   if(JSON.parse(localStorage.getItem('user'))!==null)
@@ -78,16 +80,17 @@ React.useEffect(()=>{
       {
         setisowner(true);
       }
-    }
+    }else setS(true);
   }
-setTimeout(() => {
-    const promise=Axios.get('http://127.0.0.1:8000/api/course-news/',{params:{course_id:props.course.id},
+  const promise=Axios.get('http://127.0.0.1:8000/api/course-news/',{params:{course_id:props.course.id},
   headers:{"Authorization": `Token ${localStorage.getItem('token')}`}})
   promise.then(response=>{
- setnewslist(response.data);
+  setnewslist(response.data);
+  
      
+  
   })
-}, 1000)
+
 
 
 })
@@ -124,7 +127,7 @@ setTimeout(() => {
         <TabPanel value={value} index={0} dir={theme.direction}>
         
 {isowner&&   <Write course={props.course}/> }
-{newslist.reverse().map((news)=> <News update={news} /> )}
+{newslist.map((news)=> <News course={props.course} update={news} /> )}
      
 
         </TabPanel>
