@@ -1,4 +1,4 @@
-  
+
 import React from 'react';
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,16 +13,16 @@ import theme from './theme.js';
 import Typography from '@material-ui/core/Typography';
 // Generate Order Data
 
-function createData(id,date, name) {
-  return { date, name, id};
+function createData(id, date, name) {
+  return { date, name, id };
 }
 
 const rows = [
   createData(1, '۹۹/۸/۱۸', 'فیلم جلسه 0 - معرفی دوره صفر تا صد فیزیک یازدهم آقای یاری'),
-  createData(2 ,'۹۹/۸/۱۸', 'فیلم جلسه 1 - مقدمه یادگیری نیرو (قسمت اول)، قانون اول نیوتن'),
+  createData(2, '۹۹/۸/۱۸', 'فیلم جلسه 1 - مقدمه یادگیری نیرو (قسمت اول)، قانون اول نیوتن'),
   createData(3, '۹۹/۸/۱۸', 'فیلم جلسه 1 - مقدمه یادگیری نیرو (قسمت اول)، قانون اول نیوتن'),
-  createData( 4,'۹۹/۸/۱۸', 'فیلم جلسه 1 - مقدمه یادگیری نیرو (قسمت اول)، قانون اول نیوتن'),
-  createData( 5,'۹۹/۸/۱۸', 'فیلم جلسه 1 - مقدمه یادگیری نیرو (قسمت اول)، قانون اول نیوتن'),
+  createData(4, '۹۹/۸/۱۸', 'فیلم جلسه 1 - مقدمه یادگیری نیرو (قسمت اول)، قانون اول نیوتن'),
+  createData(5, '۹۹/۸/۱۸', 'فیلم جلسه 1 - مقدمه یادگیری نیرو (قسمت اول)، قانون اول نیوتن'),
 ];
 
 function preventDefault(event) {
@@ -35,42 +35,42 @@ const useStyles = makeStyles((theme) => ({
   },
   all:
   {
-fontFamily:"IRANSans",
+    fontFamily: "IRANSans",
   },
-  
-  
+
+
 }));
 
 export default function Subjects() {
   const classes = useStyles();
   return (
     <React.Fragment>
-      
-      <ThemeProvider theme={theme}><div className={classes.all}>
-      <Title>مطالب اخیر </Title>
-      <Table fontFamily="IRANSans" size="small" className={classes.tablestyle}>
-        <TableHead>
-          <TableRow>
 
-            <TableCell align="right">تاریخ</TableCell>
-             <TableCell align="right">عنوان مطلب</TableCell> 
-             <TableCell align="right">ردیف</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow align="right" key={row.id}>
-              <TableCell align="right">   <Typography component="body2" variant="h2"  gutterBottom align="right">
-     {row.date}
-    </Typography></TableCell>
-              <Link color="primary" href="#" onClick={preventDefault}>   <TableCell align="right">{row.name}</TableCell> </Link>
-              
-              
+      <ThemeProvider theme={theme}><div className={classes.all}>
+        <Title>مطالب اخیر </Title>
+        <Table fontFamily="IRANSans" size="small" className={classes.tablestyle}>
+          <TableHead>
+            <TableRow>
+
+              <TableCell align="right">تاریخ</TableCell>
+              <TableCell align="right">عنوان مطلب</TableCell>
+              <TableCell align="right">ردیف</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-  </div></ThemeProvider>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow align="right" key={row.id}>
+                <TableCell align="right">   <Typography component="body2" variant="h2" gutterBottom align="right">
+                  {row.date}
+                </Typography></TableCell>
+                <Link color="primary" href="#" onClick={preventDefault}>   <TableCell align="right">{row.name}</TableCell> </Link>
+
+
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div></ThemeProvider>
     </React.Fragment>
   );
 }
