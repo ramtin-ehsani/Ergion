@@ -12,6 +12,7 @@ import Writenewnews from './TabItem/news/writenews';
 import theme from './theme';
 import Title from './Title';
 import Mytypography from './mytypography1';
+import Content from './Content'
 import News from './TabItem/news/newscomponent';
 import { Grid } from '@material-ui/core';
 import Write from './TabItem/news/Writeanews';
@@ -41,19 +42,25 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 };
+// Generate Order Data
+
+function createData(id, date, name) {
+  return { date, name, id };
+}
+
 
 function a11yProps(index) {
   return {
-   id: `full-width-tab-${index}`,
+    id: `full-width-tab-${index}`,
     'aria-controls': `full-width-tabpanel-${index}`,
   };
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
-   // display:'flex',
+    // display:'flex',
     backgroundColor: theme.palette.background.paper,
-  
+
   },
 }));
 
@@ -61,39 +68,38 @@ export default function FullWidthTabs(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
-const [newslist,setnewslist]=React.useState([]);
-const [T,setT]=React.useState(false);
-const [S,setS]=React.useState(false);
-const[isowner,setisowner]=React.useState(false);
+  const [newslist, setnewslist] = React.useState([]);
+  const [T, setT] = React.useState(false);
+  const [S, setS] = React.useState(false);
+  const [isowner, setisowner] = React.useState(false);
 
 
 
-React.useEffect(()=>{
-  if(JSON.parse(localStorage.getItem('user'))!==null)
-  {
-    if((JSON.parse(localStorage.getItem('user'))['role'])==="T")
-    {
-      setT(true);
-      console.log(props.course)
-      console.log(JSON.parse(localStorage.getItem('user')))
-      if((JSON.parse(localStorage.getItem('user'))['id'])===props.course.instructor_id)
-      {
-        setisowner(true);
-      }
-    }else setS(true);
-  }
-  const promise=Axios.get('http://127.0.0.1:8000/api/course-news/',{params:{course_id:props.course.id},
-  headers:{"Authorization": `Token ${localStorage.getItem('token')}`}})
-  promise.then(response=>{
-  setnewslist(response.data);
-  
-     
-  
+  React.useEffect(() => {
+    if (JSON.parse(localStorage.getItem('user')) !== null) {
+      if ((JSON.parse(localStorage.getItem('user'))['role']) === "T") {
+        setT(true);
+        console.log(props.course)
+        console.log(JSON.parse(localStorage.getItem('user')))
+        if ((JSON.parse(localStorage.getItem('user'))['id']) === props.course.instructor_id) {
+          setisowner(true);
+        }
+      } else setS(true);
+    }
+    const promise = Axios.get('http://127.0.0.1:8000/api/course-news/', {
+      params: { course_id: props.course.id },
+      headers: { "Authorization": `Token ${localStorage.getItem('token')}` }
+    })
+    promise.then(response => {
+      setnewslist(response.data);
+
+
+
+    })
+
+
+
   })
-
-
-
-})
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -102,43 +108,46 @@ React.useEffect(()=>{
     setValue(index);
   };
 
+
+
   return (
     <div className={classes.root}>
       <ThemeProvider theme={theme}>
-      <AppBar position="static" color="default">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-          aria-label="full width tabs example"
+        <AppBar position="static" color="default">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="fullWidth"
+            aria-label="full width tabs example"
+          >
+            <Tab label={<Mytypography>اخبار</Mytypography>} {...a11yProps(0)} />
+            <Tab label={<Mytypography>مطالب</Mytypography>} {...a11yProps(1)} />
+            <Tab label={<Mytypography>پرسش و پاسخ</Mytypography>} {...a11yProps(2)} />
+          </Tabs>
+        </AppBar>
+        <SwipeableViews
+          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+          index={value}
+          onChangeIndex={handleChangeIndex}
         >
-          <Tab label={<Mytypography>اخبار</Mytypography>} {...a11yProps(0)} /> 
-          <Tab label={<Mytypography>مطالب</Mytypography>} {...a11yProps(1)} />
-          <Tab label={<Mytypography>پرسش و پاسخ</Mytypography>} {...a11yProps(2)} />
-        </Tabs>
-      </AppBar>
-      <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-      >
-        <TabPanel value={value} index={0} dir={theme.direction}>
-        
-{isowner&&   <Write course={props.course}/> }
-{newslist.map((news)=> <News course={props.course} update={news} /> )}
-     
+          <TabPanel value={value} index={0} dir={theme.direction}>
 
+            {isowner && <Write course={props.course} />}
+            {newslist.map((news) => <News course={props.course} update={news} />)}
+
+
+          </TabPanel>
+          <TabPanel value={value} index={1} dir={theme.direction}>
+            <Content course={props.course} />
+          </TabPanel>
+          <TabPanel value={value} index={2} dir={theme.direction}>
+            Item Three
         </TabPanel>
-        <TabPanel value={value} index={1} dir={theme.direction}>
-          Item Two
-        </TabPanel>
-        <TabPanel value={value} index={2} dir={theme.direction}>
-          Item Three
-        </TabPanel>
-      </SwipeableViews>
+        </SwipeableViews>
       </ThemeProvider>
     </div>
+
   );
 }

@@ -48,8 +48,8 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    margin:theme.spacing(2),
-    
+    margin: theme.spacing(2),
+
   },
 
   title: {
@@ -62,92 +62,118 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    
-  
+
+
     display: 'flex',
     overflow: 'auto',
     flexDirection: 'column',
   },
-  
+
   fixedHeight: {
     height: 270,
   },
-  fixedHeight1:{
- 
-  
+  fixedHeight1: {
+
+
   },
-  fixedHeight2:{
-    height:180,
-    alignItems:'right',
-    justifyItems:'end',
-    marginBottom:theme.spacing(0),
-    marginTop:theme.spacing(0),
-    
-    padding:0,
-    
+  fixedHeight2: {
+    height: 180,
+    alignItems: 'right',
+    justifyItems: 'end',
+    marginBottom: theme.spacing(0),
+    marginTop: theme.spacing(0),
+
+    padding: 0,
+
   }
 
 }));
 
-const SingleCourse = ({match}) => {
-    //const course = useSelector(state => state.course);
-const [course,setcourse]=React.useState({});
-    const dispatch = useDispatch();
+const usedispatch = useDispatch()
 
-    // useEffect(() => {
-    //     dispatch(getSingleCourse(match.params.id));
-    //     console.log(match);
-    //     console.log(course);
-    // }, []);
-    useEffect(()=> 
-    {
-    setTimeout(()=>
-    {console.log(match.params.id);
-          const promise
-     =  Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`,{  headers :{
-      "Authorization": `Token ${localStorage.getItem('token')}`}})
-     promise.then(
-       response=>{
+const onSnackBarClose = (event, reason) => {
+  if (reason === 'clickaway') {
+    return;
+  }
+  usedispatch({ type: actionTypes.SNACKBAR, snackBarOpenOrClose: false })
+}
 
-setcourse(response.data)
+const snackBar = useSelector(state => state.snackBar)
+
+const SingleCourse = ({ match }) => {
+  //const course = useSelector(state => state.course);
+  const [course, setcourse] = React.useState({});
+  const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //     dispatch(getSingleCourse(match.params.id));
+  //     console.log(match);
+  //     console.log(course);
+  // }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      console.log(match.params.id);
+      const promise
+        = Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`, {
+          headers: {
+            "Authorization": `Token ${localStorage.getItem('token')}`
+          }
+        })
+      promise.then(
+        response => {
+
+          setcourse(response.data)
 
 
-         
-       }
-     )
+
+        }
+      )
 
 
     }
-    ,500)}
-    ,[])
-    const classes = useStyles();
-  
-const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-const fixedHeightPaper1 = clsx(classes.paper, classes.fixedHeight1);
-const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
+      , 500)
+  }
+    , [])
+  const classes = useStyles();
 
-    return(
-        <main className={classes.content}>
-        
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={1}>
-           
+  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const fixedHeightPaper1 = clsx(classes.paper, classes.fixedHeight1);
+  const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
+
+  return (
+    <main className={classes.content}>
+      <Container maxWidth="lg" className={classes.container}>
+
+        <Snackbar
+          open={snackBar}
+          autoHideDuration={1500}
+          onClose={onSnackBarClose}
+          dir='rtl'
+        >
+
+          <Alert onClose={onSnackBarClose} severity="success" className={classes.alertStyle} >
+            انجام شد
+
+          </Alert>
+        </Snackbar>
+        <Grid container spacing={1}>
+
           <Grid item xs={12} >
-              
-              <Paper className={fixedHeightPaper2}>
-              <Coursemedia course={course}/>
-              </Paper>    
-                
-              
-            </Grid>
-           
-            <Grid item xs={12} >
-              <Paper className={fixedHeightPaper1}>
-                <Information course={course}/>
-              </Paper>
-            </Grid>
-            
-            {/* <Grid item xs={12} md={4} lg={3}>
+
+            <Paper className={fixedHeightPaper2}>
+              <Coursemedia course={course} />
+            </Paper>
+
+
+          </Grid>
+
+          <Grid item xs={12} >
+            <Paper className={fixedHeightPaper1}>
+              <Information course={course} />
+            </Paper>
+          </Grid>
+
+          {/* <Grid item xs={12} md={4} lg={3}>
 
             
             
@@ -157,20 +183,20 @@ const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
               </Paper>
             </Grid> */}
 
-           
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Subjects course={course}/>
-                
-              </Paper>
-            </Grid>
+
+          <Grid item xs={12}>
+            <Paper className={classes.paper}>
+              <Subjects course={course} />
+
+            </Paper>
           </Grid>
-          <Box pt={4}>
-          </Box>
-        </Container>
-      </main>
-  
-    
-    );
-    };
+        </Grid>
+        <Box pt={4}>
+        </Box>
+      </Container>
+    </main>
+
+
+  );
+};
 export default SingleCourse;
