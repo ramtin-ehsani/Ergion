@@ -137,11 +137,9 @@ class Profile extends Component {
     selectedFile: null,
     hasImage: false,
     snackBarOpen: false,
-    loading: false,
-    allowedToUpload: true,
+    doneSnackBarOpen:false,
     anchorEl: null,
     allowedToRemove: false,
-    progress: 0,
     errorMessage: '',
 
 
@@ -179,7 +177,7 @@ class Profile extends Component {
       .catch((error) => {
         // handle error
         if (error.isAxiosError) {
-          this.setState({ snackBarOpen: true, errorMessage: error.message, loading: false, allowedToUpload: true, progress: 0 })
+          this.setState({ snackBarOpen: true, errorMessage: error.message, loading: false})
         }
         console.log(error);
       })
@@ -198,6 +196,23 @@ class Profile extends Component {
 
     if (event.target.files && event.target.files[0]) {
       const avatarImage = URL.createObjectURL(event.target.files[0])
+      const data = new FormData()
+      data.append('profile_picture', event.target.files[0])
+
+      axios.put('http://127.0.0.1:8000/api/student-profile/',
+        data, this.config)
+        .then(() => {
+          this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
+            , this.state.avatarImage)
+          this.setState({doneSnackBarOpen:true,  hasImage: false })
+
+
+        }).catch((error) => {
+          if (error.isAxiosError) {
+            this.setState({ snackBarOpen: true, errorMessage: error.message })
+          }
+          console.log(error);
+        });
       this.setState({ avatarImage, selectedFile: event.target.files[0], hasImage: true, allowedToRemove: true })
 
     }
@@ -205,41 +220,6 @@ class Profile extends Component {
 
 
   };
-
-
-  uploadConfig = {
-    onUploadProgress: progressEvent => this.setState({ progress: Math.round((progressEvent.loaded * 100) / progressEvent.total) }),
-    headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
-  }
-
-  onFileUpload = () => {
-
-    if (this.state.allowedToUpload) {
-
-      this.setState({ allowedToUpload: false, loading: true })
-
-      const data = new FormData()
-      data.append('profile_picture', this.state.selectedFile)
-
-      axios.put('http://127.0.0.1:8000/api/student-profile/',
-        data, this.uploadConfig)
-        .then(() => {
-          this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
-            , this.state.avatarImage)
-          this.setState({ loading: false, hasImage: false, allowedToUpload: true, progress: 0 })
-
-
-        }).catch((error) => {
-          if (error.isAxiosError) {
-            this.setState({ snackBarOpen: true, errorMessage: error.message, loading: false, allowedToUpload: true, progress: 0 })
-          }
-          console.log(error);
-        });
-    }
-
-
-  };
-
 
   config = {
     headers: { Authorization: `Token ${localStorage.getItem('api_key')}` },
@@ -258,7 +238,7 @@ class Profile extends Component {
         if (response.status === 200) {
           this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
             , '')
-          this.setState({ hasImage: false, avatarImage: "", allowedToRemove: false })
+          this.setState({doneSnackBarOpen:true, hasImage: false, avatarImage: "", allowedToRemove: false })
           this.handleClose();
 
         }
@@ -266,7 +246,7 @@ class Profile extends Component {
       }).catch((error) => {
         if (error.isAxiosError) {
           this.handleClose();
-          this.setState({ snackBarOpen: true, errorMessage: error.message, loading: false, allowedToUpload: true, progress: 0 })
+          this.setState({ snackBarOpen: true, errorMessage: error.message, loading: false })
         }
         console.log(error);
       });
@@ -280,6 +260,13 @@ class Profile extends Component {
       return;
     }
     this.setState({ snackBarOpen: false })
+  }
+
+  onDoneSnackBarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ doneSnackBarOpen: false })
   }
 
 
@@ -304,6 +291,19 @@ class Profile extends Component {
           </Alert>
         </Snackbar>
 
+        <Snackbar
+          open={this.state.doneSnackBarOpen}
+          autoHideDuration={1000}
+          onClose={this.onDoneSnackBarClose}
+          dir='rtl'
+        >
+
+          <Alert onClose={this.onDoneSnackBarClose} severity="success" className={classes.alertStyle} >
+            انجام شد
+
+          </Alert>
+        </Snackbar>
+
         <CardContent>
           <Box
             alignItems="center"
@@ -315,6 +315,7 @@ class Profile extends Component {
               <Avatar
                 className={classes.avatar}
                 src={this.state.avatarImage}
+                style={{marginTop:'10px'}}
               />
               <input
                 accept="image/*"
@@ -364,13 +365,14 @@ class Profile extends Component {
               gutterBottom
               variant="h3"
               className={classes.typographyStyle}
-              style={{ minHeight: '2rem' }}
+              style={{ minHeight: '2rem',marginTop:'8px' }}
             >
               {this.props.user.firstName + ' ' + this.props.user.lastName}
             </Typography>
             <Typography
               color="textSecondary"
               variant="body1"
+              style={{ marginTop:'15px' }}
             >
               {/* {`${user.country} ${user.city}`} */}
               {`${user.country}`}
@@ -379,32 +381,12 @@ class Profile extends Component {
               className={classes.dateText}
               color="textSecondary"
               variant="body1"
+              style={{ marginTop:'15px' }}
             >
               {`${moment().format('hh:mm A')} ${user.timezone}`}
             </Typography>
           </Box>
         </CardContent>
-        <Divider />
-
-        <Box p={2} >
-          <CardActions >
-            <Button
-              color="primary"
-              fullWidth
-              variant="contained"
-              component="label"
-              onClick={this.onFileUpload}
-              disabled={!this.state.hasImage}
-            >
-              آپلود عکس
-            {this.state.loading && (
-                <CircularProgress variant="static" value={this.state.progress} thickness={5} size={25} className={classes.progressBar} />
-
-              )}
-
-            </Button>
-          </CardActions>
-        </Box>
 
       </Card>
     );

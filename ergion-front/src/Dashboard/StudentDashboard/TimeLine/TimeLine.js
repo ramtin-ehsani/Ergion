@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { Box } from '@material-ui/core';
+import Divider from "@material-ui/core/Divider";
 import ReplyIcon from '@material-ui/icons/Reply';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import SendIcon from '@material-ui/icons/Send';
@@ -28,6 +29,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import BallotIcon from '@material-ui/icons/Ballot';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
@@ -158,7 +160,6 @@ class TimeLine extends React.Component {
 
     constructor(props) {
         super(props);
-        this.commentRef = React.createRef('');
         this.state = {
             list: [],
             loading: true,
@@ -228,6 +229,10 @@ class TimeLine extends React.Component {
                 const episodeList = []
 
                 response.data.map((episode) => {
+                    let episodeComments = episode.comments
+                    if (episodeComments.length > 2) {
+                        episodeComments = episodeComments.slice(0, 2)
+                    }
                     const episodeObject = {
                         id: episode.id,
                         name: episode.name,
@@ -240,10 +245,11 @@ class TimeLine extends React.Component {
                         course_url: episode.course_url,
                         files: episode.files,
                         liked: episode.liked,
+                        commentRef: '',
                         likes_count: episode.likes_count,
                         time: episode.creation_time,
-                        comments: episode.comments,
-                        isCommentOpen: false,
+                        comments_count: episode.comments.length,
+                        comments: episodeComments,
                         isEpisode: true,
                         anchorEl: false,
 
@@ -260,6 +266,10 @@ class TimeLine extends React.Component {
                         const updateList = []
 
                         resp.data.map((update) => {
+                            let updateComments = update.comments
+                            if (updateComments.length >2 ) {
+                                updateComments = updateComments.slice(0, 2)
+                            }
                             const episodeObject = {
                                 id: update.id,
                                 name: 'خبر',
@@ -272,10 +282,11 @@ class TimeLine extends React.Component {
                                 course_url: update.course_url,
                                 files: update.files,
                                 time: update.created_at,
-                                comments: update.comments,
+                                commentRef: '',
+                                comments_count: update.comments.length,
+                                comments: updateComments,
                                 liked: update.liked,
                                 likes_count: update.likes,
-                                isCommentOpen: false,
                                 isEpisode: false,
                                 anchorEl: false,
 
@@ -399,46 +410,69 @@ class TimeLine extends React.Component {
 
     }
 
-    handlePostComment = (index, timelineID, isEpisode) => {
-        if (this.commentRef.current.value !== '') {
-            if (isEpisode) {
-                axios.post('http://127.0.0.1:8000/api/episode-comments/', {
-                    episode_id: timelineID,
-                    comment_text: this.commentRef.current.value
-                }, this.config).then((res) => {
-                    const listItem = {
-                        ...this.state.list[index]
-                    }
+    handlePostComment = (index, timelineID, isEpisode, text) => {
+        if (isEpisode) {
+            axios.post('http://127.0.0.1:8000/api/episode-comments/', {
+                episode_id: timelineID,
+                comment_text: text
+            }, this.config).then((res) => {
+                const listItem = {
+                    ...this.state.list[index]
+                }
+                if (listItem.comments.length < 2) {
                     listItem.comments.push(res.data)
-                    const list = [...this.state.list]
-                    list[index] = listItem
-                    this.setState({ list: list })
-                    this.commentRef.current.value = ''
+                }
+                const list = [...this.state.list]
+                list[index] = listItem
+                this.setState({ list: list })
+                this.commentTextHandler(index, '')
 
 
-                }).catch((error) => {
-                    console.log(error)
-                })
-            } else {
-                axios.post('http://127.0.0.1:8000/api/update-comments/', {
-                    update_id: timelineID,
-                    comment_text: this.commentRef.current.value
-                }, this.config).then((res) => {
-                    const listItem = {
-                        ...this.state.list[index]
-                    }
+
+            }).catch((error) => {
+                console.log(error)
+            })
+        } else {
+            axios.post('http://127.0.0.1:8000/api/update-comments/', {
+                update_id: timelineID,
+                comment_text: text
+            }, this.config).then((res) => {
+                const listItem = {
+                    ...this.state.list[index]
+                }
+                if (listItem.comments.length <2) {
                     listItem.comments.push(res.data)
-                    const list = [...this.state.list]
-                    list[index] = listItem
-                    this.setState({ list: list })
-                    this.commentRef.current.value = ''
+                }
+                const list = [...this.state.list]
+                list[index] = listItem
+                this.setState({ list: list })
+                this.commentTextHandler(index, '')
 
 
-                }).catch((error) => {
-                    console.log(error)
-                })
-            }
+            }).catch((error) => {
+                console.log(error)
+            })
         }
+
+    }
+
+    handleCommentTextOnChange = (e, ind) => {
+        this.commentTextHandler(ind, e.target.value)
+
+
+    }
+
+    commentTextHandler = (index, value) => {
+        const results = this.state.list.map((item, idx) => {
+            if (index === idx) {
+                return {
+                    ...item,
+                    commentRef: value
+                }
+            }
+            return item;
+        });
+        this.setState({ list: results })
 
     }
 
@@ -494,19 +528,6 @@ class TimeLine extends React.Component {
 
     }
 
-    commentOpener = (episodeIndex) => {
-        const results = this.state.list.map((item, idx) => {
-            if (episodeIndex === idx) {
-                return {
-                    ...item,
-                    isCommentOpen: !item.isCommentOpen
-                }
-            }
-            return item;
-        });
-        this.setState({ list: results })
-
-    }
 
 
     fileNameExtractor = (src) => {
@@ -555,6 +576,7 @@ class TimeLine extends React.Component {
         if (type === '.mp4') {
             return (
                 <div
+                    style={{ padding: '16px' }}
                 >
                     <ReactPlayer
                         width='100%'
@@ -661,9 +683,10 @@ class TimeLine extends React.Component {
                                                     <Zoom in={true} timeout={700} >
 
                                                         <Paper className={classes.mediaCardPaperStyle}
-                                                            style={{ padding: '16px', marginBottom: '12px', marginTop: '12px' }}
+                                                            elevation={3}
+                                                            style={{ marginBottom: '30px', marginTop: '30px' }}
                                                         >
-                                                            <Grid container spacing={2} dir="rtl"
+                                                            <Grid container dir="rtl"
 
                                                             >
                                                                 <Grid item lg={12} md={12} sm={12} xs={12}
@@ -736,16 +759,15 @@ class TimeLine extends React.Component {
 
                                                                     </div>
                                                                     <div style={{ alignSelf: 'flex-start' }}>
-                                                                        <Button
+                                                                        <IconButton
                                                                             component="span"
                                                                             aria-controls="customized-menu"
                                                                             aria-haspopup="true"
                                                                             onClick={(e) => this.handleAnchorEl(e, index, true)}
-                                                                            className={classes.veticalDots}
-                                                                            style={{ marginLeft: '4px' }} >
+                                                                            className={classes.veticalDots}>
                                                                             <MoreHorizIcon
                                                                             />
-                                                                        </Button>
+                                                                        </IconButton>
                                                                         <StyledMenu
                                                                             id="customized-menu"
                                                                             anchorEl={timeline.anchorEl}
@@ -765,24 +787,29 @@ class TimeLine extends React.Component {
 
 
                                                                 </Grid>
+                                                                <Grid md={12} lg={12} sm={12}
+                                                                    item
+                                                                    xs={12}>
+                                                                    <Divider />
+                                                                </Grid>
                                                                 <Grid item
                                                                     md={12} lg={12} sm={12}
-                                                                    style={{ paddingRight: '14px', display: 'flex', marginRight: 85, wordBreak: 'break-all' }}
                                                                     xs={12}>
-                                                                    <Typography
+                                                                    <div style={{ padding: '16px', display: 'flex', wordBreak: 'break-all' }}>
+                                                                        <Typography
 
-                                                                    >
-                                                                        <Box fontSize={18}  >
-                                                                            {timeline.description !== '' ? timeline.description : '(توضیحی وجود ندارد)'}
-                                                                        </Box>
+                                                                        >
+                                                                            <Box fontSize={18}  >
+                                                                                {timeline.description !== '' ? timeline.description : '(توضیحی وجود ندارد)'}
+                                                                            </Box>
 
-                                                                    </Typography>
+                                                                        </Typography>
+                                                                    </div>
 
                                                                 </Grid>
 
 
                                                                 <Grid item md={12} lg={12} sm={12}
-                                                                    style={{ padding: '14px', marginRight: 85 }}
                                                                     xs={12}>
 
                                                                     {timeline.files.map((file) =>
@@ -798,7 +825,7 @@ class TimeLine extends React.Component {
                                                                     md={12} lg={12} sm={12}
                                                                     xs={12}>
                                                                     {timeline.files.length > 0 ? (
-                                                                        <div style={{ padding: '4px', marginRight: 85 }}>
+                                                                        <div style={{ padding: '16px' }}>
                                                                             <Typography
                                                                                 style={{ display: 'flex', marginBottom: '8px' }}
 
@@ -840,10 +867,10 @@ class TimeLine extends React.Component {
                                                                                                     </div>
                                                                                                 </StyledTableCell>
                                                                                                 <StyledTableCell align="center">
-                                                                                                    <Button variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
+                                                                                                    <IconButton variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
 
                                                                                                         <GetAppRoundedIcon />
-                                                                                                    </Button>
+                                                                                                    </IconButton>
                                                                                                 </StyledTableCell>
                                                                                             </StyledTableRow>
 
@@ -855,9 +882,10 @@ class TimeLine extends React.Component {
                                                                     ) : ''}
 
                                                                 </Grid>
+                                                                
                                                                 <Grid item
                                                                     md={12} lg={12} sm={12}
-                                                                    style={{ padding: '14px', marginRight: 85 }}
+                                                                    style={{ padding: '16px' }}
                                                                     xs={12}>
                                                                     <div
                                                                         style={{
@@ -883,74 +911,64 @@ class TimeLine extends React.Component {
                                                                                 <Box style={{
                                                                                     color: 'grey'
                                                                                 }} fontSize={14}>
-                                                                                    {timeline.comments.length}
+                                                                                    {timeline.comments_count}
                                                                                 </Box>
                                                                             </div>
-                                                                            <IconButton onClick={() => this.commentOpener(index)}>
+                                                                            <IconButton href={"/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}>
                                                                                 <CommentIcon />
                                                                             </IconButton>
 
                                                                         </div>
-                                                                        <Button href={"/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}
+                                                                        <IconButton href={"/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}
                                                                             style={{ marginLeft: '5px', alignSelf: 'center' }}
                                                                         >
                                                                             <AssignmentIcon style={{ marginRight: '4px' }} />
-                                                                        </Button>
-                                                                        <Button href={"/student_dashboard" + timeline.course_url.replace('course', 'added_courses')}
+                                                                        </IconButton>
+                                                                        <IconButton href={"/student_dashboard" + timeline.course_url.replace('course', 'added_courses')}
                                                                             style={{ marginRight: '5px', alignSelf: 'center' }}
                                                                         >
                                                                             <BallotIcon style={{ marginRight: '4px' }} />
-                                                                        </Button>
+                                                                        </IconButton>
                                                                     </div>
 
                                                                 </Grid>
 
+                                                                <Grid md={12} lg={12} sm={12}
+                                                                    item
+                                                                    xs={12}>
+                                                                    <Divider />
+                                                                </Grid>
+
+
                                                                 <Grid item
                                                                     md={12} lg={12} sm={12}
-                                                                    style={{
-                                                                        transition: theme.transitions.create("all", {
-                                                                            easing: theme.transitions.easing.sharp,
-                                                                            duration: theme.transitions.duration.leavingScreen
-                                                                        })
-                                                                    }}
 
                                                                     xs={12}>
 
-                                                                    {timeline.isCommentOpen ? (
-                                                                        <Grow in={timeline.isCommentOpen} timeout={700} style={{ paddingRight: '16px', marginRight: 85 }}>
-                                                                            <div>
-                                                                                <Grid container wrap="nowrap" alignItems='center' style={{ minHeight: "2rem" }}>
-                                                                                    <Grid item xs zeroMinWidth>
-                                                                                        <InputBase
-                                                                                            style={{ padding: '8px' }}
-                                                                                            inputRef={this.commentRef}
-                                                                                            rowsMax={2}
-                                                                                            multiline
-                                                                                            fullWidth
-                                                                                            className='input2'
-                                                                                            placeholder="متن پیام"
-                                                                                        />
-                                                                                    </Grid>
-                                                                                    <Grid item>
-                                                                                        <IconButton color="primary" className={classes.iconButton}
-                                                                                            onClick={() => this.handlePostComment(index, timeline.id, timeline.isEpisode)}
-                                                                                        >
-                                                                                            <SendIcon className='icon' />
-                                                                                        </IconButton>
-                                                                                    </Grid>
+                                                                    <div style={{ padding:'16px' }}>
 
-                                                                                </Grid>
-                                                                                {timeline.comments.length > 0 &&
-                                                                                    (<List dir='rtl'>
-                                                                                        {timeline.comments.map((comment, commentIndex) => (
-                                                                                            <ListItem key={comment.id} alignItems="flex-start">
+
+                                                                        <div style={{ marginRight: '-16px', marginLeft: '-16px' }}>
+                                                                            {timeline.comments.length > 0 &&
+                                                                                (<List
+                                                                                    component="div"
+                                                                                    aria-labelledby="nested-comment-list-subheader"
+                                                                                    subheader={
+                                                                                        <ListSubheader component="div" id="nested-comment-list-subheader">
+                                                                                            کامنت ها
+                                                                            </ListSubheader>
+                                                                                    }
+                                                                                >
+                                                                                    {timeline.comments.map((comment, commentIndex) => (
+                                                                                        <div key={comment.id}>
+                                                                                            <ListItem  >
                                                                                                 <ListItemAvatar>
                                                                                                     <Avatar alt="avatar" src={comment.profile_picture} />
                                                                                                 </ListItemAvatar>
                                                                                                 <ListItemText
                                                                                                     style={{ textAlign: 'right' }}
                                                                                                     primary={
-                                                                                                        <Typography className='text1'>
+                                                                                                        <Typography >
                                                                                                             {comment.user_firstname + " " + comment.user_lastname}
                                                                                                         </Typography>
                                                                                                     }
@@ -960,7 +978,6 @@ class TimeLine extends React.Component {
                                                                                                                 dir='rtl'
                                                                                                                 component="span"
                                                                                                                 variant="body2"
-                                                                                                                className='text2'
                                                                                                                 color="textPrimary"
                                                                                                                 style={{ wordBreak: 'break-all' }}
                                                                                                             >
@@ -982,12 +999,35 @@ class TimeLine extends React.Component {
                                                                                                         {comment.liked ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
                                                                                                     </IconButton>
                                                                                                 </ListItemIcon>
-                                                                                            </ListItem>
-                                                                                        ))}
-                                                                                    </List>)}
-                                                                            </div>
 
-                                                                        </Grow>) : ""}
+                                                                                            </ListItem>
+                                                                                            <Divider />
+                                                                                        </div>
+
+                                                                                    ))}
+                                                                                </List>)}
+                                                                        </div>
+                                                                        <InputBase
+                                                                            style={{ padding: '8px',marginTop:'6px' }}
+                                                                            value={timeline.commentRef}
+                                                                            onChange={(e) => this.handleCommentTextOnChange(e, index)}
+                                                                            rowsMax={2}
+                                                                            multiline
+                                                                            fullWidth
+                                                                            className='input2'
+                                                                            placeholder="متن پیام"
+                                                                            endAdornment={
+                                                                                <InputAdornment position="end" >
+                                                                                    {timeline.commentRef !== '' && (
+                                                                                        <IconButton color="primary" className={classes.iconButton}
+                                                                                            onClick={() => this.handlePostComment(index, timeline.id, timeline.isEpisode, timeline.commentRef)}
+                                                                                        >
+                                                                                            <SendIcon className='icon' />
+                                                                                        </IconButton>)}
+                                                                                </InputAdornment>
+                                                                            }
+                                                                        />
+                                                                    </div>
                                                                 </Grid>
 
 

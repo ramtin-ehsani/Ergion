@@ -127,6 +127,7 @@ class ProfileDetails extends Component {
     loading:false,
     allowedToSave: true,
     snackBarOpen: false,
+    doneSnackBarOpen:false,
     errorMessage: '',
   }
 
@@ -218,6 +219,7 @@ class ProfileDetails extends Component {
 
               }else{
                 oldData['email'] = formData.email
+                this.setState({doneSnackBarOpen:true})
 
               }
               
@@ -251,6 +253,13 @@ class ProfileDetails extends Component {
     this.setState({ snackBarOpen: false })
   }
 
+  onDoneSnackBarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ doneSnackBarOpen: false })
+  }
+
   render() {
 
     const { classes } = this.props;
@@ -271,6 +280,19 @@ class ProfileDetails extends Component {
 
           <Alert onClose={this.onSnackBarClose} severity="error" className={classes.alertStyle}>
             {this.state.errorMessage}
+
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          open={this.state.doneSnackBarOpen}
+          autoHideDuration={1000}
+          onClose={this.onDoneSnackBarClose}
+          dir='rtl'
+        >
+
+          <Alert onClose={this.onDoneSnackBarClose} severity="success" className={classes.alertStyle} >
+            انجام شد
 
           </Alert>
         </Snackbar>
