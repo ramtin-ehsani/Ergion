@@ -5,10 +5,20 @@ import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {connect} from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
+import Menu from '@material-ui/core/Menu';
+import Fab from "@material-ui/core/Fab";
+import purple from '@material-ui/core/colors/purple';
+import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import MuiAlert from '@material-ui/lab/Alert';
 import * as actionTypes from '../../store/actions'
 import {
   Box,
+  Avatar,
   Button,
   Card,
   CardContent,
@@ -40,6 +50,37 @@ const occupation = [
 ];
 
 
+const StyledMenu = withStyles({
+  paper: {
+    border: '1px solid #d3d4d5',
+  },
+})((props) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'center',
+    }}
+    {...props}
+  />
+));
+
+const StyledMenuItem = withStyles((theme) => ({
+  root: {
+    '&:focus': {
+      backgroundColor: theme.palette.primary.main,
+      '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+        color: theme.palette.common.white,
+      },
+    },
+  },
+}))(MenuItem);
+
 
 const styles = (theme) => ({
   root: {
@@ -53,7 +94,29 @@ const styles = (theme) => ({
   alertStyle:{
     display:'flex',
     font:'20'
-  }
+  },
+  editPhoto: {
+    position: 'absolute',
+    right: 70,
+    bottom: -16,
+    color: purple[900],
+    margin: 4,
+    width: 40,
+    height: 40,
+  },
+  avatar: {
+    height: 100,
+    width: 100
+  },
+  input: {
+    display: "none"
+  },
+  avatarContainer: {
+    position: 'relative',
+    display: 'inline-block',
+    marginBottom: 18,
+
+  },
 });
 
 function Alert(props) {
@@ -88,6 +151,7 @@ class ProfileDetails extends Component {
       universityEmail:'',
       aboutMe:'',
       institute:'',
+      avatarImage: this.props.user.profilePicture,
 
 
     },
@@ -100,13 +164,19 @@ class ProfileDetails extends Component {
       universityEmail:'',
       aboutMe:'',
       institute:'',
+      avatarImage: this.props.user.profilePicture,
     },
+    selectedFile: 'firstTime',
     textFieldChanged: false,
     loading:false,
     allowedToSave: true,
+    anchorEl: null,
+    hasImage: false,
+    allowedToRemove: false,
     snackBarOpen: false,
     errorMessage: '',
     teacherTypeError:true,
+    doneSnackBarOpen:false,
   }
 
   config = {
@@ -118,6 +188,7 @@ class ProfileDetails extends Component {
       .then((response) => {
         // handle success
         const formData = {
+          avatarImage : response.data.profile_picture,
           firstName: response.data.firstname,
           lastName: response.data.lastname,
           email: response.data.email,
@@ -137,6 +208,9 @@ class ProfileDetails extends Component {
         }
         if(response.data.academy_name==null){
           formData['institute']='';
+        }
+        if (response.data.profile_picture !== null) {
+          this.setState({ allowedToRemove: true });
         }
 
         if(response.data.teacher_type!==4){
@@ -195,6 +269,7 @@ class ProfileDetails extends Component {
       && oldData.resume === newData.resume
       && oldData.universityEmail === newData.universityEmail
       && oldData.aboutMe === newData.aboutMe 
+      && oldData.avatarImage === newData.avatarImage
       && oldData.institute === newData.institute) {
 
       this.setState({ textFieldChanged: false })
@@ -228,6 +303,11 @@ class ProfileDetails extends Component {
         data.append('scholar_email', formData.universityEmail)
         data.append('personal_description', formData.aboutMe)
         data.append('academy_name', formData.institute)
+        if(this.state.selectedFile!==null && this.state.selectedFile!=='firstTime'){
+          data.append('profile_picture', this.state.selectedFile)
+        }else if(this.state.selectedFile===null){
+          data.append('profile_picture', '')
+        }
 
 
         axios.put('http://127.0.0.1:8000/api/teacher-profile/',
@@ -240,6 +320,7 @@ class ProfileDetails extends Component {
               oldData['aboutMe'] = formData.aboutMe
               oldData['universityEmail'] = formData.universityEmail
               oldData['resume'] = formData.resume
+              oldData['avatarImage']=formData.avatarImage
 
 
               if(formData.email!==response.data.email){
@@ -248,6 +329,7 @@ class ProfileDetails extends Component {
 
               }else{
                 oldData['email'] = formData.email
+                this.setState({doneSnackBarOpen:true})
 
               }
               
@@ -258,7 +340,7 @@ class ProfileDetails extends Component {
               this.checkForTextFieldChange(oldData, formData)
 
               this.props.dispatchUser(formData.firstName, formData.lastName
-                , this.props.user.profilePicture)
+                ,formData.avatarImage)
 
             
 
@@ -274,12 +356,59 @@ class ProfileDetails extends Component {
 
   }
 
+  handleClick = (event) => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  };
+
+  onFileChange = event => {
+
+
+    if (event.target.files && event.target.files[0]) {
+      const {formData}=this.state
+
+      const avatarImage = URL.createObjectURL(event.target.files[0])
+      formData['avatarImage']=avatarImage
+      this.setState({ formData, selectedFile: event.target.files[0], hasImage: true, allowedToRemove: true })
+      this.checkForTextFieldChange(this.state.oldData, formData)
+    }
+    // Update the state 
+
+
+  };
+
+  deletePicture = () => {
+    const {formData}=this.state
+
+    formData['avatarImage']=""
+    
+    this.setState({selectedFile:null,
+      anchorEl: null, hasImage: false,
+      formData,
+        allowedToRemove: false})
+
+        this.checkForTextFieldChange(this.state.oldData, formData)
+
+
+
+  }
+
 
   onSnackBarClose = ( reason) => {
     if (reason === 'clickaway') {
       return;
     }
     this.setState({ snackBarOpen: false })
+  }
+
+  onDoneSnackBarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ doneSnackBarOpen: false })
   }
 
   render() {
@@ -306,6 +435,19 @@ class ProfileDetails extends Component {
           </Alert>
         </Snackbar>
 
+        <Snackbar
+          open={this.state.doneSnackBarOpen}
+          autoHideDuration={1000}
+          onClose={this.onDoneSnackBarClose}
+          dir='rtl'
+        >
+
+          <Alert onClose={this.onDoneSnackBarClose} severity="success" className={classes.alertStyle} >
+            انجام شد
+
+          </Alert>
+        </Snackbar>
+
           <CardHeader
             subheader="اطلاعات خود را میتوانید ویرایش کنید"
             title="پروفایل"
@@ -317,6 +459,61 @@ class ProfileDetails extends Component {
               spacing={4}
               dir='rtl'
             >
+              <Grid
+                item
+                md={12}
+                style={{alignSelf:'center'}}
+                xs={12}>
+                <div className={classes.avatarContainer}>
+                  <Avatar
+                    className={classes.avatar}
+                    src={this.state.formData.avatarImage}
+                  />
+                  <input
+                    accept="image/*"
+                    className={classes.input}
+                    id="contained-button-file"
+                    type="file"
+                    onChange={this.onFileChange}
+                  />
+                  <Fab
+                    component="span"
+                    aria-controls="customized-menu"
+                    aria-haspopup="true"
+                    className={classes.editPhoto}
+                    onClick={this.handleClick} >
+                    <EditIcon />
+
+                  </Fab>
+
+
+                  <StyledMenu
+                    id="customized-menu"
+                    anchorEl={this.state.anchorEl}
+                    keepMounted
+                    open={Boolean(this.state.anchorEl)}
+                    onClose={this.handleClose}
+                  >
+                    <label htmlFor='contained-button-file'>
+                      <StyledMenuItem onClick={this.handleClose} >
+                        <ListItemIcon>
+                          <AddPhotoAlternateIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Choose a picture" />
+                      </StyledMenuItem>
+                    </label>
+
+                    <StyledMenuItem onClick={this.deletePicture} disabled={!this.state.allowedToRemove}>
+                      <ListItemIcon>
+                        <DeleteIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Delete the picture" />
+                    </StyledMenuItem>
+                  </StyledMenu>
+                </div>
+
+              </Grid>
+
               <Grid
                 item
                 md={6}

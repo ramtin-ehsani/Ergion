@@ -495,7 +495,7 @@ class NestedList extends React.Component {
             this.getValues()
 
 
-        }, 2000)
+        }, 1000)
 
 
     }
@@ -930,7 +930,7 @@ class NestedList extends React.Component {
 
         if (type === '.mp4') {
             return (
-                <div style={{ margin: '10px' }}>
+                <div style={{ marginTop: '8px', padding: '20px' }}>
                     <ReactPlayer
                         width='100%'
                         height='100%'
@@ -944,6 +944,7 @@ class NestedList extends React.Component {
                     </Typography></div>
             )
         }
+
 
         return null
 
@@ -961,7 +962,7 @@ class NestedList extends React.Component {
 
                 <ThemeProvider theme={theme} >
 
-                    <div className={classes.root} style={{direction:'rtl'}}>
+                    <div className={classes.root} style={{ direction: 'rtl' }}>
 
 
                         <Dialog
@@ -1282,172 +1283,75 @@ class NestedList extends React.Component {
                                     <Collapse in={item.isOpened} timeout="auto" unmountOnExit
                                         style={{ marginLeft: '14px', marginRight: '14px' }}
                                     >
+                                        {item.episodes.length > 0 ? (
+                                            <div>
 
-                                        {item.episodes.map((episode, indx) =>
-                                            (
-                                                <Paper className={classes.mediaCardPaperStyle} elevation={5}
-                                                    style={{ padding: '12px', marginBottom: '12px', marginTop: '12px' }} key={episode.id}
-                                                >
-                                                    <Grid container spacing={2} dir="rtl"
+                                                {item.episodes.map((episode, indx) =>
+                                                    (
+                                                        <Paper className={classes.mediaCardPaperStyle} elevation={5}
+                                                            style={{ padding: '12px', marginBottom: '12px', marginTop: '12px' }} key={episode.id}
+                                                        >
+                                                            <Grid container spacing={2} dir="rtl"
 
-                                                    >
-                                                        <Grid item lg={12} md={12} sm={12} xs={12}  >
-
-
-                                                            <div
-                                                                style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
                                                             >
-                                                                <div style={{ alignSelf: 'center', height: 50, width: 50, marginTop: '10px' }}
-                                                                >
-                                                                    {this.state.isOwner && (
+                                                                <Grid item lg={12} md={12} sm={12} xs={12}  >
 
-                                                                        <Button
-                                                                            onClick={(e) => this.chapterOrEpisodeRemoveButton(e, index, indx, false)}
-                                                                            className={classes.veticalDots}
-                                                                            style={{ alignSelf: 'center' }}
 
-                                                                        >
-                                                                            <DeleteIcon />
-                                                                        </Button>
-                                                                    )}
-                                                                </div>
-                                                                {!episode.isNameTextModeON ?
-                                                                    (<div
-                                                                        style={{
-                                                                            alignSelf: 'center',
-                                                                            display: 'flex'
-                                                                        }}
-                                                                        onMouseEnter={() => this.handleEpisodeEditButton(index, indx, 'name button on')}
-                                                                        onMouseLeave={() => this.handleEpisodeEditButton(index, indx, 'name button off')}
+                                                                    <div
+                                                                        style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
                                                                     >
-                                                                        <div style={{ width: 50, height: 50, alignSelf: 'center' }} />
-
-                                                                        <Typography
-                                                                            style={{
-                                                                                alignSelf: 'center'
-                                                                            }}
-
+                                                                        <div style={{ alignSelf: 'center', height: 50, width: 50, marginTop: '10px' }}
                                                                         >
-                                                                            <Box fontSize={30} fontWeight="fontWeightBold"
+                                                                            {this.state.isOwner && (
 
-                                                                            >
-                                                                                {episode.name}
-
-                                                                            </Box>
-                                                                        </Typography>
-                                                                        <div style={{ width: 50, height: 50, alignSelf: 'center', marginTop: '10px' }} >
-                                                                            {this.state.isOwner && episode.isNameButtonShown && !episode.isNameTextModeON && (
-                                                                                <Fade in={episode.isNameButtonShown} timeout={400}
+                                                                                <Button
+                                                                                    onClick={(e) => this.chapterOrEpisodeRemoveButton(e, index, indx, false)}
+                                                                                    className={classes.veticalDots}
                                                                                     style={{ alignSelf: 'center' }}
+
                                                                                 >
-                                                                                    <Button
-                                                                                        onClick={(e) => this.episodePropagationEditButton(e, index, indx, true)}
-                                                                                        className={classes.veticalDots}
-                                                                                    >
-                                                                                        <EditIcon />
-                                                                                    </Button>
-                                                                                </Fade>
+                                                                                    <DeleteIcon />
+                                                                                </Button>
                                                                             )}
                                                                         </div>
-
-
-
-                                                                    </div>
-                                                                    ) :
-
-                                                                    (
-                                                                        <ValidatorForm
-                                                                            onSubmit={() => this.episodeEditButtonSaveChanges(index, indx, true)} >
-                                                                            <InputBase
-                                                                                autoFocus
-                                                                                dir='rtl'
-                                                                                autoComplete='off'
-                                                                                name="name"
-                                                                                style={{ fontSize: 30, fontWeight: 900 }}
-                                                                                InputProps={{ 'aria-label': 'naked' }}
-                                                                                inputProps={{ style: { textAlign: 'center', marginTop: '6px' } }}
-                                                                                required
-                                                                                onBlur={(event) => this.episodeTextOnBlur(event, index, indx, true)}
-                                                                                defaultValue={episode.name}
-                                                                                inputRef={this.newEpisodeName}
-                                                                            />
-                                                                        </ValidatorForm>)
-                                                                }
-
-
-
-                                                                <div style={{ alignSelf: 'center', height: 50, width: 50 }}>
-                                                                </div>
-
-
-                                                            </div>
-                                                            <Grid></Grid>
-                                                        </Grid>
-
-                                                        <Grid item md={12} lg={12}
-                                                            style={{ marginTop: '12px', padding: '20px' }}
-                                                            xs={12}>
-
-                                                            {episode.files.map((file, indxx) =>
-
-                                                                <this.TypeOfFile src={file.file} key={file.id} />
-
-                                                            )}
-
-
-                                                        </Grid>
-                                                        <Grid item
-                                                            md={12} lg={12} sm={12}
-                                                            style={{ marginTop: '12px', padding: '20px' }}
-                                                            xs={12}>
-                                                            <Tabs
-                                                                indicatorColor="primary"
-                                                                textColor="primary"
-                                                                value={episode.tabValue}
-                                                                onChange={(e, v) => this.handleTabChange(v, index, indx)}>
-                                                                <Tab label="توضیحات" {...a11yProps(0)} className={classes.tabFont} />
-                                                                <Tab label="فایل ها" {...a11yProps(1)} className={classes.tabFont} />
-                                                            </Tabs>
-
-                                                            <div style={{ width: '100%', overflow: 'auto', wordBreak: 'break-all' }}>
-                                                                <SwipeableViews
-                                                                    axis={'x-reverse'}
-                                                                    index={episode.tabValue}
-                                                                    onChangeIndex={(e, v) => this.handleTabChange(v, index, indx)}
-                                                                >
-                                                                    <TabPanel value={episode.tabValue} index={0} >
-                                                                        {!episode.isDescTextModeON ?
+                                                                        {!episode.isNameTextModeON ?
                                                                             (<div
                                                                                 style={{
                                                                                     alignSelf: 'center',
-                                                                                    padding: '6px'
+                                                                                    display: 'flex'
                                                                                 }}
-                                                                                onMouseEnter={() => this.handleEpisodeEditButton(index, indx, 'desc button on')}
-                                                                                onMouseLeave={() => this.handleEpisodeEditButton(index, indx, 'desc button off')}
+                                                                                onMouseEnter={() => this.handleEpisodeEditButton(index, indx, 'name button on')}
+                                                                                onMouseLeave={() => this.handleEpisodeEditButton(index, indx, 'name button off')}
                                                                             >
+                                                                                <div style={{ width: 50, height: 50, alignSelf: 'center' }} />
 
-                                                                                <Typography component='div'
-                                                                                    style={{ display: 'flex',direction:'rtl' }}
+                                                                                <Typography
+                                                                                    style={{
+                                                                                        alignSelf: 'center'
+                                                                                    }}
+
                                                                                 >
-                                                                                    <Box fontSize={18} dir='rtl'>
-                                                                                        {episode.episode_description !== '' ? episode.episode_description : '(توضیحی وجود ندارد)'}
-                                                                                    </Box>
+                                                                                    <Box fontSize={30} fontWeight="fontWeightBold"
 
+                                                                                    >
+                                                                                        {episode.name}
+
+                                                                                    </Box>
                                                                                 </Typography>
-                                                                                {this.state.isOwner && episode.isDescButtonShown && !episode.isDescTextModeON && (
-                                                                                    <div style={{ display: 'flex' }}>
-                                                                                        <Fade in={episode.isDescButtonShown} timeout={400}
+                                                                                <div style={{ width: 50, height: 50, alignSelf: 'center', marginTop: '10px' }} >
+                                                                                    {this.state.isOwner && episode.isNameButtonShown && !episode.isNameTextModeON && (
+                                                                                        <Fade in={episode.isNameButtonShown} timeout={400}
                                                                                             style={{ alignSelf: 'center' }}
                                                                                         >
                                                                                             <Button
-                                                                                                onClick={(e) => this.episodePropagationEditButton(e, index, indx, false)}
+                                                                                                onClick={(e) => this.episodePropagationEditButton(e, index, indx, true)}
                                                                                                 className={classes.veticalDots}
                                                                                             >
                                                                                                 <EditIcon />
                                                                                             </Button>
                                                                                         </Fade>
-                                                                                    </div>
-                                                                                )}
+                                                                                    )}
+                                                                                </div>
 
 
 
@@ -1455,104 +1359,218 @@ class NestedList extends React.Component {
                                                                             ) :
 
                                                                             (
-
-                                                                                <div
-                                                                                    style={{ wordBreak: 'break-all' }}
-
-                                                                                    onBlur={(event) => this.episodeTextOnBlur(event, index, indx, false)}>
-                                                                                    <ValidatorForm
-                                                                                        onSubmit={() => this.episodeEditButtonSaveChanges(index, indx, false)} >
-                                                                                        <InputBase
-                                                                                            fullWidth
-                                                                                            autoFocus
-                                                                                            dir="rtl"
-                                                                                            // multiline
-                                                                                            autoComplete='off'
-                                                                                            name="desc"
-                                                                                            style={{ fontSize: 18 }}
-                                                                                            inputProps={{ 'aria-label': 'naked' }}
-                                                                                            defaultValue={episode.episode_description}
-                                                                                            inputRef={this.newEpisodeDescription}
-                                                                                        />
-                                                                                        <div style={{ display: 'flex', marginTop: '10px' }}>
-                                                                                            <Button variant="outlined" color="primary"
-                                                                                                type='submit'>
-                                                                                                ذخیره
-                                                                                    </Button>
-                                                                                        </div>
-                                                                                    </ValidatorForm>
-
-
-                                                                                </div>)
+                                                                                <ValidatorForm
+                                                                                    onSubmit={() => this.episodeEditButtonSaveChanges(index, indx, true)} >
+                                                                                    <InputBase
+                                                                                        autoFocus
+                                                                                        dir='rtl'
+                                                                                        autoComplete='off'
+                                                                                        name="name"
+                                                                                        style={{ fontSize: 30, fontWeight: 900 }}
+                                                                                        InputProps={{ 'aria-label': 'naked' }}
+                                                                                        inputProps={{ style: { textAlign: 'center', marginTop: '6px' } }}
+                                                                                        required
+                                                                                        onBlur={(event) => this.episodeTextOnBlur(event, index, indx, true)}
+                                                                                        defaultValue={episode.name}
+                                                                                        inputRef={this.newEpisodeName}
+                                                                                    />
+                                                                                </ValidatorForm>)
                                                                         }
-                                                                    </TabPanel>
-                                                                    <TabPanel value={episode.tabValue} index={1}>
-                                                                        {episode.files.length > 0 ? (
-                                                                            <TableContainer dir="rtl" >
-                                                                                <Table aria-label="customized table" dir="rtl">
-                                                                                    <TableHead dir="rtl">
-                                                                                        <TableRow dir="rtl">
-                                                                                            <StyledTableCell align="center">آیکون</StyledTableCell>
-                                                                                            <StyledTableCell align="center">اسم فایل</StyledTableCell>
-                                                                                            <StyledTableCell align="center">حجم</StyledTableCell>
-                                                                                            <StyledTableCell align="center">دانلود</StyledTableCell>
-                                                                                        </TableRow>
-                                                                                    </TableHead>
-                                                                                    <TableBody>
-                                                                                        {episode.files.map((tabFile, tabIndx) => (
 
 
-                                                                                            <StyledTableRow dir="rtl" key={tabFile.id}>
-                                                                                                <StyledTableCell align="center">
-                                                                                                    <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
-                                                                                                </StyledTableCell>
-                                                                                                <StyledTableCell align="center">
-                                                                                                    <Box >
-                                                                                                        {this.fileNameExtractor(tabFile.file)}
-                                                                                                    </Box>
-                                                                                                </StyledTableCell>
-                                                                                                <StyledTableCell align="center">
-                                                                                                    <div dir='ltr'>
-                                                                                                        <Box style={{ color: 'grey' }} fontSize={14}>
-                                                                                                            {this.bytesToSize(tabFile.size)}
-                                                                                                        </Box>
-                                                                                                    </div>
-                                                                                                </StyledTableCell>
-                                                                                                <StyledTableCell align="center">
-                                                                                                    <Button variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
 
-                                                                                                        <GetAppRoundedIcon />
+                                                                        <div style={{ alignSelf: 'center', height: 50, width: 50 }}>
+                                                                        </div>
+
+
+                                                                    </div>
+                                                                    <Grid></Grid>
+                                                                </Grid>
+
+                                                                <Grid item md={12} lg={12}
+
+                                                                    xs={12}>
+
+                                                                    {episode.files.map((file, indxx) =>
+
+                                                                        <this.TypeOfFile src={file.file} key={file.id} />
+
+                                                                    )}
+
+
+                                                                </Grid>
+                                                                <Grid item
+                                                                    md={12} lg={12} sm={12}
+                                                                    style={{ marginTop: '8px', padding: '16px' }}
+                                                                    xs={12}>
+                                                                    <Tabs
+                                                                        indicatorColor="primary"
+                                                                        textColor="primary"
+                                                                        value={episode.tabValue}
+                                                                        onChange={(e, v) => this.handleTabChange(v, index, indx)}>
+                                                                        <Tab label="توضیحات" {...a11yProps(0)} className={classes.tabFont} />
+                                                                        <Tab label="فایل ها" {...a11yProps(1)} className={classes.tabFont} />
+                                                                    </Tabs>
+
+                                                                    <div style={{ width: '100%', overflow: 'auto', wordBreak: 'break-all' }}>
+                                                                        <SwipeableViews
+                                                                            axis={'x-reverse'}
+                                                                            index={episode.tabValue}
+                                                                            onChangeIndex={(e, v) => this.handleTabChange(v, index, indx)}
+                                                                        >
+                                                                            <TabPanel value={episode.tabValue} index={0} >
+                                                                                {!episode.isDescTextModeON ?
+                                                                                    (<div
+                                                                                        style={{
+                                                                                            alignSelf: 'center',
+                                                                                            padding: '6px'
+                                                                                        }}
+                                                                                        onMouseEnter={() => this.handleEpisodeEditButton(index, indx, 'desc button on')}
+                                                                                        onMouseLeave={() => this.handleEpisodeEditButton(index, indx, 'desc button off')}
+                                                                                    >
+
+                                                                                        <Typography component='div'
+                                                                                            style={{ display: 'flex', direction: 'rtl' }}
+                                                                                        >
+                                                                                            <Box fontSize={18} dir='rtl'>
+                                                                                                {episode.episode_description !== '' ? episode.episode_description : '(توضیحی وجود ندارد)'}
+                                                                                            </Box>
+
+                                                                                        </Typography>
+                                                                                        {this.state.isOwner && episode.isDescButtonShown && !episode.isDescTextModeON && (
+                                                                                            <div style={{ display: 'flex' }}>
+                                                                                                <Fade in={episode.isDescButtonShown} timeout={400}
+                                                                                                    style={{ alignSelf: 'center' }}
+                                                                                                >
+                                                                                                    <Button
+                                                                                                        onClick={(e) => this.episodePropagationEditButton(e, index, indx, false)}
+                                                                                                        className={classes.veticalDots}
+                                                                                                    >
+                                                                                                        <EditIcon />
                                                                                                     </Button>
-                                                                                                </StyledTableCell>
-                                                                                            </StyledTableRow>
+                                                                                                </Fade>
+                                                                                            </div>
+                                                                                        )}
 
-                                                                                        ))}
-                                                                                    </TableBody>
-                                                                                </Table>
-                                                                            </TableContainer>) : (
-                                                                                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                                                                    <Typography
-                                                                                        style={{ marginTop: '12px' }} >
-                                                                                        <Box fontSize={18}  >
-                                                                                            (فایلی وجود ندارد)
+
+
+                                                                                    </div>
+                                                                                    ) :
+
+                                                                                    (
+
+                                                                                        <div
+                                                                                            style={{ wordBreak: 'break-all' }}
+
+                                                                                            onBlur={(event) => this.episodeTextOnBlur(event, index, indx, false)}>
+                                                                                            <ValidatorForm
+                                                                                                onSubmit={() => this.episodeEditButtonSaveChanges(index, indx, false)} >
+                                                                                                <InputBase
+                                                                                                    fullWidth
+                                                                                                    autoFocus
+                                                                                                    dir="rtl"
+                                                                                                    // multiline
+                                                                                                    autoComplete='off'
+                                                                                                    name="desc"
+                                                                                                    style={{ fontSize: 18 }}
+                                                                                                    inputProps={{ 'aria-label': 'naked' }}
+                                                                                                    defaultValue={episode.episode_description}
+                                                                                                    inputRef={this.newEpisodeDescription}
+                                                                                                />
+                                                                                                <div style={{ display: 'flex', marginTop: '10px' }}>
+                                                                                                    <Button variant="outlined" color="primary"
+                                                                                                        type='submit'>
+                                                                                                        ذخیره
+                                                                                    </Button>
+                                                                                                </div>
+                                                                                            </ValidatorForm>
+
+
+                                                                                        </div>)
+                                                                                }
+                                                                            </TabPanel>
+                                                                            <TabPanel value={episode.tabValue} index={1}>
+                                                                                {episode.files.length > 0 ? (
+                                                                                    <TableContainer dir="rtl" >
+                                                                                        <Table aria-label="customized table" dir="rtl">
+                                                                                            <TableHead dir="rtl">
+                                                                                                <TableRow dir="rtl">
+                                                                                                    <StyledTableCell align="center">آیکون</StyledTableCell>
+                                                                                                    <StyledTableCell align="center">اسم فایل</StyledTableCell>
+                                                                                                    <StyledTableCell align="center">حجم</StyledTableCell>
+                                                                                                    <StyledTableCell align="center">دانلود</StyledTableCell>
+                                                                                                </TableRow>
+                                                                                            </TableHead>
+                                                                                            <TableBody>
+                                                                                                {episode.files.map((tabFile, tabIndx) => (
+
+
+                                                                                                    <StyledTableRow dir="rtl" key={tabFile.id}>
+                                                                                                        <StyledTableCell align="center">
+                                                                                                            <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
+                                                                                                        </StyledTableCell>
+                                                                                                        <StyledTableCell align="center">
+                                                                                                            <Box >
+                                                                                                                {this.fileNameExtractor(tabFile.file)}
+                                                                                                            </Box>
+                                                                                                        </StyledTableCell>
+                                                                                                        <StyledTableCell align="center">
+                                                                                                            <div dir='ltr'>
+                                                                                                                <Box style={{ color: 'grey' }} fontSize={14}>
+                                                                                                                    {this.bytesToSize(tabFile.size)}
+                                                                                                                </Box>
+                                                                                                            </div>
+                                                                                                        </StyledTableCell>
+                                                                                                        <StyledTableCell align="center">
+                                                                                                            <Button variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
+
+                                                                                                                <GetAppRoundedIcon />
+                                                                                                            </Button>
+                                                                                                        </StyledTableCell>
+                                                                                                    </StyledTableRow>
+
+                                                                                                ))}
+                                                                                            </TableBody>
+                                                                                        </Table>
+                                                                                    </TableContainer>) : (
+                                                                                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                                                            <Typography
+                                                                                                style={{ marginTop: '12px' }} >
+                                                                                                <Box fontSize={18}  >
+                                                                                                    (فایلی وجود ندارد)
                                                                                 </Box>
 
-                                                                                    </Typography>
-                                                                                </div>
-                                                                            )}
+                                                                                            </Typography>
+                                                                                        </div>
+                                                                                    )}
 
 
-                                                                    </TabPanel>
-                                                                </SwipeableViews>
-                                                            </div>
-                                                        </Grid>
+                                                                            </TabPanel>
+                                                                        </SwipeableViews>
+                                                                    </div>
+                                                                </Grid>
 
 
 
-                                                    </Grid>
-                                                </Paper>
-                                            )
-                                        )}
+                                                            </Grid>
+                                                        </Paper>
+                                                    )
+                                                )}
+                                            </div>) : (
+                                                <div>
+                                                    {!this.state.isOwner && (
+                                                        <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+                                                            <Typography >
+                                                                <Box fontSize={18}  >
+                                                                    جلسه ای وجود ندارد
+                                                                </Box>
+
+                                                            </Typography>
+                                                        </div>
+
+                                                    )}
+                                                </div>
+                                            )}
 
                                         {this.state.isOwner && (
                                             <Button variant="outlined"

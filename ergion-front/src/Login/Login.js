@@ -110,6 +110,20 @@ function Login(props) {
   const [dialogContent, setDialogContent] = useState(".ایمیل یا پسورد اشتباه است");
   const [dialogTitle, setDialogTitle] = useState("خطا");
 
+  React.useState(() => {
+    if (localStorage.getItem('api_key') !== 'null') {
+      if (localStorage.getItem('user') !== null) {
+        if ((JSON.parse(localStorage.getItem('user'))['role']) === "T") {
+          window.location = '/teacher_dashboard';
+        } else {
+          window.location = '/student_dashboard';
+        }
+      }
+    }
+
+  }
+
+  )
 
   const ErrorDialog = (props) => {
     const { title, children, open, setOpen } = props;

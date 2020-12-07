@@ -60,6 +60,7 @@ const Account = () => {
                 lg={4}
                 md={6}
                 xs={12}
+                style={{alignSelf:'center'}}
               >
                 <Box boxShadow={6} >
                   <Profile />
