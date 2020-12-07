@@ -112,10 +112,12 @@ function Login(props) {
 
   React.useState(() => {
     if (localStorage.getItem('api_key') !== 'null') {
-      if ((JSON.parse(localStorage.getItem('user'))['role']) === "T") {
-        window.location = '/teacher_dashboard';
-      } else {
-        window.location = '/student_dashboard';
+      if (localStorage.getItem('user') !== null) {
+        if ((JSON.parse(localStorage.getItem('user'))['role']) === "T") {
+          window.location = '/teacher_dashboard';
+        } else {
+          window.location = '/student_dashboard';
+        }
       }
     }
 

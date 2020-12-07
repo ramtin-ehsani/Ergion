@@ -6,7 +6,7 @@ import './StudentDashboard.scss';
 import StudentProfile from '../../Profile/StudentProfile';
 import { Route, Switch } from 'react-router-dom';
 // import Template from './Template';
-import Suggestions from './SuggestedCourse/Seggestions';
+// import Suggestions from './SuggestedCourse/Seggestions';
 import * as actionTypes from '../../store/actions';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -14,7 +14,8 @@ import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
 import AddCourse from './CourseFileLayouts/addCourse/AddCourse';
 import SingleCourse from '../../singleCourse/singlecoursecontainer';
 import postPage from './PostPage/PostPage';
-import CommentsMain from '../../comment/CommentMain'
+import CommentsMain from '../../comment/CommentMain';
+import StudentDashboard from './Dashboard/index.js'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -74,7 +75,7 @@ const Dashboard = () => {
 			<main className={classes.content}>
 				<div className={classes.appBarSpacer} />
 				<Switch>
-					<Route path="/student_dashboard" exact component={Suggestions} />
+					<Route path="/student_dashboard" exact component={StudentDashboard} />
 					<Route path="/student_dashboard/profile" exact component={StudentProfile} />
 					<Route path="/student_dashboard/added_courses" exact component={CourseFileLayouts} />
 					<Route path="/student_dashboard/find-your-course" exact component={AddCourse} />

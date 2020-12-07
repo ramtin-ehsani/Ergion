@@ -61,7 +61,7 @@ const styles = (theme) => ({
     root: {
         // height: 'auto',
         width: '100%',
-        // flexGrow: 1,
+        flexGrow: 1,
     },
     veticalDots: {
         color: "#000",
@@ -666,7 +666,8 @@ class TimeLine extends React.Component {
                         </DialogActions>
                     </Dialog>
 
-                    <div className={classes.root}>
+                    <div className={classes.root}
+                    style={{  marginTop: '15px' }}>
                         {this.state.loading ? (
                             <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
                                 <CircularProgress />
@@ -679,7 +680,7 @@ class TimeLine extends React.Component {
                                         <div>
                                             {this.state.list.map((timeline, index) => (
 
-                                                <div className={classes.paperStyle} key={timeline.id}>
+                                                <div className={classes.paperStyle} key={timeline.id} >
                                                     <Zoom in={true} timeout={700} >
 
                                                         <Paper className={classes.mediaCardPaperStyle}
@@ -882,6 +883,12 @@ class TimeLine extends React.Component {
                                                                     ) : ''}
 
                                                                 </Grid>
+
+                                                                <Grid md={12} lg={12} sm={12}
+                                                                    item
+                                                                    xs={12}>
+                                                                    <Divider />
+                                                                </Grid>
                                                                 
                                                                 <Grid item
                                                                     md={12} lg={12} sm={12}
@@ -933,11 +940,7 @@ class TimeLine extends React.Component {
 
                                                                 </Grid>
 
-                                                                <Grid md={12} lg={12} sm={12}
-                                                                    item
-                                                                    xs={12}>
-                                                                    <Divider />
-                                                                </Grid>
+                                                                
 
 
                                                                 <Grid item
