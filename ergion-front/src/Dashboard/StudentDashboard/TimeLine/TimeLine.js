@@ -23,6 +23,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { withStyles } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -41,8 +42,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import ShareIcon from '@material-ui/icons/Share';
 import axios from 'axios';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import Zoom from '@material-ui/core/Zoom';
-import Grow from '@material-ui/core/Grow';
 import { Avatar } from "@material-ui/core";
 import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
 import ImageIcon from '@material-ui/icons/Image';
@@ -56,6 +55,7 @@ import {
     ListItemIcon,
     InputBase,
 } from '@material-ui/core';
+import { ValidatorForm } from 'react-material-ui-form-validator';
 
 const styles = (theme) => ({
     root: {
@@ -267,7 +267,7 @@ class TimeLine extends React.Component {
 
                         resp.data.map((update) => {
                             let updateComments = update.comments
-                            if (updateComments.length >2 ) {
+                            if (updateComments.length > 2) {
                                 updateComments = updateComments.slice(0, 2)
                             }
                             const episodeObject = {
@@ -440,7 +440,7 @@ class TimeLine extends React.Component {
                 const listItem = {
                     ...this.state.list[index]
                 }
-                if (listItem.comments.length <2) {
+                if (listItem.comments.length < 2) {
                     listItem.comments.push(res.data)
                 }
                 const list = [...this.state.list]
@@ -666,359 +666,456 @@ class TimeLine extends React.Component {
                         </DialogActions>
                     </Dialog>
 
-                    <div className={classes.root}
-                    style={{  marginTop: '15px' }}>
+                    <div className={classes.root}>
                         {this.state.loading ? (
-                            <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-                                <CircularProgress />
+                            <div>
+                                <div className={classes.paperStyle} >
+
+                                    <Paper className={classes.mediaCardPaperStyle}
+                                        elevation={3}
+                                        style={{ marginBottom: '30px', marginTop: '30px' }}
+                                    >
+                                        <Grid container dir="rtl"
+                                            spacing={2}
+                                        >
+                                            <Grid item lg={12} md={12} sm={12} xs={12}
+                                                style={{ padding: '16px', display: 'flex', justifyContent: 'space-between' }}>
+                                                <div style={{ display: 'flex' }}>
+                                                    <Skeleton animation="wave" variant="circle" width={70} height={70} style={{ marginRight: '10px' }} />
+                                                    <div>
+                                                        <div style={{ display: 'flex' }}>
+                                                            <Skeleton animation="wave" height={20} width={360} style={{ marginBottom: 6 }} style={{
+                                                                marginRight: '12px', alignSelf: 'flex-start'
+                                                            }} />
+
+
+
+
+
+                                                        </div>
+                                                        <div style={{ display: 'flex' }}>
+                                                            <Skeleton animation="wave" height={20} width={200} style={{
+                                                                alignSelf: 'flex-start', marginTop: '20px', marginRight: '12px'
+                                                            }} />
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                </div>
+                                            </Grid>
+                                            <Grid item lg={12} md={12} xs={12} sm={12} >
+                                                <Skeleton animation="wave" variant="rect" height={180} style={{ margin: '10px' }} />
+
+                                            </Grid>
+
+                                            <Grid item lg={12} md={12} xs={12} sm={12} style={{ padding: '20px' }}>
+                                                <Skeleton animation="wave" height={20} width='100%' style={{ marginBottom: '10px' }} />
+                                                <Skeleton animation="wave" height={20} width='100%' />
+                                            </Grid>
+
+                                        </Grid>
+                                    </Paper>
+                                </div>
+                                <div className={classes.paperStyle} >
+
+                                    <Paper className={classes.mediaCardPaperStyle}
+                                        elevation={3}
+                                        style={{ marginBottom: '30px', marginTop: '30px' }}
+                                    >
+                                        <Grid container dir="rtl"
+                                            spacing={2}
+                                        >
+                                            <Grid item lg={12} md={12} sm={12} xs={12}
+                                                style={{ padding: '16px', display: 'flex', justifyContent: 'space-between' }}>
+                                                <div style={{ display: 'flex' }}>
+                                                    <Skeleton animation="wave" variant="circle" width={70} height={70} style={{ marginRight: '10px' }} />
+                                                    <div>
+                                                        <div style={{ display: 'flex' }}>
+                                                            <Skeleton animation="wave" height={20} width={360} style={{ marginBottom: 6 }} style={{
+                                                                marginRight: '12px', alignSelf: 'flex-start'
+                                                            }} />
+
+
+
+
+
+                                                        </div>
+                                                        <div style={{ display: 'flex' }}>
+                                                            <Skeleton animation="wave" height={20} width={200} style={{
+                                                                alignSelf: 'flex-start', marginTop: '20px', marginRight: '12px'
+                                                            }} />
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                </div>
+                                            </Grid>
+                                            <Grid item lg={12} md={12} xs={12} sm={12} >
+                                                <Skeleton animation="wave" variant="rect" height={180} style={{ margin: '10px' }} />
+
+                                            </Grid>
+
+                                            <Grid item lg={12} md={12} xs={12} sm={12} style={{ padding: '20px' }}>
+                                                <Skeleton animation="wave" height={20} width='100%' style={{ marginBottom: '10px' }} />
+                                                <Skeleton animation="wave" height={20} width='100%' />
+                                            </Grid>
+
+                                        </Grid>
+                                    </Paper>
+                                </div>
                             </div>
 
                         ) : (
-                                <div>
+
+
+                                <div >
 
                                     {this.state.list.length > 0 ? (
                                         <div>
                                             {this.state.list.map((timeline, index) => (
 
                                                 <div className={classes.paperStyle} key={timeline.id} >
-                                                    <Zoom in={true} timeout={700} >
 
-                                                        <Paper className={classes.mediaCardPaperStyle}
-                                                            elevation={3}
-                                                            style={{ marginBottom: '30px', marginTop: '30px' }}
+                                                    <Paper className={classes.mediaCardPaperStyle}
+                                                        elevation={3}
+                                                        style={{ marginBottom: '30px', marginTop: '30px' }}
+                                                    >
+                                                        <Grid container dir="rtl"
+
                                                         >
-                                                            <Grid container dir="rtl"
+                                                            <Grid item lg={12} md={12} sm={12} xs={12}
+                                                                style={{ padding: '16px', display: 'flex', justifyContent: 'space-between' }}>
+                                                                <div style={{ display: 'flex' }}>
 
-                                                            >
-                                                                <Grid item lg={12} md={12} sm={12} xs={12}
-                                                                    style={{ padding: '16px', display: 'flex', justifyContent: 'space-between' }}>
-                                                                    <div style={{ display: 'flex' }}>
-
-                                                                        <Avatar src={timeline.instructor_profilePic} style={{ width: 70, height: 70 }} />
-                                                                        <div>
-                                                                            <div style={{ display: 'flex' }}>
-                                                                                <Typography
-                                                                                    style={{
-                                                                                        marginRight: '12px', alignSelf: 'flex-start'
-                                                                                    }}
-
-                                                                                >
-                                                                                    <Box fontSize={20} fontWeight="fontWeightBold"
-
-                                                                                    >
-                                                                                        {timeline.instructor_firstName + ' ' + timeline.instructor_lastName}
-
-                                                                                    </Box>
-
-
-                                                                                </Typography>
-
-                                                                                <Typography
-                                                                                    style={{
-                                                                                        marginRight: '8px', alignSelf: 'flex-start', marginTop: '6px'
-                                                                                    }}
-
-                                                                                >
-                                                                                    <Box fontSize={14} style={{ color: 'grey' }}
-
-                                                                                    >
-                                                                                        {' . ' + human(new Date(timeline.time))
-                                                                                            .replace('hours', 'ساعت')
-                                                                                            .replace('hour', 'ساعت')
-                                                                                            .replace('minutes', 'دقیقه')
-                                                                                            .replace('minute', 'دقیقه')
-                                                                                            .replace('days', 'روز')
-                                                                                            .replace('day', 'روز')
-                                                                                            .replace('seconds', 'ثانیه')
-                                                                                            .replace('second', 'ثانیه')
-                                                                                            .replace('ago', 'پیش')}
-
-                                                                                    </Box>
-
-
-                                                                                </Typography>
-
-                                                                            </div>
-                                                                            <div style={{ display: 'flex' }}>
-                                                                                <Typography
-                                                                                    style={{
-                                                                                        alignSelf: 'flex-start', marginTop: '6px', marginRight: '12px'
-                                                                                    }}
-
-                                                                                >
-                                                                                    <Box fontSize={20}
-
-                                                                                    >
-                                                                                        {timeline.name}
-
-                                                                                    </Box>
-                                                                                </Typography>
-                                                                            </div>
-
-                                                                        </div>
-
-
-                                                                    </div>
-                                                                    <div style={{ alignSelf: 'flex-start' }}>
-                                                                        <IconButton
-                                                                            component="span"
-                                                                            aria-controls="customized-menu"
-                                                                            aria-haspopup="true"
-                                                                            onClick={(e) => this.handleAnchorEl(e, index, true)}
-                                                                            className={classes.veticalDots}>
-                                                                            <MoreHorizIcon
-                                                                            />
-                                                                        </IconButton>
-                                                                        <StyledMenu
-                                                                            id="customized-menu"
-                                                                            anchorEl={timeline.anchorEl}
-                                                                            keepMounted
-                                                                            open={Boolean(timeline.anchorEl)}
-                                                                            onClose={(e) => this.handleAnchorEl(e, index, false)}
-                                                                        >
-
-                                                                            <StyledMenuItem onClick={() => this.openShareDialog(1, index, false, "http://localhost:3000/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post'))} >
-                                                                                <ListItemIcon>
-                                                                                    <ShareIcon />
-                                                                                </ListItemIcon>
-                                                                                <ListItemText primary="اشتراک گذاری" />
-                                                                            </StyledMenuItem>
-                                                                        </StyledMenu>
-                                                                    </div>
-
-
-                                                                </Grid>
-                                                                <Grid md={12} lg={12} sm={12}
-                                                                    item
-                                                                    xs={12}>
-                                                                    <Divider />
-                                                                </Grid>
-                                                                <Grid item
-                                                                    md={12} lg={12} sm={12}
-                                                                    xs={12}>
-                                                                    <div style={{ padding: '16px', display: 'flex', wordBreak: 'break-all' }}>
-                                                                        <Typography
-
-                                                                        >
-                                                                            <Box fontSize={18}  >
-                                                                                {timeline.description !== '' ? timeline.description : '(توضیحی وجود ندارد)'}
-                                                                            </Box>
-
-                                                                        </Typography>
-                                                                    </div>
-
-                                                                </Grid>
-
-
-                                                                <Grid item md={12} lg={12} sm={12}
-                                                                    xs={12}>
-
-                                                                    {timeline.files.map((file) =>
-
-                                                                        <this.TypeOfFile src={file.file} key={file.id} />
-
-                                                                    )}
-
-
-                                                                </Grid>
-
-                                                                <Grid item
-                                                                    md={12} lg={12} sm={12}
-                                                                    xs={12}>
-                                                                    {timeline.files.length > 0 ? (
-                                                                        <div style={{ padding: '16px' }}>
+                                                                    <Avatar src={timeline.instructor_profilePic} style={{ width: 70, height: 70 }} />
+                                                                    <div>
+                                                                        <div style={{ display: 'flex' }}>
                                                                             <Typography
-                                                                                style={{ display: 'flex', marginBottom: '8px' }}
+                                                                                style={{
+                                                                                    marginRight: '12px', alignSelf: 'flex-start'
+                                                                                }}
 
                                                                             >
-                                                                                <Box fontSize={18}  >
-                                                                                    فایل ها :
-                                                                            </Box>
+                                                                                <Box fontSize={20} fontWeight="fontWeightBold"
+
+                                                                                >
+                                                                                    {timeline.instructor_firstName + ' ' + timeline.instructor_lastName}
+
+                                                                                </Box>
+
 
                                                                             </Typography>
 
-                                                                            <TableContainer dir="rtl" component={Paper}>
-                                                                                <Table aria-label="customized table" dir="rtl">
-                                                                                    <TableHead dir="rtl">
-                                                                                        <TableRow dir="rtl">
-                                                                                            <StyledTableCell align="center">آیکون</StyledTableCell>
-                                                                                            <StyledTableCell align="center">اسم فایل</StyledTableCell>
-                                                                                            <StyledTableCell align="center">حجم</StyledTableCell>
-                                                                                            <StyledTableCell align="center">دانلود</StyledTableCell>
-                                                                                        </TableRow>
-                                                                                    </TableHead>
-                                                                                    <TableBody>
-                                                                                        {timeline.files.map((tabFile, tabIndx) => (
+                                                                            <Typography
+                                                                                style={{
+                                                                                    marginRight: '8px', alignSelf: 'flex-start', marginTop: '6px'
+                                                                                }}
 
+                                                                            >
+                                                                                <Box fontSize={14} style={{ color: 'grey' }}
 
-                                                                                            <StyledTableRow dir="rtl" key={tabFile.id}>
-                                                                                                <StyledTableCell align="center">
-                                                                                                    <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
-                                                                                                </StyledTableCell>
-                                                                                                <StyledTableCell align="center">
-                                                                                                    <Box >
-                                                                                                        {this.fileNameExtractor(tabFile.file)}
-                                                                                                    </Box>
-                                                                                                </StyledTableCell>
-                                                                                                <StyledTableCell align="center">
-                                                                                                    <div dir='ltr'>
-                                                                                                        <Box style={{ color: 'grey' }} fontSize={14}>
-                                                                                                            {this.bytesToSize(tabFile.size)}
-                                                                                                        </Box>
-                                                                                                    </div>
-                                                                                                </StyledTableCell>
-                                                                                                <StyledTableCell align="center">
-                                                                                                    <IconButton variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
+                                                                                >
+                                                                                    {' . ' + human(new Date(timeline.time))
+                                                                                        .replace('hours', 'ساعت')
+                                                                                        .replace('hour', 'ساعت')
+                                                                                        .replace('minutes', 'دقیقه')
+                                                                                        .replace('minute', 'دقیقه')
+                                                                                        .replace('days', 'روز')
+                                                                                        .replace('day', 'روز')
+                                                                                        .replace('seconds', 'ثانیه')
+                                                                                        .replace('second', 'ثانیه')
+                                                                                        .replace('ago', 'پیش')}
 
-                                                                                                        <GetAppRoundedIcon />
-                                                                                                    </IconButton>
-                                                                                                </StyledTableCell>
-                                                                                            </StyledTableRow>
-
-                                                                                        ))}
-                                                                                    </TableBody>
-                                                                                </Table>
-                                                                            </TableContainer>
-                                                                        </div>
-                                                                    ) : ''}
-
-                                                                </Grid>
-
-                                                                <Grid md={12} lg={12} sm={12}
-                                                                    item
-                                                                    xs={12}>
-                                                                    <Divider />
-                                                                </Grid>
-                                                                
-                                                                <Grid item
-                                                                    md={12} lg={12} sm={12}
-                                                                    style={{ padding: '16px' }}
-                                                                    xs={12}>
-                                                                    <div
-                                                                        style={{
-                                                                            justifyContent: 'space-between', alignItems: 'center',
-                                                                            display: 'flex'
-                                                                        }}
-                                                                    >
-                                                                        <div style={{ display: 'flex' }}>
-
-                                                                            <div style={{ alignSelf: 'center' }}>
-                                                                                <Box style={{ color: 'grey' }} fontSize={14}>
-                                                                                    {timeline.likes_count}
                                                                                 </Box>
-                                                                            </div>
-                                                                            <IconButton onClick={() => this.handleTimelineLike(index, timeline.id, timeline.isEpisode)}>
-                                                                                {timeline.liked ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
-                                                                            </IconButton>
+
+
+                                                                            </Typography>
 
                                                                         </div>
                                                                         <div style={{ display: 'flex' }}>
+                                                                            <Typography
+                                                                                style={{
+                                                                                    alignSelf: 'flex-start', marginTop: '6px', marginRight: '12px'
+                                                                                }}
 
-                                                                            <div style={{ alignSelf: 'center' }}>
-                                                                                <Box style={{
-                                                                                    color: 'grey'
-                                                                                }} fontSize={14}>
-                                                                                    {timeline.comments_count}
+                                                                            >
+                                                                                <Box fontSize={20}
+
+                                                                                >
+                                                                                    {timeline.name}
+
                                                                                 </Box>
-                                                                            </div>
-                                                                            <IconButton href={"/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}>
-                                                                                <CommentIcon />
-                                                                            </IconButton>
-
+                                                                            </Typography>
                                                                         </div>
-                                                                        <IconButton href={"/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}
-                                                                            style={{ marginLeft: '5px', alignSelf: 'center' }}
-                                                                        >
-                                                                            <AssignmentIcon style={{ marginRight: '4px' }} />
-                                                                        </IconButton>
-                                                                        <IconButton href={"/student_dashboard" + timeline.course_url.replace('course', 'added_courses')}
-                                                                            style={{ marginRight: '5px', alignSelf: 'center' }}
-                                                                        >
-                                                                            <BallotIcon style={{ marginRight: '4px' }} />
-                                                                        </IconButton>
+
                                                                     </div>
 
-                                                                </Grid>
 
-                                                                
+                                                                </div>
+                                                                <div style={{ alignSelf: 'flex-start' }}>
+                                                                    <IconButton
+                                                                        component="span"
+                                                                        aria-controls="customized-menu"
+                                                                        aria-haspopup="true"
+                                                                        onClick={(e) => this.handleAnchorEl(e, index, true)}
+                                                                        className={classes.veticalDots}>
+                                                                        <MoreHorizIcon
+                                                                        />
+                                                                    </IconButton>
+                                                                    <StyledMenu
+                                                                        id="customized-menu"
+                                                                        anchorEl={timeline.anchorEl}
+                                                                        keepMounted
+                                                                        open={Boolean(timeline.anchorEl)}
+                                                                        onClose={(e) => this.handleAnchorEl(e, index, false)}
+                                                                    >
+
+                                                                        <StyledMenuItem onClick={() => this.openShareDialog(1, index, false, "http://localhost:3000/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post'))} >
+                                                                            <ListItemIcon>
+                                                                                <ShareIcon />
+                                                                            </ListItemIcon>
+                                                                            <ListItemText primary="اشتراک گذاری" />
+                                                                        </StyledMenuItem>
+                                                                    </StyledMenu>
+                                                                </div>
 
 
-                                                                <Grid item
-                                                                    md={12} lg={12} sm={12}
+                                                            </Grid>
+                                                            <Grid md={12} lg={12} sm={12}
+                                                                item
+                                                                xs={12}>
+                                                                <Divider />
+                                                            </Grid>
+                                                            <Grid item
+                                                                md={12} lg={12} sm={12}
+                                                                xs={12}>
+                                                                <div style={{ padding: '16px', display: 'flex', wordBreak: 'break-all' }}>
+                                                                    <Typography
 
-                                                                    xs={12}>
+                                                                    >
+                                                                        <Box fontSize={18}  >
+                                                                            {timeline.description !== '' ? timeline.description : '(توضیحی وجود ندارد)'}
+                                                                        </Box>
 
-                                                                    <div style={{ padding:'16px' }}>
+                                                                    </Typography>
+                                                                </div>
+
+                                                            </Grid>
 
 
-                                                                        <div style={{ marginRight: '-16px', marginLeft: '-16px' }}>
-                                                                            {timeline.comments.length > 0 &&
-                                                                                (<List
-                                                                                    component="div"
-                                                                                    aria-labelledby="nested-comment-list-subheader"
-                                                                                    subheader={
-                                                                                        <ListSubheader component="div" id="nested-comment-list-subheader">
-                                                                                            کامنت ها
-                                                                            </ListSubheader>
-                                                                                    }
-                                                                                >
-                                                                                    {timeline.comments.map((comment, commentIndex) => (
-                                                                                        <div key={comment.id}>
-                                                                                            <ListItem  >
-                                                                                                <ListItemAvatar>
-                                                                                                    <Avatar alt="avatar" src={comment.profile_picture} />
-                                                                                                </ListItemAvatar>
-                                                                                                <ListItemText
-                                                                                                    style={{ textAlign: 'right' }}
-                                                                                                    primary={
-                                                                                                        <Typography >
-                                                                                                            {comment.user_firstname + " " + comment.user_lastname}
-                                                                                                        </Typography>
-                                                                                                    }
-                                                                                                    secondary={
-                                                                                                        <>
-                                                                                                            <Typography
-                                                                                                                dir='rtl'
-                                                                                                                component="span"
-                                                                                                                variant="body2"
-                                                                                                                color="textPrimary"
-                                                                                                                style={{ wordBreak: 'break-all' }}
-                                                                                                            >
-                                                                                                                {comment.comment_text}
-                                                                                                            </Typography>
-                                                                                                        </>
-                                                                                                    }
-                                                                                                ></ListItemText>
-                                                                                                <ListItemIcon >
-                                                                                                    <IconButton
-                                                                                                        onClick={() => window.location = "http://localhost:3000/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}
-                                                                                                    >
-                                                                                                        <ReplyIcon />
-                                                                                                    </IconButton>
-                                                                                                    <IconButton
-                                                                                                        onClick={() => this.handleClickLike(index, commentIndex)}
-                                                                                                    >
+                                                            <Grid item md={12} lg={12} sm={12}
+                                                                xs={12}>
 
-                                                                                                        {comment.liked ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
-                                                                                                    </IconButton>
-                                                                                                </ListItemIcon>
+                                                                {timeline.files.map((file) =>
 
-                                                                                            </ListItem>
-                                                                                            <Divider />
-                                                                                        </div>
+                                                                    <this.TypeOfFile src={file.file} key={file.id} />
+
+                                                                )}
+
+
+                                                            </Grid>
+
+                                                            <Grid item
+                                                                md={12} lg={12} sm={12}
+                                                                xs={12}>
+                                                                {timeline.files.length > 0 ? (
+                                                                    <div style={{ padding: '16px' }}>
+                                                                        <Typography
+                                                                            style={{ display: 'flex', marginBottom: '8px' }}
+
+                                                                        >
+                                                                            <Box fontSize={18}  >
+                                                                                فایل ها :
+                                                                            </Box>
+
+                                                                        </Typography>
+
+                                                                        <TableContainer dir="rtl" component={Paper}>
+                                                                            <Table aria-label="customized table" dir="rtl">
+                                                                                <TableHead dir="rtl">
+                                                                                    <TableRow dir="rtl">
+                                                                                        <StyledTableCell align="center">آیکون</StyledTableCell>
+                                                                                        <StyledTableCell align="center">اسم فایل</StyledTableCell>
+                                                                                        <StyledTableCell align="center">حجم</StyledTableCell>
+                                                                                        <StyledTableCell align="center">دانلود</StyledTableCell>
+                                                                                    </TableRow>
+                                                                                </TableHead>
+                                                                                <TableBody>
+                                                                                    {timeline.files.map((tabFile, tabIndx) => (
+
+
+                                                                                        <StyledTableRow dir="rtl" key={tabFile.id}>
+                                                                                            <StyledTableCell align="center">
+                                                                                                <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
+                                                                                            </StyledTableCell>
+                                                                                            <StyledTableCell align="center">
+                                                                                                <Box >
+                                                                                                    {this.fileNameExtractor(tabFile.file)}
+                                                                                                </Box>
+                                                                                            </StyledTableCell>
+                                                                                            <StyledTableCell align="center">
+                                                                                                <div dir='ltr'>
+                                                                                                    <Box style={{ color: 'grey' }} fontSize={14}>
+                                                                                                        {this.bytesToSize(tabFile.size)}
+                                                                                                    </Box>
+                                                                                                </div>
+                                                                                            </StyledTableCell>
+                                                                                            <StyledTableCell align="center">
+                                                                                                <IconButton variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
+
+                                                                                                    <GetAppRoundedIcon />
+                                                                                                </IconButton>
+                                                                                            </StyledTableCell>
+                                                                                        </StyledTableRow>
 
                                                                                     ))}
-                                                                                </List>)}
+                                                                                </TableBody>
+                                                                            </Table>
+                                                                        </TableContainer>
+                                                                    </div>
+                                                                ) : ''}
+
+                                                            </Grid>
+
+                                                            <Grid md={12} lg={12} sm={12}
+                                                                item
+                                                                xs={12}>
+                                                                <Divider />
+                                                            </Grid>
+
+                                                            <Grid item
+                                                                md={12} lg={12} sm={12}
+                                                                style={{ paddingRight: '16px', paddingLeft: '16px', paddingBottom: '4px', paddingTop: '4px' }}
+                                                                xs={12}>
+                                                                <div
+                                                                    style={{
+                                                                        justifyContent: 'space-between', alignItems: 'center',
+                                                                        display: 'flex'
+                                                                    }}
+                                                                >
+                                                                    <div style={{ display: 'flex' }}>
+
+                                                                        <div style={{ alignSelf: 'center' }}>
+                                                                            <Box style={{ color: 'grey' }} fontSize={14}>
+                                                                                {timeline.likes_count}
+                                                                            </Box>
                                                                         </div>
+                                                                        <IconButton onClick={() => this.handleTimelineLike(index, timeline.id, timeline.isEpisode)}>
+                                                                            {timeline.liked ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
+                                                                        </IconButton>
+
+                                                                    </div>
+                                                                    <div style={{ display: 'flex' }}>
+
+                                                                        <div style={{ alignSelf: 'center' }}>
+                                                                            <Box style={{
+                                                                                color: 'grey'
+                                                                            }} fontSize={14}>
+                                                                                {timeline.comments_count}
+                                                                            </Box>
+                                                                        </div>
+                                                                        <IconButton href={"/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}>
+                                                                            <CommentIcon />
+                                                                        </IconButton>
+
+                                                                    </div>
+                                                                    <IconButton href={"/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}
+                                                                        style={{ marginLeft: '5px', alignSelf: 'center' }}
+                                                                    >
+                                                                        <AssignmentIcon style={{ marginRight: '4px' }} />
+                                                                    </IconButton>
+                                                                    <IconButton href={"/student_dashboard" + timeline.course_url.replace('course', 'added_courses')}
+                                                                        style={{ marginRight: '5px', alignSelf: 'center' }}
+                                                                    >
+                                                                        <BallotIcon style={{ marginRight: '4px' }} />
+                                                                    </IconButton>
+                                                                </div>
+
+                                                            </Grid>
+
+
+
+
+                                                            <Grid item
+                                                                md={12} lg={12} sm={12}
+
+                                                                xs={12}>
+
+                                                                <div style={{ paddingRight: '16px', paddingLeft: '16px', paddingBottom: '16px', paddingTop: '4px' }}>
+
+
+                                                                    <div style={{ marginRight: '-16px', marginLeft: '-16px' }}>
+                                                                        {timeline.comments.length > 0 &&
+                                                                            (<List
+                                                                                component="div"
+                                                                                aria-labelledby="nested-comment-list-subheader"
+                                                                                subheader={
+                                                                                    <ListSubheader component="div" id="nested-comment-list-subheader">
+                                                                                        کامنت ها
+                                                                            </ListSubheader>
+                                                                                }
+                                                                            >
+                                                                                {timeline.comments.map((comment, commentIndex) => (
+                                                                                    <div key={comment.id}>
+                                                                                        <ListItem  >
+                                                                                            <ListItemAvatar>
+                                                                                                <Avatar alt="avatar" src={comment.profile_picture} />
+                                                                                            </ListItemAvatar>
+                                                                                            <ListItemText
+                                                                                                style={{ textAlign: 'right' }}
+                                                                                                primary={
+                                                                                                    <Typography >
+                                                                                                        {comment.user_firstname + " " + comment.user_lastname}
+                                                                                                    </Typography>
+                                                                                                }
+                                                                                                secondary={
+                                                                                                    <>
+                                                                                                        <Typography
+                                                                                                            dir='rtl'
+                                                                                                            component="span"
+                                                                                                            variant="body2"
+                                                                                                            color="textPrimary"
+                                                                                                            style={{ wordBreak: 'break-all' }}
+                                                                                                        >
+                                                                                                            {comment.comment_text}
+                                                                                                        </Typography>
+                                                                                                    </>
+                                                                                                }
+                                                                                            ></ListItemText>
+                                                                                            <ListItemIcon >
+                                                                                                <IconButton
+                                                                                                    onClick={() => window.location = "http://localhost:3000/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}
+                                                                                                >
+                                                                                                    <ReplyIcon />
+                                                                                                </IconButton>
+                                                                                                <IconButton
+                                                                                                    onClick={() => this.handleClickLike(index, commentIndex)}
+                                                                                                >
+
+                                                                                                    {comment.liked ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
+                                                                                                </IconButton>
+                                                                                            </ListItemIcon>
+
+                                                                                        </ListItem>
+                                                                                        <Divider />
+                                                                                    </div>
+
+                                                                                ))}
+                                                                            </List>)}
+                                                                    </div>
+                                                                    <ValidatorForm onSubmit={() => this.handlePostComment(index, timeline.id, timeline.isEpisode, timeline.commentRef)}>
                                                                         <InputBase
-                                                                            style={{ padding: '8px',marginTop:'6px' }}
+                                                                            style={{ padding: '8px', marginTop: '6px' }}
                                                                             value={timeline.commentRef}
                                                                             onChange={(e) => this.handleCommentTextOnChange(e, index)}
-                                                                            rowsMax={2}
-                                                                            multiline
                                                                             fullWidth
+                                                                            required
                                                                             className='input2'
-                                                                            placeholder="متن پیام"
+                                                                            placeholder="کامنت بگذارید"
                                                                             endAdornment={
                                                                                 <InputAdornment position="end" >
                                                                                     {timeline.commentRef !== '' && (
@@ -1028,16 +1125,17 @@ class TimeLine extends React.Component {
                                                                                             <SendIcon className='icon' />
                                                                                         </IconButton>)}
                                                                                 </InputAdornment>
+
                                                                             }
                                                                         />
-                                                                    </div>
-                                                                </Grid>
-
-
-
+                                                                    </ValidatorForm>
+                                                                </div>
                                                             </Grid>
-                                                        </Paper>
-                                                    </Zoom>
+
+
+
+                                                        </Grid>
+                                                    </Paper>
 
 
                                                 </div>
