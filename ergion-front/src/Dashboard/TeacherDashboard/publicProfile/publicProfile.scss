@@ -1,0 +1,29 @@
+.main-card {
+    width: 70%;
+    direction: rtl;
+    margin: auto;
+    align-items: center !important;
+    text-align: center !important;
+    justify-content: center !important;
+    display: flex;
+    height: 100%;
+    font-family: IRANSans !important;
+
+    .card-header {
+        font-family: IRANSans !important;
+        height: 100%;
+        width: 100%;
+
+        .img-profile {
+            width: 200px;
+            height: 200px;
+        }
+        .teacher-name{
+            justify-content: center;
+            align-items: right;
+            // text-align: right;
+            font-family: IRANSans !important;
+            font-size: 28px;
+        }
+    }
+}
