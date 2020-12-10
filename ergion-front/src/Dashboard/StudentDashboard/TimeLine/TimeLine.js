@@ -38,6 +38,7 @@ import CommentIcon from '@material-ui/icons/Comment';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Dialog from '@material-ui/core/Dialog';
+import Link from '@material-ui/core/Link';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ShareIcon from '@material-ui/icons/Share';
 import axios from 'axios';
@@ -47,6 +48,7 @@ import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
 import ImageIcon from '@material-ui/icons/Image';
 import { AttachFile, Description, PictureAsPdf, MovieCreationOutlined } from '@material-ui/icons';
 import human from '@jacobmarshall/human-time';
+import './TimeLine.scss'
 import {
     Typography, IconButton, List,
     ListItem,
@@ -54,6 +56,7 @@ import {
     ListItemAvatar,
     ListItemIcon,
     InputBase,
+    Collapse,
 } from '@material-ui/core';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 
@@ -166,6 +169,10 @@ class TimeLine extends React.Component {
             shareDialogOpen: false,
             link: '',
             snackBarOpen: false,
+            snackBarMessage: '',
+            page: 1,
+            loadingMore: false,
+            hasNext: false,
 
         };
     }
@@ -198,7 +205,7 @@ class TimeLine extends React.Component {
 
     componentDidMount() {
         this._isMounted = true;
-        this.getValues()
+        this.getValues(this.state.page)
 
     }
 
@@ -221,97 +228,55 @@ class TimeLine extends React.Component {
 
 
 
-    getValues = () => {
-        axios.get('http://127.0.0.1:8000/api/student-episodes/', this.config)
+    getValues = (page) => {
+        axios.get(('http://127.0.0.1:8000/api/student/posts/?page=' + page), this.config)
             .then((response) => {
                 // handle success
+                const { list } = this.state
                 console.log(response.data)
-                const episodeList = []
 
-                response.data.map((episode) => {
-                    let episodeComments = episode.comments
-                    if (episodeComments.length > 2) {
-                        episodeComments = episodeComments.slice(0, 2)
-                    }
-                    const episodeObject = {
-                        id: episode.id,
-                        name: episode.name,
-                        description: episode.episode_description,
-                        tabValue: 0,
-                        instructor_firstName: episode.instructor_firstname,
-                        instructor_lastName: episode.instructor_lastname,
-                        instructor_profilePic: episode.instructor_profile_picture,
-                        episode_or_news_url: episode.episode_url,
-                        course_url: episode.course_url,
-                        files: episode.files,
-                        liked: episode.liked,
+
+                response.data.data.map((post) => {
+                    const comments = []
+                    post.comments.map((comment) => {
+                        comment.isReplyOpen = false
+                        comment.replyRef = ''
+                        comments.push(comment)
+
+                    })
+                    const postObject = {
+                        id: post.id,
+                        name: post.name,
+                        description: post.description,
+                        instructor_firstName: post.instructor_firstname,
+                        instructor_lastName: post.instructor_lastname,
+                        instructor_profilePic: post.instructor_profile_picture,
+                        postUrl: post.post_url,
+                        course_url: post.course_url,
+                        course_name: post.course_name,
+                        files: post.files,
+                        liked: post.liked,
                         commentRef: '',
-                        likes_count: episode.likes_count,
-                        time: episode.creation_time,
-                        comments_count: episode.comments.length,
-                        comments: episodeComments,
-                        isEpisode: true,
+                        likes_count: post.likes_count,
+                        time: post.creation_time,
+                        comments_count: post.comments_count,
+                        comments: comments,
+                        type: post.post_type,
                         anchorEl: false,
 
 
 
                     }
-                    episodeList.push(episodeObject)
+                    list.push(postObject)
                 })
 
-                axios.get('http://127.0.0.1:8000/api/student-updates/', this.config)
-                    .then((resp) => {
-                        // handle success
-                        console.log(resp.data)
-                        const updateList = []
-
-                        resp.data.map((update) => {
-                            let updateComments = update.comments
-                            if (updateComments.length > 2) {
-                                updateComments = updateComments.slice(0, 2)
-                            }
-                            const episodeObject = {
-                                id: update.id,
-                                name: 'خبر',
-                                description: update.text,
-                                tabValue: 0,
-                                instructor_firstName: update.instructor_firstname,
-                                instructor_lastName: update.instructor_lastname,
-                                instructor_profilePic: update.instructor_profile_picture,
-                                episode_or_news_url: update.update_url,
-                                course_url: update.course_url,
-                                files: update.files,
-                                time: update.created_at,
-                                commentRef: '',
-                                comments_count: update.comments.length,
-                                comments: updateComments,
-                                liked: update.liked,
-                                likes_count: update.likes,
-                                isEpisode: false,
-                                anchorEl: false,
 
 
 
-                            }
-                            updateList.push(episodeObject)
-                        })
+                if (this._isMounted) {
+                    this.setState({ list, loading: false, loadingMore: false, hasNext: response.data.has_next })
+                }
 
-                        const concactedList = episodeList.concat(updateList)
-
-
-                        concactedList.sort((a, b) => (a.time < b.time) ? 1 : -1)
-                        if (this._isMounted) {
-                            this.setState({ list: concactedList, loading: false })
-                        }
-
-
-
-                    })
-                    .catch((error) => {
-                        // handle error
-                        this.setState({ loading: false })
-                        console.log(error);
-                    })
 
 
 
@@ -326,7 +291,7 @@ class TimeLine extends React.Component {
 
     font = 28;
 
-    handleTimelineLike = (index, id, isEpisode) => {
+    handleTimelineLike = (index, id) => {
         const listItem = {
             ...this.state.list[index]
         }
@@ -341,51 +306,26 @@ class TimeLine extends React.Component {
         const list = [...this.state.list]
         list[index] = listItem
         this.setState({ list: list })
-        if (isEpisode) {
-            axios.put('http://127.0.0.1:8000/api/episode-likes/', {
-                episode_id: id,
-            }, this.config).then((res) => {
 
 
-            }).catch((error) => {
-                console.log(error)
-                const listItem = {
-                    ...this.state.list[index]
-                }
-                if (listItem.liked) {
-                    listItem.likes_count = listItem.likes_count - 1
-                } else {
-                    listItem.likes_count = listItem.likes_count + 1
+        axios.put('http://127.0.0.1:8000/api/course/post-likes/', {
+            post_id: id,
+        }, this.config).catch((error) => {
+            console.log(error)
+            const listItem = {
+                ...this.state.list[index]
+            }
+            if (listItem.liked) {
+                listItem.likes_count = listItem.likes_count - 1
+            } else {
+                listItem.likes_count = listItem.likes_count + 1
 
-                }
-                listItem.liked = !listItem.liked
-                const list = [...this.state.list]
-                list[index] = listItem
-                this.setState({ list: list })
-            })
-        } else {
-            axios.put('http://127.0.0.1:8000/api/update-likes/', {
-                update_id: id,
-            }, this.config).then((res) => {
-
-
-            }).catch((error) => {
-                console.log(error)
-                const listItem = {
-                    ...this.state.list[index]
-                }
-                if (listItem.liked) {
-                    listItem.likes_count = listItem.likes_count - 1
-                } else {
-                    listItem.likes_count = listItem.likes_count + 1
-
-                }
-                listItem.liked = !listItem.liked
-                const list = [...this.state.list]
-                list[index] = listItem
-                this.setState({ list: list })
-            })
-        }
+            }
+            listItem.liked = !listItem.liked
+            const list = [...this.state.list]
+            list[index] = listItem
+            this.setState({ list: list })
+        })
 
     }
 
@@ -410,54 +350,75 @@ class TimeLine extends React.Component {
 
     }
 
-    handlePostComment = (index, timelineID, isEpisode, text) => {
-        if (isEpisode) {
-            axios.post('http://127.0.0.1:8000/api/episode-comments/', {
-                episode_id: timelineID,
-                comment_text: text
-            }, this.config).then((res) => {
-                const listItem = {
-                    ...this.state.list[index]
+    handlePostReply = (index, commentIndex, commentID, text) => {
+        axios.post('http://127.0.0.1:8000/api/course/comments/', {
+            parent_comment_id: commentID,
+            comment_text: text
+        }, this.config).then((res) => {
+            const listItem = {
+                ...this.state.list[index]
+            }
+            const comm = listItem.comments
+            comm.map((c, pos) => {
+                if (commentIndex === pos) {
+                    if (c.replies.length < 3) {
+                        c.replies.push(res.data)
+                    }
                 }
-                if (listItem.comments.length < 2) {
-                    listItem.comments.push(res.data)
-                }
-                const list = [...this.state.list]
-                list[index] = listItem
-                this.setState({ list: list })
-                this.commentTextHandler(index, '')
 
-
-
-            }).catch((error) => {
-                console.log(error)
             })
-        } else {
-            axios.post('http://127.0.0.1:8000/api/update-comments/', {
-                update_id: timelineID,
-                comment_text: text
-            }, this.config).then((res) => {
-                const listItem = {
-                    ...this.state.list[index]
-                }
-                if (listItem.comments.length < 2) {
-                    listItem.comments.push(res.data)
-                }
-                const list = [...this.state.list]
-                list[index] = listItem
-                this.setState({ list: list })
-                this.commentTextHandler(index, '')
+            const list = [...this.state.list]
+            list[index] = listItem
+            this.setState({ list: list, snackBarOpen: true, snackBarMessage: 'پیام شما فرستاده شد' })
+            this.replyTextHandler(index, commentIndex, '')
 
 
-            }).catch((error) => {
-                console.log(error)
-            })
-        }
+
+        }).catch((error) => {
+            console.log(error)
+        })
+
+    }
+
+    loadMore = () => {
+        this.setState({ loadingMore: true, page: this.state.page + 1 })
+        this.getValues(this.state.page + 1)
+
+    }
+
+    handlePostComment = (index, timelineID, text) => {
+        axios.post('http://127.0.0.1:8000/api/course/comments/', {
+            post_id: timelineID,
+            comment_text: text
+        }, this.config).then((res) => {
+            const listItem = {
+                ...this.state.list[index]
+            }
+            if (listItem.comments.length < 2) {
+                listItem.comments.push(res.data)
+            }
+            listItem.comments_count = listItem.comments_count + 1
+            const list = [...this.state.list]
+            list[index] = listItem
+            this.setState({ list: list, snackBarOpen: true, snackBarMessage: 'نظر شما فرستاده شد' })
+            this.commentTextHandler(index, '')
+
+
+
+        }).catch((error) => {
+            console.log(error)
+        })
 
     }
 
     handleCommentTextOnChange = (e, ind) => {
         this.commentTextHandler(ind, e.target.value)
+
+
+    }
+
+    handleReplyTextOnChange = (e, ind, commIndex) => {
+        this.replyTextHandler(ind, commIndex, e.target.value)
 
 
     }
@@ -476,14 +437,51 @@ class TimeLine extends React.Component {
 
     }
 
+    replyOpener = (index, commentIndex) => {
+        const results = this.state.list.map((item, idx) => {
+            if (index === idx) {
+                const comments = item.comments
+                comments.map((comment, indx) => {
+                    if (commentIndex == indx) {
+                        comment.isReplyOpen = !comment.isReplyOpen
+                    }
+                })
+                return {
+                    ...item,
+                    comments: comments
+                }
+            }
+            return item;
+        });
+        this.setState({ list: results })
+
+    }
+
+    replyTextHandler = (index, commentIndex, value) => {
+        const results = this.state.list.map((item, idx) => {
+            if (index === idx) {
+                const comments = item.comments
+                comments.map((comment, indx) => {
+                    if (commentIndex == indx) {
+                        comment.replyRef = value
+                    }
+                })
+                return {
+                    ...item,
+                    comments: comments
+                }
+            }
+            return item;
+        });
+        this.setState({ list: results })
+
+    }
+
     handleClickLike = (Index, commentIndex) => {
         this.handleLikeResponse(Index, commentIndex)
-        axios.put('http://127.0.0.1:8000/api/comment-likes/', {
+        axios.put('http://127.0.0.1:8000/api/course/comment-likes/', {
             comment_id: this.state.list[Index].comments[commentIndex].id
-        }, this.config).then((res) => {
-
-
-        }).catch(() => {
+        }, this.config).catch(() => {
             this.handleLikeResponse(Index, commentIndex)
         })
 
@@ -545,7 +543,7 @@ class TimeLine extends React.Component {
 
     copyLink = () => {
         navigator.clipboard.writeText(this.state.link)
-        this.setState({ snackBarOpen: true })
+        this.setState({ snackBarOpen: true, snackBarMessage: 'کپی شد' })
     }
 
     onSnackBarClose = (event, reason) => {
@@ -577,8 +575,10 @@ class TimeLine extends React.Component {
             return (
                 <div
                     style={{ padding: '16px' }}
+                    // className='vid-wrapper'
                 >
                     <ReactPlayer
+                        // className='react-player'
                         width='100%'
                         height='100%'
                         url={src}
@@ -609,13 +609,13 @@ class TimeLine extends React.Component {
 
                     <Snackbar
                         open={this.state.snackBarOpen}
-                        autoHideDuration={1000}
+                        autoHideDuration={2000}
                         onClose={this.onSnackBarClose}
                         dir='rtl'
                     >
 
                         <Alert onClose={this.onSnackBarClose} severity="success" className={classes.alertStyle} >
-                            کپی شد
+                            {this.state.snackBarMessage}
 
                         </Alert>
                     </Snackbar>
@@ -684,7 +684,7 @@ class TimeLine extends React.Component {
                                                     <Skeleton animation="wave" variant="circle" width={70} height={70} style={{ marginRight: '10px' }} />
                                                     <div>
                                                         <div style={{ display: 'flex' }}>
-                                                            <Skeleton animation="wave" height={20} width={360} style={{ marginBottom: 6 }} style={{
+                                                            <Skeleton animation="wave" height={20} width={240} style={{ marginBottom: 6 }} style={{
                                                                 marginRight: '12px', alignSelf: 'flex-start'
                                                             }} />
 
@@ -733,7 +733,7 @@ class TimeLine extends React.Component {
                                                     <Skeleton animation="wave" variant="circle" width={70} height={70} style={{ marginRight: '10px' }} />
                                                     <div>
                                                         <div style={{ display: 'flex' }}>
-                                                            <Skeleton animation="wave" height={20} width={360} style={{ marginBottom: 6 }} style={{
+                                                            <Skeleton animation="wave" height={20} width={240} style={{ marginBottom: 6 }} style={{
                                                                 marginRight: '12px', alignSelf: 'flex-start'
                                                             }} />
 
@@ -776,254 +776,265 @@ class TimeLine extends React.Component {
 
                                     {this.state.list.length > 0 ? (
                                         <div>
-                                            {this.state.list.map((timeline, index) => (
+                                            <div>
+                                                {this.state.list.map((timeline, index) => (
 
-                                                <div className={classes.paperStyle} key={timeline.id} >
+                                                    <div className={classes.paperStyle} key={timeline.id} >
 
-                                                    <Paper className={classes.mediaCardPaperStyle}
-                                                        elevation={3}
-                                                        style={{ marginBottom: '30px', marginTop: '30px' }}
-                                                    >
-                                                        <Grid container dir="rtl"
-
+                                                        <Paper className={classes.mediaCardPaperStyle}
+                                                            elevation={3}
+                                                            style={{ marginBottom: '30px', marginTop: '30px' }}
                                                         >
-                                                            <Grid item lg={12} md={12} sm={12} xs={12}
-                                                                style={{ padding: '16px', display: 'flex', justifyContent: 'space-between' }}>
-                                                                <div style={{ display: 'flex' }}>
+                                                            <Grid container dir="rtl"
 
-                                                                    <Avatar src={timeline.instructor_profilePic} style={{ width: 70, height: 70 }} />
-                                                                    <div>
-                                                                        <div style={{ display: 'flex' }}>
-                                                                            <Typography
-                                                                                style={{
-                                                                                    marginRight: '12px', alignSelf: 'flex-start'
-                                                                                }}
+                                                            >
+                                                                <Grid item lg={12} md={12} sm={12} xs={12}
+                                                                    style={{ padding: '16px', display: 'flex', justifyContent: 'space-between' }}>
+                                                                    <div style={{ display: 'flex' }}>
 
-                                                                            >
-                                                                                <Box fontSize={20} fontWeight="fontWeightBold"
-
-                                                                                >
-                                                                                    {timeline.instructor_firstName + ' ' + timeline.instructor_lastName}
-
-                                                                                </Box>
-
-
-                                                                            </Typography>
-
-                                                                            <Typography
-                                                                                style={{
-                                                                                    marginRight: '8px', alignSelf: 'flex-start', marginTop: '6px'
-                                                                                }}
-
-                                                                            >
-                                                                                <Box fontSize={14} style={{ color: 'grey' }}
+                                                                        <Avatar src={timeline.instructor_profilePic} style={{ width: 70, height: 70 }} />
+                                                                        <div>
+                                                                            <div style={{ display: 'flex' }}>
+                                                                                <Typography
+                                                                                    style={{
+                                                                                        marginRight: '12px', alignSelf: 'flex-start'
+                                                                                    }}
 
                                                                                 >
-                                                                                    {' . ' + human(new Date(timeline.time))
-                                                                                        .replace('hours', 'ساعت')
-                                                                                        .replace('hour', 'ساعت')
-                                                                                        .replace('minutes', 'دقیقه')
-                                                                                        .replace('minute', 'دقیقه')
-                                                                                        .replace('days', 'روز')
-                                                                                        .replace('day', 'روز')
-                                                                                        .replace('seconds', 'ثانیه')
-                                                                                        .replace('second', 'ثانیه')
-                                                                                        .replace('ago', 'پیش')}
+                                                                                    <Box fontSize={20} fontWeight="fontWeightBold"
 
-                                                                                </Box>
+                                                                                    >
+                                                                                        {timeline.instructor_firstName + ' ' + timeline.instructor_lastName}
+
+                                                                                    </Box>
 
 
-                                                                            </Typography>
+                                                                                </Typography>
+
+                                                                                <Typography
+                                                                                    style={{
+                                                                                        marginRight: '8px', alignSelf: 'flex-start', marginTop: '6px'
+                                                                                    }}
+
+                                                                                >
+                                                                                    <Box fontSize={14} style={{ color: 'grey' }}
+
+                                                                                    >
+                                                                                        {' . ' + human(new Date(timeline.time))
+                                                                                            .replace('years', 'سال')
+                                                                                            .replace('year', 'سال')
+                                                                                            .replace('hours', 'ساعت')
+                                                                                            .replace('hour', 'ساعت')
+                                                                                            .replace('minutes', 'دقیقه')
+                                                                                            .replace('minute', 'دقیقه')
+                                                                                            .replace('days', 'روز')
+                                                                                            .replace('day', 'روز')
+                                                                                            .replace('seconds', 'ثانیه')
+                                                                                            .replace('second', 'ثانیه')
+                                                                                            .replace('ago', 'پیش')}
+
+                                                                                    </Box>
+
+
+                                                                                </Typography>
+
+                                                                            </div>
+                                                                            <div style={{ display: 'flex' }}>
+                                                                                <Typography
+                                                                                    style={{
+                                                                                        alignSelf: 'flex-start', marginTop: '12px', marginRight: '12px'
+                                                                                    }}
+
+                                                                                >
+                                                                                    <Box fontSize={18}
+
+                                                                                    >
+                                                                                        {timeline.type == 0 ? (
+                                                                                            <span>
+                                                                                                جلسه ی <strong><Link href={"/student_dashboard" + timeline.postUrl}>{timeline.name}</Link></strong> از دوره ی <strong><Link href={"/student_dashboard" + timeline.course_url.replace('course', 'added_courses')}>{timeline.course_name}</Link></strong> منتشر شد.
+                                                                                            </span>
+
+                                                                                        ) : 'خبر'}
+
+                                                                                    </Box>
+                                                                                </Typography>
+                                                                            </div>
 
                                                                         </div>
-                                                                        <div style={{ display: 'flex' }}>
-                                                                            <Typography
-                                                                                style={{
-                                                                                    alignSelf: 'flex-start', marginTop: '6px', marginRight: '12px'
-                                                                                }}
 
-                                                                            >
-                                                                                <Box fontSize={20}
 
-                                                                                >
-                                                                                    {timeline.name}
+                                                                    </div>
+                                                                    <div style={{ alignSelf: 'flex-start' }}>
+                                                                        <IconButton
+                                                                            component="span"
+                                                                            aria-controls="customized-menu"
+                                                                            aria-haspopup="true"
+                                                                            onClick={(e) => this.handleAnchorEl(e, index, true)}
+                                                                            className={classes.veticalDots}>
+                                                                            <MoreHorizIcon
+                                                                            />
+                                                                        </IconButton>
+                                                                        <StyledMenu
+                                                                            id="customized-menu"
+                                                                            anchorEl={timeline.anchorEl}
+                                                                            keepMounted
+                                                                            open={Boolean(timeline.anchorEl)}
+                                                                            onClose={(e) => this.handleAnchorEl(e, index, false)}
+                                                                        >
 
-                                                                                </Box>
-                                                                            </Typography>
-                                                                        </div>
-
+                                                                            <StyledMenuItem onClick={() => this.openShareDialog(1, index, false, "http://localhost:3000/student_dashboard" + timeline.postUrl.replace('update', 'post'))} >
+                                                                                <ListItemIcon>
+                                                                                    <ShareIcon />
+                                                                                </ListItemIcon>
+                                                                                <ListItemText primary="اشتراک گذاری" />
+                                                                            </StyledMenuItem>
+                                                                        </StyledMenu>
                                                                     </div>
 
 
-                                                                </div>
-                                                                <div style={{ alignSelf: 'flex-start' }}>
-                                                                    <IconButton
-                                                                        component="span"
-                                                                        aria-controls="customized-menu"
-                                                                        aria-haspopup="true"
-                                                                        onClick={(e) => this.handleAnchorEl(e, index, true)}
-                                                                        className={classes.veticalDots}>
-                                                                        <MoreHorizIcon
-                                                                        />
-                                                                    </IconButton>
-                                                                    <StyledMenu
-                                                                        id="customized-menu"
-                                                                        anchorEl={timeline.anchorEl}
-                                                                        keepMounted
-                                                                        open={Boolean(timeline.anchorEl)}
-                                                                        onClose={(e) => this.handleAnchorEl(e, index, false)}
-                                                                    >
-
-                                                                        <StyledMenuItem onClick={() => this.openShareDialog(1, index, false, "http://localhost:3000/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post'))} >
-                                                                            <ListItemIcon>
-                                                                                <ShareIcon />
-                                                                            </ListItemIcon>
-                                                                            <ListItemText primary="اشتراک گذاری" />
-                                                                        </StyledMenuItem>
-                                                                    </StyledMenu>
-                                                                </div>
-
-
-                                                            </Grid>
-                                                            <Grid md={12} lg={12} sm={12}
-                                                                item
-                                                                xs={12}>
-                                                                <Divider />
-                                                            </Grid>
-                                                            <Grid item
-                                                                md={12} lg={12} sm={12}
-                                                                xs={12}>
-                                                                <div style={{ padding: '16px', display: 'flex', wordBreak: 'break-all' }}>
-                                                                    <Typography
-
-                                                                    >
-                                                                        <Box fontSize={18}  >
-                                                                            {timeline.description !== '' ? timeline.description : '(توضیحی وجود ندارد)'}
-                                                                        </Box>
-
-                                                                    </Typography>
-                                                                </div>
-
-                                                            </Grid>
-
-
-                                                            <Grid item md={12} lg={12} sm={12}
-                                                                xs={12}>
-
-                                                                {timeline.files.map((file) =>
-
-                                                                    <this.TypeOfFile src={file.file} key={file.id} />
-
-                                                                )}
-
-
-                                                            </Grid>
-
-                                                            <Grid item
-                                                                md={12} lg={12} sm={12}
-                                                                xs={12}>
-                                                                {timeline.files.length > 0 ? (
-                                                                    <div style={{ padding: '16px' }}>
+                                                                </Grid>
+                                                                <Grid md={12} lg={12} sm={12}
+                                                                    item
+                                                                    xs={12}>
+                                                                    <Divider />
+                                                                </Grid>
+                                                                <Grid item
+                                                                    md={12} lg={12} sm={12}
+                                                                    xs={12}>
+                                                                    <div style={{ padding: '16px', display: 'flex', wordBreak: 'break-all' }}>
                                                                         <Typography
-                                                                            style={{ display: 'flex', marginBottom: '8px' }}
 
                                                                         >
                                                                             <Box fontSize={18}  >
-                                                                                فایل ها :
+                                                                                {timeline.description !== '' ? timeline.description : '(توضیحی وجود ندارد)'}
                                                                             </Box>
 
                                                                         </Typography>
+                                                                    </div>
 
-                                                                        <TableContainer dir="rtl" component={Paper}>
-                                                                            <Table aria-label="customized table" dir="rtl">
-                                                                                <TableHead dir="rtl">
-                                                                                    <TableRow dir="rtl">
-                                                                                        <StyledTableCell align="center">آیکون</StyledTableCell>
-                                                                                        <StyledTableCell align="center">اسم فایل</StyledTableCell>
-                                                                                        <StyledTableCell align="center">حجم</StyledTableCell>
-                                                                                        <StyledTableCell align="center">دانلود</StyledTableCell>
-                                                                                    </TableRow>
-                                                                                </TableHead>
-                                                                                <TableBody>
-                                                                                    {timeline.files.map((tabFile, tabIndx) => (
+                                                                </Grid>
 
 
-                                                                                        <StyledTableRow dir="rtl" key={tabFile.id}>
-                                                                                            <StyledTableCell align="center">
-                                                                                                <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
-                                                                                            </StyledTableCell>
-                                                                                            <StyledTableCell align="center">
-                                                                                                <Box >
-                                                                                                    {this.fileNameExtractor(tabFile.file)}
-                                                                                                </Box>
-                                                                                            </StyledTableCell>
-                                                                                            <StyledTableCell align="center">
-                                                                                                <div dir='ltr'>
-                                                                                                    <Box style={{ color: 'grey' }} fontSize={14}>
-                                                                                                        {this.bytesToSize(tabFile.size)}
+                                                                <Grid item md={12} lg={12} sm={12}
+                                                                    xs={12}>
+
+                                                                    {timeline.files.map((file) =>
+
+                                                                        <this.TypeOfFile src={file.file} key={file.id} />
+
+                                                                    )}
+
+
+                                                                </Grid>
+
+                                                                <Grid item
+                                                                    md={12} lg={12} sm={12}
+                                                                    xs={12}>
+                                                                    {timeline.files.length > 0 ? (
+                                                                        <div style={{ padding: '16px' }}>
+                                                                            <Typography
+                                                                                style={{ display: 'flex', marginBottom: '8px' }}
+
+                                                                            >
+                                                                                <Box fontSize={18}  >
+                                                                                    فایل ها :
+                                                                            </Box>
+
+                                                                            </Typography>
+
+                                                                            <TableContainer dir="rtl" component={Paper}>
+                                                                                <Table aria-label="customized table" dir="rtl">
+                                                                                    <TableHead dir="rtl">
+                                                                                        <TableRow dir="rtl">
+                                                                                            <StyledTableCell align="center">آیکون</StyledTableCell>
+                                                                                            <StyledTableCell align="center">اسم فایل</StyledTableCell>
+                                                                                            <StyledTableCell align="center">حجم</StyledTableCell>
+                                                                                            <StyledTableCell align="center">دانلود</StyledTableCell>
+                                                                                        </TableRow>
+                                                                                    </TableHead>
+                                                                                    <TableBody>
+                                                                                        {timeline.files.map((tabFile, tabIndx) => (
+
+
+                                                                                            <StyledTableRow dir="rtl" key={tabFile.id}>
+                                                                                                <StyledTableCell align="center">
+                                                                                                    <this.HandlePreviewIcon src={this.fileNameExtractor(tabFile.file)} />
+                                                                                                </StyledTableCell>
+                                                                                                <StyledTableCell align="center">
+                                                                                                    <Box >
+                                                                                                        {this.fileNameExtractor(tabFile.file)}
                                                                                                     </Box>
-                                                                                                </div>
-                                                                                            </StyledTableCell>
-                                                                                            <StyledTableCell align="center">
-                                                                                                <IconButton variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
+                                                                                                </StyledTableCell>
+                                                                                                <StyledTableCell align="center">
+                                                                                                    <div dir='ltr'>
+                                                                                                        <Box style={{ color: 'grey' }} fontSize={14}>
+                                                                                                            {this.bytesToSize(tabFile.size)}
+                                                                                                        </Box>
+                                                                                                    </div>
+                                                                                                </StyledTableCell>
+                                                                                                <StyledTableCell align="center">
+                                                                                                    <IconButton variant="outlined" color='primary' onClick={() => this.handleDownload(tabFile.file)}>
 
-                                                                                                    <GetAppRoundedIcon />
-                                                                                                </IconButton>
-                                                                                            </StyledTableCell>
-                                                                                        </StyledTableRow>
+                                                                                                        <GetAppRoundedIcon />
+                                                                                                    </IconButton>
+                                                                                                </StyledTableCell>
+                                                                                            </StyledTableRow>
 
-                                                                                    ))}
-                                                                                </TableBody>
-                                                                            </Table>
-                                                                        </TableContainer>
-                                                                    </div>
-                                                                ) : ''}
-
-                                                            </Grid>
-
-                                                            <Grid md={12} lg={12} sm={12}
-                                                                item
-                                                                xs={12}>
-                                                                <Divider />
-                                                            </Grid>
-
-                                                            <Grid item
-                                                                md={12} lg={12} sm={12}
-                                                                style={{ paddingRight: '16px', paddingLeft: '16px', paddingBottom: '4px', paddingTop: '4px' }}
-                                                                xs={12}>
-                                                                <div
-                                                                    style={{
-                                                                        justifyContent: 'space-between', alignItems: 'center',
-                                                                        display: 'flex'
-                                                                    }}
-                                                                >
-                                                                    <div style={{ display: 'flex' }}>
-
-                                                                        <div style={{ alignSelf: 'center' }}>
-                                                                            <Box style={{ color: 'grey' }} fontSize={14}>
-                                                                                {timeline.likes_count}
-                                                                            </Box>
+                                                                                        ))}
+                                                                                    </TableBody>
+                                                                                </Table>
+                                                                            </TableContainer>
                                                                         </div>
-                                                                        <IconButton onClick={() => this.handleTimelineLike(index, timeline.id, timeline.isEpisode)}>
-                                                                            {timeline.liked ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
-                                                                        </IconButton>
+                                                                    ) : ''}
 
-                                                                    </div>
-                                                                    <div style={{ display: 'flex' }}>
+                                                                </Grid>
 
-                                                                        <div style={{ alignSelf: 'center' }}>
-                                                                            <Box style={{
-                                                                                color: 'grey'
-                                                                            }} fontSize={14}>
-                                                                                {timeline.comments_count}
-                                                                            </Box>
+                                                                <Grid md={12} lg={12} sm={12}
+                                                                    item
+                                                                    xs={12}>
+                                                                    <Divider />
+                                                                </Grid>
+
+                                                                <Grid item
+                                                                    md={12} lg={12} sm={12}
+                                                                    style={{ paddingRight: '16px', paddingLeft: '16px', paddingBottom: '4px', paddingTop: '4px' }}
+                                                                    xs={12}>
+                                                                    <div
+                                                                        style={{
+                                                                            justifyContent: 'center', alignItems: 'center',
+                                                                            display: 'flex'
+                                                                        }}
+                                                                    >
+                                                                        <div style={{ display: 'flex' }}>
+
+                                                                            <div style={{ alignSelf: 'center' }}>
+                                                                                {timeline.liked ? (<Box style={{ color: 'red' }} fontSize={14}>
+                                                                                    {timeline.likes_count}
+                                                                                </Box>) : (<Box style={{ color: 'grey' }} fontSize={14}>
+                                                                                    {timeline.likes_count}
+                                                                                </Box>)}
+
+                                                                            </div>
+                                                                            <IconButton onClick={() => this.handleTimelineLike(index, timeline.id)}>
+                                                                                {timeline.liked ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
+                                                                            </IconButton>
+
                                                                         </div>
-                                                                        <IconButton href={"/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}>
-                                                                            <CommentIcon />
-                                                                        </IconButton>
+                                                                        <div style={{ display: 'flex' }}>
 
-                                                                    </div>
-                                                                    <IconButton href={"/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}
+                                                                            <div style={{ alignSelf: 'center' }}>
+                                                                                <Box style={{
+                                                                                    color: 'grey'
+                                                                                }} fontSize={14}>
+                                                                                    {timeline.comments_count}
+                                                                                </Box>
+                                                                            </div>
+                                                                            <IconButton href={"/student_dashboard" + timeline.postUrl.replace('update', 'post')}>
+                                                                                <CommentIcon />
+                                                                            </IconButton>
+
+                                                                        </div>
+                                                                        {/* <IconButton href={"/student_dashboard" + timeline.postUrl.replace('update', 'post')}
                                                                         style={{ marginLeft: '5px', alignSelf: 'center' }}
                                                                     >
                                                                         <AssignmentIcon style={{ marginRight: '4px' }} />
@@ -1032,121 +1043,246 @@ class TimeLine extends React.Component {
                                                                         style={{ marginRight: '5px', alignSelf: 'center' }}
                                                                     >
                                                                         <BallotIcon style={{ marginRight: '4px' }} />
-                                                                    </IconButton>
-                                                                </div>
-
-                                                            </Grid>
-
-
-
-
-                                                            <Grid item
-                                                                md={12} lg={12} sm={12}
-
-                                                                xs={12}>
-
-                                                                <div style={{ paddingRight: '16px', paddingLeft: '16px', paddingBottom: '16px', paddingTop: '4px' }}>
-
-
-                                                                    <div style={{ marginRight: '-16px', marginLeft: '-16px' }}>
-                                                                        {timeline.comments.length > 0 &&
-                                                                            (<List
-                                                                                component="div"
-                                                                                aria-labelledby="nested-comment-list-subheader"
-                                                                                subheader={
-                                                                                    <ListSubheader component="div" id="nested-comment-list-subheader">
-                                                                                        کامنت ها
-                                                                            </ListSubheader>
-                                                                                }
-                                                                            >
-                                                                                {timeline.comments.map((comment, commentIndex) => (
-                                                                                    <div key={comment.id}>
-                                                                                        <ListItem  >
-                                                                                            <ListItemAvatar>
-                                                                                                <Avatar alt="avatar" src={comment.profile_picture} />
-                                                                                            </ListItemAvatar>
-                                                                                            <ListItemText
-                                                                                                style={{ textAlign: 'right' }}
-                                                                                                primary={
-                                                                                                    <Typography >
-                                                                                                        {comment.user_firstname + " " + comment.user_lastname}
-                                                                                                    </Typography>
-                                                                                                }
-                                                                                                secondary={
-                                                                                                    <>
-                                                                                                        <Typography
-                                                                                                            dir='rtl'
-                                                                                                            component="span"
-                                                                                                            variant="body2"
-                                                                                                            color="textPrimary"
-                                                                                                            style={{ wordBreak: 'break-all' }}
-                                                                                                        >
-                                                                                                            {comment.comment_text}
-                                                                                                        </Typography>
-                                                                                                    </>
-                                                                                                }
-                                                                                            ></ListItemText>
-                                                                                            <ListItemIcon >
-                                                                                                <IconButton
-                                                                                                    onClick={() => window.location = "http://localhost:3000/student_dashboard" + timeline.episode_or_news_url.replace('update', 'post')}
-                                                                                                >
-                                                                                                    <ReplyIcon />
-                                                                                                </IconButton>
-                                                                                                <IconButton
-                                                                                                    onClick={() => this.handleClickLike(index, commentIndex)}
-                                                                                                >
-
-                                                                                                    {comment.liked ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
-                                                                                                </IconButton>
-                                                                                            </ListItemIcon>
-
-                                                                                        </ListItem>
-                                                                                        <Divider />
-                                                                                    </div>
-
-                                                                                ))}
-                                                                            </List>)}
+                                                                    </IconButton> */}
                                                                     </div>
-                                                                    <ValidatorForm onSubmit={() => this.handlePostComment(index, timeline.id, timeline.isEpisode, timeline.commentRef)}>
-                                                                        <InputBase
-                                                                            style={{ padding: '8px', marginTop: '6px' }}
-                                                                            value={timeline.commentRef}
-                                                                            onChange={(e) => this.handleCommentTextOnChange(e, index)}
-                                                                            fullWidth
-                                                                            required
-                                                                            className='input2'
-                                                                            placeholder="کامنت بگذارید"
-                                                                            endAdornment={
-                                                                                <InputAdornment position="end" >
-                                                                                    {timeline.commentRef !== '' && (
-                                                                                        <IconButton color="primary" className={classes.iconButton}
-                                                                                            onClick={() => this.handlePostComment(index, timeline.id, timeline.isEpisode, timeline.commentRef)}
-                                                                                        >
-                                                                                            <SendIcon className='icon' />
-                                                                                        </IconButton>)}
-                                                                                </InputAdornment>
 
-                                                                            }
-                                                                        />
-                                                                    </ValidatorForm>
-                                                                </div>
+                                                                </Grid>
+
+
+
+
+                                                                <Grid item
+                                                                    md={12} lg={12} sm={12}
+
+                                                                    xs={12}>
+
+                                                                    <div style={{ paddingRight: '16px', paddingLeft: '16px', paddingBottom: '16px', paddingTop: '4px' }}>
+
+
+                                                                        <div style={{ marginRight: '-16px', marginLeft: '-16px' }}>
+                                                                            {timeline.comments.length > 0 &&
+                                                                                (<List
+                                                                                    component="div"
+                                                                                    aria-labelledby="nested-comment-list-subheader"
+                                                                                    subheader={
+                                                                                        <ListSubheader component="div" id="nested-comment-list-subheader">
+                                                                                            کامنت ها
+                                                                            </ListSubheader>
+                                                                                    }
+                                                                                >
+                                                                                    {timeline.comments.map((comment, commentIndex) => (
+                                                                                        <div key={comment.id}>
+                                                                                            <ListItem  >
+                                                                                                <ListItemAvatar>
+                                                                                                    <Avatar alt="avatar" src={comment.profile_picture} />
+                                                                                                </ListItemAvatar>
+                                                                                                <ListItemText
+                                                                                                    style={{ textAlign: 'right' }}
+                                                                                                    primary={
+                                                                                                        <Typography >
+                                                                                                            {comment.user_firstname + " " + comment.user_lastname}
+                                                                                                        </Typography>
+                                                                                                    }
+                                                                                                    secondary={
+                                                                                                        <>
+                                                                                                            <Typography
+                                                                                                                dir='rtl'
+                                                                                                                component="span"
+                                                                                                                variant="body2"
+                                                                                                                color="textPrimary"
+                                                                                                                style={{ wordBreak: 'break-all' }}
+                                                                                                            >
+                                                                                                                {comment.comment_text}
+                                                                                                            </Typography>
+                                                                                                        </>
+                                                                                                    }
+                                                                                                ></ListItemText>
+                                                                                                <ListItemIcon >
+                                                                                                    <IconButton
+                                                                                                        onClick={() => this.replyOpener(index, commentIndex)}
+                                                                                                    >
+                                                                                                        <ReplyIcon />
+                                                                                                    </IconButton>
+                                                                                                    <IconButton
+                                                                                                        onClick={() => this.handleClickLike(index, commentIndex)}
+                                                                                                    >
+
+                                                                                                        {comment.liked ? <FavoriteIcon color='secondary' /> : <FavoriteBorderOutlinedIcon />}
+                                                                                                    </IconButton>
+                                                                                                </ListItemIcon>
+
+                                                                                            </ListItem>
+                                                                                            <Collapse in={comment.isReplyOpen} timeout="auto" unmountOnExit>
+                                                                                                {comment.replies.length > 3 ?
+                                                                                                    (<List
+                                                                                                        component="div"
+                                                                                                        aria-labelledby="nested-reply-list-subheader"
+                                                                                                        style={{ marginRight: '16px' }}
+                                                                                                    >
+                                                                                                        {comment.replies.slice(0, 3).map((reply, replyIndex) => (
+                                                                                                            <div key={reply.id}>
+                                                                                                                <ListItem  >
+                                                                                                                    <ListItemAvatar>
+                                                                                                                        <Avatar alt="avatar" src={reply.profile_picture} />
+                                                                                                                    </ListItemAvatar>
+                                                                                                                    <ListItemText
+                                                                                                                        style={{ textAlign: 'right' }}
+                                                                                                                        primary={
+                                                                                                                            <Typography >
+                                                                                                                                {reply.user_firstname + " " + reply.user_lastname}
+                                                                                                                            </Typography>
+                                                                                                                        }
+                                                                                                                        secondary={
+                                                                                                                            <>
+                                                                                                                                <Typography
+                                                                                                                                    dir='rtl'
+                                                                                                                                    component="span"
+                                                                                                                                    variant="body2"
+                                                                                                                                    color="textPrimary"
+                                                                                                                                    style={{ wordBreak: 'break-all' }}
+                                                                                                                                >
+                                                                                                                                    {reply.comment_text}
+                                                                                                                                </Typography>
+                                                                                                                            </>
+                                                                                                                        }
+                                                                                                                    ></ListItemText>
+
+                                                                                                                </ListItem>
+                                                                                                            </div>
+
+                                                                                                        ))}
+                                                                                                    </List>) : (
+                                                                                                        <div>
+                                                                                                            {comment.replies.length > 0 &&
+                                                                                                                (<List
+                                                                                                                    style={{ marginRight: '16px' }}
+                                                                                                                    component="div"
+                                                                                                                    aria-labelledby="nested-reply-list-subheader"
+                                                                                                                >
+                                                                                                                    {comment.replies.map((reply, replyIndex) => (
+                                                                                                                        <div key={reply.id}>
+                                                                                                                            <ListItem  >
+                                                                                                                                <ListItemAvatar>
+                                                                                                                                    <Avatar alt="avatar" src={reply.profile_picture} />
+                                                                                                                                </ListItemAvatar>
+                                                                                                                                <ListItemText
+                                                                                                                                    style={{ textAlign: 'right' }}
+                                                                                                                                    primary={
+                                                                                                                                        <Typography >
+                                                                                                                                            {reply.user_firstname + " " + reply.user_lastname}
+                                                                                                                                        </Typography>
+                                                                                                                                    }
+                                                                                                                                    secondary={
+                                                                                                                                        <>
+                                                                                                                                            <Typography
+                                                                                                                                                dir='rtl'
+                                                                                                                                                component="span"
+                                                                                                                                                variant="body2"
+                                                                                                                                                color="textPrimary"
+                                                                                                                                                style={{ wordBreak: 'break-all' }}
+                                                                                                                                            >
+                                                                                                                                                {reply.comment_text}
+                                                                                                                                            </Typography>
+                                                                                                                                        </>
+                                                                                                                                    }
+                                                                                                                                ></ListItemText>
+
+                                                                                                                            </ListItem>
+                                                                                                                        </div>
+
+                                                                                                                    ))}
+                                                                                                                </List>)}
+                                                                                                        </div>
+                                                                                                    )}
+
+                                                                                                <ValidatorForm onSubmit={() => this.handlePostReply(index, commentIndex, comment.id, comment.replyRef)} style={{ padding: '10px', marginRight: '20px', marginLeft: '20px', marginBottom: '4px' }}>
+                                                                                                    <InputBase
+                                                                                                        style={{ padding: '4px' }}
+                                                                                                        value={comment.replyRef}
+                                                                                                        onChange={(e) => this.handleReplyTextOnChange(e, index, commentIndex)}
+                                                                                                        fullWidth
+                                                                                                        required
+                                                                                                        className='input2'
+                                                                                                        placeholder="متن پیام"
+                                                                                                        endAdornment={
+                                                                                                            <InputAdornment position="end" >
+                                                                                                                {comment.replyRef !== '' && (
+                                                                                                                    <IconButton color="primary" className={classes.iconButton}
+                                                                                                                        onClick={() => this.handlePostReply(index, commentIndex, comment.id, comment.replyRef)}
+                                                                                                                    >
+                                                                                                                        <SendIcon className='icon' />
+                                                                                                                    </IconButton>)}
+                                                                                                            </InputAdornment>
+
+                                                                                                        }
+                                                                                                    />
+                                                                                                </ValidatorForm>
+
+                                                                                            </Collapse>
+                                                                                            <Divider />
+                                                                                        </div>
+
+                                                                                    ))}
+                                                                                </List>)}
+                                                                        </div>
+                                                                        <ValidatorForm onSubmit={() => this.handlePostComment(index, timeline.id, timeline.commentRef)}>
+                                                                            <InputBase
+                                                                                style={{ padding: '8px', marginTop: '6px' }}
+                                                                                value={timeline.commentRef}
+                                                                                onChange={(e) => this.handleCommentTextOnChange(e, index)}
+                                                                                fullWidth
+                                                                                required
+                                                                                className='input2'
+                                                                                placeholder="کامنت بگذارید"
+                                                                                endAdornment={
+                                                                                    <InputAdornment position="end" >
+                                                                                        {timeline.commentRef !== '' && (
+                                                                                            <IconButton color="primary" className={classes.iconButton}
+                                                                                                onClick={() => this.handlePostComment(index, timeline.id, timeline.commentRef)}
+                                                                                            >
+                                                                                                <SendIcon className='icon' />
+                                                                                            </IconButton>)}
+                                                                                    </InputAdornment>
+
+                                                                                }
+                                                                            />
+                                                                        </ValidatorForm>
+                                                                    </div>
+                                                                </Grid>
+
+
+
                                                             </Grid>
+                                                        </Paper>
 
 
+                                                    </div>
+                                                ))}
 
-                                                        </Grid>
-                                                    </Paper>
+                                            </div>
 
+                                            {this.state.hasNext && (<div style={{ display: 'flex', justifyContent: 'center', padding: '16px' }}>
+                                                <Button
+                                                    color='primary'
+                                                    disabled={this.state.loadingMore}
+                                                    variant='outlined'
+                                                    style={{ borderRadius: 30, padding: '16px' }}
+                                                    onClick={this.loadMore}>
+                                                    {this.state.loadingMore ? (
+                                                        <CircularProgress />
+                                                    ) : 'مشاهده ی موارد بیشتر'}
 
-                                                </div>
-                                            ))}
+                                                </Button>
+
+                                            </div>)}
 
                                         </div>
+
                                     ) : (
 
                                             <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
                                                 <Typography >
-                                                    <Box fontSize={18}  >
+                                                    <Box fontSize={18} p={20} >
                                                         مطلبی وجود ندارد
                                         </Box>
 

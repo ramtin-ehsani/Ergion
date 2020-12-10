@@ -229,7 +229,7 @@ const PostPage = () => {
 
 		axios
 			.put(
-				'http://127.0.0.1:8000/api/update-likes/',
+				'http://127.0.0.1:8000/api/course/post-likes/',
 				{
 					update_id: id
 				},
@@ -363,7 +363,7 @@ const PostPage = () => {
 		const update_id = window.location.href.split('/')[5];
 		console.log(update_id);
 		axios
-			.get(`http://127.0.0.1:8000/api/student-course-updates/?update_id=${update_id}`, config)
+			.get(`http://127.0.0.1:8000/api/course/news-details/?news_id=${update_id}`, config)
 			.then((response) => {
 				console.log(response.data);
 				setPostPage(response.data[0]);

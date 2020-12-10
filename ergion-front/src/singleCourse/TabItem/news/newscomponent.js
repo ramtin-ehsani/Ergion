@@ -112,7 +112,7 @@ const PostPage = (props) => {
 
 	const [isowner, setisowner] = React.useState(false);
 	const likehandler = () => {
-		axios.put('http://127.0.0.1:8000/api/update-likes/', {
+		axios.put('http://127.0.0.1:8000/api/course/news-likes/', {
 			update_id: props.update.id
 		}, {
 			headers: {
@@ -139,7 +139,7 @@ const PostPage = (props) => {
 			else setS(true);
 
 			// setTimeout(() => {
-				const promise = Axios.get('http://127.0.0.1:8000/api/course-news/', {
+				const promise = Axios.get('http://127.0.0.1:8000/api/course/news/', {
 					params: { update_id: props.update.id },
 					headers: { "Authorization": `Token ${localStorage.getItem('token')}` }
 				})
@@ -153,7 +153,7 @@ const PostPage = (props) => {
 
 
 				}).catch(error => console.log(error))
-				const promise1 = axios.get('http://127.0.0.1:8000/api/update-details/', {
+				const promise1 = axios.get('http://127.0.0.1:8000/api/course/news-details/', {
 					params: { update_id: props.update.id },
 					headers: { "Authorization": `Token ${localStorage.getItem('token')}` }
 				})

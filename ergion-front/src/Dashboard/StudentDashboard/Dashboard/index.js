@@ -61,7 +61,7 @@ const Dashboard = () => {
                         item
                         lg={4}
                         md={4}
-                        xs={0}
+                        xs={false}
                     >
 
                         

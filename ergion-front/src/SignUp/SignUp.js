@@ -131,10 +131,12 @@ class SignUp extends Component {
 
   componentDidMount() {
     if (localStorage.getItem('api_key') !== 'null') {
-      if ((JSON.parse(localStorage.getItem('user'))['role']) === "T") {
-        window.location = '/teacher_dashboard';
-      } else {
-        window.location = '/student_dashboard';
+      if (localStorage.getItem('user') !== null) {
+        if ((JSON.parse(localStorage.getItem('user'))['role']) === "T") {
+          window.location = '/teacher_dashboard';
+        } else {
+          window.location = '/student_dashboard';
+        }
       }
     }
     // custom rule will have name 'isPasswordMatch'
@@ -224,7 +226,7 @@ class SignUp extends Component {
           this.setState({ dialogOpen: true })
           this.setState({ emailExists: true })
           this.setState({ existingEmail: this.state.formData.email })
-        
+
         });
     }
     console.log(this.state)

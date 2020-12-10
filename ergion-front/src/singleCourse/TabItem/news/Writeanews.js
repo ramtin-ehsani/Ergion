@@ -241,7 +241,7 @@ const image2delete=()=>{
 
 const	sendnewshandler=event=>
 	{
-		Axios.post('http://127.0.0.1:8000/api/course-news/',
+		Axios.post('http://127.0.0.1:8000/api/course/news/',
 		{related_course:courseid,text:newstext}, 
 		{  headers :{
 			"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
@@ -252,7 +252,7 @@ const	sendnewshandler=event=>
 			const fileData=new FormData()
 			fileData.append('update_id',response.data.id)
 			fileData.append("file",image4)
-			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authoriza`	/xz,mnbtion": `Token ${localStorage.getItem('token')}`}}).then(function(response){
 		
@@ -267,7 +267,7 @@ const	sendnewshandler=event=>
 			const fileData=new FormData()
 			fileData.append('update_id',response.data.id)
 			fileData.append("file",image3)
-			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
 				setisimage(isimage-1);
@@ -281,7 +281,7 @@ const	sendnewshandler=event=>
 			const fileData=new FormData()
 			fileData.append('update_id',response.data.id)
 			fileData.append("file",image2)
-			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
 				setisimage(isimage-1);
@@ -293,7 +293,7 @@ const	sendnewshandler=event=>
 		{ const fileData=new FormData()
 			fileData.append("update_id",response.data.id)
 			fileData.append("file",image1)
-			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(response=>{
 					setisimage(isimage-1);
@@ -307,7 +307,7 @@ const	sendnewshandler=event=>
 			const fileData=new FormData()
 			fileData.append('update_id',response.data.id)
 			fileData.append("file",video)
-			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
 			setvideo();
@@ -321,7 +321,7 @@ const	sendnewshandler=event=>
 			const fileData=new FormData()
 			fileData.append('update_id',response.data.id)
 			fileData.append("file",pdf)
-			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
 		setpdf();

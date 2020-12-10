@@ -46,7 +46,7 @@ const Dashboard = () => {
 	useEffect(() => {
 		if (localStorage.getItem('api_key') !== 'null') {
 			axios
-				.get('http://127.0.0.1:8000/api/student-profile/', config)
+				.get('http://127.0.0.1:8000/api/student/profile/', config)
 				.then((res) => {
 					// handle success
 					const avatarImage = res.data.profile_picture;
