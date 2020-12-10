@@ -97,7 +97,7 @@ export default function FullWidthTabs(props) {
     }, 2000)
 
 
-  },[])
+  })
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

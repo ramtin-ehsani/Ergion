@@ -80,7 +80,7 @@ const Dashboard = () => {
 					<Route path="/student_dashboard/added_courses" exact component={CourseFileLayouts} />
 					<Route path="/student_dashboard/find-your-course" exact component={AddCourse} />
 					<Route path="/student_dashboard/added_courses/:id" exact component={SingleCourse} />
-					<Route path="/student_dashboard/post/:id" exact component={postPage} />
+					<Route path="/student_dashboard/news/:id" exact component={postPage} />
 					<Route path='/student_dashboard/chapter/:id/episode/:id' exact component={CommentsMain} />
 				</Switch>
 			</main>

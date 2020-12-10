@@ -244,7 +244,7 @@ const StyledTableRow = withStyles((theme) => ({
           id: episode.id,
           name: episode.name,
           chapter_id: episode.chapter_id,
-          description: episode.episode_description,
+          description: episode.description,
           selected: false,
           liked: episode.liked,
           likes: episode.likes_count
@@ -258,7 +258,7 @@ const StyledTableRow = withStyles((theme) => ({
       })
     res.data.map((newEpisode)=>{
       if(String(newEpisode.id) === String(episode_id)){
-        setDescription(newEpisode.episode_description)
+        setDescription(newEpisode.description)
         setLiked(newEpisode.liked)
         setLikes(newEpisode.likes_count)
       }
@@ -280,7 +280,7 @@ const StyledTableRow = withStyles((theme) => ({
                 height='100%'
                 url={media}
                 controls
-                style={{ backgroundColor: '#000' }}
+                style={{ backgroundColor: '#000',maxHeight:500 }}
                 />
                 </Grid>
                 )}
