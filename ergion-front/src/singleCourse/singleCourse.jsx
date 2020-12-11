@@ -1,5 +1,5 @@
 import react, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 //import { getSingleCourse } from "../actions/course";
 import React, { Fragment } from "react";
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -120,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const SingleCourse = ({ match }) => {
+const SingleCourse = ({ match, snackQ, onSnackQ  }) => {
   //const course = useSelector(state => state.course);
   const [course, setcourse] = React.useState({});
   const usedispatch = useDispatch()
@@ -130,6 +130,13 @@ const SingleCourse = ({ match }) => {
       return;
     }
     usedispatch({ type: actionTypes.SNACKBAR, snackBarOpenOrClose: false })
+  }
+
+  const onSnackBarCloseQ = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    onSnackQ(false)
   }
 
   const snackBar = useSelector(state => state.snackBar)
@@ -168,6 +175,20 @@ const SingleCourse = ({ match }) => {
     <div  className={classes.root}>
     {/*  <Container maxWidth="lg" className={classes.container}> */}
 
+    <Snackbar
+      open={snackQ}
+      autoHideDuration={1500}
+      onClose={onSnackBarCloseQ}
+      dir='rtl'
+      >
+          <Alert
+          className='snack'
+          onClose={onSnackBarCloseQ}
+          severity="success"
+          >
+                  سوال شما ارسال شد
+          </Alert>
+      </Snackbar>
       <Snackbar
         open={snackBar}
         autoHideDuration={1500}
@@ -221,4 +242,16 @@ const SingleCourse = ({ match }) => {
 
   );
 };
-export default SingleCourse;
+const mapStateToProps = state => {
+  return {
+      snackQ: state.snackBarQ,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+      onSnackQ: (snackBarOpenOrClose) => dispatch({ type: actionTypes.SNACKBAR_NEW_Q, snackBarOpenOrClose:snackBarOpenOrClose }),
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(SingleCourse);

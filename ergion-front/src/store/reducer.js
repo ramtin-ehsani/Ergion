@@ -24,6 +24,7 @@ const initialState = {
     nCommentString: {
 
     },
+    snackBarQ: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -90,6 +91,11 @@ const reducer = (state = initialState, action) => {
                     [action.id]: action.txt
                 }
             }
+        case actionTypes.SNACKBAR_NEW_Q:
+            return {
+                ...state,
+                snackBarQ: action.snackBarOpenOrClose
+            };
         default:
             return state;
     }

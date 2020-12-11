@@ -6,3 +6,4 @@ export const ADD_COMMENT = 'ADD_COMMENT';
 export const LIKE_COMMENT = 'LIKE_COMMENT';
 export const OPEN_REPLAY = 'OPEN_REPLAY';
 export const NEW_COMMENT_TEXT = 'NEW_COMMENT_TEXT';
+export const SNACKBAR_NEW_Q = 'SNACKBAR_NEW_Q';

@@ -14,6 +14,7 @@ import Title from './Title';
 import Mytypography from './mytypography1';
 import Content from './Content'
 import News from './TabItem/news/newscomponent';
+import Questions from './Questions/Questions';
 import { Grid } from '@material-ui/core';
 import Write from './TabItem/news/Writeanews';
 import axios from 'axios';
@@ -97,7 +98,7 @@ export default function FullWidthTabs(props) {
     }, 2000)
 
 
-  })
+  },[])
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -141,7 +142,7 @@ export default function FullWidthTabs(props) {
             <Content course={props.course} />
           </TabPanel>
           <TabPanel value={value} index={2} dir={theme.direction}>
-            Item Three
+            <Questions />
         </TabPanel>
         </SwipeableViews>
       </ThemeProvider>
