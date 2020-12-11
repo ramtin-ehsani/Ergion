@@ -1,9 +1,8 @@
 import React from 'react';
 import {
-    Box,
     Container,
     Grid,
-    makeStyles
+    // makeStyles
 } from '@material-ui/core';
 import Timeline from '../TimeLine/TimeLine';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -14,14 +13,14 @@ import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 
 
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.background.dark,
-        maxHeight: '100%',
-        paddingBottom: theme.spacing(5),
-        paddingTop: theme.spacing(5),
-    }
-}));
+// const useStyles = makeStyles((theme) => ({
+//     root: {
+//         backgroundColor: theme.palette.background.dark,
+//         maxHeight: '100%',
+//         paddingBottom: theme.spacing(5),
+//         paddingTop: theme.spacing(5),
+//     }
+// }));
 
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
@@ -33,7 +32,6 @@ const theme = createMuiTheme({
 });
 
 const Dashboard = () => {
-    const classes = useStyles();
 
     return (
         <StylesProvider jss={jss} >
@@ -63,7 +61,7 @@ const Dashboard = () => {
                         item
                         lg={4}
                         md={4}
-                        xs={0}
+                        xs={false}
                     >
 
                         

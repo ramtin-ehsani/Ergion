@@ -55,7 +55,7 @@ class Comments extends Component {
       headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
     }
     const episode_id = window.location.href.split('/')[7];
-    axios.get(`http://127.0.0.1:8000/api/episode-comments/?episode_id=${episode_id}`,config)
+    axios.get(`http://127.0.0.1:8000/api/course/comments/?post_id=${episode_id}`,config)
     .then((res)=>{
       res.data.map((comment)=>{
         const newComment = {
@@ -96,8 +96,8 @@ class Comments extends Component {
       headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
     }
     if(this.state.nCommentString.length !== 0){
-    axios.post('http://127.0.0.1:8000/api/episode-comments/',{
-      episode_id: episode_id,
+    axios.post('http://127.0.0.1:8000/api/course/comments/',{
+      post_id: episode_id,
       comment_text: this.state.nCommentString
     },config).then((res)=>{
       const newComment = {
