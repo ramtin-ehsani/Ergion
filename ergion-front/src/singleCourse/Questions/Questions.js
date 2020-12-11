@@ -48,7 +48,7 @@ class Questions extends Component {
         isButtonShownText: false,
         isButtonShownEpisode: false,
         episode: '',
-        openReply: false,
+        openReply: {},
         episodes:[],
         isStudent: false,
     };
@@ -77,10 +77,18 @@ class Questions extends Component {
         axios.get(`http://127.0.0.1:8000/api/forum/episode-question/?course_id=${course_id}`,config)
         .then((res)=>{
             const qs = [];
+            let reps = {
+
+            };
             res.data.map((question)=>{
                 qs.push(question)
+                reps = {
+                    ...reps,
+                    [question.id]:false
+                }
             })
-            this.setState({questions:qs})
+            console.log(reps)
+            this.setState({questions:qs, openReply: reps})
         })
         if (JSON.parse(localStorage.getItem('user')).role == 'S'){
             this.setState({isStudent: true})
@@ -102,8 +110,10 @@ class Questions extends Component {
         this.setState({ isButtonShownEpisode: true })
     }
 
-    handleOpenReply = ()=>{
-        this.setState({openReply: !this.state.openReply})
+    handleOpenReply = (id)=>{
+        const opens = this.state.openReply
+        opens[id] = !opens[id]
+        this.setState({openReply: opens})
     }
 
     handleSubmitQuestion = ()=>{
@@ -145,13 +155,13 @@ class Questions extends Component {
         return (
             <StylesProvider jss={jss}>
                 <ThemeProvider theme={theme}>
-                    <Grid dir='rtl' container style={{ margin: '4px', minHeight: "400px", maxHeight: '400px', overflow: 'auto' }}>
+                    <Grid dir='rtl' container style={{ margin: '4px', minHeight: "450px", maxHeight: '450px', overflow: 'auto' }}>
                         <Grid item xs={12}>
                             <List  style={{boxShadow:'2px'}}>
                                 {this.state.questions.map((question) => {
                                     return (
                                         <React.Fragment key={question.id}>
-                                            <Box style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}}>    
+                                            <Box marginTop={1} style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}}>    
                                             <ContactSupportIcon color='primary'/>
                                             <Box marginRight={1} />
                                             <Typography style={{paddingBottom:'6px',paddingTop:'6px'}} className='text'>
@@ -217,12 +227,13 @@ class Questions extends Component {
                                                     }
                                                 />
                                                 <ListItemIcon >
-                                                    <IconButton onClick={this.handleOpenReply}>
+                                                    <IconButton onClick={()=>this.handleOpenReply(question.id)}>
                                                         <QuestionAnswerIcon />
                                                     </IconButton>
                                                 </ListItemIcon>
                                             </ListItem>
-                                            <Collapse in={this.state.openReply} timeout="auto" unmountOnExit>
+                                            <Box marginBottom={2}/>
+                                            <Collapse in={this.state.openReply[question.id]} timeout="auto" unmountOnExit>
                                             <List component="div" disablePadding dir='rtl'>
                                                 {
                                                 question.answer.map(reply => {
@@ -279,6 +290,7 @@ class Questions extends Component {
                                                 })
                                                 }
                                             </List>
+                                            <Box marginBottom={1}/>
                                             </Collapse>
                                             <Divider />
                                         </React.Fragment>
