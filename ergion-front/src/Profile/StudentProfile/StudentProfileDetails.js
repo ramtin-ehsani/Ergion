@@ -136,7 +136,7 @@ class ProfileDetails extends Component {
   }
 
   getValues = () => {
-    axios.get('http://127.0.0.1:8000/api/student-profile/',this.config)
+    axios.get('http://127.0.0.1:8000/api/student/profile/',this.config)
       .then((response) => {
         // handle success
         const formData = {
@@ -204,7 +204,7 @@ class ProfileDetails extends Component {
       data.append('email', formData.email)
       data.append('grade', formData.grade)
 
-        axios.put('http://127.0.0.1:8000/api/student-profile/',
+        axios.put('http://127.0.0.1:8000/api/student/profile/',
         data,this.config)
         .then(response => {
               oldData['firstName'] = formData.firstName

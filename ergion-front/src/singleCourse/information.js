@@ -102,7 +102,7 @@ export default function Information(props) {
       else{
         setS(true);
         setTimeout(() => {
-          const promise=Axios.get('http://127.0.0.1:8000/api/student-courses/',
+          const promise=Axios.get('http://127.0.0.1:8000/api/student/courses/',
           {
             headers:{
               "Authorization": `Token ${localStorage.getItem('token')}`,
@@ -140,7 +140,7 @@ export default function Information(props) {
 window.location="/login";
     }
     else{
-      Axios.put('http://127.0.0.1:8000/api/student-courses/' ,{id:id},
+      Axios.put('http://127.0.0.1:8000/api/student/courses/' ,{course_id:id},
       {
          headers :{
           "Authorization": `Token ${localStorage.getItem('token')}`,

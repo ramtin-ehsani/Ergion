@@ -74,7 +74,9 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    margin: theme.spacing(2),
+    // margin: theme.spacing(2),
+    backgroundColor: theme.palette.background.default,
+
 
   },
 
@@ -85,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
+    backgroundColor: theme.palette.background.dark,
   },
   paper: {
     padding: theme.spacing(2),
@@ -161,40 +164,40 @@ const SingleCourse = ({ match }) => {
   const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
 
   return (
-    
-        <main className={classes.content} >
-          <Container maxWidth="lg" className={classes.container}>
 
-            <Snackbar
-              open={snackBar}
-              autoHideDuration={1500}
-              onClose={onSnackBarClose}
-              dir='rtl'
-            >
+    <div  className={classes.root}>
+    {/*  <Container maxWidth="lg" className={classes.container}> */}
 
-              <Alert onClose={onSnackBarClose} severity="success" className={classes.alertStyle} >
-                انجام شد
+      <Snackbar
+        open={snackBar}
+        autoHideDuration={1500}
+        onClose={onSnackBarClose}
+        dir='rtl'
+      >
+
+        <Alert onClose={onSnackBarClose} severity="success" className={classes.alertStyle} >
+          انجام شد
 
           </Alert>
-            </Snackbar>
-            <Grid container spacing={1}>
+      </Snackbar>
+      <Grid container spacing={3}>
 
-              <Grid item xs={12} >
+        <Grid item xs={12} >
 
-                <Paper className={fixedHeightPaper2}>
-                  <Coursemedia course={course} />
-                </Paper>
+          <Paper className={fixedHeightPaper2} elevation={3}>
+            <Coursemedia course={course} />
+          </Paper>
 
 
-              </Grid>
+        </Grid>
 
-              <Grid item xs={12} >
-                <Paper className={fixedHeightPaper1}>
-                  <Information course={course} />
-                </Paper>
-              </Grid>
+        <Grid item xs={12} >
+          <Paper className={fixedHeightPaper1} elevation={3}>
+            <Information course={course} />
+          </Paper>
+        </Grid>
 
-              {/* <Grid item xs={12} md={4} lg={3}>
+        {/* <Grid item xs={12} md={4} lg={3}>
 
             
             
@@ -205,17 +208,15 @@ const SingleCourse = ({ match }) => {
             </Grid> */}
 
 
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                  <Subjects course={course} />
+        <Grid item xs={12}>
+          <Paper  elevation={3}>
+            <Subjects course={course} />
 
-                </Paper>
-              </Grid>
-            </Grid>
-            <Box pt={4}>
-            </Box>
-          </Container>
-        </main>
+          </Paper>
+        </Grid>
+      </Grid>
+    {/*  </Container> */}
+    </div>
 
 
   );

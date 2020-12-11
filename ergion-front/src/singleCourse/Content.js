@@ -318,10 +318,9 @@ class NestedList extends React.Component {
         const data = new FormData()
         data.append('chapter_id', listItem.id)
         data.append('name', this.newEpisodeName.current.value)
-        data.append('episode_description', this.newEpisodeDescription.current.value)
-        data.append('files', files[0])
+        data.append('description', this.newEpisodeDescription.current.value)
 
-        axios.post('http://127.0.0.1:8000/api/chapter-episodes/', data, this.config)
+        axios.post('http://127.0.0.1:8000/api/course/chapter-episodes/', data, this.config)
             .then((response) => {
                 // handle success
 
@@ -330,10 +329,9 @@ class NestedList extends React.Component {
                     let promises = []
                     files.map((file) => {
                         const fileData = new FormData()
-                        fileData.append('episode_id', response.data.id)
+                        fileData.append('post_id', response.data.id)
                         fileData.append("file", file)
-                        fileData.append("size", file.size)
-                        promises.push(axios.post('http://127.0.0.1:8000/api/episode/', fileData, this.config)
+                        promises.push(axios.post('http://127.0.0.1:8000/api/course/post-files/', fileData, this.config)
                             .then((res) => {
                                 responseFile.push(res.data)
                             })
@@ -346,7 +344,7 @@ class NestedList extends React.Component {
                     Promise.all(promises).then(() => {
                         listItem.episodes.push({
                             name: response.data.name,
-                            episode_description: response.data.episode_description,
+                            description: response.data.description,
                             files: responseFile,
                             id: response.data.id,
                             tabValue: 0
@@ -362,7 +360,7 @@ class NestedList extends React.Component {
                 } else {
                     listItem.episodes.push({
                         name: response.data.name,
-                        episode_description: response.data.episode_description,
+                        description: response.data.description,
                         files: responseFile,
                         id: response.data.id,
                         tabValue: 0,
@@ -495,16 +493,17 @@ class NestedList extends React.Component {
             this.getValues()
 
 
-        }, 1000)
+        }, 500)
 
 
     }
 
     getValues = () => {
-        axios.get(('http://127.0.0.1:8000/api/course-chapters/?course_id=' + this.state.courseId), this.config)
+        axios.get(('http://127.0.0.1:8000/api/course/chapters/?course_id=' + this.state.courseId), this.config)
             .then((response) => {
                 // handle success
                 const l = []
+                console.log(response)
                 response.data.map((chapters) => {
                     const episodes = chapters.episodes
                     episodes.map((episode) => {
@@ -544,7 +543,7 @@ class NestedList extends React.Component {
 
     chapterOrEpisodeRemove = () => {
         if (this.state.isChapterToDelete) {
-            axios.delete(('http://127.0.0.1:8000/api/course-chapters/?chapter_id=') + (this.state.list)[this.state.positionOfEpisodeChapter].id, this.config)
+            axios.delete(('http://127.0.0.1:8000/api/course/chapters/?chapter_id=') + (this.state.list)[this.state.positionOfEpisodeChapter].id, this.config)
                 .then((response) => {
                     // handle success
                     const { list } = this.state
@@ -560,7 +559,7 @@ class NestedList extends React.Component {
                     console.log(error);
                 })
         } else {
-            axios.delete(('http://127.0.0.1:8000/api/chapter-episodes/?episode_id=') + (((this.state.list)[this.state.positionOfEpisodeChapter]).episodes[this.state.positionOfEpisode]).id, this.config)
+            axios.delete(('http://127.0.0.1:8000/api/course/chapter-episodes/?episode_id=') + (((this.state.list)[this.state.positionOfEpisodeChapter]).episodes[this.state.positionOfEpisode]).id, this.config)
                 .then((response) => {
                     // handle success
 
@@ -643,7 +642,7 @@ class NestedList extends React.Component {
         const data = new FormData()
         data.append('course_id', this.state.courseId)
         data.append('name', this.state.newChapterValue)
-        axios.post('http://127.0.0.1:8000/api/course-chapters/', data, this.config)
+        axios.post('http://127.0.0.1:8000/api/course/chapters/', data, this.config)
             .then((response) => {
                 // handle success
                 const l = [
@@ -773,11 +772,11 @@ class NestedList extends React.Component {
         if (isName) {
             data.append('name', this.newEpisodeName.current.value)
         } else {
-            data.append('episode_description', this.newEpisodeDescription.current.value)
+            data.append('description', this.newEpisodeDescription.current.value)
         }
         data.append('episode_id', (((this.state.list)[index]).episodes[indx]).id)
 
-        axios.patch('http://127.0.0.1:8000/api/chapter-episodes/', data, this.config)
+        axios.patch('http://127.0.0.1:8000/api/course/chapter-episodes/', data, this.config)
             .then((response) => {
                 const listItem = {
                     ...this.state.list[index]
@@ -790,7 +789,7 @@ class NestedList extends React.Component {
                     episodeItem.isNameButtonShown = false
                     episodeItem.isNameTextModeON = false
                 } else {
-                    episodeItem.episode_description = response.data.episode_description
+                    episodeItem.description = response.data.description
                     episodeItem.isDescButtonShown = false
                     episodeItem.isDescTextModeON = false
                 }
@@ -826,7 +825,7 @@ class NestedList extends React.Component {
 
 
     chapterEditButtonSaveChanges = (index) => {
-        axios.patch('http://127.0.0.1:8000/api/course-chapters/', {
+        axios.patch('http://127.0.0.1:8000/api/course/chapters/', {
             name: this.newEpisodeName.current.value,
             chapter_id: (this.state.list)[index].id
         }, this.config)
@@ -1288,10 +1287,10 @@ class NestedList extends React.Component {
 
                                                 {item.episodes.map((episode, indx) =>
                                                     (
-                                                        <Paper className={classes.mediaCardPaperStyle} elevation={5}
+                                                        <Paper className={classes.mediaCardPaperStyle} elevation={4}
                                                             style={{ padding: '12px', marginBottom: '12px', marginTop: '12px' }} key={episode.id}
                                                         >
-                                                            <Grid container spacing={2} dir="rtl"
+                                                            <Grid container spacing={1} dir="rtl"
 
                                                             >
                                                                 <Grid item lg={12} md={12} sm={12} xs={12}  >
@@ -1433,12 +1432,12 @@ class NestedList extends React.Component {
                                                                                             style={{ display: 'flex', direction: 'rtl' }}
                                                                                         >
                                                                                             <Box fontSize={18} dir='rtl'>
-                                                                                                {episode.episode_description !== '' ? episode.episode_description : '(توضیحی وجود ندارد)'}
+                                                                                                {episode.description !== '' ? episode.description : '(توضیحی وجود ندارد)'}
                                                                                             </Box>
 
                                                                                         </Typography>
                                                                                         {this.state.isOwner && episode.isDescButtonShown && !episode.isDescTextModeON && (
-                                                                                            <div style={{ display: 'flex' }}>
+                                                                                            <div style={{ display: 'flex', direction: 'rtl' }}>
                                                                                                 <Fade in={episode.isDescButtonShown} timeout={400}
                                                                                                     style={{ alignSelf: 'center' }}
                                                                                                 >
@@ -1474,10 +1473,10 @@ class NestedList extends React.Component {
                                                                                                     name="desc"
                                                                                                     style={{ fontSize: 18 }}
                                                                                                     inputProps={{ 'aria-label': 'naked' }}
-                                                                                                    defaultValue={episode.episode_description}
+                                                                                                    defaultValue={episode.description}
                                                                                                     inputRef={this.newEpisodeDescription}
                                                                                                 />
-                                                                                                <div style={{ display: 'flex', marginTop: '10px' }}>
+                                                                                                <div style={{ display: 'flex', marginTop: '10px', direction: 'rtl' }}>
                                                                                                     <Button variant="outlined" color="primary"
                                                                                                         type='submit'>
                                                                                                         ذخیره
@@ -1580,7 +1579,11 @@ class NestedList extends React.Component {
                                                 onClick={() => this.episodeButtonFunction(index)}>
                                                 + ایجاد جلسه
 
-                                            </Button>)}
+                                            </Button>
+
+
+
+                                        )}
                                     </Collapse>
                                 </div>))}
 
