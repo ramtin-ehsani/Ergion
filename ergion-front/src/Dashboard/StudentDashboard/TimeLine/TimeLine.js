@@ -1305,7 +1305,7 @@ class TimeLine extends React.Component {
                                                         component="div"
                                                         aria-labelledby="nested-reply-list-subheader"
                                                         style={{
-                                                          marginRight: "16px",
+                                                          marginRight: "25px",
                                                         }}
                                                       >
                                                         {comment.replies
@@ -1367,7 +1367,7 @@ class TimeLine extends React.Component {
                                                         style={{
                                                           display: "flex",
                                                           marginBottom: "30px",
-                                                          marginRight: "40px",
+                                                          marginRight: "50px",
                                                           fontSize: 30,
                                                         }}
                                                       >
@@ -1380,7 +1380,7 @@ class TimeLine extends React.Component {
                                                         0 && (
                                                         <List
                                                           style={{
-                                                            marginRight: "16px",
+                                                            marginRight: "25px",
                                                           }}
                                                           component="div"
                                                           aria-labelledby="nested-reply-list-subheader"
@@ -1453,7 +1453,7 @@ class TimeLine extends React.Component {
                                                     }
                                                     style={{
                                                       padding: "10px",
-                                                      marginRight: "20px",
+                                                      marginRight: "30px",
                                                       marginLeft: "20px",
                                                       marginBottom: "4px",
                                                     }}
