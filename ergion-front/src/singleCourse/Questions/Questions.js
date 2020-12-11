@@ -16,6 +16,8 @@ import { connect } from "react-redux";
 import * as actionTypes from '../../store/actions'
 import axios from "axios";
 import time from "@jacobmarshall/human-time";
+import ReplyOutlinedIcon from '@material-ui/icons/ReplyOutlined';
+import ContactSupportIcon from '@material-ui/icons/ContactSupport';
 
 const styles = (theme) => ({
     textFieldStyle: {
@@ -48,6 +50,7 @@ class Questions extends Component {
         episode: '',
         openReply: false,
         episodes:[],
+        isStudent: false,
     };
 
     componentDidMount(){
@@ -63,7 +66,8 @@ class Questions extends Component {
                 episodes.map((episode)=>{
                     const newE = {
                         id: episode.id,
-                        name: episode.name
+                        name: episode.name,
+                        url: episode.episode_url,
                     }
                     eps.push(newE)
                 })
@@ -78,7 +82,11 @@ class Questions extends Component {
             })
             this.setState({questions:qs})
         })
-        console.log(localStorage.getItem('token'))
+        if (JSON.parse(localStorage.getItem('user')).role == 'S'){
+            this.setState({isStudent: true})
+        }else{
+            this.setState({isStudent: false})
+        }
     }
     onChange = (event) => {
         this.setState({ text_field: event.target.value })
@@ -143,6 +151,22 @@ class Questions extends Component {
                                 {this.state.questions.map((question) => {
                                     return (
                                         <React.Fragment key={question.id}>
+                                            <Box style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}}>    
+                                            <ContactSupportIcon color='primary'/>
+                                            <Box marginRight={1} />
+                                            <Typography style={{paddingBottom:'6px',paddingTop:'6px'}} className='text'>
+                                                سوال مطرح شده از جلسه
+                                            </Typography>
+                                            <Button
+                                            variant='text'
+                                            style={{textTransform: 'none'}}
+                                            endIcon={<ReplyOutlinedIcon className='icon' color='primary'/>}
+                                            >
+                                                <Typography color='primary' className='text'>
+                                                {question.related_episode_name}
+                                                </Typography>
+                                            </Button>
+                                            </Box>
                                             <ListItem key={question.id} alignItems="flex-start">
                                                 <ListItemAvatar>
                                                     <Avatar alt="avatar" src={question.sender_profile_picture} />
@@ -264,11 +288,14 @@ class Questions extends Component {
                         </Grid>
 
                     </Grid>
-                    <Typography className='text' style={{margin:'8px'}}>
-                            سوال خود را مطرح کنید
-                    </Typography>
+                    {this.state.isStudent ? (
+                        <Typography className='text' style={{margin:'8px'}}>
+                                سوال خود را مطرح کنید
+                        </Typography>
+                    ): null}
+                    {this.state.isStudent ? (
                     <Grid container direction="row" justify='center' alignItems="center" spacing={2}>
-                        <Grid container item xs={12} sm={6}>
+                        <Grid container item xs={12} sm={6} style={{maxWidth: '70%',flexBasis: '70%',}}>
                             <FormControl required fullWidth className={classes.formControl} fullWidth variant="outlined">
                                 <InputLabel className='text' htmlFor="outlined-adornment">سوال جدید</InputLabel>
                                 <OutlinedInput
@@ -317,11 +344,11 @@ class Questions extends Component {
                                 <SendIcon className='icon' />
                             }
                             >
-                                ارسال سوال
+                                ارسال
                             </Button>
                         </Grid>
                     </Grid>
-                    
+                    ): (null)}         
                 </ThemeProvider>
             </StylesProvider>
         )
