@@ -161,7 +161,7 @@ class Questions extends Component {
                                 {this.state.questions.map((question) => {
                                     return (
                                         <React.Fragment key={question.id}>
-                                            <Box marginTop={1} style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}}>    
+                                            {this.state.isStudent?(<Box marginTop={1} style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}}>    
                                             <ContactSupportIcon color='primary'/>
                                             <Box marginRight={1} />
                                             <Typography style={{paddingBottom:'6px',paddingTop:'6px'}} className='text'>
@@ -171,12 +171,20 @@ class Questions extends Component {
                                             variant='text'
                                             style={{textTransform: 'none'}}
                                             endIcon={<ReplyOutlinedIcon className='icon' color='primary'/>}
+                                            href={`/student_dashboard/chapter/${question.related_chapter}/episode/${question.related_episode}`}
                                             >
                                                 <Typography color='primary' className='text'>
                                                 {question.related_episode_name}
                                                 </Typography>
                                             </Button>
-                                            </Box>
+                                            </Box>):(<Box marginTop={1} style={{display: 'flex',alignItems: 'center',flexWrap: 'wrap',}}>    
+                                            <ContactSupportIcon color='primary'/>
+                                            <Box marginRight={1} />
+                                            <Typography style={{paddingBottom:'6px',paddingTop:'6px'}} className='text'>
+                                                سوال مطرح شده از جلسه {question.related_episode_name}
+                                            </Typography>
+                                            </Box>)}
+                                            
                                             <ListItem key={question.id} alignItems="flex-start">
                                                 <ListItemAvatar>
                                                     <Avatar alt="avatar" src={question.sender_profile_picture} />
