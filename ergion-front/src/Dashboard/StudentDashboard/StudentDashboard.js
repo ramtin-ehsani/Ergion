@@ -62,6 +62,7 @@ const Dashboard = () => {
 				.catch((error) => {
 					// handle error
 					console.log(error);
+					localStorage.setItem('api_key',null)
 					window.location = '/login';
 				});
 		} else {

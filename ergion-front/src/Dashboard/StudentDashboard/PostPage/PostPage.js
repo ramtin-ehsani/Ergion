@@ -33,6 +33,7 @@ import Slider from "react-slick";
 import "../../../../node_modules/slick-carousel/slick/slick.css";
 import "../../../../node_modules/slick-carousel/slick/slick-theme.css";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Carousel from '../../../Carousel/Carousel'
 import { SentimentDissatisfied } from "@material-ui/icons";
 import { Button, List } from "@material-ui/core";
 
@@ -477,7 +478,7 @@ const PostPage = () => {
                     title="news-media"
                     dir="rtl"
                   >
-                    {
+                    {/* {
                       <Slider
                         ref={(c) => (slider = c)}
                         {...(imgNumber > 3
@@ -506,11 +507,12 @@ const PostPage = () => {
                           </div>
                         ))}
                       </Slider>
-                    }
+                    } */}
+                    {postPage.files.length>0&&(<Carousel files={postPage.files}/>)}
 
-                    {postPage.files.map((item) => (
+                    {/* {postPage.files.map((item) => (
                       <CheckFileHandler src={item.file} />
-                    ))}
+                    ))} */}
                   </CardMedia>
                   <CardActions className="post-footer" dir="ltr">
                     <div className="icon-footer">
