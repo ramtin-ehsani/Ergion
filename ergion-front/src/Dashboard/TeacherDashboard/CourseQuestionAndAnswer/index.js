@@ -2,9 +2,13 @@ import React from "react";
 import { Container, Grid, makeStyles } from "@material-ui/core";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { create } from "jss";
+import { useDispatch, useSelector } from "react-redux";
 import rtl from "jss-rtl";
 import { StylesProvider, jssPreset } from "@material-ui/core/styles";
 import Tabs from "./Tabs";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+import * as actionTypes from "../../../store/actions";
 
 const useStyles = makeStyles((theme) => ({
   "@global": {
@@ -24,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(5),
     width: "100%",
   },
+  alertStyle: {
+    display: "flex",
+    font: "20",
+  },
 }));
 
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
@@ -35,12 +43,41 @@ const theme = createMuiTheme({
   direction: "rtl",
 });
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 const Index = () => {
   const classes = useStyles();
+  const usedispatch = useDispatch();
+
+  const onSnackBarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    usedispatch({ type: actionTypes.QSNACKBAR, qSnackBarOpenOrClose: false });
+  };
+  const snackBar = useSelector((state) => state.qSnackBar);
   return (
-    // <StylesProvider jss={jss}>
-    //   <ThemeProvider theme={theme}>
     <div className={classes.root}>
+      <StylesProvider jss={jss}>
+        <ThemeProvider theme={theme}>
+          <Snackbar
+            open={snackBar}
+            autoHideDuration={1500}
+            onClose={onSnackBarClose}
+            dir="rtl"
+          >
+            <Alert
+              onClose={onSnackBarClose}
+              severity="success"
+              className={classes.alertStyle}
+            >
+              انجام شد
+            </Alert>
+          </Snackbar>
+        </ThemeProvider>
+      </StylesProvider>
       <Container maxWidth="lg">
         <Grid container lg={10} item={true}>
           <Grid item lg={12} md={12} xs={12}>
@@ -49,8 +86,6 @@ const Index = () => {
         </Grid>
       </Container>
     </div>
-    //    {/* </ThemeProvider>
-    //  </StylesProvider> */}
   );
 };
 

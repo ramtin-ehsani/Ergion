@@ -33,9 +33,24 @@ import {
   StylesProvider,
   jssPreset,
 } from "@material-ui/core/styles";
-import { withRouter } from "react-router-dom";
 import axios from "axios";
+import { connect } from "react-redux";
+import * as actionTypes from "../../../store/actions";
 import { ValidatorForm } from "react-material-ui-form-validator";
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    dispatchUser: (qSnackBarOpenOrClose) =>
+      dispatch({
+        type: actionTypes.QSNACKBAR,
+        qSnackBarOpenOrClose: qSnackBarOpenOrClose,
+      }),
+  };
+};
+
+const mapStateToProps = (state) => ({
+  snackBar: state.qSnackBar,
+});
 
 const useStyles = (theme) => ({
   root: {
@@ -62,6 +77,7 @@ const useStyles = (theme) => ({
 class QuestionList extends Component {
   _isMounted = false;
   editAnswerRef = React.createRef("");
+  listItemRef = React.createRef(null);
   state = {
     list: [],
     selectedIndex: 0,
@@ -101,6 +117,18 @@ class QuestionList extends Component {
       answerMode: false,
       questionAnswer: "",
     });
+    if (this.state.selectedIndex > 2) {
+      setTimeout(
+        () =>{
+          this.state.list[
+            this.state.selectedIndex
+          ].listItemRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          })},
+        550
+      );
+    }
   };
 
   config = {
@@ -131,6 +159,7 @@ class QuestionList extends Component {
           }
           return item;
         });
+        this.props.dispatchUser(true);
         this.setState({
           list: result,
           isTextMode: false,
@@ -165,6 +194,7 @@ class QuestionList extends Component {
           }
           return item;
         });
+        this.props.dispatchUser(true);
         this.setState({ list: result });
       })
       .catch((error) => {
@@ -196,6 +226,7 @@ class QuestionList extends Component {
             sender_firstname: question.sender_firstname,
             sender_lastname: question.sender_lastname,
             isAnswered: false,
+            listItemRef: React.createRef(null),
             sender_profile_picture:
               "http://127.0.0.1:8000" + question.sender_profile_picture,
           };
@@ -219,6 +250,7 @@ class QuestionList extends Component {
                 sender_firstname: question_wa.sender_firstname,
                 sender_lastname: question_wa.sender_lastname,
                 answer: question_wa.answer,
+                listItemRef: React.createRef(null),
                 isAnswered: true,
                 sender_profile_picture:
                   "http://127.0.0.1:8000" + question_wa.sender_profile_picture,
@@ -245,6 +277,9 @@ class QuestionList extends Component {
   render() {
     const { classes } = this.props;
     const theme = createMuiTheme({
+      typography: {
+        fontFamily: '"Vazir", sans-serif',
+      },
       direction: "rtl",
     });
 
@@ -267,7 +302,7 @@ class QuestionList extends Component {
             <div className={classes.root}>
               <Zoom
                 in={!this.state.answerMode}
-                timeout={700}
+                timeout={500}
                 className={classes.divStyle}
               >
                 <div>
@@ -291,6 +326,7 @@ class QuestionList extends Component {
                         <div key={questionItem.id}>
                           <ListItem
                             button
+                            ref={this.state.list[index].listItemRef}
                             onClick={(event) =>
                               this.handleListItemClick(event, index)
                             }
@@ -412,8 +448,11 @@ class QuestionList extends Component {
 
               <Zoom
                 in={this.state.answerMode}
-                timeout={700}
+                timeout={500}
                 className={classes.answerStyle}
+                style={{
+                  transitionDelay: this.state.answerMode ? "200ms" : "0ms",
+                }}
               >
                 <div>
                   {this.state.list.length > 0 && (
@@ -713,4 +752,7 @@ class QuestionList extends Component {
   }
 }
 
-export default withStyles(useStyles)(withRouter(QuestionList));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(useStyles)(QuestionList));
