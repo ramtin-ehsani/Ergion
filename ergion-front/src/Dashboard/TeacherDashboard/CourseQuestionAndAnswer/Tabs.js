@@ -128,12 +128,19 @@ class TabsClass extends Component {
         )}
         {this.state.list.length > 0 ? (
           <div>
-            <Typography gutterBottom className="text" style={{ margin: "8px" }}>
+            <Typography
+              gutterBottom
+              className="text"
+              style={{ margin: "14px" }}
+            >
               <Box fontSize={25} fontWeight="fontWeightBold">
                 کلاس های من
               </Box>
             </Typography>
-            <Paper elevation={3} style={{ marginRight: "8px" }}>
+            <Paper
+              elevation={3}
+              style={{ marginRight: "18px", marginLeft: "18px" }}
+            >
               <Tabs
                 value={this.state.value}
                 onChange={(e, v) => this.handleChange(v)}
@@ -141,9 +148,9 @@ class TabsClass extends Component {
                 textColor="primary"
                 TabIndicatorProps={{
                   style: {
-                    height:"6px",
-                    borderRadius:10,
-                  }
+                    height: "6px",
+                    borderRadius: 10,
+                  },
                 }}
                 variant="scrollable"
                 style={{ paddingBottom: "6px" }}
@@ -157,7 +164,7 @@ class TabsClass extends Component {
                     component={React.forwardRef((props, ref) => (
                       <div>
                         <Button
-                          style={{ marginBottom: "6px",textTransform: 'none' }}
+                          style={{ marginBottom: "6px", textTransform: "none" }}
                           onClick={() => this.handleChange(index)}
                         >
                           <Card className="courselayout">
@@ -225,7 +232,8 @@ class TabsClass extends Component {
                 marginBottom: "10px",
                 marginTop: "10px",
                 height: "100%",
-                marginRight: "8px",
+                marginRight: "18px",
+                marginLeft: "18px",
               }}
             >
               <SwipeableViews
@@ -239,14 +247,30 @@ class TabsClass extends Component {
                     index={tabPanelIndex}
                     key={tabPanelCourse.id}
                   >
-                    <QuestionList courseId={tabPanelCourse.id}/>
+                    <QuestionList courseId={tabPanelCourse.id} />
                   </TabPanel>
                 ))}
               </SwipeableViews>
             </Paper>
           </div>
         ) : (
-          ""
+          <div>
+            {!this.state.loading && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "30px",
+                }}
+              >
+                <Typography gutterBottom className="text">
+                  <Box fontSize={30} fontWeight="fontWeightBold">
+                    هنوز کلاسی ساخته نشده است
+                  </Box>
+                </Typography>
+              </div>
+            )}
+          </div>
         )}
       </div>
     );
