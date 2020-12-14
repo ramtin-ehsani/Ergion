@@ -16,6 +16,7 @@ import SingleCourse from '../../singleCourse/singlecoursecontainer';
 import postPage from './PostPage/PostPage';
 import CommentsMain from '../../comment/CommentMain';
 import StudentDashboard from './Dashboard/index.js'
+import PublicProfile from '../TeacherDashboard/publicProfile/publicProfile'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -82,6 +83,7 @@ const Dashboard = () => {
 					<Route path="/student_dashboard/added_courses/:id" exact component={SingleCourse} />
 					<Route path="/student_dashboard/post/:id" exact component={postPage} />
 					<Route path='/student_dashboard/chapter/:id/episode/:id' exact component={CommentsMain} />
+                    <Route path='/student_dashboard/public-profile/:id' exact component={PublicProfile} />
 				</Switch>
 			</main>
 		</div>

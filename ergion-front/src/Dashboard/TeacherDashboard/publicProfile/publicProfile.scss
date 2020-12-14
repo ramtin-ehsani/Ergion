@@ -1,29 +1,174 @@
-.main-card {
-    width: 70%;
-    direction: rtl;
-    margin: auto;
-    align-items: center !important;
-    text-align: center !important;
-    justify-content: center !important;
-    display: flex;
-    height: 100%;
-    font-family: IRANSans !important;
+.all {
+	.main-container {
+		.MuiGrid-spacing-xs-4 > .MuiGrid-item {
+			padding: 0px !important;
+		}
 
-    .card-header {
+		.instructor-name {
+			display: flex;
+			// margin: auto;
+			margin-right: 51px;
+			width: fit-content;
+			justify-content: center;
+			align-items: center;
+			text-align: right;
+		}
+
+		.avatar-div {
+			width: fit-content;
+			padding-top: 10px;
+			padding-right: 20px;
+			padding-left: 20px;
+			padding-bottom: 10px;
+			display: flex;
+			justify-content: center;
+		}
+
+		.avatar-div-600 {
+			width: 100%;
+			padding-top: 15px;
+			padding-bottom: -15px;
+			display: flex;
+			justify-content: center;
+		}
+
+		.name-div {
+			display: flex;
+			width: 50%;
+			justify-content: right;
+			align-items: center;
+
+			.name-family-name {
+				font-size: 21.5px;
+				font-weight: bold;
+			}
+		}
+
+		.name-div-600 {
+			display: flex;
+			width: 100%;
+			justify-content: center;
+			align-items: center;
+
+			.name-family-name {
+				font-size: 21.5px;
+				font-weight: bold;
+			}
+		}
+
+		.items-grid {
+			display: flex;
+
+			.about-me {
+				display: flex;
+				align-items: right;
+				text-align: right;
+				font-size: 21px;
+				padding-right: 15px;
+				padding-left: 15px;
+			}
+			.title-about-me {
+				display: flex;
+				align-items: right;
+				text-align: right;
+				font-size: 18px;
+				padding-right: 15px;
+				height: 20px;
+				font-weight: bolder;
+			}
+			.title-email {
+				display: flex;
+				align-items: right;
+				text-align: right;
+				font-size: 18px;
+				padding-right: 15px;
+				height: 20px;
+				font-weight: bolder;
+			}
+			.email {
+				align-items: left;
+				text-align: left;
+				font-size: 20px;
+				padding-left: 6px;
+				overflow-wrap: break-word;
+			}
+		}
+	}
+
+	.main {
         font-family: IRANSans !important;
-        height: 100%;
-        width: 100%;
 
-        .img-profile {
-            width: 200px;
-            height: 200px;
-        }
-        .teacher-name{
-            justify-content: center;
-            align-items: right;
-            // text-align: right;
+		.layout1 {
+			font-family: IRANSans !important;
+			transition: 0.3s;
+			max-width: 450px;
+			margin: auto;
+			box-shadow: 0 8px 40px -12px rgba(0, 0, 0, 0.3);
+
+			&:hover {
+				box-shadow: 0 16px 70px -12.125px rgba(0, 0, 0, 0.3) !important;
+			}
+
+			.toSee {
+				font-family: IRANSans !important;
+				font-size: 16px;
+			}
+
+			.courseNamePlace {
+				font-family: IRANSans !important;
+				margin: 12px;
+			}
+
+			.courseCapacityPlace {
+				font-family: IRANSans !important;
+				margin: 8px;
+				font-size: 16px;
+				padding-top: 4px;
+			}
+
+			.courseOwnerPlace {
+				font-family: IRANSans !important;
+				font-size: 16px;
+				justify-content: center;
+				align-items: center;
+				max-height: 30px;
+				display: flex;
+			}
+		}
+
+		.cardSpacing {
+			padding: 7px;
+		}
+
+		.textFieldSearchbar {
+			width: 100%;
+			justify-content: center;
+			display: flex;
+
+			.labelOFSearchbar {
+				justify-content: center;
+				display: flex;
+				align-items: center;
+				text-align: center;
+				flex-direction: row;
+
+				.search_Icon {
+					margin-left: 7px;
+				}
+			}
+		}
+
+		.toSeeButton {
             font-family: IRANSans !important;
-            font-size: 28px;
-        }
-    }
+			width: 50%;
+			justify-content: center;
+			display: flex;
+			align-items: center;
+			height: 40px;
+
+			.toSee {
+				font-size: 16px;
+			}
+		}
+	}
 }
