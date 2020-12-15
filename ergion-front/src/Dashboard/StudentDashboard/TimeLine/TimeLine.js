@@ -666,90 +666,7 @@ class TimeLine extends React.Component {
                 <Paper
                   className={classes.mediaCardPaperStyle}
                   elevation={3}
-                  style={{ marginBottom: "30px", marginTop: "30px" }}
-                >
-                  <Grid container dir="rtl" spacing={2}>
-                    <Grid
-                      item
-                      lg={12}
-                      md={12}
-                      sm={12}
-                      xs={12}
-                      style={{
-                        padding: "16px",
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <div style={{ display: "flex" }}>
-                        <Skeleton
-                          animation="wave"
-                          variant="circle"
-                          width={70}
-                          height={70}
-                          style={{ marginRight: "10px" }}
-                        />
-                        <div>
-                          <div style={{ display: "flex" }}>
-                            <Skeleton
-                              animation="wave"
-                              height={20}
-                              width={240}
-                              style={{ marginBottom: 6 }}
-                              style={{
-                                marginRight: "12px",
-                                alignSelf: "flex-start",
-                              }}
-                            />
-                          </div>
-                          <div style={{ display: "flex" }}>
-                            <Skeleton
-                              animation="wave"
-                              height={20}
-                              width={200}
-                              style={{
-                                alignSelf: "flex-start",
-                                marginTop: "20px",
-                                marginRight: "12px",
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </Grid>
-                    <Grid item lg={12} md={12} xs={12} sm={12}>
-                      <Skeleton
-                        animation="wave"
-                        variant="rect"
-                        height={180}
-                        style={{ margin: "10px" }}
-                      />
-                    </Grid>
-
-                    <Grid
-                      item
-                      lg={12}
-                      md={12}
-                      xs={12}
-                      sm={12}
-                      style={{ padding: "20px" }}
-                    >
-                      <Skeleton
-                        animation="wave"
-                        height={20}
-                        width="100%"
-                        style={{ marginBottom: "10px" }}
-                      />
-                      <Skeleton animation="wave" height={20} width="100%" />
-                    </Grid>
-                  </Grid>
-                </Paper>
-              </div>
-              <div className={classes.paperStyle}>
-                <Paper
-                  className={classes.mediaCardPaperStyle}
-                  elevation={3}
-                  style={{ marginBottom: "30px", marginTop: "30px" }}
+                  style={{ marginBottom: "30px",padding:'8px', marginTop: "30px" }}
                 >
                   <Grid container dir="rtl" spacing={2}>
                     <Grid
@@ -800,6 +717,105 @@ class TimeLine extends React.Component {
                         </div>
                       </div>
                     </Grid>
+                    <Grid md={12} lg={12} sm={12} item xs={12}>
+                              <Divider
+                                style={{
+                                  marginLeft: "-8px",
+                                  marginRight: "-8px",
+                                }}
+                              />
+                            </Grid>
+                    <Grid item lg={12} md={12} xs={12} sm={12}>
+                      <Skeleton
+                        animation="wave"
+                        variant="rect"
+                        height={180}
+                        style={{ margin: "10px" }}
+                      />
+                    </Grid>
+
+                    <Grid
+                      item
+                      lg={12}
+                      md={12}
+                      xs={12}
+                      sm={12}
+                      style={{ padding: "20px" }}
+                    >
+                      <Skeleton
+                        animation="wave"
+                        height={20}
+                        width="100%"
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Skeleton animation="wave" height={20} width="100%" />
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </div>
+              <div className={classes.paperStyle}>
+                <Paper
+                  className={classes.mediaCardPaperStyle}
+                  elevation={3}
+                  style={{ marginBottom: "30px",padding:'8px', marginTop: "30px" }}
+                >
+                  <Grid container dir="rtl" spacing={2}>
+                    <Grid
+                      item
+                      lg={12}
+                      md={12}
+                      sm={12}
+                      xs={12}
+                      style={{
+                        padding: "16px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div style={{ display: "flex" }}>
+                        <Skeleton
+                          animation="wave"
+                          variant="circle"
+                          width={60}
+                          height={60}
+                          style={{ marginRight: "10px" }}
+                        />
+                        <div>
+                          <div style={{ display: "flex" }}>
+                            <Skeleton
+                              animation="wave"
+                              height={20}
+                              width={240}
+                              style={{ marginBottom: 6 }}
+                              style={{
+                                marginRight: "12px",
+                                alignSelf: "flex-start",
+                              }}
+                            />
+                          </div>
+                          <div style={{ display: "flex" }}>
+                            <Skeleton
+                              animation="wave"
+                              height={20}
+                              width={200}
+                              style={{
+                                alignSelf: "flex-start",
+                                marginTop: "20px",
+                                marginRight: "12px",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </Grid>
+                    <Grid md={12} lg={12} sm={12} item xs={12}>
+                              <Divider
+                                style={{
+                                  marginLeft: "-8px",
+                                  marginRight: "-8px",
+                                }}
+                              />
+                            </Grid>
                     <Grid item lg={12} md={12} xs={12} sm={12}>
                       <Skeleton
                         animation="wave"
@@ -866,7 +882,7 @@ class TimeLine extends React.Component {
                           style={{
                             marginBottom: "30px",
                             marginTop: "30px",
-                            padding: "4px",
+                            padding: "8px",
                           }}
                         >
                           <Grid container dir="rtl">
@@ -1034,8 +1050,8 @@ class TimeLine extends React.Component {
                             <Grid md={12} lg={12} sm={12} item xs={12}>
                               <Divider
                                 style={{
-                                  marginLeft: "-4px",
-                                  marginRight: "-4px",
+                                  marginLeft: "-8px",
+                                  marginRight: "-8px",
                                 }}
                               />
                             </Grid>
@@ -1155,8 +1171,8 @@ class TimeLine extends React.Component {
                             <Grid md={12} lg={12} sm={12} item xs={12}>
                               <Divider
                                 style={{
-                                  marginLeft: "-4px",
-                                  marginRight: "-4px",
+                                  marginLeft: "-8px",
+                                  marginRight: "-8px",
                                 }}
                               />
                             </Grid>

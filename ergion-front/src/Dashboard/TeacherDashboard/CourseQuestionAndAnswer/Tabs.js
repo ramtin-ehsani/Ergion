@@ -3,6 +3,9 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import SwipeableViews from "react-swipeable-views";
 import React, { Component } from "react";
+import * as actionTypes from "../../../store/actions";
+import { connect } from "react-redux";
+import Badge from "@material-ui/core/Badge";
 import {
   Box,
   Divider,
@@ -48,6 +51,20 @@ function a11yProps(index) {
   };
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    dispatchUser: (item) =>
+      dispatch({
+        type: actionTypes.COURSE_UNANSWERED_QUESTIONS_LIST,
+        addToList: item,
+      }),
+  };
+};
+
+const mapStateToProps = (state) => ({
+  courseUnansweredQuestionsList: state.courseUnansweredQuestionsList,
+});
+
 const useStyles = (theme) => ({
   root: {
     flexGrow: 1,
@@ -55,9 +72,6 @@ const useStyles = (theme) => ({
   },
   grid: {
     marginTop: "16px",
-  },
-  active: {
-    backgroundColor: "red",
   },
   cardMedia: {
     // paddingTop: '56.25%', // 16:9
@@ -94,6 +108,7 @@ class TabsClass extends Component {
             subject: course.subject,
             cover: course.course_cover,
           };
+          this.props.dispatchUser(2);
           l.push(courseItem);
         });
         this.setState({ list: l, loading: false });
@@ -161,62 +176,71 @@ class TabsClass extends Component {
                     key={course.id}
                     {...a11yProps(index)}
                     component={React.forwardRef((props, ref) => (
-                      <div>
+                      <div style={{ margin: "4px" }}>
                         <Button
-                          style={{ marginBottom: "6px", textTransform: "none" }}
+                          style={{ textTransform: "none" }}
                           onClick={() => this.handleChange(index)}
                         >
-                          <Card className="courselayout">
-                            <CardMedia
-                              className={classes.cardMedia}
-                              component="img"
-                              image={course.cover}
-                              alt={"بدون عکس"}
-                            />
-                            <Divider />
-                            <CardContent className={classes.cardContent}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  wordBreak: "break-all",
-                                  direction: "rtl",
-                                }}
-                              >
-                                <Typography gutterBottom className="text">
-                                  <Box>نام کلاس :</Box>
-                                </Typography>
-                                <Typography
-                                  gutterBottom
-                                  className="text"
-                                  style={{ marginRight: "4px" }}
+                          <Badge
+                            badgeContent={
+                              this.props.courseUnansweredQuestionsList[index]
+                            }
+                            color="secondary"
+                            max={50}
+                          >
+                            <Card className="courselayout">
+                              <CardMedia
+                                className={classes.cardMedia}
+                                component="img"
+                                image={course.cover}
+                                alt={"بدون عکس"}
+                              />
+
+                              <Divider />
+                              <CardContent className={classes.cardContent}>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    wordBreak: "break-all",
+                                    direction: "rtl",
+                                  }}
                                 >
-                                  <Box fontWeight="fontWeightBold">
-                                    {course.name}
-                                  </Box>
-                                </Typography>
-                              </div>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  wordBreak: "break-all",
-                                  direction: "rtl",
-                                }}
-                              >
-                                <Typography gutterBottom className="text">
-                                  <Box>موضوع کلاس :</Box>
-                                </Typography>
-                                <Typography
-                                  gutterBottom
-                                  className="text"
-                                  style={{ marginRight: "4px" }}
+                                  <Typography gutterBottom className="text">
+                                    <Box>نام کلاس :</Box>
+                                  </Typography>
+                                  <Typography
+                                    gutterBottom
+                                    className="text"
+                                    style={{ marginRight: "4px" }}
+                                  >
+                                    <Box fontWeight="fontWeightBold">
+                                      {course.name}
+                                    </Box>
+                                  </Typography>
+                                </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    wordBreak: "break-all",
+                                    direction: "rtl",
+                                  }}
                                 >
-                                  <Box fontWeight="fontWeightBold">
-                                    {course.subject}
-                                  </Box>
-                                </Typography>
-                              </div>
-                            </CardContent>
-                          </Card>
+                                  <Typography gutterBottom className="text">
+                                    <Box>موضوع کلاس :</Box>
+                                  </Typography>
+                                  <Typography
+                                    gutterBottom
+                                    className="text"
+                                    style={{ marginRight: "4px" }}
+                                  >
+                                    <Box fontWeight="fontWeightBold">
+                                      {course.subject}
+                                    </Box>
+                                  </Typography>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </Badge>
                         </Button>
                       </div>
                     ))}
@@ -246,7 +270,7 @@ class TabsClass extends Component {
                     index={tabPanelIndex}
                     key={tabPanelCourse.id}
                   >
-                    <QuestionList courseId={tabPanelCourse.id} />
+                    <QuestionList courseId={tabPanelCourse.id} index={tabPanelIndex}/>
                   </TabPanel>
                 ))}
               </SwipeableViews>
@@ -276,4 +300,7 @@ class TabsClass extends Component {
   }
 }
 
-export default withStyles(useStyles)(TabsClass);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(useStyles)(TabsClass));

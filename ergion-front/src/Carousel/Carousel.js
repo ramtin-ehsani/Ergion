@@ -123,7 +123,8 @@ class CarouselMedia extends React.Component {
     // const { classes } = this.props;
     return (
       <StylesProvider jss={jss}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme} >
+          <div style={{paddingRight:'15px',paddingLeft:'15px'}}>
           <Carousel
             autoPlay={false}
             timeout={400}
@@ -137,6 +138,7 @@ class CarouselMedia extends React.Component {
               <this.TypeOfFile src={file.file} key={file.id} />
             ))}
           </Carousel>
+          </div>
         </ThemeProvider>
       </StylesProvider>
     );

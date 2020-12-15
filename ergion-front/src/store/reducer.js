@@ -14,6 +14,7 @@ const initialState = {
   likes: {},
   open: {},
   nCommentString: {},
+  courseUnansweredQuestionsList: [],
 };
 
 const reducer = (state = initialState, action) => {
@@ -78,6 +79,21 @@ const reducer = (state = initialState, action) => {
           ...state.nCommentString,
           [action.id]: action.txt,
         },
+      };
+    case actionTypes.COURSE_UNANSWERED_QUESTIONS_LIST:
+      return {
+        ...state,
+        courseUnansweredQuestionsList: [
+          ...state.courseUnansweredQuestionsList,
+          action.addToList,
+        ],
+      };
+    case actionTypes.CHANGE_COURSE_UNANSWERED_QUESTIONS_LIST:
+      return {
+        ...state,
+        courseUnansweredQuestionsList: state.courseUnansweredQuestionsList.map(
+          (item, i) => (i === action.index ? action.addToList : item)
+        ),
       };
     default:
       return state;

@@ -46,6 +46,12 @@ import { ValidatorForm } from "react-material-ui-form-validator";
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    dispatchUnansweredItems: (item, index) =>
+      dispatch({
+        type: actionTypes.CHANGE_COURSE_UNANSWERED_QUESTIONS_LIST,
+        index: index,
+        addToList: item,
+      }),
     dispatchUser: (qSnackBarOpenOrClose) =>
       dispatch({
         type: actionTypes.QSNACKBAR,
@@ -55,7 +61,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const mapStateToProps = (state) => ({
-  snackBar: state.qSnackBar,
+  courseUnansweredQuestionsList: state.courseUnansweredQuestionsList,
 });
 
 const useStyles = (theme) => ({
@@ -113,7 +119,7 @@ class QuestionList extends Component {
     this.setState({ questionAnswer: e.target.value });
   };
 
-  answerDelete=()=>{
+  answerDelete = () => {
     axios
       .delete(
         "http://127.0.0.1:8000/api/forum/episode-answer/?answer_id=" +
@@ -126,21 +132,22 @@ class QuestionList extends Component {
             return {
               ...item,
               answer: [],
-              isAnswered:false,
+              isAnswered: false,
             };
           }
           return item;
         });
+        this.props.dispatchUnansweredItems(this.props.courseUnansweredQuestionsList[this.props.index]+1,this.props.index)
         this.props.dispatchUser(true);
         this.setState({
           list: result,
-          deleteDialog:false,
+          deleteDialog: false,
         });
       })
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   deleteDialogOpenClose = () => {
     this.setState({ deleteDialog: !this.state.deleteDialog });
@@ -232,8 +239,9 @@ class QuestionList extends Component {
           }
           return item;
         });
+        this.props.dispatchUnansweredItems(this.props.courseUnansweredQuestionsList[this.props.index]-1,this.props.index)
         this.props.dispatchUser(true);
-        this.setState({ list: result,questionAnswer:'' });
+        this.setState({ list: result, questionAnswer: "" });
       })
       .catch((error) => {
         console.log(error);
