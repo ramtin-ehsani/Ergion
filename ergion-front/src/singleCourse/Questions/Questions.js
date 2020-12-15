@@ -1,17 +1,15 @@
 import { Grid, List, StylesProvider, Typography, jssPreset,
     ListItem, ListItemAvatar, ListItemText, ListItemIcon,
     IconButton, Avatar, Divider, Box, withStyles,
-    TextField, FormControl, InputLabel, OutlinedInput,
-    InputAdornment, createMuiTheme, ThemeProvider,
-    Select, MenuItem, Button, Collapse, Snackbar } from "@material-ui/core";
+    FormControl, InputLabel, OutlinedInput,
+    createMuiTheme, ThemeProvider,
+    Select, MenuItem, Button, Collapse } from "@material-ui/core";
 import React, { Component } from "react";
 import rtl from "jss-rtl";
 import { create } from 'jss';
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import './Questions.scss';
 import SendIcon from '@material-ui/icons/Send';
-import { ValidatorForm } from "react-material-ui-form-validator";
-import MuiAlert from '@material-ui/lab/Alert';
 import { connect } from "react-redux";
 import * as actionTypes from '../../store/actions'
 import axios from "axios";
@@ -36,10 +34,6 @@ const styles = (theme) => ({
     },
     
 })
-
-function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 class Questions extends Component {
     state = {
@@ -137,13 +131,6 @@ class Questions extends Component {
         this.props.onSnackQ(true)
 
     }
-
-    handleCloseSnack = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        this.setState({openSnackbar: false})
-    };
 
     render() {
         const { classes } = this.props
