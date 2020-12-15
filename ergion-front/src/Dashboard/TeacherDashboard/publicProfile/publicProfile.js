@@ -35,6 +35,9 @@ import SchoolIcon from '@material-ui/icons/School';
 import HistoryIcon from '@material-ui/icons/History';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import PieChartIcon from '@material-ui/icons/PieChart';
+import { ChatRounded } from '@material-ui/icons';
+import Student from '@material-ui/icons/SupervisorAccount';
+import ClassIcon from '@material-ui/icons/Class';
 
 const getWidth = () => window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 const jss = create({ plugins: [ ...jssPreset().plugins, rtl() ] });
@@ -62,10 +65,10 @@ const useStyles = makeStyles((theme) =>
 			marginTop: '10px',
 			height: '670px'
 		},
-		avatar: {
-			height: 150,
-			width: 150
-		},
+		// avatar: {
+		// 	height: 150,
+		// 	width: 150
+		// },
 		icon: {
 			marginRight: theme.spacing(2)
 		},
@@ -88,7 +91,12 @@ const useStyles = makeStyles((theme) =>
 			flexDirection: 'column'
 		},
 		cardMedia: {
-			height: 180,
+			// minWidth:"375px",
+			minHeight:"300px",
+			// maxWidth:"375px",
+			maxHeight:"300px",
+
+			// height: 180,
 			width: '100%',
 			objectFit: 'cover'
 		},
@@ -110,7 +118,7 @@ const useStyles = makeStyles((theme) =>
 			fontSize: 20
 		},
 		avatar: {
-			backgroundColor: 'red'
+			backgroundColor: 'red',
 		}
 	})
 );
@@ -158,6 +166,7 @@ const PublicProfile = () => {
 	}, []);
 
 	if (myclasses != null) {
+		console.log(myclasses)
 		return (
 			<React.Fragment>
 				<StylesProvider jss={jss}>
@@ -221,8 +230,8 @@ const PublicProfile = () => {
 												<Box borderRadius={12} marginTop={3}>
 													<div className={classes.root}>
 														<CardContent>
-															<Grid container spacing={2} dir="rtl">
-																{width > 600 ? (
+															<Grid container spacing={5} dir="rtl">
+																{width > 650 ? (
 																	<Grid
 																		item
 																		md={12}
@@ -270,6 +279,12 @@ const PublicProfile = () => {
 																					<p className="name-family-name">
 																						استاد محمدرضا شجریان
 																					</p>
+																					<p className="email"><EmailIcon style={{marginLeft: "5px"}} />	sadeghJ10@gmail.com</p>
+																					<div style={{flexDirection: "row", display: "flex"}}>
+																						<p className="email"><ClassIcon style={{marginLeft: "5px"}}/>کلاس ها: ۲۳ عدد</p>
+																						<p className="slash-class-students"> | </p>
+																						<p className="email"><Student style={{marginLeft: "5px"}}/>دانش اموزان: ۳۷ نفر</p>
+																					</div>	
 																				</div>
 																			</div>
 																		</Box>
@@ -313,12 +328,18 @@ const PublicProfile = () => {
 																				<p className="name-family-name">
 																					استاد محمدرضا شجریان
 																				</p>
+																				<p className="email-600"><EmailIcon style={{marginLeft: "5px"}}/>sadeghJ10@gmail.com</p>
+																				<div style={{flexDirection: "column", display: "flex", lineHeight: "0%"}}>
+																					<p className="email"><ClassIcon style={{marginLeft: "5px"}}/>کلاس ها: ۲۳ عدد</p>
+																					{/* <p className="slash-class-students"> | </p> */}
+																					<p className="email"><Student style={{marginLeft: "5px"}}/>دانش اموزان: ۳۷ نفر</p>
+																				</div>
 																			</div>
 																		</Box>
 																	</Grid>
 																)}
 
-																<Grid item md={4} xs={12} sm={6} className="items-grid">
+																{/* <Grid item md={6} xs={12} sm={6} className="items-grid">
 																	<Box
 																		boxShadow={0}
 																		borderRadius={12}
@@ -337,9 +358,9 @@ const PublicProfile = () => {
 																			<p className="email">sadeghJ10@gmail.com</p>
 																		</div>
 																	</Box>
-																</Grid>
+																</Grid> */}
 
-																<Grid item md={4} xs={12} sm={6} className="items-grid">
+																{/* <Grid item md={4} xs={12} sm={4} className="items-grid">
 																	<Box
 																		boxShadow={0}
 																		borderRadius={12}
@@ -357,9 +378,9 @@ const PublicProfile = () => {
 																			<p className="about-me">مشاور کنکور</p>
 																		</div>
 																	</Box>
-																</Grid>
+																</Grid> */}
 
-																<Grid item md={4} xs={12} sm={6} className="items-grid">
+																{/* <Grid item md={4} xs={12} sm={4} className="items-grid">
 																	<Box
 																		boxShadow={0}
 																		borderRadius={12}
@@ -378,9 +399,9 @@ const PublicProfile = () => {
 																			<p className="about-me">۲۰ عدد</p>
 																		</div>
 																	</Box>
-																</Grid>
+																</Grid> */}
 
-																<Grid item md={4} xs={12} sm={6} className="items-grid">
+																{/* <Grid item md={4} xs={12} sm={6} className="items-grid">
 																	<Box
 																		boxShadow={0}
 																		borderRadius={12}
@@ -399,9 +420,9 @@ const PublicProfile = () => {
 																			<p className="about-me">قلم چی</p>
 																		</div>
 																	</Box>
-																</Grid>
+																</Grid> */}
 
-																<Grid item md={4} xs={12} sm={6} className="items-grid">
+																{/* <Grid item md={4} xs={12} sm={6} className="items-grid">
 																	<Box
 																		boxShadow={0}
 																		borderRadius={12}
@@ -420,9 +441,9 @@ const PublicProfile = () => {
 																			<p className="about-me">۱۰ سال</p>
 																		</div>
 																	</Box>
-																</Grid>
+																</Grid> */}
 
-																<Grid item md={4} xs={12} sm={6} className="items-grid">
+																{/* <Grid item md={4} xs={12} sm={4} className="items-grid">
 																	<Box
 																		boxShadow={0}
 																		borderRadius={12}
@@ -441,7 +462,7 @@ const PublicProfile = () => {
 																			<p className="about-me">۳۷ نفر</p>
 																		</div>
 																	</Box>
-																</Grid>
+																</Grid> */}
 
 																<Grid
 																	item
@@ -495,7 +516,8 @@ const PublicProfile = () => {
 										alignItems: 'center',
 										textAlign: 'right',
 										width: '100%',
-										paddingRight: "20px"
+										paddingRight: "20px",
+										marginTop: "50px"
 									}}
 									component="h1"
 								>
@@ -506,7 +528,7 @@ const PublicProfile = () => {
 						<StylesProvider jss={jss}>
 							<main className="main">
 								<Container className={classes.cardGrid} maxWidth="xl">
-									<Grid dir="rtl" container spacing={15} lg={9} item={true} md={12}>
+									<Grid dir="rtl" container spacing={3} lg={9} item={true} md={12}>
 										{myclasses &&
 											myclasses.map((course) => (
 												<Grid
