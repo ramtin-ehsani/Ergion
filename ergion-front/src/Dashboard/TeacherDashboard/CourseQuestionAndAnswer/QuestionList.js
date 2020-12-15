@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import "./QuestionMain.scss";
 import Zoom from "@material-ui/core/Zoom";
+import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import SendIcon from "@material-ui/icons/Send";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import {
   Paper,
@@ -86,6 +92,7 @@ class QuestionList extends Component {
     questionAnswer: "",
     editButtonShown: false,
     isTextMode: false,
+    deleteDialog: false,
   };
   handleListItemClick = (event, index) => {
     this.setState({
@@ -106,6 +113,39 @@ class QuestionList extends Component {
     this.setState({ questionAnswer: e.target.value });
   };
 
+  answerDelete=()=>{
+    axios
+      .delete(
+        "http://127.0.0.1:8000/api/forum/episode-answer/?answer_id=" +
+          this.state.list[this.state.selectedIndex].answer[0].id,
+        this.config
+      )
+      .then((response) => {
+        const result = this.state.list.map((item, indx) => {
+          if (indx === this.state.selectedIndex) {
+            return {
+              ...item,
+              answer: [],
+              isAnswered:false,
+            };
+          }
+          return item;
+        });
+        this.props.dispatchUser(true);
+        this.setState({
+          list: result,
+          deleteDialog:false,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  deleteDialogOpenClose = () => {
+    this.setState({ deleteDialog: !this.state.deleteDialog });
+  };
+
   textOnBlur = (event) => {
     if (!event.currentTarget.contains(event.relatedTarget)) {
       this.setState({ isTextMode: false, editButtonShown: false });
@@ -118,16 +158,14 @@ class QuestionList extends Component {
       questionAnswer: "",
     });
     if (this.state.selectedIndex > 2) {
-      setTimeout(
-        () =>{
-          this.state.list[
-            this.state.selectedIndex
-          ].listItemRef.current.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-          })},
-        550
-      );
+      setTimeout(() => {
+        this.state.list[
+          this.state.selectedIndex
+        ].listItemRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }, 550);
     }
   };
 
@@ -195,7 +233,7 @@ class QuestionList extends Component {
           return item;
         });
         this.props.dispatchUser(true);
-        this.setState({ list: result });
+        this.setState({ list: result,questionAnswer:'' });
       })
       .catch((error) => {
         console.log(error);
@@ -288,6 +326,40 @@ class QuestionList extends Component {
     return (
       <ThemeProvider theme={theme}>
         <StylesProvider jss={jss}>
+          <Dialog
+            open={this.state.deleteDialog}
+            onClose={this.deleteDialogOpenClose}
+            aria-labelledby="error-dialog"
+            className={classes.newEpisodeRoot}
+          >
+            <DialogTitle id="error-dialog" dir="rtl">
+              حذف
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText dir="rtl" style={{ padding: "10px" }}>
+                آیا میخواهید جواب خود را پاک کنید؟
+              </DialogContentText>
+            </DialogContent>
+
+            <DialogActions className={classes.newEpisodeButtonContent}>
+              <Button
+                color="primary"
+                onClick={this.deleteDialogOpenClose}
+                style={{ margin: "8px" }}
+              >
+                لغو
+              </Button>
+
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={this.answerDelete}
+                style={{ margin: "8px" }}
+              >
+                حذف
+              </Button>
+            </DialogActions>
+          </Dialog>
           {this.state.loading ? (
             <div
               style={{
@@ -467,7 +539,6 @@ class QuestionList extends Component {
                             style={{
                               display: "flex",
                               justifyContent: "space-between",
-                              // marginTop: "10px",
                             }}
                           >
                             <CardHeader
@@ -571,63 +642,84 @@ class QuestionList extends Component {
                                 </Typography>
                               </div>
 
-                              <CardHeader
-                                className="text"
-                                style={{ marginRight: "40px" }}
-                                avatar={
-                                  <Avatar
-                                    src={
-                                      "http://127.0.0.1:8000" +
-                                      this.state.list[this.state.selectedIndex]
-                                        .answer[0].sender_profile_picture
-                                    }
-                                  />
-                                }
-                                title={
-                                  <Typography className="text">
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "flex-start",
+                                }}
+                              >
+                                <CardHeader
+                                  className="text"
+                                  style={{ marginRight: "40px" }}
+                                  avatar={
+                                    <Avatar
+                                      src={
+                                        "http://127.0.0.1:8000" +
+                                        this.state.list[
+                                          this.state.selectedIndex
+                                        ].answer[0].sender_profile_picture
+                                      }
+                                    />
+                                  }
+                                  title={
+                                    <Typography className="text">
+                                      <Box
+                                        className="text"
+                                        fontSize={16}
+                                        fontWeight="fontWeightBold"
+                                      >
+                                        {this.state.list[
+                                          this.state.selectedIndex
+                                        ].answer[0].sender_firstname +
+                                          " " +
+                                          this.state.list[
+                                            this.state.selectedIndex
+                                          ].answer[0].sender_lastname}
+                                      </Box>
+                                    </Typography>
+                                  }
+                                  subheader={
                                     <Box
                                       className="text"
-                                      fontSize={16}
-                                      fontWeight="fontWeightBold"
+                                      fontSize={14}
+                                      style={{
+                                        color: "grey",
+                                      }}
                                     >
-                                      {this.state.list[this.state.selectedIndex]
-                                        .answer[0].sender_firstname +
-                                        " " +
-                                        this.state.list[
-                                          this.state.selectedIndex
-                                        ].answer[0].sender_lastname}
-                                    </Box>
-                                  </Typography>
-                                }
-                                subheader={
-                                  <Box
-                                    className="text"
-                                    fontSize={14}
-                                    style={{
-                                      color: "grey",
-                                    }}
-                                  >
-                                    {human(
-                                      new Date(
-                                        this.state.list[
-                                          this.state.selectedIndex
-                                        ].answer[0].created_at
+                                      {human(
+                                        new Date(
+                                          this.state.list[
+                                            this.state.selectedIndex
+                                          ].answer[0].created_at
+                                        )
                                       )
-                                    )
-                                      .replace("years", "سال")
-                                      .replace("year", "سال")
-                                      .replace("hours", "ساعت")
-                                      .replace("hour", "ساعت")
-                                      .replace("minutes", "دقیقه")
-                                      .replace("minute", "دقیقه")
-                                      .replace("days", "روز")
-                                      .replace("day", "روز")
-                                      .replace("seconds", "ثانیه")
-                                      .replace("second", "ثانیه")
-                                      .replace("ago", "پیش")}
-                                  </Box>
-                                }
-                              />
+                                        .replace("years", "سال")
+                                        .replace("year", "سال")
+                                        .replace("hours", "ساعت")
+                                        .replace("hour", "ساعت")
+                                        .replace("minutes", "دقیقه")
+                                        .replace("minute", "دقیقه")
+                                        .replace("days", "روز")
+                                        .replace("day", "روز")
+                                        .replace("seconds", "ثانیه")
+                                        .replace("second", "ثانیه")
+                                        .replace("ago", "پیش")}
+                                    </Box>
+                                  }
+                                />
+
+                                <IconButton
+                                  onClick={this.deleteDialogOpenClose}
+                                  style={{
+                                    alignSelf: "center",
+                                    color: "black",
+                                    width: 50,
+                                    height: 50,
+                                  }}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </div>
                               <CardContent
                                 style={{
                                   textAlign: "right",
@@ -664,16 +756,21 @@ class QuestionList extends Component {
                                       <div
                                         style={{
                                           alignSelf: "center",
-                                          marginBottom: "-8px",
+                                          // marginBottom: "-8px",
                                         }}
                                       >
                                         {this.state.editButtonShown &&
                                           !this.state.isTextMode && (
-                                            <Button
+                                            <IconButton
                                               onClick={this.textModeSwitcher}
+                                              style={{
+                                                width: 30,
+                                                height: 30,
+                                                color: "black",
+                                              }}
                                             >
                                               <EditIcon />
-                                            </Button>
+                                            </IconButton>
                                           )}
                                       </div>
                                     </div>
@@ -724,8 +821,6 @@ class QuestionList extends Component {
                                   style={{ padding: "8px", borderRadius: 10 }}
                                   value={this.state.questionAnswer}
                                   onChange={this.answerOnChange}
-                                  rowsMax={2}
-                                  multiline
                                   fullWidth
                                   required
                                   className="input2"

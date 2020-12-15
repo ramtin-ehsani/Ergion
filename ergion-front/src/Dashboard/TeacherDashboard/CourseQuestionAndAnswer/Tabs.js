@@ -145,7 +145,6 @@ class TabsClass extends Component {
                 value={this.state.value}
                 onChange={(e, v) => this.handleChange(v)}
                 indicatorColor="primary"
-                textColor="primary"
                 TabIndicatorProps={{
                   style: {
                     height: "6px",
