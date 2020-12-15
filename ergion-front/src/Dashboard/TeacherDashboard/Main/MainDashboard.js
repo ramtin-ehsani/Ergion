@@ -22,7 +22,7 @@ const useStyles = (theme) => ({
         borderRadius: 16,
         boxShadow: 'none',
         '&:hover': {
-            boxShadow: `0 2px 2px 0 ${Color(color)
+            boxShadow: `0 12px 14px -12.125px ${Color(color)
                 .rotate(-12)
                 .darken(0.2)
                 .fade(0.5)}`,
