@@ -18,6 +18,17 @@ import ReplyOutlinedIcon from '@material-ui/icons/ReplyOutlined';
 import ContactSupportIcon from '@material-ui/icons/ContactSupport';
 
 const styles = (theme) => ({
+    "@global": {
+        "*::-webkit-scrollbar": {
+          width: "0.4em",
+        },
+        "*::-webkit-scrollbar-track": {
+          "-webkit-box-shadow": "inset 0 0 6px rgba(10,10,0,0.00)",
+        },
+        "*::-webkit-scrollbar-thumb": {
+          backgroundColor: "rgba(0, 0, 0,.2)",
+        },
+    },
     textFieldStyle: {
         marginRight: theme.spacing(2),
         paddingLeft: theme.spacing(4),
@@ -227,7 +238,6 @@ class Questions extends Component {
                                                     </IconButton>
                                                 </ListItemIcon>
                                             </ListItem>
-                                            <Box marginBottom={2}/>
                                             <Collapse in={this.state.openReply[question.id]} timeout="auto" unmountOnExit>
                                             <List component="div" disablePadding dir='rtl'>
                                                 {
