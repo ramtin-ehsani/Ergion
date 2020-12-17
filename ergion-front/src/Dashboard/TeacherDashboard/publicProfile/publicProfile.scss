@@ -1,8 +1,39 @@
 .all {
+
+	.my-classes-title {
+		font-weight: bolder;
+		font-family: IRANSans !important;
+		font-size: 25px;
+		display: flex;
+		align-items: center;
+		text-align: right;
+		width: 100%;
+		padding-right: 20px;
+		margin-top: 50px;
+		margin-bottom: 10px;
+
+	}
+
 	.main-container {
 		.MuiGrid-spacing-xs-4 > .MuiGrid-item {
 			padding: 0px !important;
 		}
+
+		// .bottom-row {
+		// 	flex-direction: row;
+		// 	display: flex;
+
+		// 	.email {
+		// 		align-items: left;
+		// 		text-align: left;
+		// 		font-size: 17px;
+		// 		color: rgb(56, 55, 55);
+		// 		overflow-wrap: break-word;
+		// 		display: flex;
+		// 		justify-content: center;
+		// 		align-items: center;
+		// 	}
+		// }
 
 		.instructor-name {
 			display: flex;
@@ -34,26 +65,46 @@
 
 		.name-div {
 			display: flex;
-			// width: 50%;
+			width: 100%;
 			// justify-content: right;
+			position: relative;
+			align-items: flex-start !important;
 			justify-content: center;
 			align-items: center;
 			flex-direction: column;
 			line-height: 0%;
 			// margin: auto;
 
-			.slash-class-students {
-				align-items: left;
-				text-align: left;
-				font-size: 17px;
-				color: rgb(56, 55, 55);
-				overflow-wrap: break-word;
+			.bottom-row {
+				// flex-direction: row;
 				display: flex;
-				justify-content: center;
-				align-items: center;
-				margin-left: 5px;
-				margin-right: 5px;
-				font-size: 20px;
+				position: absolute;
+				bottom: 0;
+				right: 0;
+				width: 100%;
+				margin-top: 50px !important;
+	
+				.counter {
+					// align-items: left;
+					width: 50%;
+					text-align: right;
+					font-size: 16px;
+					// color: rgb(56, 55, 55);
+					overflow-wrap: break-word;
+					display: flex;
+					justify-content: right;
+					align-items: center;
+
+					.footer-icon {
+						margin-left: 5px;
+					}
+	
+					.numbers-style {
+						color: rgb(76, 71, 71);
+						margin-right: 5px;
+						font-size: 16px;
+					}
+				}
 			}
 
 
@@ -116,14 +167,24 @@
 			.email {
 				align-items: left;
 				text-align: left;
-				font-size: 17px;
+				font-size: 16px;
 				color: rgb(56, 55, 55);
 				overflow-wrap: break-word;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				margin-top: 5%;
-				margin-bottom: 3%;
+				margin-top: 0%;
+				margin-bottom: 0%;
+
+				.footer-icon {
+					margin-left: 5px;
+				}
+
+				.numbers-style {
+					color: rgb(76, 71, 71);
+					margin-right: 5px;
+					font-size: 16px;
+				}
 			}
 
 			.name-family-name {
@@ -173,7 +234,10 @@
 		.layout1 {
 			font-family: IRANSans !important;
 			transition: 0.3s;
-			max-width: 450px;
+			max-width: 360px;
+			// max-height: 360px;
+			height: 100%;
+
 			margin: auto;
 			box-shadow: 0 8px 40px -12px rgba(0, 0, 0, 0.3);
 
@@ -209,7 +273,7 @@
 		}
 
 		.cardSpacing {
-			padding: 7px;
+			padding: 15px;
 		}
 
 		.textFieldSearchbar {

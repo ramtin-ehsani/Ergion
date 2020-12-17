@@ -91,12 +91,8 @@ const useStyles = makeStyles((theme) =>
 			flexDirection: 'column'
 		},
 		cardMedia: {
-			// minWidth:"375px",
-			minHeight:"300px",
-			// maxWidth:"375px",
-			maxHeight:"300px",
-
-			// height: 180,
+			minHeight: '250px',
+			maxHeight: '250px',
 			width: '100%',
 			objectFit: 'cover'
 		},
@@ -118,7 +114,7 @@ const useStyles = makeStyles((theme) =>
 			fontSize: 20
 		},
 		avatar: {
-			backgroundColor: 'red',
+			backgroundColor: 'red'
 		}
 	})
 );
@@ -166,7 +162,7 @@ const PublicProfile = () => {
 	}, []);
 
 	if (myclasses != null) {
-		console.log(myclasses)
+		console.log(myclasses);
 		return (
 			<React.Fragment>
 				<StylesProvider jss={jss}>
@@ -230,7 +226,7 @@ const PublicProfile = () => {
 												<Box borderRadius={12} marginTop={3}>
 													<div className={classes.root}>
 														<CardContent>
-															<Grid container spacing={5} dir="rtl">
+															<Grid container spacing={3} dir="rtl">
 																{width > 650 ? (
 																	<Grid
 																		item
@@ -261,8 +257,10 @@ const PublicProfile = () => {
 																				<div className="avatar-div">
 																					<Avatar
 																						style={{
-																							width: 150,
-																							height: 150
+																							minWidth: 150,
+																							minHeight: 150,
+																							maxHeight: 150,
+																							maxWidth: 150
 																						}}
 																						src={img}
 																					>
@@ -279,12 +277,22 @@ const PublicProfile = () => {
 																					<p className="name-family-name">
 																						استاد محمدرضا شجریان
 																					</p>
-																					<p className="email"><EmailIcon style={{marginLeft: "5px"}} />	sadeghJ10@gmail.com</p>
-																					<div style={{flexDirection: "row", display: "flex"}}>
-																						<p className="email"><ClassIcon style={{marginLeft: "5px"}}/>کلاس ها: ۲۳ عدد</p>
-																						<p className="slash-class-students"> | </p>
-																						<p className="email"><Student style={{marginLeft: "5px"}}/>دانش اموزان: ۳۷ نفر</p>
-																					</div>	
+																					<p className="email">
+																						<EmailIcon style={{ marginLeft: '5px' }} />{' '}
+																						sadeghJ10@gmail.com
+																					</p>
+																					<div className="bottom-row">
+																						<p className="counter">
+																							<ClassIcon className="footer-icon" />کلاس
+																							ها:{' '}
+																							<p className="numbers-style">۲۳ عدد</p>
+																						</p>
+																						<p className="counter">
+																							<Student className="footer-icon" />دانش
+																							اموزان:{' '}
+																							<p className="numbers-style">۳۷ نفر</p>
+																						</p>
+																					</div>
 																				</div>
 																			</div>
 																		</Box>
@@ -312,7 +320,7 @@ const PublicProfile = () => {
 																		>
 																			<div className="avatar-div-600">
 																				<Avatar
-																					style={{ width: 150, height: 150 }}
+																					style={{ minWidth: 150, minHeight: 150, maxWidth: 150, maxHeight: 150 }}
 																					src={img}
 																				>
 																					<p
@@ -328,141 +336,31 @@ const PublicProfile = () => {
 																				<p className="name-family-name">
 																					استاد محمدرضا شجریان
 																				</p>
-																				<p className="email-600"><EmailIcon style={{marginLeft: "5px"}}/>sadeghJ10@gmail.com</p>
-																				<div style={{flexDirection: "column", display: "flex", lineHeight: "0%"}}>
-																					<p className="email"><ClassIcon style={{marginLeft: "5px"}}/>کلاس ها: ۲۳ عدد</p>
-																					{/* <p className="slash-class-students"> | </p> */}
-																					<p className="email"><Student style={{marginLeft: "5px"}}/>دانش اموزان: ۳۷ نفر</p>
+																				<p className="email-600">
+																					<EmailIcon style={{ marginLeft: '5px' }} />sadeghJ10@gmail.com
+																				</p>
+																				<div
+																					style={{
+																						flexDirection: 'column',
+																						display: 'flex',
+																						lineHeight: '0%'
+																					}}
+																				>
+																					<p className="email">
+																						<ClassIcon className="footer-icon" />کلاس
+																						ها:{' '}
+																						<p className="numbers-style">۲۳ عدد</p>
+																					</p>
+																					<p className="email">
+																						<Student className="footer-icon" />دانش
+																						اموزان:{' '}
+																						<p className="numbers-style">۳۷ نفر</p>
+																					</p>
 																				</div>
 																			</div>
 																		</Box>
 																	</Grid>
 																)}
-
-																{/* <Grid item md={6} xs={12} sm={6} className="items-grid">
-																	<Box
-																		boxShadow={0}
-																		borderRadius={12}
-																		border="3px solid gainsboro"
-																		style={{
-																			width: '100%',
-																			alignItems: 'center',
-																			height: 'fit-content'
-																		}}
-																	>
-																		<div>
-																			<p className="title-email">
-																				<EmailIcon style={{ marginLeft: '5px' }} />{' '}
-																				ایمیل:{' '}
-																			</p>
-																			<p className="email">sadeghJ10@gmail.com</p>
-																		</div>
-																	</Box>
-																</Grid> */}
-
-																{/* <Grid item md={4} xs={12} sm={4} className="items-grid">
-																	<Box
-																		boxShadow={0}
-																		borderRadius={12}
-																		border="3px solid gainsboro"
-																		style={{
-																			width: '100%',
-																			alignItems: 'center',
-																			height: 'fit-content'
-																		}}
-																	>
-																		<div>
-																			<p className="title-about-me">
-																				<WorkIcon style={{ marginLeft: '5px' }} />شغل:
-																			</p>
-																			<p className="about-me">مشاور کنکور</p>
-																		</div>
-																	</Box>
-																</Grid> */}
-
-																{/* <Grid item md={4} xs={12} sm={4} className="items-grid">
-																	<Box
-																		boxShadow={0}
-																		borderRadius={12}
-																		border="3px solid gainsboro"
-																		style={{
-																			width: '100%',
-																			alignItems: 'center',
-																			height: 'fit-content'
-																		}}
-																	>
-																		<div>
-																			<p className="title-about-me">
-																				<PieChartIcon style={{ marginLeft: '5px' }} />تعداد
-																				کلاس ها:
-																			</p>
-																			<p className="about-me">۲۰ عدد</p>
-																		</div>
-																	</Box>
-																</Grid> */}
-
-																{/* <Grid item md={4} xs={12} sm={6} className="items-grid">
-																	<Box
-																		boxShadow={0}
-																		borderRadius={12}
-																		border="3px solid gainsboro"
-																		style={{
-																			width: '100%',
-																			alignItems: 'center',
-																			height: 'fit-content'
-																		}}
-																	>
-																		<div>
-																			<p className="title-about-me">
-																				<SchoolIcon style={{ marginLeft: '5px' }} />
-																				نام موسسه یا دانشگاه:{' '}
-																			</p>
-																			<p className="about-me">قلم چی</p>
-																		</div>
-																	</Box>
-																</Grid> */}
-
-																{/* <Grid item md={4} xs={12} sm={6} className="items-grid">
-																	<Box
-																		boxShadow={0}
-																		borderRadius={12}
-																		border="3px solid gainsboro"
-																		style={{
-																			width: '100%',
-																			alignItems: 'center',
-																			height: 'fit-content'
-																		}}
-																	>
-																		<div>
-																			<p className="title-about-me">
-																				<HistoryIcon style={{ marginLeft: '5px' }} />
-																				سوابق کاری:{' '}
-																			</p>
-																			<p className="about-me">۱۰ سال</p>
-																		</div>
-																	</Box>
-																</Grid> */}
-
-																{/* <Grid item md={4} xs={12} sm={4} className="items-grid">
-																	<Box
-																		boxShadow={0}
-																		borderRadius={12}
-																		border="3px solid gainsboro"
-																		style={{
-																			width: '100%',
-																			alignItems: 'center',
-																			height: 'fit-content'
-																		}}
-																	>
-																		<div>
-																			<p className="title-about-me">
-																				<PieChartIcon style={{ marginLeft: '5px' }} />
-																				تعداد دانش اموزان:
-																			</p>
-																			<p className="about-me">۳۷ نفر</p>
-																		</div>
-																	</Box>
-																</Grid> */}
 
 																<Grid
 																	item
@@ -508,20 +406,10 @@ const PublicProfile = () => {
 							title={
 								<Typography
 									dir="rtl"
-									style={{
-										fontWeight: 'bolder',
-										fontFamily: 'IRANSans',
-										fontSize: '25px',
-										display: 'flex',
-										alignItems: 'center',
-										textAlign: 'right',
-										width: '100%',
-										paddingRight: "20px",
-										marginTop: "50px"
-									}}
 									component="h1"
+									className="my-classes-title"
 								>
-									کلاس های استاد محمدرضا شجریان
+									کلاس های من
 								</Typography>
 							}
 						/>
@@ -540,23 +428,6 @@ const PublicProfile = () => {
 													md={4}
 												>
 													<Card className="layout1">
-														<CardHeader
-															title={
-																<Typography className="courseOwnerPlace" component="h4">
-																	مدرس:{' '}
-																	{course.instructor_firstname + ' ' + course.instructor_lastname}
-																</Typography>
-															}
-															avatar={
-																<Avatar
-																	src={course.instructor_profile_picture}
-																	aria-label="recipe"
-																	className={classes.avatar}
-																>
-																	{course.instructor_firstname.split('')[0]}
-																</Avatar>
-															}
-														/>
 														<CardMedia
 															className={classes.cardMedia}
 															component="img"
