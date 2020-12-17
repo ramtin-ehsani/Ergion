@@ -54,11 +54,11 @@ class CarouselMedia extends React.Component {
       return (
         <div style={{ padding: "12px" }}>
           <ReactPlayer
-            // className='react-player'
             width="100%"
             height={400}
             url={src}
             controls
+            style={{backgroundColor:'black'}}
           />
 
           <Typography>

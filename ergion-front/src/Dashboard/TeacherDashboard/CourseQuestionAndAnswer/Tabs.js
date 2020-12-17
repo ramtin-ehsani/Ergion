@@ -108,7 +108,7 @@ class TabsClass extends Component {
             subject: course.subject,
             cover: course.course_cover,
           };
-          this.props.dispatchUser(2);
+          this.props.dispatchUser(course.count_of_course_questions);
           l.push(courseItem);
         });
         this.setState({ list: l, loading: false });

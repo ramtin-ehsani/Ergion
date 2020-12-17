@@ -137,7 +137,10 @@ class QuestionList extends Component {
           }
           return item;
         });
-        this.props.dispatchUnansweredItems(this.props.courseUnansweredQuestionsList[this.props.index]+1,this.props.index)
+        this.props.dispatchUnansweredItems(
+          this.props.courseUnansweredQuestionsList[this.props.index] + 1,
+          this.props.index
+        );
         this.props.dispatchUser(true);
         this.setState({
           list: result,
@@ -239,7 +242,10 @@ class QuestionList extends Component {
           }
           return item;
         });
-        this.props.dispatchUnansweredItems(this.props.courseUnansweredQuestionsList[this.props.index]-1,this.props.index)
+        this.props.dispatchUnansweredItems(
+          this.props.courseUnansweredQuestionsList[this.props.index] - 1,
+          this.props.index
+        );
         this.props.dispatchUser(true);
         this.setState({ list: result, questionAnswer: "" });
       })
@@ -262,58 +268,26 @@ class QuestionList extends Component {
       )
       .then((resp) => {
         const { list } = this.state;
+        console.log(resp.data);
         resp.data.map((question) => {
           const questionItem = {
             id: question.id,
             question: question.question,
-            time: question.created_at,
+            time: question.creation_time,
             answer: question.answer,
             episode_name: question.related_episode_name,
             sender_firstname: question.sender_firstname,
             sender_lastname: question.sender_lastname,
-            isAnswered: false,
+            isAnswered: question.is_answered,
             listItemRef: React.createRef(null),
-            sender_profile_picture:
-              "http://127.0.0.1:8000" + question.sender_profile_picture,
+            sender_profile_picture: question.sender_profile_picture,
           };
           list.push(questionItem);
         });
 
-        axios
-          .get(
-            "http://127.0.0.1:8000/api/forum/episode-answer/?course_id_wa=" +
-              courseId,
-            this.config
-          )
-          .then((response) => {
-            console.log(response);
-            response.data.map((question_wa) => {
-              const questionItem = {
-                id: question_wa.id,
-                question: question_wa.question,
-                time: question_wa.created_at,
-                episode_name: question_wa.related_episode_name,
-                sender_firstname: question_wa.sender_firstname,
-                sender_lastname: question_wa.sender_lastname,
-                answer: question_wa.answer,
-                listItemRef: React.createRef(null),
-                isAnswered: true,
-                sender_profile_picture:
-                  "http://127.0.0.1:8000" + question_wa.sender_profile_picture,
-              };
-              list.push(questionItem);
-            });
-            list.sort((a, b) =>
-              a.time > b.time ? -1 : a.time < b.time ? 1 : 0
-            );
-
-            if (this._isMounted) {
-              this.setState({ list: list, loading: false });
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        if (this._isMounted) {
+          this.setState({ list: list, loading: false });
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -662,7 +636,6 @@ class QuestionList extends Component {
                                   avatar={
                                     <Avatar
                                       src={
-                                        "http://127.0.0.1:8000" +
                                         this.state.list[
                                           this.state.selectedIndex
                                         ].answer[0].sender_profile_picture
@@ -698,9 +671,10 @@ class QuestionList extends Component {
                                         new Date(
                                           this.state.list[
                                             this.state.selectedIndex
-                                          ].answer[0].created_at
+                                          ].answer[0].creation_time
                                         )
                                       )
+                                        .replace("just now", "همین الان")
                                         .replace("years", "سال")
                                         .replace("year", "سال")
                                         .replace("hours", "ساعت")
