@@ -119,6 +119,12 @@ class QuestionList extends Component {
     this.setState({ questionAnswer: e.target.value });
   };
 
+  toFarsiNumber=(n)=> {
+    const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+
+    return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+  }
+
   answerDelete = () => {
     axios
       .delete(
@@ -423,6 +429,7 @@ class QuestionList extends Component {
                                     }}
                                   >
                                     {" . " +
+                                    this.toFarsiNumber(
                                       human(new Date(questionItem.time))
                                         .replace("years", "سال")
                                         .replace("year", "سال")
@@ -434,7 +441,7 @@ class QuestionList extends Component {
                                         .replace("day", "روز")
                                         .replace("seconds", "ثانیه")
                                         .replace("second", "ثانیه")
-                                        .replace("ago", "پیش")}
+                                        .replace("ago", "پیش"))}
                                   </Box>
                                 </Typography>
                               }
@@ -557,7 +564,7 @@ class QuestionList extends Component {
                                     color: "grey",
                                   }}
                                 >
-                                  {human(
+                                  {this.toFarsiNumber(human(
                                     new Date(
                                       this.state.list[
                                         this.state.selectedIndex
@@ -574,7 +581,7 @@ class QuestionList extends Component {
                                     .replace("day", "روز")
                                     .replace("seconds", "ثانیه")
                                     .replace("second", "ثانیه")
-                                    .replace("ago", "پیش")}
+                                    .replace("ago", "پیش"))}
                                 </Box>
                               }
                             />
@@ -667,7 +674,7 @@ class QuestionList extends Component {
                                         color: "grey",
                                       }}
                                     >
-                                      {human(
+                                      {this.toFarsiNumber(human(
                                         new Date(
                                           this.state.list[
                                             this.state.selectedIndex
@@ -685,7 +692,7 @@ class QuestionList extends Component {
                                         .replace("day", "روز")
                                         .replace("seconds", "ثانیه")
                                         .replace("second", "ثانیه")
-                                        .replace("ago", "پیش")}
+                                        .replace("ago", "پیش"))}
                                     </Box>
                                   }
                                 />

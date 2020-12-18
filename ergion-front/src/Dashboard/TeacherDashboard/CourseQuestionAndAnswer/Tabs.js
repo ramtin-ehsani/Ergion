@@ -91,6 +91,12 @@ class TabsClass extends Component {
     this.setState({ value: newValue });
   };
 
+  toFarsiNumber = (n) => {
+    const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+
+    return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+  };
+
   componentDidMount() {
     axios
       .get("http://127.0.0.1:8000/api/teacher/courses/", {
@@ -180,86 +186,101 @@ class TabsClass extends Component {
                           style={{ textTransform: "none" }}
                           onClick={() => this.handleChange(index)}
                         >
-                            <Card className="courselayout">
-                              <CardMedia
-                                className={classes.cardMedia}
-                                component="img"
-                                image={course.cover}
-                                alt={"بدون عکس"}
-                              />
+                          <Card className="courselayout">
+                            <CardMedia
+                              className={classes.cardMedia}
+                              component="img"
+                              image={course.cover}
+                              alt={"بدون عکس"}
+                            />
 
-                              <Divider />
-                              <CardContent className={classes.cardContent}>
+                            <Divider />
+                            <CardContent className={classes.cardContent}>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  wordBreak: "break-all",
+                                  direction: "rtl",
+                                }}
+                              >
+                                <Typography gutterBottom className="text">
+                                  <Box>نام کلاس :</Box>
+                                </Typography>
+                                <Typography
+                                  gutterBottom
+                                  className="text"
+                                  style={{ marginRight: "4px" }}
+                                >
+                                  <Box fontWeight="fontWeightBold">
+                                    {course.name}
+                                  </Box>
+                                </Typography>
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  wordBreak: "break-all",
+                                  direction: "rtl",
+                                }}
+                              >
+                                <Typography gutterBottom className="text">
+                                  <Box>موضوع کلاس :</Box>
+                                </Typography>
+                                <Typography
+                                  gutterBottom
+                                  className="text"
+                                  style={{ marginRight: "4px" }}
+                                >
+                                  <Box fontWeight="fontWeightBold">
+                                    {course.subject}
+                                  </Box>
+                                </Typography>
+                              </div>
+                              <Box
+                                style={{
+                                  display: "flex",
+                                  wordBreak: "break-all",
+                                  direction: "ltr",
+                                  padding: "4px",
+                                  backgroundColor: "#d50000",
+                                  width: "40%",
+                                  marginTop: "8px",
+                                  justifyContent: "center",
+                                }}
+                                borderRadius={8}
+                              >
                                 <div
-                                  style={{
-                                    display: "flex",
-                                    wordBreak: "break-all",
-                                    direction: "rtl",
-                                  }}
+                                  style={{ direction: "rtl", display: "flex" }}
                                 >
                                   <Typography gutterBottom className="text">
-                                    <Box>نام کلاس :</Box>
-                                  </Typography>
-                                  <Typography
-                                    gutterBottom
-                                    className="text"
-                                    style={{ marginRight: "4px" }}
-                                  >
-                                    <Box fontWeight="fontWeightBold">
-                                      {course.name}
+                                    <Box
+                                      color="white"
+                                      fontSize={12}
+                                      fontWeight="fontWeightBold"
+                                    >
+                                      سوالات جدید :
                                     </Box>
-                                  </Typography>
-                                </div>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    wordBreak: "break-all",
-                                    direction: "rtl",
-                                  }}
-                                >
-                                  <Typography gutterBottom className="text">
-                                    <Box>موضوع کلاس :</Box>
-                                  </Typography>
-                                  <Typography
-                                    gutterBottom
-                                    className="text"
-                                    style={{ marginRight: "4px" }}
-                                  >
-                                    <Box fontWeight="fontWeightBold">
-                                      {course.subject}
-                                    </Box>
-                                  </Typography>
-                                </div>
-                                <Box
-                                  style={{
-                                    display: "flex",
-                                    wordBreak: "break-all",
-                                    direction: "ltr",
-                                    padding:'4px',
-                                    backgroundColor:'#d50000',
-                                    width:'40%',
-                                    marginTop:'8px',
-                                    justifyContent:'center'
-                                  }}
-                                  borderRadius={8}
-                                >
-                                  <div style={{direction:'rtl',display:'flex'}}>
-                                  <Typography gutterBottom className="text">
-                                    <Box color='white' fontSize={12} fontWeight='fontWeightBold'>سوالات جدید :</Box>
                                   </Typography>
                                   <Typography
                                     gutterBottom
                                     className="text"
                                     style={{ marginLeft: "4px" }}
                                   >
-                                    <Box color='white' fontSize={12} fontWeight='fontWeightBold'>
-                                    {this.props.courseUnansweredQuestionsList[index]}
+                                    <Box
+                                      color="white"
+                                      fontSize={12}
+                                      fontWeight="fontWeightBold"
+                                    >
+                                      {this.toFarsiNumber(
+                                        this.props
+                                          .courseUnansweredQuestionsList[index]
+                                      )}
                                     </Box>
                                   </Typography>
-                                  </div>
-                                </Box>
-                              </CardContent>
-                            </Card>
+                                </div>
+                              </Box>
+                            </CardContent>
+                          </Card>
                         </Button>
                       </div>
                     ))}
@@ -289,7 +310,10 @@ class TabsClass extends Component {
                     index={tabPanelIndex}
                     key={tabPanelCourse.id}
                   >
-                    <QuestionList courseId={tabPanelCourse.id} index={tabPanelIndex}/>
+                    <QuestionList
+                      courseId={tabPanelCourse.id}
+                      index={tabPanelIndex}
+                    />
                   </TabPanel>
                 ))}
               </SwipeableViews>

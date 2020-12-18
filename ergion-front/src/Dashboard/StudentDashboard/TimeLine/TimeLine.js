@@ -283,6 +283,13 @@ class TimeLine extends React.Component {
       });
   };
 
+
+  toFarsiNumber=(n)=> {
+    const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+
+    return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+  }
+
   font = 28;
 
   handleTimelineLike = (index, id) => {
@@ -933,7 +940,7 @@ class TimeLine extends React.Component {
                                         style={{ color: "grey" }}
                                       >
                                         {" . " +
-                                          human(new Date(timeline.time))
+                                          this.toFarsiNumber(human(new Date(timeline.time))
                                             .replace("years", "سال")
                                             .replace("year", "سال")
                                             .replace("hours", "ساعت")
@@ -944,7 +951,7 @@ class TimeLine extends React.Component {
                                             .replace("day", "روز")
                                             .replace("seconds", "ثانیه")
                                             .replace("second", "ثانیه")
-                                            .replace("ago", "پیش")}
+                                            .replace("ago", "پیش"))}
                                       </Box>
                                     </Typography>
                                   </div>

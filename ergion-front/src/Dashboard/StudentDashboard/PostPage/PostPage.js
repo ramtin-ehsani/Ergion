@@ -33,7 +33,7 @@ import Slider from "react-slick";
 import "../../../../node_modules/slick-carousel/slick/slick.css";
 import "../../../../node_modules/slick-carousel/slick/slick-theme.css";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Carousel from '../../../Carousel/Carousel'
+import Carousel from "../../../Carousel/Carousel";
 import { SentimentDissatisfied } from "@material-ui/icons";
 import { Button, List } from "@material-ui/core";
 
@@ -105,6 +105,12 @@ const PostPage = () => {
   const [imgNumber, setImgNumber] = useState(4);
   const [open, setOpen] = useState(false);
   const [imglist, setImgList] = useState([]);
+
+  const toFarsiNumber = (n) => {
+    const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+
+    return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+  };
 
   const handleDownload = (file) => {
     axios({
@@ -445,18 +451,20 @@ const PostPage = () => {
                     }
                     subheader={
                       <Typography className="date" component="h6">
-                        {human(new Date(postPage.creation_time))
-                          .replace("years", "سال")
-                          .replace("year", "سال")
-                          .replace("hours", "ساعت")
-                          .replace("hour", "ساعت")
-                          .replace("minutes", "دقیقه")
-                          .replace("minute", "دقیقه")
-                          .replace("days", "روز")
-                          .replace("day", "روز")
-                          .replace("seconds", "ثانیه")
-                          .replace("second", "ثانیه")
-                          .replace("ago", "پیش")}
+                        {toFarsiNumber(
+                          human(new Date(postPage.creation_time))
+                            .replace("years", "سال")
+                            .replace("year", "سال")
+                            .replace("hours", "ساعت")
+                            .replace("hour", "ساعت")
+                            .replace("minutes", "دقیقه")
+                            .replace("minute", "دقیقه")
+                            .replace("days", "روز")
+                            .replace("day", "روز")
+                            .replace("seconds", "ثانیه")
+                            .replace("second", "ثانیه")
+                            .replace("ago", "پیش")
+                        )}
                       </Typography>
                     }
                   />
@@ -508,7 +516,9 @@ const PostPage = () => {
                         ))}
                       </Slider>
                     } */}
-                    {postPage.files.length>0&&(<Carousel files={postPage.files}/>)}
+                    {postPage.files.length > 0 && (
+                      <Carousel files={postPage.files} />
+                    )}
 
                     {/* {postPage.files.map((item) => (
                       <CheckFileHandler src={item.file} />
@@ -557,7 +567,7 @@ const PostPage = () => {
                   </CardActions>
                 </Card>
                 <div className={classes.root1} dir="rtl">
-                  <Comments postId={postPage.post_id}/>
+                  <Comments postId={postPage.post_id} />
                 </div>
               </Grid>
             </Grid>
