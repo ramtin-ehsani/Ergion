@@ -64,7 +64,7 @@ const useStyles = (theme) => ({
 
 class MainDashboard extends Component {
     state = {
-        count: 2,
+        count: 0,
         events: [],
         hasMore: true,
     }
@@ -93,6 +93,11 @@ class MainDashboard extends Component {
                         newE.type= `از ${newE.session_name} کلاس ${newE.course_name} سوال کرد`
                     }
                     events.push(newE)
+                })
+                axios.get('http://127.0.0.1:8000/api/teacher/profile-details/',config)
+                .then((res)=>{
+                    var count = res.data[0].count_of_questions;
+                    this.setState({count:count})
                 })
                 console.log(res.data.has_next)
                 this.setState({hasMore:res.data.has_next,events:events})
