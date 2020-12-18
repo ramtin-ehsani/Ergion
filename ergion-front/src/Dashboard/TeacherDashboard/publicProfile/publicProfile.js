@@ -162,7 +162,6 @@ const PublicProfile = () => {
 	}, []);
 
 	if (myclasses != null) {
-		console.log(myclasses);
 		return (
 			<React.Fragment>
 				<StylesProvider jss={jss}>
@@ -248,19 +247,14 @@ const PublicProfile = () => {
 																				height: 'fit-content'
 																			}}
 																		>
-																			<div
-																				style={{
-																					width: '100%',
-																					display: 'flex'
-																				}}
-																			>
+																			<div className="cover">
 																				<div className="avatar-div">
 																					<Avatar
 																						style={{
-																							minWidth: 150,
-																							minHeight: 150,
-																							maxHeight: 150,
-																							maxWidth: 150
+																							minWidth: 170,
+																							minHeight: 170,
+																							maxHeight: 170,
+																							maxWidth: 170
 																						}}
 																						src={img}
 																					>
@@ -273,6 +267,36 @@ const PublicProfile = () => {
 																						</p>
 																					</Avatar>
 																				</div>
+																				<div className="wtf">
+																					<div className="separator">
+																						<div style={{ width: '23%' }} />
+																						<div className="bottom-row">
+																							<p className="counter">
+																								<ClassIcon className="footer-icon" />کلاس
+																								ها: ۲۳ عدد
+																							</p>
+																							<p className="counter">
+																								<Student className="footer-icon" />دانش
+																								اموزان: ۳۷ نفر
+																							</p>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+
+																			<div
+																				style={{
+																					width: '100%',
+																					display: 'flex',
+																					position: "relative"
+																				}}
+																			>
+																				{/* <div
+																					style={{
+																						width: '25%',
+																						display: 'flex'
+																					}}
+																				/> */}
 																				<div className="name-div">
 																					<p className="name-family-name">
 																						استاد محمدرضا شجریان
@@ -281,18 +305,6 @@ const PublicProfile = () => {
 																						<EmailIcon style={{ marginLeft: '5px' }} />{' '}
 																						sadeghJ10@gmail.com
 																					</p>
-																					<div className="bottom-row">
-																						<p className="counter">
-																							<ClassIcon className="footer-icon" />کلاس
-																							ها:{' '}
-																							<p className="numbers-style">۲۳ عدد</p>
-																						</p>
-																						<p className="counter">
-																							<Student className="footer-icon" />دانش
-																							اموزان:{' '}
-																							<p className="numbers-style">۳۷ نفر</p>
-																						</p>
-																					</div>
 																				</div>
 																			</div>
 																		</Box>
@@ -320,7 +332,12 @@ const PublicProfile = () => {
 																		>
 																			<div className="avatar-div-600">
 																				<Avatar
-																					style={{ minWidth: 150, minHeight: 150, maxWidth: 150, maxHeight: 150 }}
+																					style={{
+																						minWidth: 150,
+																						minHeight: 150,
+																						maxWidth: 150,
+																						maxHeight: 150
+																					}}
 																					src={img}
 																				>
 																					<p
@@ -378,7 +395,7 @@ const PublicProfile = () => {
 																		<div>
 																			<p className="title-about-me">
 																				<InfoIcon style={{ marginLeft: '5px' }} />
-																				درباره ی من:{' '}
+																				درباره‌ من:{' '}
 																			</p>
 																			<p className="about-me">
 																				پلنگ صورتی مجموعه فیلمهای کمدی-پلیسی است
@@ -404,11 +421,7 @@ const PublicProfile = () => {
 						</div>
 						<CardHeader
 							title={
-								<Typography
-									dir="rtl"
-									component="h1"
-									className="my-classes-title"
-								>
+								<Typography dir="rtl" component="h1" className="my-classes-title">
 									کلاس های من
 								</Typography>
 							}
