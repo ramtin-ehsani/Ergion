@@ -5,6 +5,7 @@ import {
     // makeStyles
 } from '@material-ui/core';
 import Timeline from '../TimeLine/TimeLine';
+import Suggestedcourse from './suggest';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
@@ -50,8 +51,8 @@ const Dashboard = () => {
                 >
                     <Grid
                         item
-                        lg={8}
-                        md={8}
+                        lg={9}
+                        md={9}
                         xs={12}
                     >
                         <Timeline />
@@ -59,12 +60,12 @@ const Dashboard = () => {
 
                     <Grid
                         item
-                        lg={4}
-                        md={4}
+                        lg={3}
+                        md={3}
                         xs={false}
                     >
 
-                        
+                       <Suggestedcourse/> 
                     </Grid>
                     
                 </Grid>

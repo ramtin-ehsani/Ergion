@@ -74,7 +74,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    // margin: theme.spacing(2),
+  padding:theme.spacing(0),
     backgroundColor: theme.palette.background.default,
 
 
@@ -139,15 +139,16 @@ const SingleCourse = ({ match }) => {
   //     console.log(match);
   //     console.log(course);
   // }, []);
-  useEffect(() => {
-    console.log(match.params.id);
-    const promise
+  const getcourse=()=>
+  {
+    setTimeout(() => {
+      const promise
       = Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`)
     promise.then(
       response => {
 
         setcourse(response.data)
-        console.log(response.data)
+        
 
 
       }
@@ -156,7 +157,13 @@ const SingleCourse = ({ match }) => {
 
 
   }
-    , [])
+    , 500)
+  }
+  React.useEffect(() => {
+   
+    getcourse();
+    }, []);
+    
   const classes = useStyles();
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -180,7 +187,7 @@ const SingleCourse = ({ match }) => {
 
           </Alert>
       </Snackbar>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
 
         <Grid item xs={12} >
 
@@ -193,19 +200,9 @@ const SingleCourse = ({ match }) => {
 
         <Grid item xs={12} >
           <Paper className={fixedHeightPaper1} elevation={3}>
-            <Information course={course} />
+            <Information course={course} getupdate={getcourse} />
           </Paper>
         </Grid>
-
-        {/* <Grid item xs={12} md={4} lg={3}>
-
-            
-            
- 
-                       <Paper className={fixedHeightPaper}>
-                <Generalinformation  course={course}/>
-              </Paper>
-            </Grid> */}
 
 
         <Grid item xs={12}>
