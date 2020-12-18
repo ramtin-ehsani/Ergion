@@ -89,12 +89,15 @@ class MainDashboard extends Component {
                     else if(newE.type === 'join'){
                         newE.type= `به کلاس ${newE.course_name} پیوست`
                     }
+                    else if(newE.type === 'question'){
+                        newE.type= `از ${newE.session_name} کلاس ${newE.course_name} سوال کرد`
+                    }
                     events.push(newE)
                 })
                 console.log(res.data.has_next)
                 this.setState({hasMore:res.data.has_next,events:events})
             })
-        },1500)
+        },2000)
         
 
     }
@@ -197,7 +200,7 @@ class MainDashboard extends Component {
                                     >
                                     {this.state.events.map((event) => {
                                         return (
-                                            <ListItem key={event.id}>
+                                            <ListItem key={event.creation_time}>
                                                 <ListItemAvatar>
                                                     <Avatar alt="avatar" src={event.user_profile_picture} />
                                                 </ListItemAvatar>
