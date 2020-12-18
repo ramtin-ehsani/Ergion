@@ -34,7 +34,6 @@ const useStyles = (theme) => ({
     card: ({ color }) => ({
         minWidth: 256,
         borderRadius: 16,
-        boxShadow: 'none',
         '&:hover': {
             boxShadow: `0 12px 14px -12.125px ${Color(color)
                 .rotate(-12)
@@ -180,7 +179,7 @@ class MainDashboard extends Component {
                 </Grid>
                 <Grid container item lg={10} className={classes.grid} direction='row' spacing={4}>
                     <Grid item xs>
-                        <Card dir='rtl' style={{ width: '100%', borderRadius: 16, boxShadow: 'none', }}>
+                        <Card dir='rtl' style={{ width: '100%', borderRadius: 16 }}>
                             <CardHeader
                                 style={{ textAlign: 'right' }}
                                 avatar={
