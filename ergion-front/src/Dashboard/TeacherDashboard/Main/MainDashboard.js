@@ -1,4 +1,4 @@
-import { Avatar, Badge, Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia, Container, CssBaseline, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Paper, Typography, withStyles } from '@material-ui/core';
+import { Avatar, Badge, Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia, CircularProgress, Container, CssBaseline, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Paper, Typography, withStyles } from '@material-ui/core';
 import React, { Component } from 'react';
 import Color from 'color';
 import MailIcon from '@material-ui/icons/Mail';
@@ -9,8 +9,22 @@ import { withRouter } from 'react-router-dom';
 import UpdateIcon from '@material-ui/icons/Update';
 import p1 from '../../../Pics/messi.jpg';
 import p2 from '../../../Pics/lit.jpg';
+import InfiniteScroll from 'react-infinite-scroller';
+import axios from 'axios';
+import time from "@jacobmarshall/human-time";
 
 const useStyles = (theme) => ({
+    "@global": {
+        "*::-webkit-scrollbar": {
+          width: "0.4em",
+        },
+        "*::-webkit-scrollbar-track": {
+          "-webkit-box-shadow": "inset 0 0 6px rgba(10,10,0,0.00)",
+        },
+        "*::-webkit-scrollbar-thumb": {
+          backgroundColor: "rgba(0, 0, 0,.2)",
+        },
+    },
     root: {
         display: 'flex',
     },
@@ -51,26 +65,38 @@ const useStyles = (theme) => ({
 class MainDashboard extends Component {
     state = {
         count: 2,
-        events: [
-            {
-                id: 1,
-                name: 'علی اکبری',
-                profile: p1,
-                class: 'ریاضی 2',
-                event: 'پیوست!',
-                time: '1 ساعت پیش',
-                harf:'به'
-            },
-            {
-                id: 2,
-                name: 'ممد ممدی',
-                profile: p2,
-                event: 'خارج شد!',
-                class: 'ادبیات',
-                time: '2 ساعت پیش',
-                harf:'از'
-            }
-        ]
+        events: [],
+        hasMore: true,
+    }
+
+    loadMore(page){
+        setTimeout(()=>{
+            console.log(page)
+            const config = {
+                headers: { Authorization: `Token ${localStorage.getItem('api_key')}`}
+                }
+            var events = this.state.events;
+            axios.get(`http://127.0.0.1:8000/api/teacher/timeline/?page=${page}`,config)
+            .then((res)=>{
+                res.data.data.map((event)=>{
+                    var newE = event;
+                    if(newE.type === 'comments'){
+                        newE.type= `برای ${newE.course_name} ${newE.session_name} کامنت گذاشت`
+                    }
+                    else if(newE.type === 'like'){
+                        newE.type= `${newE.session_name} از ${newE.course_name} را لایک کرد`
+                    }
+                    else if(newE.type === 'join'){
+                        newE.type= `به کلاس ${newE.course_name} پیوست`
+                    }
+                    events.push(newE)
+                })
+                console.log(res.data.has_next)
+                this.setState({hasMore:res.data.has_next,events:events})
+            })
+        },1500)
+        
+
     }
     render() {
         const { classes } = this.props;
@@ -160,12 +186,20 @@ class MainDashboard extends Component {
                             />
                             <Divider light />
                             <CardContent>
-                                <List>
+                                <List style={{height: 200, overflow: 'auto'}} ref={(ref) => this.scrollParentRef = ref}>
+                                    <InfiniteScroll
+                                    pageStart={0}
+                                    hasMore={this.state.hasMore}
+                                    loadMore={this.loadMore.bind(this)}
+                                    loader={<div className="loader" key={0}><CircularProgress/></div>}
+                                    useWindow={false}
+                                    getScrollParent={() => this.scrollParentRef}
+                                    >
                                     {this.state.events.map((event) => {
                                         return (
                                             <ListItem key={event.id}>
                                                 <ListItemAvatar>
-                                                    <Avatar alt="avatar" src={event.profile} />
+                                                    <Avatar alt="avatar" src={event.user_profile_picture} />
                                                 </ListItemAvatar>
                                                 <ListItemText
                                                     style={{ textAlign: 'right' }}
@@ -178,7 +212,22 @@ class MainDashboard extends Component {
                                                                 className='text2'
                                                                 color="textSecondary"
                                                             >
-                                                                {`${event.time} . `}
+                                                                {
+                                                                    time(new Date(event.creation_time))
+                                                                    .replace("years", "سال")
+                                                                    .replace("year", "سال")
+                                                                    .replace("hours", "ساعت")
+                                                                    .replace("hour", "ساعت")
+                                                                    .replace("minutes", "دقیقه")
+                                                                    .replace("minute", "دقیقه")
+                                                                    .replace("days", "روز")
+                                                                    .replace("day", "روز")
+                                                                    .replace("seconds", "ثانیه")
+                                                                    .replace("second", "ثانیه")
+                                                                    .replace("ago", "پیش")
+                                                                    +
+                                                                    " . "
+                                                                }
                                                             </Typography>
                                                             <Typography
                                                                 dir='rtl'
@@ -187,7 +236,7 @@ class MainDashboard extends Component {
                                                                 className='text'
                                                                 color="textPrimary"
                                                             >
-                                                                {`${event.name} ${event.harf} کلاس ${event.class} ${event.event}`}
+                                                                {`${event.user_firstname} ${event.user_lastname} ${event.type}`}
                                                             </Typography>
                                                         </>
                                                     }
@@ -195,6 +244,7 @@ class MainDashboard extends Component {
                                             </ListItem>
                                         )
                                     })}
+                                    </InfiniteScroll>
                                 </List>
                             </CardContent>
 
