@@ -92,7 +92,6 @@ class Questions extends Component {
                     [question.id]:false
                 }
             })
-            console.log(reps)
             this.setState({questions:qs, openReply: reps})
         })
         if (JSON.parse(localStorage.getItem('user')).role == 'S'){
@@ -204,7 +203,7 @@ class Questions extends Component {
                                                                 color="textPrimary"
                                                             >
                                                                 {
-                                                                    time(new Date(question.created_at))
+                                                                    time(new Date(question.creation_time))
                                                                     .replace("years", "سال")
                                                                     .replace("year", "سال")
                                                                     .replace("hours", "ساعت")
@@ -263,7 +262,7 @@ class Questions extends Component {
                                                                         color="textPrimary"
                                                                     >
                                                                     {
-                                                                    time(new Date(reply.created_at))
+                                                                    time(new Date(reply.creation_time))
                                                                     .replace("years", "سال")
                                                                     .replace("year", "سال")
                                                                     .replace("hours", "ساعت")
