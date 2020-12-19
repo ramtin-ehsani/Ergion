@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 class Comments extends Component {
+  constructor(props) {
+		super(props)
+	}
   state = {
     comments: [],
     replies:{},
@@ -54,7 +57,7 @@ class Comments extends Component {
     const config = {
       headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
     }
-    const episode_id = window.location.href.split('/')[7];
+    const episode_id = this.props.postId;
     axios.get(`http://127.0.0.1:8000/api/course/comments/?post_id=${episode_id}`,config)
     .then((res)=>{
       res.data.map((comment)=>{
@@ -91,7 +94,7 @@ class Comments extends Component {
   }
 
   onSubmit = ()=>{
-    const episode_id = window.location.href.split('/')[7];
+    const episode_id = this.props.postId;
     const config = {
       headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
     }

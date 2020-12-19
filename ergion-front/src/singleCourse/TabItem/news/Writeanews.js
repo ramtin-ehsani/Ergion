@@ -310,7 +310,7 @@ const	sendnewshandler=event=>
 			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
-			setvideo();
+			setvideo(null);
 			
 			}).catch((error)=>{console.log(0);})
 		
