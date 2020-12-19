@@ -12,6 +12,7 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { create } from "jss";
+import Carousel from '../../../Carousel/Carousel'
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import rtl from "jss-rtl";
@@ -1015,12 +1016,7 @@ class TimeLine extends React.Component {
                               </Grid>
 
                               <Grid item md={12} lg={12} sm={12} xs={12}>
-                                {timeline.files.map((file) => (
-                                  <this.TypeOfFile
-                                    src={file.file}
-                                    key={file.id}
-                                  />
-                                ))}
+                              <Carousel files={timeline.files} />
                               </Grid>
 
                               <Grid item md={12} lg={12} sm={12} xs={12}>

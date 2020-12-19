@@ -23,7 +23,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import ShareIcon from '@material-ui/icons/Share';
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
-import { ButtonGroup } from "@material-ui/core";
+import { ButtonGroup, CardActionArea } from "@material-ui/core";
 // import copy from "copy-to-clipboard";
 
 
@@ -129,6 +129,7 @@ const Suggestedins = () => {
     const config = {
         headers: { Authorization: `Token ${localStorage.getItem('api_key')}` },
     };
+
     
 
     function copyToClipboard(id) {
@@ -196,7 +197,9 @@ if ((JSON.parse(localStorage.getItem('user'))['role'])==="S")
                                         <Card className="layout1"> 
                                          {courses && courses.map((course) =>
                                         <div>
-                                            <CardHeader className="layout2" href={`/student_dashboard/public_profile/${course.id}`}
+                                            <CardActionArea onClick={()=>window.location=`/student_dashboard/public-profile/${course.id}`}>
+                                            {/* <Button href={`/student_dashboard/public-profile/${course.id}`}> */}
+                                            <CardHeader className="layout2" 
                                                 title={
                                                     <div>
                                                     <Typography className="namePlace" component="h4">
@@ -216,6 +219,8 @@ if ((JSON.parse(localStorage.getItem('user'))['role'])==="S")
                                                     </Avatar>
                                                 }
                                             />
+                                            {/* </Button> */}
+                                            </CardActionArea>
 
 
                                             <Divider />

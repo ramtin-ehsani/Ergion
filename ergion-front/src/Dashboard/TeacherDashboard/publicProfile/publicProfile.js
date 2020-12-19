@@ -37,7 +37,7 @@ import TimelineIcon from '@material-ui/icons/Timeline';
 import PieChartIcon from '@material-ui/icons/PieChart';
 import { ChatRounded, ImportExport } from '@material-ui/icons';
 import Student from '@material-ui/icons/SupervisorAccount';
-import TeacherSuggestion from './TeacherSuggestion/suggestion';
+import TeacherSuggestion from '../../StudentDashboard/Dashboard/teacher_sug/suggest_ins';
 import ClassIcon from '@material-ui/icons/Class';
 
 const getWidth = () => window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;

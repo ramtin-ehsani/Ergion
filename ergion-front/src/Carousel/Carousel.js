@@ -9,7 +9,6 @@ import { Box } from "@material-ui/core";
 import ReactPlayer from "react-player";
 import { withStyles } from "@material-ui/core/styles";
 import Carousel from "react-material-ui-carousel";
-import equal from "fast-deep-equal";
 
 const styles = (theme) => ({});
 

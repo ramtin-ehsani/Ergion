@@ -96,7 +96,7 @@ class MainDashboard extends Component {
                 })
                 axios.get('http://127.0.0.1:8000/api/teacher/profile-details/',config)
                 .then((res)=>{
-                    var count = res.data[0].count_of_questions;
+                    let count = res.data.count_of_questions;
                     this.setState({count:count})
                 })
                 console.log(res.data.has_next)
