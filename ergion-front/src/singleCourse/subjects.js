@@ -17,6 +17,7 @@ import News from './TabItem/news/newscomponent';
 import { Grid } from '@material-ui/core';
 import Write from './TabItem/news/Writeanews';
 import axios from 'axios';
+import TimeLine from './TabItem/news/TimeLine';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   const classes = useStyles();
@@ -133,9 +134,9 @@ export default function FullWidthTabs(props) {
           <TabPanel value={value} index={0} dir={theme.direction}>
 
             {isowner && <Write course={props.course} />}
-            {newslist.map((news) => <News course={props.course} update={news} />)}
+            {/* {newslist.map((news) => <News course={props.course} update={news} />)} */}
 
-
+<TimeLine courseid={props.course.id}/>
           </TabPanel>
           <TabPanel value={value} index={1} dir={theme.direction}>
             <Content course={props.course} />

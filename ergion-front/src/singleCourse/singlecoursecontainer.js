@@ -11,6 +11,8 @@ import Paper from "@material-ui/core/Paper";
 import {Route, Switch, Router} from 'react-router-dom';
 import {createBrowserHistory} from 'history';
 import SingleCourse from './singleCourse';
+import Suggestedcourse from './../Dashboard/StudentDashboard/Dashboard/suggest';
+import Suggestedteachers from './../Dashboard/StudentDashboard/Dashboard/teacher_sug/suggest_ins';
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
@@ -22,9 +24,9 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'auto',
     },
     container: {
-        marginTop:theme.spacing(1),
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
+        marginRight:theme.spacing(0),
+  
+
     },
     paper: {
         padding: theme.spacing(2),
@@ -47,17 +49,40 @@ const  SingleCoursecontainer = ({match}) => {
             
             <main className={classes.content}>
                 <div className={classes.appBarSpacer}/>
-                <Container maxWidth="lg" className={classes.container}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} md={12} lg={10}>
-                            <Paper >
+                <Container maxWidth='1300' className={classes.container}>
+                <Grid
+                    container
+                    spacing={2}
+                    lg={10}
+                    item={true}
+                    dir='rtl'
+
+
+                >
+                                          <Grid
+                        item
+                        lg={8}
+                        md={9}
+                        xs={12}
+                        dir='ltr'
+                    >
+                  
                            <Route path="/dashboard/course/:id" component={SingleCourse}/>
                            <Route path='/student_dashboard/added_courses/:id' exact component={SingleCourse} />
                            <Route path='/teacher_dashboard/added_courses/:id' exact component={SingleCourse} />
                            <Route path='/course/:id' exact component={SingleCourse} />
-                            </Paper>
+                           
                              
                         </Grid>
+                        <Grid
+                        item
+                        lg={4}
+                        md={3}
+                        xs={false}
+                    >
+<Suggestedteachers/>
+                       <Suggestedcourse/> 
+                    </Grid>
                     </Grid>
                 </Container>
             </main>
