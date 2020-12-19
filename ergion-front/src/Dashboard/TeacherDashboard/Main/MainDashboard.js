@@ -1,4 +1,7 @@
-import { Avatar, Badge, Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia, CircularProgress, Container, CssBaseline, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Paper, Typography, withStyles } from '@material-ui/core';
+import { Avatar, Badge, Card, CardActionArea, CardContent,
+    CardHeader, CircularProgress, Container, CssBaseline, Divider, 
+    Grid, List, ListItem, ListItemAvatar, ListItemText, 
+    Typography, withStyles } from '@material-ui/core';
 import React, { Component } from 'react';
 import Color from 'color';
 import MailIcon from '@material-ui/icons/Mail';
@@ -7,8 +10,6 @@ import ReceiptIcon from '@material-ui/icons/Receipt';
 import { yellow, green, blue } from '@material-ui/core/colors';
 import { withRouter } from 'react-router-dom';
 import UpdateIcon from '@material-ui/icons/Update';
-import p1 from '../../../Pics/messi.jpg';
-import p2 from '../../../Pics/lit.jpg';
 import InfiniteScroll from 'react-infinite-scroller';
 import axios from 'axios';
 import time from "@jacobmarshall/human-time";
