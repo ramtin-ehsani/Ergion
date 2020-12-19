@@ -250,15 +250,22 @@ const PostPage = () => {
         },
         config
       )
-      .then((response) => {
-        const stateItems = {
-          id: id,
-          isLiked: response.data.liked,
-        };
+      // .then((response) => {
+      //   const stateItems = {
+      //     id: id,
+      //     isLiked: response.data.liked,
+      //   };
 
-        console.log(response.data);
-        setIsRed(stateItems);
-      });
+      //   console.log(response.data);
+      //   setIsRed(stateItems);
+      // });
+
+      const stateItems = {
+        id: id,
+        isLiked: !postPage.isLiked,
+      };
+      setIsRed(stateItems);
+
   };
 
   const settings = {
@@ -477,7 +484,7 @@ const PostPage = () => {
                       className="aboutPost"
                       style={{ wordBreak: "normal" }}
                     >
-                      {postPage.text}
+                      {postPage.description}
                     </Typography>
                     {/* <button onClick={() => console.log(postPage.files)}>fff</button> */}
                   </CardContent>
