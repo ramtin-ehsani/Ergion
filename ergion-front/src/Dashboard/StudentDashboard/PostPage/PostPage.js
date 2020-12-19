@@ -33,6 +33,7 @@ import Slider from "react-slick";
 import "../../../../node_modules/slick-carousel/slick/slick.css";
 import "../../../../node_modules/slick-carousel/slick/slick-theme.css";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Carousel from "../../../Carousel/Carousel";
 import { SentimentDissatisfied } from "@material-ui/icons";
 import { Button, List } from "@material-ui/core";
 
@@ -104,6 +105,12 @@ const PostPage = () => {
   const [imgNumber, setImgNumber] = useState(4);
   const [open, setOpen] = useState(false);
   const [imglist, setImgList] = useState([]);
+
+  const toFarsiNumber = (n) => {
+    const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+
+    return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+  };
 
   const handleDownload = (file) => {
     axios({
@@ -243,15 +250,22 @@ const PostPage = () => {
         },
         config
       )
-      .then((response) => {
-        const stateItems = {
-          id: id,
-          isLiked: response.data.liked,
-        };
+      // .then((response) => {
+      //   const stateItems = {
+      //     id: id,
+      //     isLiked: response.data.liked,
+      //   };
 
-        console.log(response.data);
-        setIsRed(stateItems);
-      });
+      //   console.log(response.data);
+      //   setIsRed(stateItems);
+      // });
+
+      const stateItems = {
+        id: id,
+        isLiked: !postPage.isLiked,
+      };
+      setIsRed(stateItems);
+
   };
 
   const settings = {
@@ -444,18 +458,20 @@ const PostPage = () => {
                     }
                     subheader={
                       <Typography className="date" component="h6">
-                        {human(new Date(postPage.creation_time))
-                          .replace("years", "سال")
-                          .replace("year", "سال")
-                          .replace("hours", "ساعت")
-                          .replace("hour", "ساعت")
-                          .replace("minutes", "دقیقه")
-                          .replace("minute", "دقیقه")
-                          .replace("days", "روز")
-                          .replace("day", "روز")
-                          .replace("seconds", "ثانیه")
-                          .replace("second", "ثانیه")
-                          .replace("ago", "پیش")}
+                        {toFarsiNumber(
+                          human(new Date(postPage.creation_time))
+                            .replace("years", "سال")
+                            .replace("year", "سال")
+                            .replace("hours", "ساعت")
+                            .replace("hour", "ساعت")
+                            .replace("minutes", "دقیقه")
+                            .replace("minute", "دقیقه")
+                            .replace("days", "روز")
+                            .replace("day", "روز")
+                            .replace("seconds", "ثانیه")
+                            .replace("second", "ثانیه")
+                            .replace("ago", "پیش")
+                        )}
                       </Typography>
                     }
                   />
@@ -468,7 +484,7 @@ const PostPage = () => {
                       className="aboutPost"
                       style={{ wordBreak: "normal" }}
                     >
-                      {postPage.text}
+                      {postPage.description}
                     </Typography>
                     {/* <button onClick={() => console.log(postPage.files)}>fff</button> */}
                   </CardContent>
@@ -477,7 +493,7 @@ const PostPage = () => {
                     title="news-media"
                     dir="rtl"
                   >
-                    {
+                    {/* {
                       <Slider
                         ref={(c) => (slider = c)}
                         {...(imgNumber > 3
@@ -506,11 +522,14 @@ const PostPage = () => {
                           </div>
                         ))}
                       </Slider>
-                    }
+                    } */}
+                    {postPage.files.length > 0 && (
+                      <Carousel files={postPage.files} />
+                    )}
 
-                    {postPage.files.map((item) => (
+                    {/* {postPage.files.map((item) => (
                       <CheckFileHandler src={item.file} />
-                    ))}
+                    ))} */}
                   </CardMedia>
                   <CardActions className="post-footer" dir="ltr">
                     <div className="icon-footer">
@@ -555,7 +574,7 @@ const PostPage = () => {
                   </CardActions>
                 </Card>
                 <div className={classes.root1} dir="rtl">
-                  <Comments postId={postPage.post_id}/>
+                  <Comments postId={postPage.post_id} />
                 </div>
               </Grid>
             </Grid>

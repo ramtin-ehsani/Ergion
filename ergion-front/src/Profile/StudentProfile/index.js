@@ -6,7 +6,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Page from './page';
-import Profile from './StudentProfile';
+// import Profile from './StudentProfile';
 import ProfileDetails from './StudentProfileDetails';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { create } from 'jss';
@@ -55,7 +55,7 @@ const Account = () => {
 
 
             >
-              <Grid
+              {/* <Grid
                 item
                 lg={4}
                 md={6}
@@ -65,11 +65,11 @@ const Account = () => {
                 <Box boxShadow={6} >
                   <Profile />
                 </Box>
-              </Grid>
+              </Grid> */}
               <Grid
                 item
-                lg={8}
-                md={6}
+                lg={12}
+                md={12}
                 xs={12}
               >
                 <Box boxShadow={6} >

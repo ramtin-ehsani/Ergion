@@ -67,7 +67,7 @@ class Comments extends Component {
 	};
 
 	onSubmit = () => {
-		const update_id = window.location.href.split('/')[5];
+		const update_id = this.props.postId
 		const config = {
 			headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
 		};
@@ -76,7 +76,7 @@ class Comments extends Component {
 				.post(
 					'http://127.0.0.1:8000/api/course/comments/',
 					{
-						update_id: update_id,
+						post_id: update_id,
 						comment_text: this.state.nCommentString
 					},
 					config

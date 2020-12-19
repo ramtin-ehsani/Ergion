@@ -13,6 +13,7 @@ import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
 import SingleCourse from '../../singleCourse/singlecoursecontainer';
 import CommentsMain from '../../comment/CommentMain'
 import MainDashboard from './Main/MainDashboard';
+import QuestionAnswer from './CourseQuestionAndAnswer/index'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -62,6 +63,7 @@ const Dashboard = () => {
                 .catch((error) => {
                     // handle error
                     console.log(error);
+                    localStorage.setItem('api_key',null)
                     window.location = '/login'
                 })
 
@@ -91,6 +93,7 @@ const Dashboard = () => {
                     <Route path='/teacher_dashboard/added_courses' exact component={CourseFileLayouts} />
                     <Route path='/teacher_dashboard/added_courses/:id' exact component={SingleCourse} />
                     <Route path='/teacher_dashboard/added_courses/:id/episode/:id' exact component={CommentsMain} />
+                    <Route path='/teacher_dashboard/questions' component={QuestionAnswer} />
                 </Switch>
 
             </main>
