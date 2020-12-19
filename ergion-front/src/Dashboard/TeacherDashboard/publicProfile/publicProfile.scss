@@ -81,23 +81,37 @@
 				position: absolute;
 				bottom: -30px;
 				right: 25px;
-
 				width: 100%;
 				display: flex;
-				// justify-content: center;
 			}
 		}
 
-		.avatar-div-600 {
+		.cover-600 {
 			width: 100%;
-			padding-top: 15px;
-			padding-bottom: -15px;
+			height: 130px;
+			background-color: lightblue;
 			display: flex;
-			justify-content: center;
+			position: relative;
+
+			.avatar-div-600 {
+				position: absolute;
+				bottom: -75px;
+				// right: 100px;
+				justify-content: center;
+				width: 100%;
+				display: flex;
+			}
 		}
 
+		// .avatar-div-600 {
+		// 	width: 100%;
+		// 	padding-top: 15px;
+		// 	padding-bottom: -15px;
+		// 	display: flex;
+		// 	justify-content: center;
+		// }
+
 		.name-div {
-			// right: 25px;
 			display: flex;
 			width: 100%;
 			position: relative;
@@ -133,39 +147,27 @@
 		}
 
 		.name-div-600 {
+			margin-top: 50px;
 			display: flex;
 			width: 100%;
 			justify-content: center;
 			align-items: center;
 			flex-direction: column;
-			line-height: 0%;
-			margin: auto;
+			position: relative;
 
-			.slash-class-students {
-				align-items: left;
-				text-align: left;
-				font-size: 17px;
-				color: rgb(56, 55, 55);
-				overflow-wrap: break-word;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				margin-left: 5px;
-				margin-right: 5px;
-				font-size: 20px;
-			}
 
 			.email-600 {
-				align-items: left;
-				text-align: left;
+				width: 100%;
+				// text-align: left;
+				color: rgb(97, 93, 93);
 				font-size: 17px;
-				color: rgb(56, 55, 55);
 				overflow-wrap: break-word;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				margin-top: 3%;
-				margin-bottom: 3%;
+				position: absolute;
+				bottom: 55px;
+				overflow: scroll;
 			}
 
 			.email {
@@ -179,15 +181,17 @@
 				align-items: center;
 				margin-top: 0%;
 				margin-bottom: 0%;
+				font-size: 17px;
 
 				.footer-icon {
 					margin-left: 5px;
+					color: black;
 				}
 
 				.numbers-style {
 					color: rgb(76, 71, 71);
 					margin-right: 5px;
-					font-size: 16px;
+					font-size: 17px;
 				}
 			}
 
@@ -195,6 +199,8 @@
 				margin-top: 35px;
 				font-size: 21.5px;
 				font-weight: bold;
+				width: 100%;
+				justify-content: center;
 			}
 		}
 

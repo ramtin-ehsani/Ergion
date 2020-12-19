@@ -35,8 +35,9 @@ import SchoolIcon from '@material-ui/icons/School';
 import HistoryIcon from '@material-ui/icons/History';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import PieChartIcon from '@material-ui/icons/PieChart';
-import { ChatRounded } from '@material-ui/icons';
+import { ChatRounded, ImportExport } from '@material-ui/icons';
 import Student from '@material-ui/icons/SupervisorAccount';
+import TeacherSuggestion from './TeacherSuggestion/suggestion'
 import ClassIcon from '@material-ui/icons/Class';
 
 const getWidth = () => window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -202,7 +203,7 @@ const PublicProfile = () => {
 								}
 								lg={3}
 							>
-								<h1>Suggestion</h1>
+								<TeacherSuggestion />
 							</Grid>
 							<Grid
 								style={
@@ -288,15 +289,9 @@ const PublicProfile = () => {
 																				style={{
 																					width: '100%',
 																					display: 'flex',
-																					position: "relative"
+																					position: 'relative'
 																				}}
 																			>
-																				{/* <div
-																					style={{
-																						width: '25%',
-																						display: 'flex'
-																					}}
-																				/> */}
 																				<div className="name-div">
 																					<p className="name-family-name">
 																						استاد محمدرضا شجریان
@@ -330,37 +325,41 @@ const PublicProfile = () => {
 																				height: 'fit-content'
 																			}}
 																		>
-																			<div className="avatar-div-600">
-																				<Avatar
-																					style={{
-																						minWidth: 150,
-																						minHeight: 150,
-																						maxWidth: 150,
-																						maxHeight: 150
-																					}}
-																					src={img}
-																				>
-																					<p
+																			<div className="cover-600">
+																				<div className="avatar-div-600">
+																					<Avatar
 																						style={{
-																							fontFamily: 'IRANSans'
+																							minWidth: 150,
+																							minHeight: 150,
+																							maxHeight: 150,
+																							maxWidth: 150
 																						}}
+																						src={img}
 																					>
-																						ممرضا
-																					</p>
-																				</Avatar>
+																						<p
+																							style={{
+																								fontFamily: 'IRANSans'
+																							}}
+																						>
+																							ممرضا
+																						</p>
+																					</Avatar>
+																				</div>
 																			</div>
 																			<div className="name-div-600">
 																				<p className="name-family-name">
 																					استاد محمدرضا شجریان
 																				</p>
 																				<p className="email-600">
-																					<EmailIcon style={{ marginLeft: '5px' }} />sadeghJ10@gmail.com
+																					<EmailIcon style={{ marginLeft: '5px', color: "black" }} />mohammadhosseon10@gmail.com
 																				</p>
 																				<div
 																					style={{
 																						flexDirection: 'column',
 																						display: 'flex',
-																						lineHeight: '0%'
+																						lineHeight: '0%',
+																						width: "100%",
+																						marginTop: "15px"
 																					}}
 																				>
 																					<p className="email">
