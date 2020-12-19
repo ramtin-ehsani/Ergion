@@ -124,8 +124,8 @@ function CommentMain() {
     const config = {
       headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
     }
-    axios.put('http://127.0.0.1:8000/api/episode-likes/',{
-      episode_id:episode_id
+    axios.put('http://127.0.0.1:8000/api/course/post-likes/',{
+      post_id:episode_id
     },config)
     if(!like){
       setLikes(likes+1)
@@ -215,7 +215,7 @@ const StyledTableRow = withStyles((theme) => ({
     const config = {
       headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
     }
-    axios.get(`http://127.0.0.1:8000/api/episode/?episode_id=${episode_id}`,config)
+    axios.get(`http://127.0.0.1:8000/api/course/post-files/?post_id=${episode_id}`,config)
     .then((res)=>{
       res.data.map((file)=>{
         const src = file.file
@@ -236,7 +236,7 @@ const StyledTableRow = withStyles((theme) => ({
         }
       })
     })
-    axios.get(`http://127.0.0.1:8000/api/chapter-episodes/?chapter_id=${chapter_id}`,config)
+    axios.get(`http://127.0.0.1:8000/api/course/chapter-episodes/?chapter_id=${chapter_id}`,config)
     .then((res)=>{
       //console.log(res)
       res.data.map((episode)=>{
@@ -244,7 +244,7 @@ const StyledTableRow = withStyles((theme) => ({
           id: episode.id,
           name: episode.name,
           chapter_id: episode.chapter_id,
-          description: episode.episode_description,
+          description: episode.description,
           selected: false,
           liked: episode.liked,
           likes: episode.likes_count
@@ -258,7 +258,7 @@ const StyledTableRow = withStyles((theme) => ({
       })
     res.data.map((newEpisode)=>{
       if(String(newEpisode.id) === String(episode_id)){
-        setDescription(newEpisode.episode_description)
+        setDescription(newEpisode.description)
         setLiked(newEpisode.liked)
         setLikes(newEpisode.likes_count)
       }
@@ -280,7 +280,7 @@ const StyledTableRow = withStyles((theme) => ({
                 height='100%'
                 url={media}
                 controls
-                style={{ backgroundColor: '#000' }}
+                style={{ backgroundColor: '#000',maxHeight:500 }}
                 />
                 </Grid>
                 )}

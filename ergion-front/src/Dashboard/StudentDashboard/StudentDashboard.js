@@ -47,7 +47,7 @@ const Dashboard = () => {
 	useEffect(() => {
 		if (localStorage.getItem('api_key') !== 'null') {
 			axios
-				.get('http://127.0.0.1:8000/api/student-profile/', config)
+				.get('http://127.0.0.1:8000/api/student/profile/', config)
 				.then((res) => {
 					// handle success
 					const avatarImage = res.data.profile_picture;
@@ -81,7 +81,7 @@ const Dashboard = () => {
 					<Route path="/student_dashboard/added_courses" exact component={CourseFileLayouts} />
 					<Route path="/student_dashboard/find-your-course" exact component={AddCourse} />
 					<Route path="/student_dashboard/added_courses/:id" exact component={SingleCourse} />
-					<Route path="/student_dashboard/post/:id" exact component={postPage} />
+					<Route path="/student_dashboard/news/:id" exact component={postPage} />
 					<Route path='/student_dashboard/chapter/:id/episode/:id' exact component={CommentsMain} />
                     <Route path='/student_dashboard/public-profile/:id' exact component={PublicProfile} />
 				</Switch>

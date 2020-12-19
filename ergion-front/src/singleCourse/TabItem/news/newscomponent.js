@@ -112,8 +112,8 @@ const PostPage = (props) => {
 
 	const [isowner, setisowner] = React.useState(false);
 	const likehandler = () => {
-		axios.put('http://127.0.0.1:8000/api/update-likes/', {
-			update_id: props.update.id
+		axios.put('http://127.0.0.1:8000/api/course/post-likes/', {
+			post_id: props.update.id
 		}, {
 			headers: {
 				"Authorization": `Token ${localStorage.getItem('token')}`
@@ -139,13 +139,12 @@ const PostPage = (props) => {
 			else setS(true);
 
 			// setTimeout(() => {
-				const promise = Axios.get('http://127.0.0.1:8000/api/course-news/', {
-					params: { update_id: props.update.id },
+				const promise = Axios.get('http://127.0.0.1:8000/api/course/post-files/', {
+					params: { post_id: props.update.post_id },
 					headers: { "Authorization": `Token ${localStorage.getItem('token')}` }
 				})
-				promise.then(response => {
-					console.log(response.data[0].files)
-					setupdate(response.data[0].files)
+				promise.then(resp => {
+					setupdate(resp.data)
 
 					// update.files.map((file)=>{
 					// 	setupdatefiles([file.file]);
@@ -153,8 +152,8 @@ const PostPage = (props) => {
 
 
 				}).catch(error => console.log(error))
-				const promise1 = axios.get('http://127.0.0.1:8000/api/update-details/', {
-					params: { update_id: props.update.id },
+				const promise1 = axios.get('http://127.0.0.1:8000/api/course/news-details/', {
+					params: { news_id: props.update.id },
 					headers: { "Authorization": `Token ${localStorage.getItem('token')}` }
 				})
 				promise1.then((response) => {
@@ -250,7 +249,7 @@ const PostPage = (props) => {
 								component="p"
 								className="aboutPost"
 							>
-								{props.update.text}
+								{props.update.description}
 							</Typography>
 						</CardContent>
 						<CardMedia

@@ -16,7 +16,7 @@ import Content from './Content'
 import News from './TabItem/news/newscomponent';
 import { Grid } from '@material-ui/core';
 import Write from './TabItem/news/Writeanews';
-import Axios from 'axios';
+import axios from 'axios';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   const classes = useStyles();
@@ -87,7 +87,7 @@ export default function FullWidthTabs(props) {
       } else setS(true);
     }
     setTimeout(() => {
-      const promise = Axios.get('http://127.0.0.1:8000/api/course-news/', {
+      const promise = axios.get('http://127.0.0.1:8000/api/course/news/', {
         params: { course_id: props.course.id },
         headers: { "Authorization": `Token ${localStorage.getItem('token')}` }
       })
