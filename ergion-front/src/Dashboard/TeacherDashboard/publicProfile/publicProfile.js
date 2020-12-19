@@ -37,7 +37,7 @@ import TimelineIcon from '@material-ui/icons/Timeline';
 import PieChartIcon from '@material-ui/icons/PieChart';
 import { ChatRounded, ImportExport } from '@material-ui/icons';
 import Student from '@material-ui/icons/SupervisorAccount';
-import TeacherSuggestion from './TeacherSuggestion/suggestion'
+import TeacherSuggestion from './TeacherSuggestion/suggestion';
 import ClassIcon from '@material-ui/icons/Class';
 
 const getWidth = () => window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -127,6 +127,8 @@ const PublicProfile = () => {
 	const [ details, setDetails ] = useState(null);
 	const [ myclasses, setMyclasses ] = useState(null);
 	const [ open, setOpen ] = useState(false);
+	// let isEmpty = false;
+	const [isEmpty, setEmpty]=  useState(null);
 
 	const config = {
 		headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
@@ -154,12 +156,23 @@ const PublicProfile = () => {
 			setWidth(getWidth());
 			if (width > 1279) setSuggest(!suggest);
 		});
-		axios.get('', config).then((res) => {
-			setDetails(res.data);
-		});
-		axios.get('http://127.0.0.1:8000/api/all-courses/', config).then((response) => {
-			setMyclasses(response.data);
-		});
+		const teacher_id = window.location.href.split('/')[5];
+		axios
+			.get(`http://127.0.0.1:8000/api/teacher/profile-details/?teacher_id=${teacher_id}`, config)
+			.then((response) => {
+				setDetails(response.data);
+				setMyclasses(response.data.courses);
+				console.log(response.data);
+				if (response.data.personal_description === null) {
+					setEmpty(true)
+					// isEmpty = false;
+				}
+				else {
+					setEmpty(false)
+					// isEmpty = true;
+				}
+			});
+			console.log(isEmpty)
 	}, []);
 
 	if (myclasses != null) {
@@ -193,7 +206,11 @@ const PublicProfile = () => {
 								style={
 									width > 1279 ? (
 										{
-											backgroundColor: 'none'
+											backgroundColor: 'none',
+											width: "100%",
+											direction: "rtl",
+											marginTop: "25px",
+											marginLeft: "20px"
 										}
 									) : (
 										{
@@ -222,7 +239,7 @@ const PublicProfile = () => {
 								<div style={{ width: '100%', backgroundColor: 'none' }} className="main-container">
 									<Container maxWidth="lg" style={{ backgroundColor: 'none' }}>
 										<Grid container spacing={4} item={true} direction="column" alignItems="center">
-											<Grid item lg={12} md={12} xs={12}>
+											<Grid item lg={12} md={12} xs={12} style={{ width: '100%' }}>
 												<Box borderRadius={12} marginTop={3}>
 													<div className={classes.root}>
 														<CardContent>
@@ -257,14 +274,14 @@ const PublicProfile = () => {
 																							maxHeight: 170,
 																							maxWidth: 170
 																						}}
-																						src={img}
+																						src={details.profile_picture}
 																					>
 																						<p
 																							style={{
 																								fontFamily: 'IRANSans'
 																							}}
 																						>
-																							ممرضا
+																							{details.firstname}
 																						</p>
 																					</Avatar>
 																				</div>
@@ -274,11 +291,15 @@ const PublicProfile = () => {
 																						<div className="bottom-row">
 																							<p className="counter">
 																								<ClassIcon className="footer-icon" />کلاس
-																								ها: ۲۳ عدد
+																								ها:{' '}
+																								{details.course_count}{' '}
+																								عدد
 																							</p>
 																							<p className="counter">
 																								<Student className="footer-icon" />دانش
-																								اموزان: ۳۷ نفر
+																								اموزان:{' '}
+																								{details.student_count}{' '}
+																								نفر
 																							</p>
 																						</div>
 																					</div>
@@ -294,11 +315,12 @@ const PublicProfile = () => {
 																			>
 																				<div className="name-div">
 																					<p className="name-family-name">
-																						استاد محمدرضا شجریان
+																						استاد{' '}
+																						{details.firstname + ' ' + details.lastname}
 																					</p>
 																					<p className="email">
 																						<EmailIcon style={{ marginLeft: '5px' }} />{' '}
-																						sadeghJ10@gmail.com
+																						{details.email}
 																					</p>
 																				</div>
 																			</div>
@@ -334,80 +356,85 @@ const PublicProfile = () => {
 																							maxHeight: 150,
 																							maxWidth: 150
 																						}}
-																						src={img}
+																						src={details.profile_picture}
 																					>
 																						<p
 																							style={{
 																								fontFamily: 'IRANSans'
 																							}}
 																						>
-																							ممرضا
+																							{details.firstname}
 																						</p>
 																					</Avatar>
 																				</div>
 																			</div>
 																			<div className="name-div-600">
 																				<p className="name-family-name">
-																					استاد محمدرضا شجریان
+																					استاد{' '}
+																					{details.firstname + ' ' + details.lastname}
 																				</p>
 																				<p className="email-600">
-																					<EmailIcon style={{ marginLeft: '5px', color: "black" }} />mohammadhosseon10@gmail.com
+																					<EmailIcon
+																						style={{
+																							marginLeft: '5px',
+																							color: 'black'
+																						}}
+																					/>
+																					{details.email}
 																				</p>
 																				<div
 																					style={{
 																						flexDirection: 'column',
 																						display: 'flex',
 																						lineHeight: '0%',
-																						width: "100%",
-																						marginTop: "15px"
+																						width: '100%',
+																						marginTop: '15px'
 																					}}
 																				>
 																					<p className="email">
 																						<ClassIcon className="footer-icon" />کلاس
 																						ها:{' '}
-																						<p className="numbers-style">۲۳ عدد</p>
+																						<p className="numbers-style">{details.course_count} عدد</p>
 																					</p>
 																					<p className="email">
 																						<Student className="footer-icon" />دانش
 																						اموزان:{' '}
-																						<p className="numbers-style">۳۷ نفر</p>
+																						<p className="numbers-style">{details.student_count} نفر</p>
 																					</p>
 																				</div>
 																			</div>
 																		</Box>
 																	</Grid>
 																)}
-
-																<Grid
-																	item
-																	md={12}
-																	xs={12}
-																	sm={12}
-																	className="items-grid"
-																>
-																	<Box
-																		boxShadow={0}
-																		border="3px solid gainsboro"
-																		borderRadius={12}
-																		style={{ width: '100%', alignItems: 'center' }}
+																{ isEmpty !== true ?
+																	<Grid
+																		item
+																		md={12}
+																		xs={12}
+																		sm={12}
+																		className="items-grid"
+																		style={{ width: '100%' }}
 																	>
-																		<div>
-																			<p className="title-about-me">
+																		<Box
+																			boxShadow={0}
+																			border="3px solid gainsboro"
+																			borderRadius={12}
+																			style={{
+																				width: '100%',
+																				alignItems: 'center',
+																				height: 'fit-content'
+																			}}
+																		>
+																			<div className="title-about-me">
 																				<InfoIcon style={{ marginLeft: '5px' }} />
 																				درباره‌ من:{' '}
-																			</p>
-																			<p className="about-me">
-																				پلنگ صورتی مجموعه فیلمهای کمدی-پلیسی است
-																				که اولین آن‌ها در سال ۱۹۶۴ ساخته شد و با
-																				موفقیت آن دنباله‌های زیادی برایش ساخته
-																				شد. تمرکز این مجموعه بر روی کاراگاه و
-																				کارهای او نیست بلکه محور آن شخصیت پلنگ
-																				صورتی است.[۱] اغلب .فیلمهای مجموعه پلنگ
-																				صورتی ساخته بلیک
-																			</p>
-																		</div>
-																	</Box>
-																</Grid>
+																			</div>
+																			<div className="about-me">
+																				{details.personal_description}
+																			</div>
+																		</Box>
+																	</Grid> : ""
+																}
 															</Grid>
 														</CardContent>
 													</div>
@@ -420,9 +447,14 @@ const PublicProfile = () => {
 						</div>
 						<CardHeader
 							title={
+								isEmpty === null ?
 								<Typography dir="rtl" component="h1" className="my-classes-title">
 									کلاس های من
-								</Typography>
+								</Typography> 
+								: 
+								<Typography dir="rtl" component="h1" className="my-classes-title-null">
+								کلاس های من
+							</Typography> 
 							}
 						/>
 						<StylesProvider jss={jss}>
