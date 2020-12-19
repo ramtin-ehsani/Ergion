@@ -116,7 +116,7 @@ class MainDashboard extends Component {
                     <Grid item xs>
                         <Badge style={{ width: '100%' }} color="secondary" badgeContent={this.state.count}>
                             <Card style={{ width: '100%' }} dir='rtl' className={classes.card}>
-                                <CardActionArea>
+                                <CardActionArea onClick={() => history.push('/teacher_dashboard/questions')}>
                                     <CardHeader
                                         style={{ padding: '8px' }}
                                         avatar={
