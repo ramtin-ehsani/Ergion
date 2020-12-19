@@ -52,8 +52,8 @@ newCourseAddImageContainer: {
   marginTop: 4,
 
 },
-newCourseCardMedia: {
-  height: 170,
+newCourseCardMedia: 
+{
   width: '100%',
   objectFit: 'cover',
 
@@ -103,34 +103,15 @@ const [coverImage, setCoverImage] = React.useState("");
 };
   return (
     
-       <div className={classes.newCourseAddImageContainer}>
+       <div className={classes.root}>
       <CardMedia
-        className={classes.newCourseCardMedia}
+        className={classes.cover}
         height="100%"
         component='img'
         image={props.course.course_cover}
         title={props.course.name}
       />
-      {isowner && 
-      <div>
-        <input
-                                        accept="image/*"
-                                        className={classes.input}
-                                        id="contained-button-file"
-                                        multiple
-                                        type="file"
-                                        onChange={onFileChange}
-                                    />
-                                    <label htmlFor='contained-button-file'>
-
-                                        <Fab
-                                            component="span"
-                                            className={classes.newCourseAddImage}>
-
-                                            <AddPhotoAlternateIcon />
-
-                                        </Fab>
-                                    </label> </div>}
+    
   </div>  
 
   );

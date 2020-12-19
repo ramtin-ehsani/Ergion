@@ -73,6 +73,7 @@ export default function Information(props) {
 
   const classes = useStyles();
   const [name, setname] = React.useState(props.course.name);
+  const [capacity, setcapacity] = React.useState(props.course.name);
   const [bio, setbio] = React.useState(props.course.about_course);
   const [tempbio, settempbio] = React.useState(props.course.about_course);
   const [subject, setsubject] = React.useState(props.course.subject);
@@ -96,32 +97,38 @@ export default function Information(props) {
     setsnackbar({ ...snackbar, open: false });
   };
 
-const getcourse=(id)=>
+const getcourse=()=>
 {
-  setid(id);   
-  const promise
-  = Axios.get(`http://127.0.0.1:8000/api/course/1`)
-promise.then(
-  response => {
+   props.getupdate();
+ 
+}
 
  
-    setname(response.data.name);
-    setgrade(response.data.grade);
-  
-    setsubject(response.data.subject);
-    setbio(response.data.about_course);
-props.getupdate();
-
-  }
-)
-}
-React.useEffect(()=>
-{
-getcourse(props.course.id);},[])
-
   React.useEffect(()=>
   {
-getcourse(props.course.id);
+
+    // setname(props.course.name);
+    // setgrade(props.course.grade);
+  
+    // setsubject(props.course.subject);
+    // setbio(props.course.about_course)
+    const promise1
+    = Axios.get(`http://127.0.0.1:8000/api/course/${props.course.id}`)
+  promise1.then(
+    response => {
+  
+  
+      setname(response.data.name);
+      setgrade(response.data.grade);
+    setcapacity(response.data.capacity);
+      setsubject(response.data.subject);
+      setbio(response.data.about_course);
+   
+  
+    }
+  )
+  
+
 
     if(JSON.parse(localStorage.getItem('user'))!==null)
     {
@@ -141,7 +148,7 @@ seteditmode(1);
       }
       else{
         setS(true);
-        setTimeout(() => {
+       
           const promise=Axios.get('http://127.0.0.1:8000/api/course/',
           {
             headers:{
@@ -163,7 +170,7 @@ seteditmode(1);
             }
           )
           
-        }, 500);
+       
       }
 
     }
@@ -304,7 +311,7 @@ window.location="/login";
 </Grid>
 
  <Grid item xs zeroMinWidth justify='center' alignItems='center' >  
- <Typography inline className={classes.inf} variant="body1" color="textSecondary" >{props.course.capacity}   </Typography>
+ <Typography inline className={classes.inf} variant="body1" color="textSecondary" >{capacity}   </Typography>
 <Typography className={classes.inf} variant="body1" color="primary" inline >  ظرفیت</Typography>
 
 </Grid>

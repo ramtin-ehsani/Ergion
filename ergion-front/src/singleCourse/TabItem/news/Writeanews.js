@@ -33,7 +33,7 @@ import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import InputBase from '@material-ui/core/InputBase';
-import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
+import SendIcon from '@material-ui/icons/SendOutlined';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 const getWidth = () => window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -367,7 +367,7 @@ const	newstexthandler=event=>
 								<CardHeader
 									className={classes.title}
 									avatar={
-										<Avatar aria-label="recipe" className={classes.avatar}>
+										<Avatar aria-label="recipe" className={classes.avatar} style={{ width: 70, height: 70 }}>
 											<img src={props.course.instructor_profile_picture} alt="tessacehr" minWidth="50" height="50" poster="R" />
 										</Avatar>
 									}
@@ -377,10 +377,23 @@ const	newstexthandler=event=>
 										</IconButton>
 									}
 									title={
-                                        <Typography className="instructor" variant="h6" color="primary">
-                                                                           {props.course.instructor_firstname} {props.course.instructor_lastname}
-								
-								/{props.course.name}</Typography>
+										<Typography
+										className="nametypo"
+                                        style={{
+                                          marginRight: "12px",
+										
+										  direction:"rtl"
+                                        }}
+                                      >
+                                        <Box
+                                          fontSize={20}
+										  fontWeight="fontWeightBold"
+										  direction='rtl'
+                                        >
+                                       {props.course.instructor_firstname + " "+
+									   props.course.instructor_lastname}
+                                        </Box>
+                                      </Typography>
 
 									}
 									subheader={
@@ -455,7 +468,7 @@ const	newstexthandler=event=>
 </Grid>
             <Grid item>
       <IconButton className={classes.iconButton} aria-label="menu" onClick={sendnewshandler} disabled={newstext.length===0}>
-        <SendOutlinedIcon />
+        <SendIcon />
       </IconButton></Grid>
       </Grid>
 </Grid>

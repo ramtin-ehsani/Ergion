@@ -29,12 +29,13 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-
+import CardMedia from '@material-ui/core/CardMedia';
 import Information from './information';
 import Generalinformation from './generalinformation';
 import Coursemedia from './coursemedia';
 import Subjects from './subjects';
 import Axios from "axios";
+import { RefreshSharp } from "@material-ui/icons";
 
 
 function Copyright() {
@@ -114,7 +115,21 @@ const useStyles = makeStyles((theme) => ({
 
     padding: 0,
 
-  }
+  },
+  cover: {
+    width: '100%',
+    height: '100%',
+    //objectFit:'fill',
+    padding: 0,
+
+  },
+  rootc: {
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+    margin: 'auto',
+
+  },
 
 }));
 
@@ -141,28 +156,41 @@ const SingleCourse = ({ match }) => {
   // }, []);
   const getcourse=()=>
   {
-    setTimeout(() => {
-      const promise
-      = Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`)
-    promise.then(
-      response => {
+    const promise
+    = Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`)
+  promise.then(
+    response => {
 
-        setcourse(response.data)
-        
-
-
-      }
-    )
+      setcourse(response.data)
+      
 
 
+    }
+  )
 
-  }
-    , 500)
   }
   React.useEffect(() => {
    
-    getcourse();
-    }, []);
+    const promise
+    = Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`)
+  promise.then(
+    response => {
+
+      setcourse(response.data)
+      
+
+
+    }
+    
+  )
+
+     
+
+
+
+  }
+    
+  , []);
     
   const classes = useStyles();
 
@@ -192,7 +220,16 @@ const SingleCourse = ({ match }) => {
         <Grid item xs={12} >
 
           <Paper className={fixedHeightPaper2} elevation={3}>
-            <Coursemedia course={course} />
+          <div className={classes.rootc}>
+      <CardMedia
+        className={classes.cover}
+        height="100%"
+        component='img'
+        image={course.course_cover}
+        title={course.name}
+      />
+    
+  </div>  
           </Paper>
 
 

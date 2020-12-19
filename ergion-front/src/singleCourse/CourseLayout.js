@@ -256,7 +256,7 @@ const useStyles = makeStyles((theme) => ({
         }).then((response) => {
             console.log(response)
             setDialogOpen(false)
-            props.getupdate();
+        props.getupdate();
 
         }).catch((error) => {
             console.log(error)
@@ -266,12 +266,8 @@ const useStyles = makeStyles((theme) => ({
 
     const newCourseButton = () => {
         setSelectedFile(null)
-        setCoverImage("")
-        localStorage.setItem("course_name", "")
-        localStorage.setItem("course_subject", "")
-        localStorage.setItem("course_grade", "1")
-        localStorage.setItem("course_capacity", 10)
-        localStorage.setItem("course_description", "")
+        
+
         setDialogOpen(true)
 
     }
@@ -291,8 +287,7 @@ const useStyles = makeStyles((theme) => ({
                         <ValidatorForm form="form" onSubmit={addCourseButton} >
 
                             <DialogTitle id="error-dialog" dir='rtl' className={classes.newCourseTitle}>
-                                ایجاد یک کلاس جدید
-                        </DialogTitle>
+                            ویرایش کلاس                        </DialogTitle>
 
                             <Divider />
                             <Divider />
@@ -306,11 +301,18 @@ const useStyles = makeStyles((theme) => ({
                                     <Typography className={classes.typoStyle}>
                                         کاور
                                     </Typography>
-                                    <CardMedia
-                                        className={classes.newCourseCardMedia}
-                                        component='img'
-                                        image={coverImage}
-                                    />
+                                    {coverImage==="" ?
+                                 <CardMedia
+                                  className={classes.newCourseCardMedia}
+                                   component='img'
+                                image={props.course.course_cover}
+                                                                    /> :
+                                                                    <CardMedia
+                                                                    className={classes.newCourseCardMedia}
+                                                                    component='img'
+                                                                    image={coverImage}
+                                                                />}
+
                                     <input
                                         accept="image/*"
                                         className={classes.input}
@@ -472,7 +474,8 @@ const useStyles = makeStyles((theme) => ({
                                     type="submit"
                                     className={classes.newCourseButtonWidth}
                                 >
-                                    ایجاد
+                                    
+تایید
                                 </Button>
                             </DialogActions>
                         </ValidatorForm>
@@ -518,8 +521,9 @@ const useStyles = makeStyles((theme) => ({
 
     return (
         <div>
-        <Button positions="right" className="addButton" variant="outlined" color='secondary' onClick={newCourseButton}>
-        OK
+        <Button positions="right" className="addButton" variant="outlined" color='primary' onClick={newCourseButton}>
+        
+ویرایش
         </Button>
                 <NewCourseDialog
                     open={dialogOpen}

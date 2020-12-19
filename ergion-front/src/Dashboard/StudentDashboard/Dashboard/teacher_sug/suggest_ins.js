@@ -196,7 +196,7 @@ if ((JSON.parse(localStorage.getItem('user'))['role'])==="S")
                                         <Card className="layout1"> 
                                          {courses && courses.map((course) =>
                                         <div>
-                                            <CardHeader className="layout2"
+                                            <CardHeader className="layout2" href={`/student_dashboard/public_profile/${course.id}`}
                                                 title={
                                                     <div>
                                                     <Typography className="namePlace" component="h4">
