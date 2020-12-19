@@ -673,7 +673,7 @@ class TimeLine extends React.Component {
                 <Paper
                   className={classes.mediaCardPaperStyle}
                   elevation={3}
-                  style={{ marginBottom: "30px",padding:'8px', marginTop: "30px" }}
+                  style={{ marginBottom: "30px",padding:'8px' }}
                 >
                   <Grid container dir="rtl" spacing={2}>
                     <Grid
@@ -888,7 +888,6 @@ class TimeLine extends React.Component {
                           elevation={5}
                           style={{
                             marginBottom: "30px",
-                            marginTop: "30px",
                             padding: "8px",
                           }}
                         >

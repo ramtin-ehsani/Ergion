@@ -38,7 +38,7 @@ const Dashboard = () => {
         <StylesProvider jss={jss} >
 
       <ThemeProvider theme={theme} >
-            <Container maxWidth="lg" >
+            <Container maxWidth="lg" style={{ marginTop: "30px"}}>
 
                 <Grid
                     container

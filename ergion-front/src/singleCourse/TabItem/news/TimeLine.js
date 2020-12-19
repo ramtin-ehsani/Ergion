@@ -1605,7 +1605,7 @@ class TimeLine extends React.Component {
                     style={{
                       display: "flex",
                       justifyContent: "center",
-                      padding: "20px",
+                      padding: "10px",
                     }}
                   >
                     <Typography>
