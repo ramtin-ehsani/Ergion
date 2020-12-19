@@ -29,12 +29,13 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-
+import CardMedia from '@material-ui/core/CardMedia';
 import Information from './information';
 import Generalinformation from './generalinformation';
 import Coursemedia from './coursemedia';
 import Subjects from './subjects';
 import Axios from "axios";
+import { RefreshSharp } from "@material-ui/icons";
 
 
 function Copyright() {
@@ -74,7 +75,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    // margin: theme.spacing(2),
+  padding:theme.spacing(0),
     backgroundColor: theme.palette.background.default,
 
 
@@ -114,7 +115,21 @@ const useStyles = makeStyles((theme) => ({
 
     padding: 0,
 
-  }
+  },
+  cover: {
+    width: '100%',
+    height: '100%',
+    //objectFit:'fill',
+    padding: 0,
+
+  },
+  rootc: {
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+    margin: 'auto',
+
+  },
 
 }));
 
@@ -146,24 +161,44 @@ const SingleCourse = ({ match, snackQ, onSnackQ  }) => {
   //     console.log(match);
   //     console.log(course);
   // }, []);
-  useEffect(() => {
-    console.log(match.params.id);
+  const getcourse=()=>
+  {
     const promise
-      = Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`)
-    promise.then(
-      response => {
+    = Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`)
+  promise.then(
+    response => {
 
-        setcourse(response.data)
-        console.log(response.data)
+      setcourse(response.data)
+      
 
 
-      }
-    )
+    }
+  )
+
+  }
+  React.useEffect(() => {
+   
+    const promise
+    = Axios.get(`http://127.0.0.1:8000/api/course/${match.params.id}`)
+  promise.then(
+    response => {
+
+      setcourse(response.data)
+      
+
+
+    }
+    
+  )
+
+     
 
 
 
   }
-    , [])
+    
+  , []);
+    
   const classes = useStyles();
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -201,12 +236,21 @@ const SingleCourse = ({ match, snackQ, onSnackQ  }) => {
 
           </Alert>
       </Snackbar>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
 
         <Grid item xs={12} >
 
           <Paper className={fixedHeightPaper2} elevation={3}>
-            <Coursemedia course={course} />
+          <div className={classes.rootc}>
+      <CardMedia
+        className={classes.cover}
+        height="100%"
+        component='img'
+        image={course.course_cover}
+        title={course.name}
+      />
+    
+  </div>  
           </Paper>
 
 
@@ -214,19 +258,9 @@ const SingleCourse = ({ match, snackQ, onSnackQ  }) => {
 
         <Grid item xs={12} >
           <Paper className={fixedHeightPaper1} elevation={3}>
-            <Information course={course} />
+            <Information course={course} getupdate={getcourse} />
           </Paper>
         </Grid>
-
-        {/* <Grid item xs={12} md={4} lg={3}>
-
-            
-            
- 
-                       <Paper className={fixedHeightPaper}>
-                <Generalinformation  course={course}/>
-              </Paper>
-            </Grid> */}
 
 
         <Grid item xs={12}>
