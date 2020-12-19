@@ -447,7 +447,7 @@ class QuestionList extends Component {
                               }
                               secondary={
                                 <Typography
-                                  className="text"
+                                  // className="text"
                                   style={{ marginTop: "15px" }}
                                 >
                                   {questionItem.isAnswered ? (
