@@ -34,6 +34,7 @@ import { create } from "jss";
 import rtl from "jss-rtl";
 import TextField from '@material-ui/core/TextField';
 import CourseLayout from './CourseLayout';
+import CardMedia from "@material-ui/core/CardMedia";
 
 
 const useStyles = makeStyles(theme => ({
@@ -64,6 +65,16 @@ const useStyles = makeStyles(theme => ({
     fontWeight:'600',
     display:'inline',
     padding:theme.spacing(1),
+  },
+  cover: {
+    width: "100%",
+    height: "180",
+    objectFit:'cover',
+   
+    padding: 0,
+  },
+  informationtext:{
+    margin:theme.spacing(2),
   }
 }));
 
@@ -107,11 +118,7 @@ const getcourse=()=>
   React.useEffect(()=>
   {
 
-    // setname(props.course.name);
-    // setgrade(props.course.grade);
-  
-    // setsubject(props.course.subject);
-    // setbio(props.course.about_course)
+
     const promise1
     = Axios.get(`http://127.0.0.1:8000/api/course/${props.course.id}`)
   promise1.then(
@@ -123,10 +130,10 @@ const getcourse=()=>
     setcapacity(response.data.capacity);
       setsubject(response.data.subject);
       setbio(response.data.about_course);
-   
+   setid(props.course.id);
   
     }
-  )
+  ).catch(error=>console.log(error))
   
 
 
@@ -149,7 +156,7 @@ seteditmode(1);
       else{
         setS(true);
        
-          const promise=Axios.get('http://127.0.0.1:8000/api/course/',
+          const promise=Axios.get('http://127.0.0.1:8000/api/student/course/',
           {
             headers:{
               "Authorization": `Token ${localStorage.getItem('token')}`,
@@ -164,7 +171,9 @@ seteditmode(1);
                 {
                   sethasCourse(true);
                   setAdd(2);
-                }
+                }else{
+                  sethasCourse(false);
+                  setAdd(1);}
               }
               )
             }
@@ -243,8 +252,16 @@ window.location="/login";
       <React.Fragment>
       <ThemeProvider theme={theme}>
         
-      <Grid container>  
-        
+      
+      <CardMedia
+                className={classes.cover}
+                height="180"
+                component="img"
+                image={props.course.course_cover}
+                title={props.course.name}
+              />  
+              <div className={classes.informationtext}>
+               <Grid container>  
 <Grid container item>
 {isowner &&
 
@@ -277,7 +294,7 @@ window.location="/login";
   
   </Grid>
       <Grid  item alignItems='flex-end' justify='flex-end' direction='row-reverse' xs zeroMinWidth>
- <Typography variant='h4' inline color='primary' > {name} </Typography> 
+ <Typography className={"namee"} variant='h4' inline color='primary' > {name} </Typography> 
 
 
 </Grid>
@@ -322,6 +339,7 @@ window.location="/login";
 
 </Grid>
 </Grid>
+</div>
 </ThemeProvider>
     </React.Fragment>
   );}

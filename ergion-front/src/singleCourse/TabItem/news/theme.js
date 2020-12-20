@@ -54,7 +54,7 @@ const theme = createMuiTheme({
     h4: {
       fontFamily: "IRANSans" ,
       fontWeight: 400,
-      fontSize: 16,
+      fontSize: 20,
       direction: 'rtl',
       textAlign:"right"
     

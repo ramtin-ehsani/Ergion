@@ -122,7 +122,7 @@ const Suggestedins = () => {
     const [isEmpty, setEmpty] = React.useState(false);
 
     const [courses, setCourses] = useState(null);
-
+const[S,setS]=React.useState(false);
     const [open, setOpen] = useState(false);
 
 
@@ -154,11 +154,13 @@ const Suggestedins = () => {
     }
 
     useEffect(() => {
+
+
         const showAllAPI = "http://127.0.0.1:8000/api/student/suggested-instructors/";
 
 if ((JSON.parse(localStorage.getItem('user'))['role'])==="S")
 {
-        
+        setS(true);
         axios.get(showAllAPI, config)
             .then((response) => {
                 if (response.data.length > 0) {
@@ -173,7 +175,7 @@ if ((JSON.parse(localStorage.getItem('user'))['role'])==="S")
     }, []);
 
 
-    return (
+   if (S){ return (
         <React.Fragment>
             <StylesProvider jss={jss}>
                 <ThemeProvider theme={theme}>
@@ -240,6 +242,6 @@ if ((JSON.parse(localStorage.getItem('user'))['role'])==="S")
             </StylesProvider>
         </React.Fragment>
 
-    );
+    );}else return(null)
 }
 export default Suggestedins;

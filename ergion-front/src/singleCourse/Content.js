@@ -473,7 +473,7 @@ class NestedList extends React.Component {
       }
       this.setState({ courseId: this.props.course.id });
       this.getValues();
-    }, 500);
+    }, 2000);
   };
 
   getValues = () => {

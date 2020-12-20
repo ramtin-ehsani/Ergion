@@ -77,8 +77,9 @@ const useStyles = makeStyles((theme) =>
 			// height: 400,
 		},
 		title: {
-			fontFamily: 'IRANSans'
-			// height: 50
+			fontFamily: 'IRANSans',
+			// height: 50,
+			padding: 8,
 		},
 		tab: {
 			flexGrow: 1,
@@ -247,6 +248,7 @@ const	sendnewshandler=event=>
 			"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
 		setnewsid(response.data.post_id);	
 		setnewstext("");
+
 		if(isimage===4)
 		{
 			const fileData=new FormData()
@@ -331,7 +333,7 @@ const	sendnewshandler=event=>
 		setdimage(false);
 		setdpdf(false);
 		setdvideo(false);
-		
+		props.getupdate(courseid);
 	
 		}).catch((error)=>{console.log(error);})
 		console.log(isimage);
@@ -419,7 +421,6 @@ const	newstexthandler=event=>
 		onChange={newstexthandler}
 		value={newstext}
       />
-      {isimage}        
 {isimage>=1?   <Grid item direction='column'>
 <iconButton id='id1' onClick={image1delete}><HighlightOffIcon style={{ color: 'red' }}/></iconButton>
 <img src={URL.createObjectURL(image1)} alt="test" width="150" height="150" /></Grid> : ""}

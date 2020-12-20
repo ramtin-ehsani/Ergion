@@ -88,7 +88,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.dark,
   },
   paper: {
-    padding: theme.spacing(2),
+    padding:theme.spacing(0),
+    paddingBottom: theme.spacing(2),
 
     display: "flex",
     overflow: "auto",
@@ -200,19 +201,7 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
         </Alert>
       </Snackbar>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Paper className={fixedHeightPaper2} elevation={3}>
-            <div className={classes.rootc}>
-              <CardMedia
-                className={classes.cover}
-                height="100%"
-                component="img"
-                image={course.course_cover}
-                title={course.name}
-              />
-            </div>
-          </Paper>
-        </Grid>
+
 
         <Grid item xs={12}>
           <Paper className={fixedHeightPaper1} elevation={3}>

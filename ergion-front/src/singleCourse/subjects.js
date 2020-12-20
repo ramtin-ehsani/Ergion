@@ -104,7 +104,11 @@ export default function FullWidthTabs(props) {
   const handleChangeIndex = (index) => {
     setValue(index);
   };
-
+  const [upflag,setupflag]=React.useState(false);
+const getup=()=>
+{
+setupflag(true);
+}
   return (
     <div className={classes.root}>
       <ThemeProvider theme={theme}>
@@ -117,8 +121,8 @@ export default function FullWidthTabs(props) {
             variant="fullWidth"
             aria-label="full width tabs example"
           >
-            <Tab label={<Mytypography>اخبار</Mytypography>} {...a11yProps(0)} />
-            <Tab label={<Mytypography>مطالب</Mytypography>} {...a11yProps(1)} />
+            <Tab label={<Mytypography>مطالب</Mytypography>} {...a11yProps(0)} />
+            <Tab label={<Mytypography>اخبار</Mytypography>} {...a11yProps(1)} />
             <Tab
               label={<Mytypography>پرسش و پاسخ</Mytypography>}
               {...a11yProps(2)}
@@ -131,13 +135,12 @@ export default function FullWidthTabs(props) {
           onChangeIndex={handleChangeIndex}
         >
           <TabPanel value={value} index={0} dir={theme.direction}>
-            {isowner && <Write course={props.course} />}
-            {/* {newslist.map((news) => <News course={props.course} update={news} />)} */}
-
-            <TimeLine courseid={props.course.id} />
+  <Content course={props.course} />  
           </TabPanel>
           <TabPanel value={value} index={1} dir={theme.direction}>
-            <Content course={props.course} />
+          
+
+            <TimeLine courseid={props.course.id} coursem={props.course}  isowner={isowner} />
           </TabPanel>
           <TabPanel value={value} index={2} dir={theme.direction}>
             <Questions />
