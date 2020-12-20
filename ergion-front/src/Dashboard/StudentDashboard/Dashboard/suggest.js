@@ -233,7 +233,7 @@ const Suggestedcourse = () => {
                                                       <Typography variant='button'>  مشاهده
                                                  </Typography>   </Button>
                                                     <Divider style={{minWidth:'3px',maxWidth:'3px'}}/>
-                                                    <Button size="small" color="primary"
+                                                    {/* <Button size="small" color="primary"
                                                         onClick={() => copyToClipboard(course.id)}
                                                         action={localStorage.setItem('id', course.id)}
                                                         endIcon={<ShareIcon />}
@@ -242,7 +242,7 @@ const Suggestedcourse = () => {
                                                     >
                                                         <Typography variant='button'> 
                                                         اشتراک
-                                                        </Typography>  </Button>
+                                                        </Typography>  </Button> */}
                                                 </ButtonGroup>
                                                 <Snackbar className={classes.snackBAr} dir="rtl" open={open}
                                                     autoHideDuration={1500}

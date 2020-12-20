@@ -101,6 +101,7 @@ const useStyles = makeStyles((theme) => ({
         objectFit: 'cover',
         paddingLeft: 17,
         paddingRight: 17,
+        borderBlockStyle: 'doted'
     },
     newCourseAddImageContainer: {
         position: 'relative',
@@ -130,6 +131,7 @@ const useStyles = makeStyles((theme) => ({
         width: 120,
         height: 40,
         fontSize: '1rem',
+        margin:8,
     },
     newCourseButtonContent: {
         // justifyContent:'space-between',
@@ -246,9 +248,7 @@ const useStyles = makeStyles((theme) => ({
         data.append('about_course', newCourseDescription.current.value)
         if (selectedFile !== null) {
             data.append('course_cover', selectedFile)
-        } else {
-            data.append('course_cover', "")
-        }
+        } 
         axios.put(`http://127.0.0.1:8000/api/course/${props.course.id}`, data, {
             headers: {
                 "Authorization": `Token ${localStorage.getItem('api_key')}`,
@@ -266,7 +266,7 @@ const useStyles = makeStyles((theme) => ({
 
     const newCourseButton = () => {
         setSelectedFile(null)
-        
+        setCoverImage(props.course.course_cover)
 
         setDialogOpen(true)
 

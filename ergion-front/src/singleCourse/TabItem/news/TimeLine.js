@@ -47,6 +47,7 @@ import FileCopyIcon from "@material-ui/icons/FileCopy";
 import { Avatar } from "@material-ui/core";
 import GetAppRoundedIcon from "@material-ui/icons/GetAppRounded";
 import ImageIcon from "@material-ui/icons/Image";
+import Write from './Writeanews';
 import {
   AttachFile,
   Description,
@@ -162,7 +163,7 @@ function Alert(props) {
 }
 
 class TimeLine extends React.Component {
-  _isMounted = false;
+  _isMounted = true;
 
   constructor(props) {
     super(props);
@@ -223,7 +224,7 @@ class TimeLine extends React.Component {
   };
 
   getValues = (page) => {
-    
+   
     axios
       .get('http://127.0.0.1:8000/api/course/news/' , {
         params: { course_id: page },
@@ -231,7 +232,7 @@ class TimeLine extends React.Component {
   })
       .then((response) => {
         // handle success
-        const { list } = this.state;
+        const list  = [];
         console.log(response.data);
         console.log(page);
         response.data.reverse().map((post) => {
@@ -263,7 +264,8 @@ class TimeLine extends React.Component {
           };
           list.push(postObject);
         });
-
+        this.setState(
+          list)
         if (this._isMounted) {
           this.setState({
             list,
@@ -604,9 +606,13 @@ class TimeLine extends React.Component {
   render() {
     const { classes } = this.props;
     this.page=this.props.courseid;
-    return (
+
+    return (  
+  
+
       <StylesProvider jss={jss}>
         <ThemeProvider theme={theme}>
+   {this.props.isowner &&      <Write course={this.props.coursem} getupdate={this.getValues}/>}
           <Snackbar
             open={this.state.snackBarOpen}
             autoHideDuration={2000}
