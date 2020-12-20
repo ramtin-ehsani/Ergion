@@ -80,7 +80,8 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function Information(props) {
-  const [Add, setAdd] = React.useState(0);
+  const [Add, setAdd] = React.useState(1);
+  
 
   const classes = useStyles();
   const [name, setname] = React.useState(props.course.name);
@@ -117,20 +118,22 @@ const getcourse=()=>
  
   React.useEffect(()=>
   {
+    const c_id = window.location.href.split("/")[5];
+    let timer;
+    setTimeout(() => {
+      timer = setInterval(() => {
 
-
-    const promise1
-    = Axios.get(`http://127.0.0.1:8000/api/course/${props.course.id}`)
+        const promise1
+    = Axios.get(`http://127.0.0.1:8000/api/course/${c_id}`)
   promise1.then(
     response => {
-  
   
       setname(response.data.name);
       setgrade(response.data.grade);
     setcapacity(response.data.capacity);
       setsubject(response.data.subject);
       setbio(response.data.about_course);
-   setid(props.course.id);
+   setid(response.data.id);
   
     }
   ).catch(error=>console.log(error))
@@ -142,11 +145,11 @@ const getcourse=()=>
       if((JSON.parse(localStorage.getItem('user'))['role'])==="T")
       {
         setT(true);
-        console.log(props.course)
         console.log(JSON.parse(localStorage.getItem('user')))
         if((JSON.parse(localStorage.getItem('user'))['id'])===props.course.instructor_id)
         {
           setisowner(true);
+          setAdd(0)
           if(editmode!=2)
           {
 seteditmode(1);
@@ -156,7 +159,7 @@ seteditmode(1);
       else{
         setS(true);
        
-          const promise=Axios.get('http://127.0.0.1:8000/api/student/course/',
+          const promise=Axios.get('http://127.0.0.1:8000/api/student/courses/',
           {
             headers:{
               "Authorization": `Token ${localStorage.getItem('token')}`,
@@ -167,13 +170,11 @@ seteditmode(1);
           promise.then(
             result=>{
               result.data.map((course)=>{
-                if(course.id===props.course.id)
+                if(course.id===Number(c_id))
                 {
                   sethasCourse(true);
                   setAdd(2);
-                }else{
-                  sethasCourse(false);
-                  setAdd(1);}
+                }
               }
               )
             }
@@ -183,6 +184,11 @@ seteditmode(1);
       }
 
     }
+      }, 1000);
+    }, 1000);
+    
+    return () => clearInterval(timer);
+
   })
   
 
