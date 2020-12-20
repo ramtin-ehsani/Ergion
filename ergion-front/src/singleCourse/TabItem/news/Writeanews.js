@@ -33,7 +33,7 @@ import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import InputBase from '@material-ui/core/InputBase';
-import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
+import SendIcon from '@material-ui/icons/SendOutlined';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 const getWidth = () => window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -77,8 +77,9 @@ const useStyles = makeStyles((theme) =>
 			// height: 400,
 		},
 		title: {
-			fontFamily: 'IRANSans'
-			// height: 50
+			fontFamily: 'IRANSans',
+			// height: 50,
+			padding: 8,
 		},
 		tab: {
 			flexGrow: 1,
@@ -241,18 +242,19 @@ const image2delete=()=>{
 
 const	sendnewshandler=event=>
 	{
-		Axios.post('http://127.0.0.1:8000/api/course-news/',
-		{related_course:courseid,text:newstext}, 
+		Axios.post('http://127.0.0.1:8000/api/course/news/',
+		{course_id:courseid,description:newstext}, 
 		{  headers :{
 			"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
-		setnewsid(response.data.id);	
+		setnewsid(response.data.post_id);	
 		setnewstext("");
+
 		if(isimage===4)
 		{
 			const fileData=new FormData()
-			fileData.append('update_id',response.data.id)
+			fileData.append('post_id',response.data.post_id)
 			fileData.append("file",image4)
-			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authoriza`	/xz,mnbtion": `Token ${localStorage.getItem('token')}`}}).then(function(response){
 		
@@ -265,9 +267,9 @@ const	sendnewshandler=event=>
 		if(isimage===3)
 		{
 			const fileData=new FormData()
-			fileData.append('update_id',response.data.id)
+			fileData.append('post_id',response.data.post_id)
 			fileData.append("file",image3)
-			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
 				setisimage(isimage-1);
@@ -279,9 +281,9 @@ const	sendnewshandler=event=>
 		if(isimage===2)
 		{
 			const fileData=new FormData()
-			fileData.append('update_id',response.data.id)
+			fileData.append('post_id',response.data.post_id)
 			fileData.append("file",image2)
-			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
 				setisimage(isimage-1);
@@ -291,9 +293,9 @@ const	sendnewshandler=event=>
 		}
 		if(isimage===1)
 		{ const fileData=new FormData()
-			fileData.append("update_id",response.data.id)
+			fileData.append('post_id',response.data.post_id)
 			fileData.append("file",image1)
-			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(response=>{
 					setisimage(isimage-1);
@@ -305,12 +307,12 @@ const	sendnewshandler=event=>
 		if(isvideo)
 		{
 			const fileData=new FormData()
-			fileData.append('update_id',response.data.id)
+			fileData.append('post_id',response.data.post_id)
 			fileData.append("file",video)
-			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
-			setvideo();
+			setvideo(null);
 			
 			}).catch((error)=>{console.log(0);})
 		
@@ -319,9 +321,9 @@ const	sendnewshandler=event=>
 		if(ispdf)
 		{
 			const fileData=new FormData()
-			fileData.append('update_id',response.data.id)
+			fileData.append('post_id',response.data.post_id)
 			fileData.append("file",pdf)
-			Axios.post('http://127.0.0.1:8000/api/course-news/file/',
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
 			fileData,		{  headers :{
 				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
 		setpdf();
@@ -331,7 +333,7 @@ const	sendnewshandler=event=>
 		setdimage(false);
 		setdpdf(false);
 		setdvideo(false);
-		
+		props.getupdate(courseid);
 	
 		}).catch((error)=>{console.log(error);})
 		console.log(isimage);
@@ -367,7 +369,7 @@ const	newstexthandler=event=>
 								<CardHeader
 									className={classes.title}
 									avatar={
-										<Avatar aria-label="recipe" className={classes.avatar}>
+										<Avatar aria-label="recipe" className={classes.avatar} style={{ width: 70, height: 70 }}>
 											<img src={props.course.instructor_profile_picture} alt="tessacehr" minWidth="50" height="50" poster="R" />
 										</Avatar>
 									}
@@ -377,10 +379,23 @@ const	newstexthandler=event=>
 										</IconButton>
 									}
 									title={
-                                        <Typography className="instructor" variant="h6" color="primary">
-                                                                           {props.course.instructor_firstname} {props.course.instructor_lastname}
-								
-								/{props.course.name}</Typography>
+										<Typography
+										className="nametypo"
+                                        style={{
+                                          marginRight: "12px",
+										
+										  direction:"rtl"
+                                        }}
+                                      >
+                                        <Box
+                                          fontSize={20}
+										  fontWeight="fontWeightBold"
+										  direction='rtl'
+                                        >
+                                       {props.course.instructor_firstname + " "+
+									   props.course.instructor_lastname}
+                                        </Box>
+                                      </Typography>
 
 									}
 									subheader={
@@ -406,7 +421,6 @@ const	newstexthandler=event=>
 		onChange={newstexthandler}
 		value={newstext}
       />
-      {isimage}        
 {isimage>=1?   <Grid item direction='column'>
 <iconButton id='id1' onClick={image1delete}><HighlightOffIcon style={{ color: 'red' }}/></iconButton>
 <img src={URL.createObjectURL(image1)} alt="test" width="150" height="150" /></Grid> : ""}
@@ -455,7 +469,7 @@ const	newstexthandler=event=>
 </Grid>
             <Grid item>
       <IconButton className={classes.iconButton} aria-label="menu" onClick={sendnewshandler} disabled={newstext.length===0}>
-        <SendOutlinedIcon />
+        <SendIcon />
       </IconButton></Grid>
       </Grid>
 </Grid>

@@ -11,6 +11,9 @@ import * as actionTypes from '../../../../store/actions';
 import axios from 'axios';
 
 class Comments extends Component {
+	constructor(props) {
+		super(props)
+	}
 	state = {
 		comments: [],
 		replies: {},
@@ -29,8 +32,8 @@ class Comments extends Component {
 		const config = {
 			headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
 		};
-		const update_id = window.location.href.split('/')[5];
-		axios.get(`http://127.0.0.1:8000/api/update-comments/?update_id=${update_id}`, config).then((res) => {
+		const update_id = this.props.postId;
+		axios.get(`http://127.0.0.1:8000/api/course/comments/?post_id=${update_id}`, config).then((res) => {
 			res.data.map((comment) => {
 				const newComment = {
 					postId: update_id,
@@ -64,16 +67,16 @@ class Comments extends Component {
 	};
 
 	onSubmit = () => {
-		const update_id = window.location.href.split('/')[5];
+		const update_id = this.props.postId
 		const config = {
 			headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
 		};
 		if (this.state.nCommentString.length !== 0) {
 			axios
 				.post(
-					'http://127.0.0.1:8000/api/update-comments/',
+					'http://127.0.0.1:8000/api/course/comments/',
 					{
-						update_id: update_id,
+						post_id: update_id,
 						comment_text: this.state.nCommentString
 					},
 					config

@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-    Box,
     Container,
     Grid,
-    makeStyles
+    // makeStyles
 } from '@material-ui/core';
 import Timeline from '../TimeLine/TimeLine';
+import Suggestedcourse from './suggest';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
@@ -14,14 +14,14 @@ import { StylesProvider, jssPreset } from '@material-ui/core/styles';
 
 
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.background.dark,
-        maxHeight: '100%',
-        paddingBottom: theme.spacing(5),
-        paddingTop: theme.spacing(5),
-    }
-}));
+// const useStyles = makeStyles((theme) => ({
+//     root: {
+//         backgroundColor: theme.palette.background.dark,
+//         maxHeight: '100%',
+//         paddingBottom: theme.spacing(5),
+//         paddingTop: theme.spacing(5),
+//     }
+// }));
 
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
@@ -33,13 +33,12 @@ const theme = createMuiTheme({
 });
 
 const Dashboard = () => {
-    const classes = useStyles();
 
     return (
         <StylesProvider jss={jss} >
 
       <ThemeProvider theme={theme} >
-            <Container maxWidth="lg" >
+            <Container maxWidth="lg" style={{ marginTop: "30px"}}>
 
                 <Grid
                     container
@@ -52,8 +51,8 @@ const Dashboard = () => {
                 >
                     <Grid
                         item
-                        lg={8}
-                        md={8}
+                        lg={9}
+                        md={9}
                         xs={12}
                     >
                         <Timeline />
@@ -61,12 +60,12 @@ const Dashboard = () => {
 
                     <Grid
                         item
-                        lg={4}
-                        md={4}
-                        xs={0}
+                        lg={3}
+                        md={3}
+                        xs={false}
                     >
 
-                        
+                       <Suggestedcourse/> 
                     </Grid>
                     
                 </Grid>

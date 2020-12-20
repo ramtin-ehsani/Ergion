@@ -12,6 +12,8 @@ import axios from 'axios';
 import CourseFileLayouts from './CourseFileLayouts/CourseFileLayouts';
 import SingleCourse from '../../singleCourse/singlecoursecontainer';
 import CommentsMain from '../../comment/CommentMain'
+import MainDashboard from './Main/MainDashboard';
+import QuestionAnswer from './CourseQuestionAndAnswer/index'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -48,7 +50,7 @@ const Dashboard = () => {
 
         if (localStorage.getItem("api_key") !== 'null') {
 
-            axios.get('http://127.0.0.1:8000/api/teacher-profile/', config)
+            axios.get('http://127.0.0.1:8000/api/teacher/profile/', config)
                 .then((res) => {
                     // handle success
                     const avatarImage = res.data.profile_picture
@@ -61,6 +63,7 @@ const Dashboard = () => {
                 .catch((error) => {
                     // handle error
                     console.log(error);
+                    localStorage.setItem('api_key',null)
                     window.location = '/login'
                 })
 
@@ -85,11 +88,12 @@ const Dashboard = () => {
             <main className={classes.content} >
                 <div className={classes.appBarSpacer} />
                 <Switch >
-                    <Route path='/teacher_dashboard' exact component={Template} />
+                    <Route path='/teacher_dashboard' exact component={MainDashboard} />
                     <Route path='/teacher_dashboard/profile' exact component={TeacherProfile} />
                     <Route path='/teacher_dashboard/added_courses' exact component={CourseFileLayouts} />
                     <Route path='/teacher_dashboard/added_courses/:id' exact component={SingleCourse} />
                     <Route path='/teacher_dashboard/added_courses/:id/episode/:id' exact component={CommentsMain} />
+                    <Route path='/teacher_dashboard/questions' component={QuestionAnswer} />
                 </Switch>
 
             </main>
