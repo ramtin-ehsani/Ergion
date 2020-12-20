@@ -51,62 +51,69 @@ export const MainListItems = () => {
 
             <Divider />
 
-            <ListItem button onClick={navidagteToDashboard}>
-                <p className="dashboard" >داشبورد</p>
-                <ListItemIcon className="dashIcon">
+            <ListItem dir='rtl' button onClick={navidagteToDashboard} style={{paddingTop:'0px'}}>
+            <ListItemIcon>
                     <DashboardIcon />
                 </ListItemIcon>
+                <p className="dashboard" >داشبورد</p>
+                
             </ListItem>
 
-            <ListItem button onClick={navigateToProfile}>
-                <p className="profile">پروفایل</p>
-                <ListItemIcon className="profileIcon" >
+            <ListItem dir='rtl' button onClick={navigateToProfile} style={{paddingTop:'0px'}}>
+            <ListItemIcon >
                     <PersonRoundedIcon />
                 </ListItemIcon>
+                <p className="profile">پروفایل</p>
+                
             </ListItem>
 
-            <ListItem button
+            <ListItem button dir='rtl' style={{paddingTop:'0px'}}
                 onClick={() => { history.push('/student_dashboard/added_courses') }}
             >
-                <p className="courses">کلاس</p>
-                <ListItemIcon className="courseIcon">
+                <ListItemIcon>
                     <ClassIcon />
                 </ListItemIcon>
+                <p className="courses">کلاس های من</p>
+                
             </ListItem>
 
 
-            <ListItem button>
-                <p className="store">فروشگاه</p>
-                <ListItemIcon className="storeIcon">
+            <ListItem button dir='rtl' style={{paddingTop:'0px'}}>
+            <ListItemIcon>
                     <ShoppingCartIcon />
                 </ListItemIcon>
+                <p className="store">فروشگاه</p>
+                
             </ListItem>
 
 
-            <ListItem button className="QA">
-                <p className="QandA">سوالات</p>
-                <ListItemIcon className="QandAIcon">
+            <ListItem button className="QA" dir='rtl' style={{paddingTop:'0px'}}>
+            <ListItemIcon>
                     <QuestionAnswerIcon />
                 </ListItemIcon>
+                <p className="QandA">سوالات</p>
+                
             </ListItem>
 
 
             <Divider />
 
 
-            <ListItem button>
-                <p className="setting">تنظیمات</p>
-                <ListItemIcon className="setIcon">
+            <ListItem button dir='rtl' style={{paddingTop:'0px'}}>
+            <ListItemIcon>
                     <SettingsIcon />
                 </ListItemIcon>
+                <p className="setting">تنظیمات</p>
+                
             </ListItem>
 
 
-            <ListItem button onClick={logOut}>
-                <p className="exit">خروج</p>
-                <ListItemIcon className="exitIcon">
+            <ListItem button onClick={logOut} dir='rtl' style={{paddingTop:'0px'}}>
+            <ListItemIcon>
                     <ExitToAppIcon className="logoutIcon" />
                 </ListItemIcon>
+                <p className="exit">خروج</p>
+                
             </ListItem>
 
 
@@ -149,45 +156,50 @@ export const MobileListItems = () => {
 
             <Divider />
 
-            <ListItem button onClick={navidagteToDashboard}>
-                <p className="dashboard" >داشبورد</p>
-                <ListItemIcon className="dashIcon">
+            <ListItem dir='rtl' button onClick={navidagteToDashboard} style={{paddingTop:'0px'}}>
+            <ListItemIcon>
                     <DashboardIcon />
                 </ListItemIcon>
+                <p className="dashboard" >داشبورد</p>
+                
             </ListItem>
 
 
-            <ListItem button onClick={navigateToProfile}>
-                <p className="profile">پروفایل</p>
-                <ListItemIcon className="profileIcon">
+            <ListItem dir='rtl' button onClick={navigateToProfile} style={{paddingTop:'0px'}}>
+            <ListItemIcon>
                     <PersonRoundedIcon />
                 </ListItemIcon>
+                <p className="profile">پروفایل</p>
+                
             </ListItem>
 
-            <ListItem button
+            <ListItem button dir='rtl' style={{paddingTop:'0px'}}
                 onClick={() => { history.push('/student_dashboard/added_courses') }}
             >
-                <p className="courses">کلاس</p>
-                <ListItemIcon className="courseIcon">
+                <ListItemIcon>
                     <ClassIcon />
                 </ListItemIcon>
+                <p className="courses">کلاس های من</p>
+                
             </ListItem>
 
 
-            <ListItem button>
-                <p className="store">فروشگاه</p>
-                <ListItemIcon className="storeIcon">
+            <ListItem button dir='rtl' style={{paddingTop:'0px'}}>
+            <ListItemIcon>
                     <ShoppingCartIcon />
                 </ListItemIcon>
+                <p className="store">فروشگاه</p>
+                
             </ListItem>
 
 
-            <ListItem button className="QA">
+            <ListItem button className="QA" dir='rtl' style={{paddingTop:'0px'}}>
                 {/*<div className="PP">*/}
-                <p className="QandA">سوالات</p>
-                <ListItemIcon className="QandAIcon">
+                <ListItemIcon>
                     <QuestionAnswerIcon />
                 </ListItemIcon>
+                <p className="QandA">سوالات</p>
+                
                 {/*</div>*/}
             </ListItem>
 
@@ -195,19 +207,21 @@ export const MobileListItems = () => {
             <Divider />
 
 
-            <ListItem button>
-                <p className="setting">تنظیمات</p>
-                <ListItemIcon className="setIcon">
+            <ListItem button dir='rtl' style={{paddingTop:'0px'}}>
+            <ListItemIcon>
                     <SettingsIcon />
                 </ListItemIcon>
+                <p className="setting">تنظیمات</p>
+                
             </ListItem>
 
 
-            <ListItem button onClick={logOut}>
-                <p className="exit">خروج</p>
-                <ListItemIcon className="exitIcon">
+            <ListItem button onClick={logOut} dir='rtl' style={{paddingTop:'0px'}}>
+            <ListItemIcon>
                     <ExitToAppIcon className="logoutIcon" />
                 </ListItemIcon>
+                <p className="exit">خروج</p>
+                
             </ListItem>
 
 

@@ -81,10 +81,15 @@ class MainDashboard extends Component {
                 res.data.data.map((event)=>{
                     var newE = event;
                     if(newE.type === 'comments'){
-                        newE.type= `برای ${newE.course_name} ${newE.session_name} کامنت گذاشت`
+                        if (newE.session_name !== null)
+                            newE.type= `برای ${newE.course_name} ${newE.session_name} کامنت گذاشت`
+                        else
+                        newE.type= `برای خبر ${newE.course_name} کامنت گذاشت`
                     }
                     else if(newE.type === 'like'){
-                        newE.type= `${newE.session_name} از ${newE.course_name} را لایک کرد`
+                        if (newE.session_name !== null)
+                            newE.type= `${newE.session_name} از ${newE.course_name} را لایک کرد`
+                        else newE.type= `خبر از ${newE.course_name} را لایک کرد`
                     }
                     else if(newE.type === 'join'){
                         newE.type= `به کلاس ${newE.course_name} پیوست`
