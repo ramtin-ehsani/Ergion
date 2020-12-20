@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './publicProfile.scss';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
@@ -13,15 +13,12 @@ import {
 	CardContent,
 	CircularProgress,
 	Grid,
-	Hidden,
 	Box,
 	Button,
 	Container,
-	TextField,
 	CardMedia,
 	CardActions
 } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
 import ShareIcon from '@material-ui/icons/Share';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
@@ -30,14 +27,8 @@ import img from '../../../Pics/cl.jpg';
 import axios from 'axios';
 import InfoIcon from '@material-ui/icons/Info';
 import EmailIcon from '@material-ui/icons/Email';
-import WorkIcon from '@material-ui/icons/Work';
-import SchoolIcon from '@material-ui/icons/School';
-import HistoryIcon from '@material-ui/icons/History';
-import TimelineIcon from '@material-ui/icons/Timeline';
-import PieChartIcon from '@material-ui/icons/PieChart';
-import { ChatRounded, ImportExport } from '@material-ui/icons';
 import Student from '@material-ui/icons/SupervisorAccount';
-import TeacherSuggestion from '../../StudentDashboard/Dashboard/teacher_sug/suggest_ins';
+import TeacherSuggestion from './TeacherSuggestion/suggestion';
 import ClassIcon from '@material-ui/icons/Class';
 
 const getWidth = () => window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -66,10 +57,6 @@ const useStyles = makeStyles((theme) =>
 			marginTop: '10px',
 			height: '670px'
 		},
-		// avatar: {
-		// 	height: 150,
-		// 	width: 150
-		// },
 		icon: {
 			marginRight: theme.spacing(2)
 		},
@@ -102,7 +89,6 @@ const useStyles = makeStyles((theme) =>
 			padding: theme.spacing(1)
 		},
 		cardActions: {
-			// height: 50,
 			padding: theme.spacing(0)
 		},
 		footer: {
@@ -127,8 +113,8 @@ const PublicProfile = () => {
 	const [ details, setDetails ] = useState(null);
 	const [ myclasses, setMyclasses ] = useState(null);
 	const [ open, setOpen ] = useState(false);
-	// let isEmpty = false;
-	const [isEmpty, setEmpty]=  useState(null);
+	const [ isEmpty, setEmpty ] = useState(null);
+	const [ isNull, setIsNull ] = useState(null);
 
 	const config = {
 		headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
@@ -163,19 +149,21 @@ const PublicProfile = () => {
 				setDetails(response.data);
 				setMyclasses(response.data.courses);
 				console.log(response.data);
-				if (response.data.personal_description === null) {
-					setEmpty(true)
-					// isEmpty = false;
+				if (response.data.courses.length > 0) {
+					setIsNull(false);
+				} else {
+					setIsNull(true);
 				}
-				else {
-					setEmpty(false)
-					// isEmpty = true;
+				if (response.data.personal_description === null) {
+					setEmpty(true);
+				} else {
+					setEmpty(false);
 				}
 			});
-			console.log(isEmpty)
+		// console.log(isEmpty);
 	}, []);
 
-	if (myclasses != null) {
+	if (details != null) {
 		return (
 			<React.Fragment>
 				<StylesProvider jss={jss}>
@@ -207,10 +195,10 @@ const PublicProfile = () => {
 									width > 1279 ? (
 										{
 											backgroundColor: 'none',
-											width: "100%",
-											direction: "rtl",
-											marginTop: "25px",
-											marginLeft: "20px"
+											width: '100%',
+											direction: 'rtl',
+											marginTop: '25px',
+											marginLeft: '20px'
 										}
 									) : (
 										{
@@ -272,18 +260,11 @@ const PublicProfile = () => {
 																							minWidth: 170,
 																							minHeight: 170,
 																							maxHeight: 170,
-																							maxWidth: 170
+																							maxWidth: 170,
+																							backgroundColor: 'lightred'
 																						}}
 																						src={details.profile_picture}
-																					>
-																						<p
-																							style={{
-																								fontFamily: 'IRANSans'
-																							}}
-																						>
-																							{details.firstname}
-																						</p>
-																					</Avatar>
+																					/>
 																				</div>
 																				<div className="wtf">
 																					<div className="separator">
@@ -356,16 +337,9 @@ const PublicProfile = () => {
 																							maxHeight: 150,
 																							maxWidth: 150
 																						}}
+																						alt={img}
 																						src={details.profile_picture}
-																					>
-																						<p
-																							style={{
-																								fontFamily: 'IRANSans'
-																							}}
-																						>
-																							{details.firstname}
-																						</p>
-																					</Avatar>
+																					/>
 																				</div>
 																			</div>
 																			<div className="name-div-600">
@@ -406,7 +380,7 @@ const PublicProfile = () => {
 																		</Box>
 																	</Grid>
 																)}
-																{ isEmpty !== true ?
+																{isEmpty !== true ? (
 																	<Grid
 																		item
 																		md={12}
@@ -433,8 +407,10 @@ const PublicProfile = () => {
 																				{details.personal_description}
 																			</div>
 																		</Box>
-																	</Grid> : ""
-																}
+																	</Grid>
+																) : (
+																	''
+																)}
 															</Grid>
 														</CardContent>
 													</div>
@@ -447,21 +423,22 @@ const PublicProfile = () => {
 						</div>
 						<CardHeader
 							title={
-								isEmpty === null ?
-								<Typography dir="rtl" component="h1" className="my-classes-title">
-									کلاس های من
-								</Typography> 
-								: 
-								<Typography dir="rtl" component="h1" className="my-classes-title-null">
-								کلاس های من
-							</Typography> 
+								isEmpty === null ? (
+									<Typography dir="rtl" component="h1" className="my-classes-title">
+										کلاس های استاد {details.lastname}
+									</Typography>
+								) : (
+									<Typography dir="rtl" component="h1" className="my-classes-title-null">
+										کلاس های استاد {details.lastname}
+									</Typography>
+								)
 							}
 						/>
 						<StylesProvider jss={jss}>
 							<main className="main">
 								<Container className={classes.cardGrid} maxWidth="xl">
 									<Grid dir="rtl" container spacing={3} lg={9} item={true} md={12}>
-										{myclasses &&
+										{isNull === false ? (
 											myclasses.map((course) => (
 												<Grid
 													className="cardSpacing"
@@ -540,7 +517,31 @@ const PublicProfile = () => {
 														</CardActions>
 													</Card>
 												</Grid>
-											))}
+											))
+										) : (
+											<Grid
+												item
+												xs={12}
+												sm={12}
+												md={12}
+											>
+												<div
+													style={{
+														width: '100%',
+														borderRadius: '25px',
+														fontSize: '25px',
+														backgroundColor: 'lightcyan',
+														color: 'black',
+														display: 'flex',
+														justifyContent: 'center',
+														alignItems: 'center',
+														height: '110px'
+													}}
+												>
+													متاسفانه استاد {details.lastname} تابحال کلاسی تشکیل نداده است.
+												</div>
+											</Grid>
+										)}
 									</Grid>
 								</Container>
 							</main>

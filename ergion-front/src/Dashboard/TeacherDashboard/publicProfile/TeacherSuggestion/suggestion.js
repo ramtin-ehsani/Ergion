@@ -1,30 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import './suggestion.scss';
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
-import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import { createMuiTheme, jssPreset, makeStyles, StylesProvider, ThemeProvider } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardHeader from '@material-ui/core/CardHeader';
 import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
-import Box from '@material-ui/core/Box';
 import Avatar from '@material-ui/core/Avatar';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import SearchIcon from '@material-ui/icons/Search';
-import ShareIcon from '@material-ui/icons/Share';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
-import { ButtonGroup } from '@material-ui/core';
-// import copy from "copy-to-clipboard";
+import { ButtonGroup, CardActionArea } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
 	icon: {
@@ -39,10 +27,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 	cardGrid: {
 		paddingTop: theme.spacing(3)
-		// backgroundColor: "red"
-		// paddingBottom: theme.spacing(3),
-		// marginLeft: theme.spacing(18),
-		// marginRight: theme.spacing(30),
 	},
 	card: {
 		height: '100%',
@@ -50,12 +34,6 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection: 'column'
 	},
 	cardMedia: {
-		// paddingTop: '56.25%', // 16:9filteredList
-		// minHeight: "100%",
-		// minWidth: "100%",
-		// maxWidth: "100%",
-		// maxHeight: "100%",
-
 		height: 100,
 		width: '100%',
 		objectFit: 'cover'
@@ -65,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(1)
 	},
 	cardActions: {
-		// height: 50,
 		padding: theme.spacing(0)
 	},
 	footer: {
@@ -75,9 +52,6 @@ const useStyles = makeStyles((theme) => ({
 	alertText: {
 		display: 'flex',
 		fontSize: 20
-	},
-	snackBAr: {
-		// paddingBottom: window.innerHeight - 150,    /*Change the position of Snackbar*/
 	},
 	avatar: {
 		backgroundColor: 'red'
@@ -171,14 +145,6 @@ const Suggestedins = () => {
 				<ThemeProvider theme={theme}>
 					<CssBaseline />
 					<main className="main">
-						{/* {isEmpty && (<Grid item >
-                                    <Typography className='typo' component="div">
-                                        <Box fontSize={20} m={1}>
-                                            کلاسی یافت نشد
-                                            </Box>
-                                    </Typography>
-                                </Grid>
-                                )} */}
 						<Card className="layout0">
 							<CardHeader
 								title={
@@ -189,38 +155,39 @@ const Suggestedins = () => {
 							/>
 							<CardContent className="cc">
 								<Grid className="cardSpacing" item xs={12} sm={0} md={0}>
-									{/*// <Grid className="cardSpacing" item key={course.id}>*/}
 									<Card className="layout1">
 										{courses &&
 											courses.map((course) => (
 												<div>
-													<CardHeader
-														className="layout2"
-														title={
-															<div>
-																<Typography className="namePlace" component="h4">
-																	{course.firstname + ' ' + course.lastname}
-																</Typography>
-																<Typography className="idPlace" component="h4">
-																	{course.email}
-																</Typography>{' '}
-															</div>
-														}
-														avatar={
-															<Avatar
-																src={course.profile_picture}
-																aria-label="recipe"
-																className={classes.avatar}
-															>
-																{course.firstname.split('')[0]}
-															</Avatar>
-														}
-													/>
+													<CardActionArea
+														onClick={() =>
+															(window.location = `/student_dashboard/public-profile/${course.id}`)}
+													>
+														<CardHeader
+															className="layout2"
+															title={
+																<div>
+																	<Typography className="namePlace" component="h4">
+																		{course.firstname + ' ' + course.lastname}
+																	</Typography>
+																	<Typography className="idPlace" component="h4">
+																		{course.email}
+																	</Typography>{' '}
+																</div>
+															}
+															avatar={
+																<Avatar
+																	src={course.profile_picture}
+																	aria-label="recipe"
+																	className={classes.avatar}
+																>
+																	{course.firstname.split('')[0]}
+																</Avatar>
+															}
+														/>
+													</CardActionArea>
 
 													<Divider />
-													{/* <Divider />
-                                            <Divider />
-                                            <Divider /> */}
 												</div>
 											))}
 									</Card>
