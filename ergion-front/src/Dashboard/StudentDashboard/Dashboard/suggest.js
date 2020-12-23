@@ -152,6 +152,12 @@ const Suggestedcourse = () => {
         return ('http://localhost:3000/course/' + id);
     }
 
+    const toFarsiNumber=(n)=> {
+        const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+    
+        return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+      }
+
     useEffect(() => {
         const showAllAPI = "http://127.0.0.1:8000/api/student/suggested-courses/";
         if ((JSON.parse(localStorage.getItem('user'))['role'])==="S")
@@ -215,7 +221,7 @@ const Suggestedcourse = () => {
                                                 {/*    مدرس: {course.owner_firstname + " " + course.owner_lastname}*/}
                                                 {/*</Typography>*/}
                                                 <Typography className="courseCapacityPlace" component="h6">
-                                                    ظرفیت کلاس:{" " + course.capacity}
+                                                    ظرفیت کلاس:{" " + toFarsiNumber(course.capacity)}
                                                 </Typography>
                                                 {/*<Typography className="courseCapacityPlace" component="h6">*/}
                                                 {/*     دوره:{" " + course.grade}*/}

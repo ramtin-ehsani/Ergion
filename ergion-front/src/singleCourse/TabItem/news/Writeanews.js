@@ -154,36 +154,42 @@ const Write = (props) => {
   });
 
   const onchangeimage = (event) => {
-    switch (isimage) {
-      case 0:
-        setimage1(event.target.files[0]);
-      case 1:
-        setimage2(event.target.files[0]);
-      case 2:
-        setimage3(event.target.files[0]);
-      case 3:
-        setimage4(event.target.files[0]);
+    if (event.target.files && event.target.files[0]) {
+      switch (isimage) {
+        case 0:
+          setimage1(event.target.files[0]);
+        case 1:
+          setimage2(event.target.files[0]);
+        case 2:
+          setimage3(event.target.files[0]);
+        case 3:
+          setimage4(event.target.files[0]);
+      }
+      if (isimage === 3) {
+        setdimage(true);
+      }
+      setisimage(isimage + 1);
+      setdvideo(true);
+      setdpdf(true);
+      console.log(event.target.files[0]);
+      console.log(image1);
     }
-    if (isimage === 3) {
-      setdimage(true);
-    }
-    setisimage(isimage + 1);
-    setdvideo(true);
-    setdpdf(true);
-    console.log(event.target.files[0]);
-    console.log(image1);
   };
   const onchangevideo = (event) => {
-    setvideo(event.target.files[0]);
-    setisvideo(true);
-    setdpdf(true);
-    setdimage(true);
+    if (event.target.files && event.target.files[0]) {
+      setvideo(event.target.files[0]);
+      setisvideo(true);
+      setdpdf(true);
+      setdimage(true);
+    }
   };
   const onchangepdf = (event) => {
-    setpdf(event.target.files[0]);
-    setispdf(true);
-    setdvideo(true);
-    setdimage(true);
+    if (event.target.files && event.target.files[0]) {
+      setpdf(event.target.files[0]);
+      setispdf(true);
+      setdvideo(true);
+      setdimage(true);
+    }
   };
   const image1delete = () => {
     setimage1(image2);
@@ -350,7 +356,7 @@ const Write = (props) => {
     <React.Fragment>
       <StylesProvider jss={jss}>
         <CssBaseline />
-        <div className="post-page-main" style={{display:'flex'}}>
+        <div className="post-page-main" style={{ display: "flex" }}>
           <Card className={classes.root} dir="rtl">
             <CardHeader
               className={classes.title}
@@ -393,7 +399,7 @@ const Write = (props) => {
             />
 
             <CardContent>
-              <Paper component="div" className={classes.root} >
+              <Paper component="div" className={classes.root}>
                 <Container className={classes.container}>
                   <Grid container>
                     <Grid container item>

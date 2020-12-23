@@ -42,7 +42,7 @@ const SingleCoursecontainer = ({ match }) => {
   const classes = useStyles();
 
   return (
-    <div className={"dashboard"} style={{margin:'20px'}}>
+    <div className={"dashboard"} style={{marginBottom:'20px'}}>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="1300" className={classes.container}>

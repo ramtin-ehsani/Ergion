@@ -9,9 +9,8 @@ import ReactPlayer from "react-player";
 import TableHead from "@material-ui/core/TableHead";
 import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Carousel from "../../../Carousel/Carousel";
-// import AssignmentIcon from "@material-ui/icons/Assignment";
 import AnnouncementIcon from "@material-ui/icons/Announcement";
 import OndemandVideoIcon from "@material-ui/icons/OndemandVideo";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
@@ -24,6 +23,7 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { BottomScrollListener } from "react-bottom-scroll-listener";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -32,10 +32,8 @@ import Skeleton from "@material-ui/lab/Skeleton";
 import { withStyles } from "@material-ui/core/styles";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-// import BallotIcon from "@material-ui/icons/Ballot";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import InputLabel from "@material-ui/core/InputLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FormControl from "@material-ui/core/FormControl";
@@ -73,6 +71,17 @@ import {
 import { ValidatorForm } from "react-material-ui-form-validator";
 
 const styles = (theme) => ({
+  "@global": {
+    "*::-webkit-scrollbar": {
+      width: "0.4em",
+    },
+    "*::-webkit-scrollbar-track": {
+      "-webkit-box-shadow": "inset 0 0 6px rgba(10,10,0,0.00)",
+    },
+    "*::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(0, 0, 0,.2)",
+    },
+  },
   root: {
     height: "auto",
     width: "100%",
@@ -91,7 +100,7 @@ const styles = (theme) => ({
     font: "20",
   },
   mediaCardPaperStyle: {
-    borderRadius: 4,
+    borderRadius: 8,
     boxShadow: 20,
   },
   tabFont: {
@@ -204,9 +213,15 @@ class TimeLine extends React.Component {
     this.setState({ link: shareLink, shareDialogOpen: true });
   };
 
-  loadMore = () => {
-    this.setState({ loadingMore: true });
-    this.getValues(this.state.page);
+  loadMore = (event) => {
+    const target = event.target;
+    if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+      console.log("hi");
+    } else {
+      console.log("bye");
+    }
+    // this.setState({ loadingMore: true });
+    // this.getValues(this.state.page);
   };
 
   componentDidMount() {
@@ -284,12 +299,11 @@ class TimeLine extends React.Component {
       });
   };
 
-
-  toFarsiNumber=(n)=> {
+  toFarsiNumber = (n) => {
     const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 
     return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
-  }
+  };
 
   font = 28;
 
@@ -674,7 +688,12 @@ class TimeLine extends React.Component {
                 <Paper
                   className={classes.mediaCardPaperStyle}
                   elevation={3}
-                  style={{ marginBottom: "30px",padding:'8px',marginTop:'5px',borderRadius:4 }}
+                  style={{
+                    marginBottom: "30px",
+                    padding: "8px",
+                    marginTop: "5px",
+                    borderRadius: 8,
+                  }}
                 >
                   <Grid container dir="rtl" spacing={2}>
                     <Grid
@@ -726,13 +745,13 @@ class TimeLine extends React.Component {
                       </div>
                     </Grid>
                     <Grid md={12} lg={12} sm={12} item xs={12}>
-                              <Divider
-                                style={{
-                                  marginLeft: "-8px",
-                                  marginRight: "-8px",
-                                }}
-                              />
-                            </Grid>
+                      <Divider
+                        style={{
+                          marginLeft: "-8px",
+                          marginRight: "-8px",
+                        }}
+                      />
+                    </Grid>
                     <Grid item lg={12} md={12} xs={12} sm={12}>
                       <Skeleton
                         animation="wave"
@@ -765,7 +784,12 @@ class TimeLine extends React.Component {
                 <Paper
                   className={classes.mediaCardPaperStyle}
                   elevation={3}
-                  style={{ marginBottom: "30px",padding:'8px', marginTop: "5px",borderRadius:4 }}
+                  style={{
+                    marginBottom: "30px",
+                    padding: "8px",
+                    marginTop: "5px",
+                    borderRadius: 8,
+                  }}
                 >
                   <Grid container dir="rtl" spacing={2}>
                     <Grid
@@ -817,13 +841,13 @@ class TimeLine extends React.Component {
                       </div>
                     </Grid>
                     <Grid md={12} lg={12} sm={12} item xs={12}>
-                              <Divider
-                                style={{
-                                  marginLeft: "-8px",
-                                  marginRight: "-8px",
-                                }}
-                              />
-                            </Grid>
+                      <Divider
+                        style={{
+                          marginLeft: "-8px",
+                          marginRight: "-8px",
+                        }}
+                      />
+                    </Grid>
                     <Grid item lg={12} md={12} xs={12} sm={12}>
                       <Skeleton
                         animation="wave"
@@ -857,30 +881,8 @@ class TimeLine extends React.Component {
             <div>
               {this.state.list.length > 0 ? (
                 <div>
-                  <div
-                  // dataLength={this.state.list.length}
-                  // next={this.loadMore}
-                  // hasMore={this.state.hasNext}
-                  // style={{ padding: "4px" }}
-                  // loader={
-                  //   <div
-                  //     style={{
-                  //       display: "flex",
-                  //       justifyContent: "center",
-                  //       padding: "16px",
-                  //     }}
-                  //   >
-                  //     {/* <Button
-                  //     color="primary"
-                  //     disabled={this.state.loadingMore}
-                  //     variant="outlined"
-                  //     style={{ borderRadius: 30, padding: "16px" }}
-                  //     onClick={this.loadMore}
-                  //   > */}
-                  //     <CircularProgress />
-                  //     {/* </Button> */}
-                  //   </div>
-                  // }
+                  <div onScroll={this.loadMore} 
+                  // style={{overflow: "auto",height:'1000px' }}
                   >
                     {this.state.list.map((timeline, index) => (
                       <div className={classes.paperStyle} key={timeline.id}>
@@ -890,8 +892,8 @@ class TimeLine extends React.Component {
                           style={{
                             marginBottom: "30px",
                             padding: "8px",
-                            marginTop:'5px',
-                            borderRadius:4
+                            marginTop: "5px",
+                            borderRadius: 8,
                           }}
                         >
                           <Grid container dir="rtl">
@@ -942,22 +944,24 @@ class TimeLine extends React.Component {
                                         style={{ color: "grey" }}
                                       >
                                         {" . " +
-                                          this.toFarsiNumber(human(new Date(timeline.time))
-                                            .replace("years", "سال")
-                                            .replace("year", "سال")
-                                            .replace("months", "ماه")
-                                            .replace("month", "ماه")
-                                            .replace("weeks", "هفته")
-                                            .replace("week", "هفته")
-                                            .replace("hours", "ساعت")
-                                            .replace("hour", "ساعت")
-                                            .replace("minutes", "دقیقه")
-                                            .replace("minute", "دقیقه")
-                                            .replace("days", "روز")
-                                            .replace("day", "روز")
-                                            .replace("seconds", "ثانیه")
-                                            .replace("second", "ثانیه")
-                                            .replace("ago", "پیش"))}
+                                          this.toFarsiNumber(
+                                            human(new Date(timeline.time))
+                                              .replace("years", "سال")
+                                              .replace("year", "سال")
+                                              .replace("months", "ماه")
+                                              .replace("month", "ماه")
+                                              .replace("weeks", "هفته")
+                                              .replace("week", "هفته")
+                                              .replace("hours", "ساعت")
+                                              .replace("hour", "ساعت")
+                                              .replace("minutes", "دقیقه")
+                                              .replace("minute", "دقیقه")
+                                              .replace("days", "روز")
+                                              .replace("day", "روز")
+                                              .replace("seconds", "ثانیه")
+                                              .replace("second", "ثانیه")
+                                              .replace("ago", "پیش")
+                                          )}
                                       </Box>
                                     </Typography>
                                   </div>
@@ -1217,14 +1221,18 @@ class TimeLine extends React.Component {
                                         style={{ color: "red" }}
                                         fontSize={14}
                                       >
-                                        {this.toFarsiNumber(timeline.likes_count)}
+                                        {this.toFarsiNumber(
+                                          timeline.likes_count
+                                        )}
                                       </Box>
                                     ) : (
                                       <Box
                                         style={{ color: "grey" }}
                                         fontSize={14}
                                       >
-                                        {this.toFarsiNumber(timeline.likes_count)}
+                                        {this.toFarsiNumber(
+                                          timeline.likes_count
+                                        )}
                                       </Box>
                                     )}
                                   </div>
@@ -1251,7 +1259,9 @@ class TimeLine extends React.Component {
                                       }}
                                       fontSize={14}
                                     >
-                                      {this.toFarsiNumber(timeline.comments_count)}
+                                      {this.toFarsiNumber(
+                                        timeline.comments_count
+                                      )}
                                     </Box>
                                   </div>
 
@@ -1301,9 +1311,7 @@ class TimeLine extends React.Component {
                                 >
                                   {timeline.comments.length > 0 && (
                                     <div>
-                                      <List
-                                        component="div"
-                                      >
+                                      <List component="div">
                                         {timeline.comments.map(
                                           (comment, commentIndex) => (
                                             <div key={comment.id}>
@@ -1456,7 +1464,7 @@ class TimeLine extends React.Component {
                                                           timeline.postUrl
                                                         }
                                                       >
-                                                        <ExpandMoreIcon/>
+                                                        <ExpandMoreIcon />
                                                       </IconButton>
                                                     </div>
                                                   </div>
@@ -1543,7 +1551,10 @@ class TimeLine extends React.Component {
                                                   }}
                                                 >
                                                   <InputBase
-                                                    style={{ padding: "8px",borderRadius:10 }}
+                                                    style={{
+                                                      padding: "8px",
+                                                      borderRadius: 10,
+                                                    }}
                                                     value={comment.replyRef}
                                                     onChange={(e) =>
                                                       this.handleReplyTextOnChange(
@@ -1605,7 +1616,7 @@ class TimeLine extends React.Component {
                                               timeline.postUrl
                                             }
                                           >
-                                            <ExpandMoreIcon/>
+                                            <ExpandMoreIcon />
                                           </IconButton>
                                         </div>
                                       )}
@@ -1625,7 +1636,7 @@ class TimeLine extends React.Component {
                                     style={{
                                       padding: "8px",
                                       marginTop: "6px",
-                                      borderRadius:10 
+                                      borderRadius: 10,
                                     }}
                                     value={timeline.commentRef}
                                     onChange={(e) =>
@@ -1664,7 +1675,7 @@ class TimeLine extends React.Component {
                     ))}
                   </div>
 
-                  {this.state.hasNext && (
+                  {/* {this.state.hasNext && (
                     <div
                       style={{
                         display: "flex",
@@ -1686,7 +1697,7 @@ class TimeLine extends React.Component {
                         )}
                       </Button>
                     </div>
-                  )}
+                  )} */}
                 </div>
               ) : (
                 <div

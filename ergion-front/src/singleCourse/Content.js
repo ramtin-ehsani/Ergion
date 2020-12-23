@@ -117,17 +117,6 @@ const StyledMenuItem = withStyles((theme) => ({
 }))(MenuItem);
 
 const styles = (theme) => ({
-  "@global": {
-    "*::-webkit-scrollbar": {
-      width: "0.4em",
-    },
-    "*::-webkit-scrollbar-track": {
-      "-webkit-box-shadow": "inset 0 0 6px rgba(10,10,0,0.00)",
-    },
-    "*::-webkit-scrollbar-thumb": {
-      backgroundColor: "rgba(0, 0, 0,.2)",
-    },
-  },
   root: {
     // height: 'auto',
     width: "100%",
@@ -446,8 +435,27 @@ class NestedList extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this.ownerChecker();
+    if(this.props.course.id!==undefined){
+      this.ownerChecker(this.props.course);
+    }
+    
   }
+
+  static getDerivedStateFromProps(nextProps,prevState){
+    if(nextProps.course.id!==prevState.courseId){
+      return {course:nextProps.course}
+    }
+    return {course:''}
+
+  }
+
+  componentDidUpdate(){
+    if(this.state.course!==''){
+      this.ownerChecker(this.state.course);
+    }
+
+  }
+
 
   componentWillUnmount() {
     this._isMounted = false;
@@ -457,13 +465,12 @@ class NestedList extends React.Component {
     headers: { Authorization: `Token ${localStorage.getItem("api_key")}` },
   };
 
-  ownerChecker = () => {
-    setTimeout(() => {
+  ownerChecker = (course) => {
       if (JSON.parse(localStorage.getItem("user")) !== null) {
         if (JSON.parse(localStorage.getItem("user"))["role"] === "T") {
           if (
             JSON.parse(localStorage.getItem("user"))["id"] ===
-            this.props.course.instructor_id
+            course.instructor_id
           ) {
             if (this._isMounted) {
               this.setState({ isOwner: true });
@@ -471,16 +478,15 @@ class NestedList extends React.Component {
           }
         }
       }
-      this.setState({ courseId: this.props.course.id });
-      this.getValues();
-    }, 2000);
+      this.setState({ courseId: course.id });
+      this.getValues(course.id);
   };
 
-  getValues = () => {
+  getValues = (id) => {
     axios
       .get(
         "http://127.0.0.1:8000/api/course/chapters/?course_id=" +
-          this.state.courseId,
+          id,
         this.config
       )
       .then((response) => {
@@ -603,13 +609,19 @@ class NestedList extends React.Component {
   };
 
   onChange = (event) => {
-    this.setState({ newChapterValue: event.target.value });
+    this.setState({ newChapterValue: this.toFarsiNumber(event.target.value) });
     if (event.target.value.length > 0) {
       this.setState({ isButtonShown: true });
     } else {
       this.setState({ isButtonShown: false });
     }
   };
+
+  toFarsiNumber=(n)=> {
+    const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+
+    return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+  }
 
   handleClick = (e) => {
     e.preventDefault();

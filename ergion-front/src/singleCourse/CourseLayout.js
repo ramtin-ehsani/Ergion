@@ -254,7 +254,7 @@ const useStyles = makeStyles((theme) => ({
                 "Authorization": `Token ${localStorage.getItem('api_key')}`,
             },
         }).then((response) => {
-            console.log(response)
+            // console.log(response)
             setDialogOpen(false)
         props.getupdate();
 

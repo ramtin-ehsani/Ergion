@@ -53,6 +53,7 @@ function Copyright() {
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 const theme = createMuiTheme({
+
   typography: {
     fontFamily: '"Vazir", sans-serif',
   },
@@ -72,6 +73,17 @@ function Alert(props) {
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  "@global": {
+    "*::-webkit-scrollbar": {
+      width: "0.4em",
+    },
+    "*::-webkit-scrollbar-track": {
+      "-webkit-box-shadow": "inset 0 0 6px rgba(10,10,0,0.00)",
+    },
+    "*::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(0, 0, 0,.2)",
+    },
+  },
   root: {
     display: "flex",
     padding: theme.spacing(0),

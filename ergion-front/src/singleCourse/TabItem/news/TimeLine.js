@@ -1156,14 +1156,14 @@ class TimeLine extends React.Component {
                                           style={{ color: "red" }}
                                           fontSize={14}
                                         >
-                                          {timeline.likes_count}
+                                          {this.toFarsiNumber(timeline.likes_count)}
                                         </Box>
                                       ) : (
                                         <Box
                                           style={{ color: "grey" }}
                                           fontSize={14}
                                         >
-                                          {timeline.likes_count}
+                                          {this.toFarsiNumber(timeline.likes_count)}
                                         </Box>
                                       )}
                                     </div>
@@ -1190,7 +1190,7 @@ class TimeLine extends React.Component {
                                         }}
                                         fontSize={14}
                                       >
-                                        {timeline.comments_count}
+                                        {this.toFarsiNumber(timeline.comments.length)}
                                       </Box>
                                     </div>
 
@@ -1620,8 +1620,8 @@ class TimeLine extends React.Component {
                     }}
                   >
                     <Typography>
-                      <Box fontSize={18} p={20}>
-                        مطلبی وجود ندارد
+                      <Box fontSize={18} p={3}>
+                        خبری وجود ندارد
                       </Box>
                     </Typography>
                   </div>
