@@ -142,6 +142,12 @@ class Questions extends Component {
 
     }
 
+    toFarsiNumber=(n)=> {
+        const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+    
+        return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+    }
+
     render() {
         const { classes } = this.props
         const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
@@ -208,9 +214,13 @@ class Questions extends Component {
                                                                     color="textPrimary"
                                                                 >
                                                                     {
-                                                                        time(new Date(question.creation_time))
+                                                                        this.toFarsiNumber(time(new Date(question.creation_time))
                                                                         .replace("years", "سال")
                                                                         .replace("year", "سال")
+                                                                        .replace("months", "ماه")
+                                                                        .replace("month", "ماه")
+                                                                        .replace("weeks", "هفته")
+                                                                        .replace("week", "هفته")
                                                                         .replace("hours", "ساعت")
                                                                         .replace("hour", "ساعت")
                                                                         .replace("minutes", "دقیقه")
@@ -219,7 +229,7 @@ class Questions extends Component {
                                                                         .replace("day", "روز")
                                                                         .replace("seconds", "ثانیه")
                                                                         .replace("second", "ثانیه")
-                                                                        .replace("ago", "پیش")
+                                                                        .replace("ago", "پیش"))
                                                                         +
                                                                         " . "
                                                                     }
@@ -267,9 +277,13 @@ class Questions extends Component {
                                                                             color="textPrimary"
                                                                         >
                                                                         {
-                                                                        time(new Date(reply.creation_time))
+                                                                        this.toFarsiNumber(time(new Date(reply.creation_time))
                                                                         .replace("years", "سال")
                                                                         .replace("year", "سال")
+                                                                        .replace("months", "ماه")
+                                                                        .replace("month", "ماه")
+                                                                        .replace("weeks", "هفته")
+                                                                        .replace("week", "هفته")
                                                                         .replace("hours", "ساعت")
                                                                         .replace("hour", "ساعت")
                                                                         .replace("minutes", "دقیقه")
@@ -278,7 +292,7 @@ class Questions extends Component {
                                                                         .replace("day", "روز")
                                                                         .replace("seconds", "ثانیه")
                                                                         .replace("second", "ثانیه")
-                                                                        .replace("ago", "پیش")
+                                                                        .replace("ago", "پیش"))
                                                                         +
                                                                         " . "
                                                                         }
@@ -318,7 +332,7 @@ class Questions extends Component {
                     ): null}
                     {this.state.isStudent ? (
                     <Grid dir='rtl' container direction="row" justify='center' alignItems="center" spacing={2}>
-                        <Grid container item xs={12} sm={6} style={{maxWidth: '60%',flexBasis: '70%',}}>
+                        <Grid container item xs={12} sm={12} lg={7}>
                             <FormControl required fullWidth className={classes.formControl} fullWidth variant="outlined">
                                 <InputLabel className='text' htmlFor="outlined-adornment">سوال جدید</InputLabel>
                                 <OutlinedInput
@@ -333,7 +347,7 @@ class Questions extends Component {
                             </FormControl>
                         </Grid>
 
-                        <Grid container item xs={12} sm style={{maxWidth: '20%',flexBasis: '70%',}}>
+                        <Grid container item xs={6} sm lg>
                             <FormControl required fullWidth variant="outlined" className={classes.formControl}>
                                 <InputLabel className='text' id="demo-simple-select-label">جلسه</InputLabel>
                                 <Select
@@ -352,7 +366,7 @@ class Questions extends Component {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid container item xs sm justify='center' style={{maxWidth: '20%',flexBasis: '70%',}}>
+                        <Grid container item xs={6} sm lg justify='center'>
                             <Button
                             fullWidth
                             disabled={this.state.isButtonShownEpisode && this.state.isButtonShownText ? false : true}
