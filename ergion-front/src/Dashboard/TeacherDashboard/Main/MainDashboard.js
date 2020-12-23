@@ -112,6 +112,13 @@ class MainDashboard extends Component {
         
 
     }
+    
+    toFarsiNumber=(n)=> {
+        const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+    
+        return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+    }
+
     render() {
         const { classes } = this.props;
         const history = this.props.history;
@@ -243,9 +250,13 @@ class MainDashboard extends Component {
                                                                 color="textSecondary"
                                                             >
                                                                 {
-                                                                    time(new Date(event.creation_time))
+                                                                    this.toFarsiNumber(time(new Date(event.creation_time))
                                                                     .replace("years", "سال")
                                                                     .replace("year", "سال")
+                                                                    .replace("months", "ماه")
+                                                                    .replace("month", "ماه")
+                                                                    .replace("weeks", "هفته")
+                                                                    .replace("week", "هفته")
                                                                     .replace("hours", "ساعت")
                                                                     .replace("hour", "ساعت")
                                                                     .replace("minutes", "دقیقه")
@@ -254,7 +265,7 @@ class MainDashboard extends Component {
                                                                     .replace("day", "روز")
                                                                     .replace("seconds", "ثانیه")
                                                                     .replace("second", "ثانیه")
-                                                                    .replace("ago", "پیش")
+                                                                    .replace("ago", "پیش"))
                                                                     +
                                                                     " . "
                                                                 }
