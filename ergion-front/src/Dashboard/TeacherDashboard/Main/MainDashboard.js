@@ -13,6 +13,7 @@ import UpdateIcon from '@material-ui/icons/Update';
 import InfiniteScroll from 'react-infinite-scroller';
 import axios from 'axios';
 import time from "@jacobmarshall/human-time";
+import PeopleOutlineOutlinedIcon from '@material-ui/icons/PeopleOutlineOutlined';
 
 const useStyles = (theme) => ({
     "@global": {
@@ -184,7 +185,23 @@ class MainDashboard extends Component {
                     </Grid>
                 </Grid>
                 <Grid container item lg={10} className={classes.grid} direction='row' spacing={4}>
-                    <Grid item xs>
+                    <Grid item xs={12} lg={4}>
+                        <Card dir='rtl' style={{ width: '100%', borderRadius: 16 }}>
+                            <CardHeader
+                                style={{ textAlign: 'right' }}
+                                avatar={
+                                    <PeopleOutlineOutlinedIcon />
+                                }
+                                title={
+                                    <Typography style={{ padding: '8px' }} className='text' variant='h5'>
+                                        عوض شدن
+                                </Typography>
+                                }
+                            />
+                            <Divider light />
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} lg={8}>
                         <Card dir='rtl' style={{ width: '100%', borderRadius: 16 }}>
                             <CardHeader
                                 style={{ textAlign: 'right' }}
