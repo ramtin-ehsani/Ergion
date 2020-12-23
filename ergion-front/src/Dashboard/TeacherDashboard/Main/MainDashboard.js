@@ -120,19 +120,20 @@ class MainDashboard extends Component {
                 <CssBaseline />
                 <Grid container item lg={10} className={classes.grid} direction='row' spacing={4}>
                     <Grid item xs>
-                        <Badge style={{ width: '100%' }} color="secondary" badgeContent={this.state.count}>
                             <Card style={{ width: '100%' }} dir='rtl' className={classes.card}>
                                 <CardActionArea onClick={() => history.push('/teacher_dashboard/questions')}>
                                     <CardHeader
-                                        style={{ padding: '8px' }}
+                                        style={{ padding: '14px', textAlign:'right'}}
                                         avatar={
+                                            <Badge color="secondary" badgeContent={this.state.count}>
                                             <Avatar
                                                 style={{ width: '70px', height: '70px' }} className={classes.avatarMail}>
                                                 <MailIcon style={{ width: '50px', height: '50px', color: 'white' }} />
                                             </Avatar>
+                                            </Badge>
                                         }
                                         title={
-                                            <Typography className='text' variant='h5'>
+                                            <Typography className='text' variant='h5' style={{marginRight:'16px'  }}>
                                                 سوال ها
                                         </Typography>
                                         }
@@ -140,13 +141,12 @@ class MainDashboard extends Component {
                                     />
                                 </CardActionArea>
                             </Card>
-                        </Badge>
                     </Grid>
                     <Grid item xs>
                         <Card style={{ width: '100%' }} dir='rtl' className={classes.card}>
                             <CardActionArea onClick={() => history.push('/teacher_dashboard/added_courses')}>
                                 <CardHeader
-                                    style={{ padding: '8px' }}
+                                    style={{ padding: '14px', textAlign:'right'}}
                                     avatar={
                                         <Avatar
                                             style={{ width: '70px', height: '70px' }} className={classes.avatarClass}>
@@ -154,7 +154,7 @@ class MainDashboard extends Component {
                                         </Avatar>
                                     }
                                     title={
-                                        <Typography className='text' variant='h5'>
+                                        <Typography className='text' variant='h5' style={{marginRight:'16px'}}>
                                             کلاس ها
                                         </Typography>
                                     }
@@ -166,7 +166,7 @@ class MainDashboard extends Component {
                         <Card style={{ width: '100%' }} dir='rtl' className={classes.card}>
                             <CardActionArea>
                                 <CardHeader
-                                    style={{ padding: '8px' }}
+                                    style={{ padding: '14px', textAlign:'right'}}
                                     avatar={
                                         <Avatar
                                             style={{ width: '70px', height: '70px' }} className={classes.avatarStds}>
@@ -174,7 +174,7 @@ class MainDashboard extends Component {
                                         </Avatar>
                                     }
                                     title={
-                                        <Typography className='text' variant='h5'>
+                                        <Typography className='text' variant='h5' style={{marginRight:'16px'}}>
                                             دانش آموزان
                                         </Typography>
                                     }
