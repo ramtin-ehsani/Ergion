@@ -9,6 +9,7 @@ import ReactPlayer from "react-player";
 import TableHead from "@material-ui/core/TableHead";
 import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Carousel from "../../../Carousel/Carousel";
 // import AssignmentIcon from "@material-ui/icons/Assignment";
 import AnnouncementIcon from "@material-ui/icons/Announcement";
@@ -673,7 +674,7 @@ class TimeLine extends React.Component {
                 <Paper
                   className={classes.mediaCardPaperStyle}
                   elevation={3}
-                  style={{ marginBottom: "30px",padding:'8px' }}
+                  style={{ marginBottom: "30px",padding:'8px',marginTop:'5px',borderRadius:4 }}
                 >
                   <Grid container dir="rtl" spacing={2}>
                     <Grid
@@ -764,7 +765,7 @@ class TimeLine extends React.Component {
                 <Paper
                   className={classes.mediaCardPaperStyle}
                   elevation={3}
-                  style={{ marginBottom: "30px",padding:'8px', marginTop: "30px" }}
+                  style={{ marginBottom: "30px",padding:'8px', marginTop: "5px",borderRadius:4 }}
                 >
                   <Grid container dir="rtl" spacing={2}>
                     <Grid
@@ -889,6 +890,8 @@ class TimeLine extends React.Component {
                           style={{
                             marginBottom: "30px",
                             padding: "8px",
+                            marginTop:'5px',
+                            borderRadius:4
                           }}
                         >
                           <Grid container dir="rtl">
@@ -942,6 +945,10 @@ class TimeLine extends React.Component {
                                           this.toFarsiNumber(human(new Date(timeline.time))
                                             .replace("years", "سال")
                                             .replace("year", "سال")
+                                            .replace("months", "ماه")
+                                            .replace("month", "ماه")
+                                            .replace("weeks", "هفته")
+                                            .replace("week", "هفته")
                                             .replace("hours", "ساعت")
                                             .replace("hour", "ساعت")
                                             .replace("minutes", "دقیقه")
@@ -1210,14 +1217,14 @@ class TimeLine extends React.Component {
                                         style={{ color: "red" }}
                                         fontSize={14}
                                       >
-                                        {timeline.likes_count}
+                                        {this.toFarsiNumber(timeline.likes_count)}
                                       </Box>
                                     ) : (
                                       <Box
                                         style={{ color: "grey" }}
                                         fontSize={14}
                                       >
-                                        {timeline.likes_count}
+                                        {this.toFarsiNumber(timeline.likes_count)}
                                       </Box>
                                     )}
                                   </div>
@@ -1244,7 +1251,7 @@ class TimeLine extends React.Component {
                                       }}
                                       fontSize={14}
                                     >
-                                      {timeline.comments_count}
+                                      {this.toFarsiNumber(timeline.comments_count)}
                                     </Box>
                                   </div>
 
@@ -1268,6 +1275,14 @@ class TimeLine extends React.Component {
                                                                     </IconButton> */}
                               </div>
                             </Grid>
+                            <Grid md={12} lg={12} sm={12} item xs={12}>
+                              <Divider
+                                style={{
+                                  marginLeft: "-8px",
+                                  marginRight: "-8px",
+                                }}
+                              />
+                            </Grid>
 
                             <Grid item md={12} lg={12} sm={12} xs={12}>
                               <div
@@ -1288,15 +1303,6 @@ class TimeLine extends React.Component {
                                     <div>
                                       <List
                                         component="div"
-                                        aria-labelledby="nested-comment-list-subheader"
-                                        subheader={
-                                          <ListSubheader
-                                            component="div"
-                                            id="nested-comment-list-subheader"
-                                          >
-                                            کامنت ها
-                                          </ListSubheader>
-                                        }
                                       >
                                         {timeline.comments.map(
                                           (comment, commentIndex) => (
@@ -1440,7 +1446,7 @@ class TimeLine extends React.Component {
                                                           "center",
                                                       }}
                                                     >
-                                                      <Button
+                                                      <IconButton
                                                         // color="primary"
                                                         style={{
                                                           padding: "8px",
@@ -1450,9 +1456,8 @@ class TimeLine extends React.Component {
                                                           timeline.postUrl
                                                         }
                                                       >
-                                                        مشاهده ی بقیه ریپلای ها
-                                                        ...
-                                                      </Button>
+                                                        <ExpandMoreIcon/>
+                                                      </IconButton>
                                                     </div>
                                                   </div>
                                                 ) : (
@@ -1590,7 +1595,7 @@ class TimeLine extends React.Component {
                                             justifyContent: "center",
                                           }}
                                         >
-                                          <Button
+                                          <IconButton
                                             // color="primary"
                                             style={{
                                               padding: "8px",
@@ -1600,8 +1605,8 @@ class TimeLine extends React.Component {
                                               timeline.postUrl
                                             }
                                           >
-                                            مشاهده ی بقیه کامنت ها ...
-                                          </Button>
+                                            <ExpandMoreIcon/>
+                                          </IconButton>
                                         </div>
                                       )}
                                     </div>

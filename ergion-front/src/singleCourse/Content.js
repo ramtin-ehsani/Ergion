@@ -1233,7 +1233,7 @@ class NestedList extends React.Component {
                       in={item.isOpened}
                       timeout="auto"
                       unmountOnExit
-                      style={{ marginLeft: "14px", marginRight: "14px" }}
+                      style={{ marginLeft: "4px", marginRight: "4px" }}
                     >
                       {item.episodes.length > 0 ? (
                         <div>

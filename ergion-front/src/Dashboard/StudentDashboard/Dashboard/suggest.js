@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
         // paddingBottom: window.innerHeight - 150,    /*Change the position of Snackbar*/
     },
     avatar: {
-        backgroundColor: "red",
+        // backgroundColor: "red",
     },
 
 }));
@@ -184,7 +184,7 @@ const Suggestedcourse = () => {
                                 </Grid>
                                 )} */}
                                 {courses && courses.map((course) =>
-                                    <Grid className="cardSpacing" item key={course.id} xs={12} sm={0} md={0}>
+                                    <Grid className="cardSpacing" item key={course.id} xs={12} sm={false} md={false}>
                                         {/*// <Grid className="cardSpacing" item key={course.id}>*/}
                                         <Card className="layout1">
                                             <CardHeader

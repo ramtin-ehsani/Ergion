@@ -19,6 +19,7 @@ import { Grid } from "@material-ui/core";
 import Write from "./TabItem/news/Writeanews";
 import axios from "axios";
 import TimeLine from "./TabItem/news/TimeLine";
+import { withStyles } from "@material-ui/core/styles";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   const classes = useStyles();
@@ -31,7 +32,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
+        <Box p={2}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -87,15 +88,15 @@ export default function FullWidthTabs(props) {
         }
       } else setS(true);
     }
-    setTimeout(() => {
-      const promise = axios.get("http://127.0.0.1:8000/api/course/news/", {
-        params: { course_id: props.course.id },
-        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
-      });
-      promise.then((response) => {
-        setnewslist(response.data);
-      });
-    }, 2000);
+    // setTimeout(() => {
+    //   const promise = axios.get("http://127.0.0.1:8000/api/course/news/", {
+    //     params: { course_id: props.course.id },
+    //     headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+    //   });
+    //   promise.then((response) => {
+    //     setnewslist(response.data);
+    //   });
+    // }, 2000);
   });
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -104,11 +105,10 @@ export default function FullWidthTabs(props) {
   const handleChangeIndex = (index) => {
     setValue(index);
   };
-  const [upflag,setupflag]=React.useState(false);
-const getup=()=>
-{
-setupflag(true);
-}
+  const [upflag, setupflag] = React.useState(false);
+  const getup = () => {
+    setupflag(true);
+  };
   return (
     <div className={classes.root}>
       <ThemeProvider theme={theme}>
@@ -135,12 +135,14 @@ setupflag(true);
           onChangeIndex={handleChangeIndex}
         >
           <TabPanel value={value} index={0} dir={theme.direction}>
-  <Content course={props.course} />  
+            <Content course={props.course} />
           </TabPanel>
           <TabPanel value={value} index={1} dir={theme.direction}>
-          
-
-            <TimeLine courseid={props.course.id} coursem={props.course}  isowner={isowner} />
+            <TimeLine
+              courseid={props.course.id}
+              coursem={props.course}
+              isowner={isowner}
+            />
           </TabPanel>
           <TabPanel value={value} index={2} dir={theme.direction}>
             <Questions />

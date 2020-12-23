@@ -5,7 +5,7 @@ import Toolbars from "./Toolbar/Toolbar"
 import "./TeacherDashboard.scss";
 import TeacherProfile from '../../Profile/TeacherProfile';
 import { Route, Switch } from 'react-router-dom';
-import Template from './Template'
+// import Template from './Template'
 import * as actionTypes from '../../store/actions'
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
