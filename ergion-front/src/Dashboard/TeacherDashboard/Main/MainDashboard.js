@@ -194,7 +194,7 @@ class MainDashboard extends Component {
                                 }
                                 title={
                                     <Typography style={{ padding: '8px' }} className='text' variant='h5'>
-                                        عوض شدن
+                                        عضو شدن
                                 </Typography>
                                 }
                             />
