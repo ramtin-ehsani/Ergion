@@ -158,8 +158,8 @@ class Questions extends Component {
         return (
             <StylesProvider jss={jss}>
                 <ThemeProvider theme={theme}>
-                    <Grid dir='rtl' container style={{ margin: '4px', padding: "16px", maxHeight: '450px', overflow: 'auto' }}>
-                        <Grid item xs={12}>
+                    <Grid container style={{ margin: '4px', padding: "16px", maxHeight: '450px', overflow: 'auto' }}>
+                        <Grid dir='rtl' item xs={12}>
                             <List  style={{boxShadow:'2px'}}>
                                 {this.state.questions.length === 0 ?
                                 (<Typography className='text'>
