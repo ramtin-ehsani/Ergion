@@ -7,7 +7,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import AddButtonAndPopUp from "./PopUp/PopUp";
 import "./CourseLayout.scss";
@@ -35,6 +35,11 @@ import Fab from "@material-ui/core/Fab";
 import rtl from "jss-rtl";
 import { create } from "jss";
 import { TextField } from "@material-ui/core";
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import LockIcon from "@material-ui/icons/Lock";
+import LockOpenIcon from "@material-ui/icons/LockOpen";
+import Paper from "@material-ui/core/Paper";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -135,7 +140,25 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 300,
     margin: 8,
   },
+  toggleButtonPaper: {
+    display: "flex",
+    border: `1px solid ${theme.palette.divider}`,
+    flexWrap: "wrap",
+  },
 }));
+
+const StyledToggleButtonGroup = withStyles((theme) => ({
+  grouped: {
+    margin: theme.spacing(0.5),
+    border: "none",
+    "&:not(:first-child)": {
+      borderRadius: theme.shape.borderRadius,
+    },
+    "&:first-child": {
+      borderRadius: theme.shape.borderRadius,
+    },
+  },
+}))(ToggleButtonGroup);
 
 function CourseLayout(props) {
   // Add Course Dialog
@@ -251,6 +274,19 @@ function CourseLayout(props) {
         console.log(error);
       });
   };
+  const [accessType, setaccessType] = React.useState("public");
+
+  const handleAccessChange = (event, newAccess) => {
+    localStorage.setItem("course_name", newCourseName.current.value);
+    localStorage.setItem("course_subject", newCourseSubject.current.value);
+    localStorage.setItem("course_grade", newCourseGrade.current.value);
+    localStorage.setItem("course_capacity", newCourseCapacity.current.value);
+    localStorage.setItem(
+      "course_description",
+      newCourseDescription.current.value
+    );
+    setaccessType(newAccess);
+  };
 
   const newCourseButton = () => {
     setSelectedFile(null);
@@ -260,6 +296,7 @@ function CourseLayout(props) {
     localStorage.setItem("course_grade", "1");
     localStorage.setItem("course_capacity", 10);
     localStorage.setItem("course_description", "");
+    localStorage.setItem("course_accessibility", "public");
     setDialogOpen(true);
   };
   const NewCourseDialog = (props) => {
@@ -287,7 +324,9 @@ function CourseLayout(props) {
 
               <DialogContent>
                 <div className={classes.newCourseAddImageContainer}>
-                  <Typography className={classes.typoStyle}>کاور</Typography>
+                  <Typography className={classes.typoStyle}>
+                    <Box>کاور</Box>
+                  </Typography>
                   <CardMedia
                     className={classes.newCourseCardMedia}
                     component="img"
@@ -309,7 +348,61 @@ function CourseLayout(props) {
                 </div>
 
                 <CardContent>
-                  <Grid container spacing={2} dir="rtl">
+                  <Grid container spacing={3} dir="rtl">
+                    <Grid item md={12} xs={12}>
+                      <Grid
+                        container
+                        direction="column"
+                        justify="center"
+                        alignItems="center"
+                        spacing={2}
+                      >
+                        <Grid item md={12} xs={12}>
+                          <Typography style={{ alignSelf: "center" }}>
+                            <Box> نوع دسترسی دانش آموزان :</Box>
+                          </Typography>
+                        </Grid>
+                        <Grid item md={12} xs={12}>
+                          <Paper
+                            className={classes.toggleButtonPaper}
+                            style={{ alignSelf: "center" }}
+                          >
+                            <StyledToggleButtonGroup
+                              size="large"
+                              value={accessType}
+                              exclusive
+                              onChange={handleAccessChange}
+                              aria-label="text alignment"
+                            >
+                              <ToggleButton
+                                value="public"
+                                aria-label="right aligned"
+                                style={accessType==='public'?{ backgroundColor: "#3f51b5", color: "white" } : { backgroundColor: "transparent", color: "grey" }}
+                              >
+                                <div style={{ display: "flex" }}>
+                                  <Typography>
+                                    <Box>عمومی</Box>
+                                  </Typography>
+                                  <LockOpenIcon />
+                                </div>
+                              </ToggleButton>
+                              <ToggleButton
+                                value="private"
+                                aria-label="left aligned"
+                                style={accessType==='private'?{ backgroundColor: "#3f51b5", color: "white" } : { backgroundColor: "transparent", color: "grey" }}
+                              >
+                                <div style={{ display: "flex" }}>
+                                  <Typography>
+                                    <Box>خصوصی</Box>
+                                  </Typography>
+                                  <LockIcon />
+                                </div>
+                              </ToggleButton>
+                            </StyledToggleButtonGroup>
+                          </Paper>
+                        </Grid>
+                      </Grid>
+                    </Grid>
                     <Grid item md={6} xs={12}>
                       <TextValidator
                         fullWidth
@@ -488,7 +581,7 @@ function CourseLayout(props) {
   return (
     <React.Fragment>
       <CssBaseline />
-      <main style={{margin:'20px'}}>
+      <main style={{ margin: "20px" }}>
         {/* Hero unit */}
         {/* <div className={classes.heroContent}>
                     <Container maxWidth="sm">

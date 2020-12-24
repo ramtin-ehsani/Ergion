@@ -4,6 +4,7 @@ import AddButtonAndPopUp from "./PopUp";
 import Title from "./Title";
 import Button from "@material-ui/core/Button";
 import Fade from "@material-ui/core/Fade";
+import Zoom from "@material-ui/core/Zoom";
 import {
   createMuiTheme,
   jssPreset,
@@ -254,13 +255,15 @@ export default function Information(props) {
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
-        <CardMedia
-          className={classes.cover}
-          height="180"
-          component="img"
-          image={cover}
-          title={name}
-        />
+        <Zoom in={loaded} timeout={700}>
+          <CardMedia
+            className={classes.cover}
+            height="180"
+            component="img"
+            image={cover}
+            title={name}
+          />
+        </Zoom>
         <div className={classes.informationtext}>
           <Grid container>
             <Grid container item>
@@ -269,7 +272,7 @@ export default function Information(props) {
                   {isowner ? (
                     <CourseLayout course={props.course} getupdate={getcourse} />
                   ) : (
-                    <Fade in={loaded} timeout={1000}>
+                    <Zoom in={loaded} timeout={700}>
                       <div>
                         {hascourse ? (
                           <Button
@@ -319,12 +322,12 @@ export default function Information(props) {
                         </Button>
                       )} */}
                       </div>
-                    </Fade>
+                    </Zoom>
                   )}
                 </div>
               )}
 
-              <IconButton aria-label="add an alarm">
+              <IconButton aria-label="add an alarm" style={{marginTop:'-8px',marginLeft:'10px'}}>
                 <ShareIcon />
               </IconButton>
               <Grid item alignItems="flex-start" justify="flex-start"></Grid>
@@ -342,12 +345,12 @@ export default function Information(props) {
                   inline
                   color="primary"
                 >
-                  <Fade
+                  <Zoom
                     in={loaded}
                     style={{ transitionDelay: loaded ? "300ms" : "0ms" }}
                   >
                     <Box> {name} </Box>
-                  </Fade>
+                  </Zoom>
                 </Typography>
               </Grid>
             </Grid>
@@ -355,7 +358,7 @@ export default function Information(props) {
 
           <Grid container style={{ marginTop: "8px" }}>
             <Grid container justify="flex-end">
-              <Fade
+              <Zoom
                 in={loaded}
                 style={{ transitionDelay: loaded ? "600ms" : "0ms" }}
               >
@@ -368,7 +371,7 @@ export default function Information(props) {
                     <Box fontWeight="fontWeightBold">{subject}</Box>
                   </Typography>
                 </div>
-              </Fade>
+              </Zoom>
             </Grid>
 
             <Grid
@@ -378,14 +381,14 @@ export default function Information(props) {
               direction="row-reverse"
               justifyContent="right"
             >
-              <Fade
+              <Zoom
                 in={loaded}
                 style={{ transitionDelay: loaded ? "900ms" : "0ms" }}
               >
                 <Typography inline variant="body2">
                   <Box>{bio}</Box>
                 </Typography>
-              </Fade>
+              </Zoom>
             </Grid>
 
             <Grid
@@ -397,7 +400,7 @@ export default function Information(props) {
               direction="row-reverse"
             >
               <Grid item xs zeroMinWidth justify="center" alignItems="center">
-                <Fade
+                <Zoom
                   in={loaded}
                   style={{ transitionDelay: loaded ? "1200ms" : "0ms" }}
                 >
@@ -420,11 +423,11 @@ export default function Information(props) {
                       دانش آموز
                     </Typography>
                   </div>
-                </Fade>
+                </Zoom>
               </Grid>
 
               <Grid item xs zeroMinWidth justify="center" alignItems="center">
-                <Fade
+                <Zoom
                   in={loaded}
                   style={{ transitionDelay: loaded ? "1500ms" : "0ms" }}
                 >
@@ -447,10 +450,10 @@ export default function Information(props) {
                       ظرفیت
                     </Typography>
                   </div>
-                </Fade>
+                </Zoom>
               </Grid>
               <Grid item xs zeroMinWidth justify="center" alignItems="center">
-                <Fade
+                <Zoom
                   in={loaded}
                   style={{ transitionDelay: loaded ? "1800ms" : "0ms" }}
                 >
@@ -472,7 +475,7 @@ export default function Information(props) {
                       قسمت
                     </Typography>
                   </div>
-                </Fade>
+                </Zoom>
               </Grid>
             </Grid>
           </Grid>

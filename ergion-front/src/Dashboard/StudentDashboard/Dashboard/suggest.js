@@ -189,8 +189,9 @@ const Suggestedcourse = () => {
                                     </Typography>
                                 </Grid>
                                 )} */}
+                                <div >
                                 {courses && courses.map((course) =>
-                                    <Grid className="cardSpacing" item key={course.id} xs={12} sm={false} md={false}>
+                                    <Grid className="cardSpacing" item key={course.id} xs={12} sm={false} md={false} style={{marginTop:'10px'}}>
                                         {/*// <Grid className="cardSpacing" item key={course.id}>*/}
                                         <Card className="layout1">
                                             <CardHeader
@@ -263,6 +264,7 @@ const Suggestedcourse = () => {
                                         </Card>
                                     </Grid>
                                 )}
+                                </div>
                      
                     </main>
                 </ThemeProvider>
