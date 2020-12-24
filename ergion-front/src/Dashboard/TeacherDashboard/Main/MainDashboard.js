@@ -1,6 +1,7 @@
 import { Avatar, Badge, Box, ButtonGroup, Card, CardActionArea, CardContent,
     CardHeader, CircularProgress, Container, CssBaseline, Divider, 
     Grid, IconButton, List, ListItem, ListItemAvatar, ListItemText, 
+    Snackbar, 
     Typography, withStyles } from '@material-ui/core';
 import React, { Component } from 'react';
 import Color from 'color';
@@ -16,6 +17,11 @@ import time from "@jacobmarshall/human-time";
 import PeopleOutlineOutlinedIcon from '@material-ui/icons/PeopleOutlineOutlined';
 import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
+import MuiAlert from '@material-ui/lab/Alert';
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = (theme) => ({
     "@global": {
@@ -78,6 +84,7 @@ class MainDashboard extends Component {
         hasMore: true,
         requests: [],
         mounted_reqs:false,
+        open:false,
     }
 
     loadMore(page){
@@ -150,6 +157,21 @@ class MainDashboard extends Component {
         this.setState({requests}); 
     }
 
+    acceptHandler=(id)=>{
+        let requests = this.state.requests.slice();
+        requests.splice(id,1);
+        console.log(requests)
+        this.setState({requests, open:true}); 
+    }
+
+    handleCloseSnack = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        this.setState({open:false})
+    };
+
     render() {
         const { classes } = this.props;
         const history = this.props.history;
@@ -157,6 +179,13 @@ class MainDashboard extends Component {
         return (
             <Container>
                 <CssBaseline />
+                <Snackbar open={this.state.open} autoHideDuration={2000} onClose={this.handleCloseSnack}>
+                    <Alert onClose={this.handleCloseSnack} severity="success">
+                        <Typography className='text'>
+                        درخواست قبول شد
+                        </Typography>
+                    </Alert>
+                </Snackbar>
                 <Grid container item lg={10} className={classes.grid} direction='row' spacing={4}>
                     <Grid item xs>
                             <Card style={{ width: '100%' }} dir='rtl' className={classes.card}>
@@ -282,7 +311,7 @@ class MainDashboard extends Component {
                                                     <IconButton color='secondary' onClick={()=>this.rejectHandler(index)}>
                                                         <ClearIcon/>
                                                     </IconButton>
-                                                    <IconButton color='primary'>
+                                                    <IconButton color='primary' onClick={()=>this.acceptHandler(index)}>
                                                         <DoneIcon/>
                                                     </IconButton>
                                                 </ButtonGroup>
