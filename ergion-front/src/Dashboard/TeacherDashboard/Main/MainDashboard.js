@@ -1,6 +1,6 @@
-import { Avatar, Badge, Card, CardActionArea, CardContent,
+import { Avatar, Badge, Box, ButtonGroup, Card, CardActionArea, CardContent,
     CardHeader, CircularProgress, Container, CssBaseline, Divider, 
-    Grid, List, ListItem, ListItemAvatar, ListItemText, 
+    Grid, IconButton, List, ListItem, ListItemAvatar, ListItemText, 
     Typography, withStyles } from '@material-ui/core';
 import React, { Component } from 'react';
 import Color from 'color';
@@ -14,6 +14,8 @@ import InfiniteScroll from 'react-infinite-scroller';
 import axios from 'axios';
 import time from "@jacobmarshall/human-time";
 import PeopleOutlineOutlinedIcon from '@material-ui/icons/PeopleOutlineOutlined';
+import DoneIcon from '@material-ui/icons/Done';
+import ClearIcon from '@material-ui/icons/Clear';
 
 const useStyles = (theme) => ({
     "@global": {
@@ -26,6 +28,12 @@ const useStyles = (theme) => ({
         "*::-webkit-scrollbar-thumb": {
           backgroundColor: "rgba(0, 0, 0,.2)",
         },
+        '.MuiCardHeader-action':{
+            alignSelf:'center'
+        },
+        '.MuiCardHeader-avatar':{
+            margin:'0 4px 0 0'
+        }
     },
     root: {
         display: 'flex',
@@ -68,6 +76,7 @@ class MainDashboard extends Component {
         count: 0,
         events: [],
         hasMore: true,
+        requests: [],
     }
 
     loadMore(page){
@@ -107,6 +116,20 @@ class MainDashboard extends Component {
                 })
                 console.log(res.data.has_next)
                 this.setState({hasMore:res.data.has_next,events:events})
+                if(page === 1){
+                    this.setState({requests:[{
+                        id:1,
+                        name:'علی مردانی',
+                        picture:'',
+                        class:'ریاضی 1'
+                    },
+                    {
+                        id:2,
+                        name:'مهدی جعفری',
+                        picture:'',
+                        class:'فیزیک 1'
+                    },]})
+                }
             })
         },2000)
         
@@ -206,6 +229,62 @@ class MainDashboard extends Component {
                                 }
                             />
                             <Divider light />
+                            <CardContent>
+                                <List style={{height: 200, overflow: 'auto'}}>
+                                    {this.state.requests.length === 0?
+                                    (
+                                    <Typography
+                                    style={{
+                                        margin: '0',
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        msTransform: 'translate(-50%, -50%)',
+                                        transform: 'translate(-50%, -50%)'}}
+                                    className='text'>
+                                        درخواستی یافت نشد
+                                    </Typography>
+                                    ):
+                                    (this.state.requests.map((req,index)=>{
+                                        return(
+                                            <Card key={req.id} dir='rtl' elevation={0}>
+                                                <CardHeader
+                                                dir='rtl'
+                                                className='text'
+                                                style={{padding:'8px 2px'}}
+                                                avatar={
+                                                    <Avatar alt="avatar" src={req.picture} />
+                                                }
+                                                title={
+                                                    <Typography style={{marginLeft:'2px',marginRight:'8px'}} className='text'>
+                                                        {req.name}
+                                                    </Typography>
+                                                }
+                                                subheader={
+                                                    <Box style={{marginLeft:'2px',marginRight:'8px'}} className='text'>
+                                                        {req.class}
+                                                    </Box>
+                                                }
+                                                action={
+                                                <ButtonGroup dir='ltr'>
+                                                    <IconButton color='secondary'>
+                                                        <ClearIcon/>
+                                                    </IconButton>
+                                                    <IconButton color='primary'>
+                                                        <DoneIcon/>
+                                                    </IconButton>
+                                                </ButtonGroup>
+                                                }
+                                                >
+                                                </CardHeader>
+                                                
+                                            </Card>
+                                        )
+                                    }))
+                                    
+                                    }
+                                </List>
+                            </CardContent>
                         </Card>
                     </Grid>
                     <Grid item xs={12} lg={8}>
