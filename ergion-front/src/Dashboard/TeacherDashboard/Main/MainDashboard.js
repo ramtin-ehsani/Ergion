@@ -143,6 +143,13 @@ class MainDashboard extends Component {
         return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
     }
 
+    rejectHandler=(id)=>{
+        let requests = this.state.requests.slice();
+        requests.splice(id,1);
+        console.log(requests)
+        this.setState({requests}); 
+    }
+
     render() {
         const { classes } = this.props;
         const history = this.props.history;
@@ -272,7 +279,7 @@ class MainDashboard extends Component {
                                                 }
                                                 action={
                                                 <ButtonGroup dir='ltr'>
-                                                    <IconButton color='secondary'>
+                                                    <IconButton color='secondary' onClick={()=>this.rejectHandler(index)}>
                                                         <ClearIcon/>
                                                     </IconButton>
                                                     <IconButton color='primary'>
