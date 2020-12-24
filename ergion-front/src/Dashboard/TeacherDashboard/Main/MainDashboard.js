@@ -77,6 +77,7 @@ class MainDashboard extends Component {
         events: [],
         hasMore: true,
         requests: [],
+        mounted_reqs:false,
     }
 
     loadMore(page){
@@ -128,7 +129,7 @@ class MainDashboard extends Component {
                         name:'مهدی جعفری',
                         picture:'',
                         class:'فیزیک 1'
-                    },]})
+                    },], mounted_reqs:true})
                 }
             })
         },2000)
@@ -233,17 +234,21 @@ class MainDashboard extends Component {
                                 <List style={{height: 200, overflow: 'auto'}}>
                                     {this.state.requests.length === 0?
                                     (
-                                    <Typography
-                                    style={{
-                                        margin: '0',
-                                        position: 'absolute',
-                                        top: '50%',
-                                        left: '50%',
-                                        msTransform: 'translate(-50%, -50%)',
-                                        transform: 'translate(-50%, -50%)'}}
-                                    className='text'>
-                                        درخواستی یافت نشد
-                                    </Typography>
+                                    this.state.mounted_reqs ? (
+                                        <Typography
+                                        style={{
+                                            margin: '0',
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            msTransform: 'translate(-50%, -50%)',
+                                            transform: 'translate(-50%, -50%)'}}
+                                        className='text'>
+                                            درخواستی یافت نشد
+                                        </Typography>)
+                                        :(
+                                            <CircularProgress/>
+                                        )
                                     ):
                                     (this.state.requests.map((req,index)=>{
                                         return(
