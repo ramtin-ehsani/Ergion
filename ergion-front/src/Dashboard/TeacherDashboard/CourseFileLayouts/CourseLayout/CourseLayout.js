@@ -45,6 +45,18 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 const useStyles = makeStyles((theme) => ({
+
+  "@global": {
+    "*::-webkit-scrollbar": {
+      width: "0.4em",
+    },
+    "*::-webkit-scrollbar-track": {
+      "-webkit-box-shadow": "inset 0 0 6px rgba(10,10,0,0.00)",
+    },
+    "*::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(0, 0, 0,.2)",
+    },
+  },
   icon: {
     marginRight: theme.spacing(2),
   },
@@ -94,7 +106,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   newCourseCardMedia: {
-    height: 160,
+    height: 120,
     width: "100%",
     objectFit: "cover",
     paddingLeft: 17,
@@ -138,7 +150,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     fontSize: "1rem",
     fontWeight: 300,
-    margin: 8,
+    margin: 4,
   },
   toggleButtonPaper: {
     display: "flex",
@@ -296,7 +308,6 @@ function CourseLayout(props) {
     localStorage.setItem("course_grade", "1");
     localStorage.setItem("course_capacity", 10);
     localStorage.setItem("course_description", "");
-    localStorage.setItem("course_accessibility", "public");
     setDialogOpen(true);
   };
   const NewCourseDialog = (props) => {
@@ -348,14 +359,14 @@ function CourseLayout(props) {
                 </div>
 
                 <CardContent>
-                  <Grid container spacing={3} dir="rtl">
+                  <Grid container spacing={1} dir="rtl">
                     <Grid item md={12} xs={12}>
                       <Grid
                         container
                         direction="column"
                         justify="center"
                         alignItems="center"
-                        spacing={2}
+                        spacing={1}
                       >
                         <Grid item md={12} xs={12}>
                           <Typography style={{ alignSelf: "center" }}>
@@ -368,7 +379,7 @@ function CourseLayout(props) {
                             style={{ alignSelf: "center" }}
                           >
                             <StyledToggleButtonGroup
-                              size="large"
+                              size="small"
                               value={accessType}
                               exclusive
                               onChange={handleAccessChange}
@@ -377,7 +388,17 @@ function CourseLayout(props) {
                               <ToggleButton
                                 value="public"
                                 aria-label="right aligned"
-                                style={accessType==='public'?{ backgroundColor: "#3f51b5", color: "white" } : { backgroundColor: "transparent", color: "grey" }}
+                                style={
+                                  accessType === "public"
+                                    ? {
+                                        backgroundColor: "#3f51b5",
+                                        color: "white",
+                                      }
+                                    : {
+                                        backgroundColor: "transparent",
+                                        color: "grey",
+                                      }
+                                }
                               >
                                 <div style={{ display: "flex" }}>
                                   <Typography>
@@ -389,7 +410,17 @@ function CourseLayout(props) {
                               <ToggleButton
                                 value="private"
                                 aria-label="left aligned"
-                                style={accessType==='private'?{ backgroundColor: "#3f51b5", color: "white" } : { backgroundColor: "transparent", color: "grey" }}
+                                style={
+                                  accessType === "private"
+                                    ? {
+                                        backgroundColor: "#3f51b5",
+                                        color: "white",
+                                      }
+                                    : {
+                                        backgroundColor: "transparent",
+                                        color: "grey",
+                                      }
+                                }
                               >
                                 <div style={{ display: "flex" }}>
                                   <Typography>
@@ -472,7 +503,7 @@ function CourseLayout(props) {
                         )}
                         variant="outlined"
                         multiline={true}
-                        rows={5}
+                        rows={3}
                       />
                     </Grid>
                   </Grid>
@@ -655,8 +686,13 @@ function CourseLayout(props) {
             </Grid>
           </Grid>
           {/* End hero unit */}
+          {loading && (
+              <div style={{ display: "flex", justifyContent: "center",padding:'30px' }}>
+                <CircularProgress />
+              </div>
+            )}
           <Grid container spacing={2} dir="rtl" lg={11} item={true}>
-            {loading && <CircularProgress />}
+            
 
             {isEmpty && (
               <Grid item>

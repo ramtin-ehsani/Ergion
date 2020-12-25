@@ -190,9 +190,7 @@ export default function Information(props) {
               setAdd(2);
             }
           });
-          setTimeout(() => {
-            setLoaded(true);
-          }, 500);
+          setLoaded(true);
         });
       }
     }
@@ -272,7 +270,11 @@ export default function Information(props) {
                   {isowner ? (
                     <CourseLayout course={props.course} getupdate={getcourse} />
                   ) : (
-                    <Zoom in={loaded} timeout={700}>
+                    <Zoom
+                      in={loaded}
+                      timeout={700}
+                      style={{ transitionDelay: loaded ? "1000ms" : "0ms" }}
+                    >
                       <div>
                         {hascourse ? (
                           <Button
@@ -297,37 +299,16 @@ export default function Information(props) {
                             </Typography>
                           </Button>
                         )}
-                        {/* {Add === 1 && (
-                        <Button
-                          size="medium"
-                          onClick={handleAdd}
-                          variant="contained"
-                          color="primary"
-                        >
-                          <Typography inline variant="button">
-                            اضافه شدن
-                          </Typography>
-                        </Button>
-                      )}
-                      {Add === 2 && (
-                        <Button
-                          size="medium"
-                          onClick={handleAdd}
-                          variant="contained"
-                          color="secondary"
-                        >
-                          <Typography inline variant="button">
-                            حذف
-                          </Typography>
-                        </Button>
-                      )} */}
                       </div>
                     </Zoom>
                   )}
                 </div>
               )}
 
-              <IconButton aria-label="add an alarm" style={{marginTop:'-8px',marginLeft:'10px'}}>
+              <IconButton
+                aria-label="add an alarm"
+                style={{ marginTop: "-8px", marginLeft: "10px" }}
+              >
                 <ShareIcon />
               </IconButton>
               <Grid item alignItems="flex-start" justify="flex-start"></Grid>

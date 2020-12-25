@@ -20,6 +20,9 @@ import Write from "./TabItem/news/Writeanews";
 import axios from "axios";
 import TimeLine from "./TabItem/news/TimeLine";
 import { withStyles } from "@material-ui/core/styles";
+import AssessmentIcon from "@material-ui/icons/Assessment";
+import AssignmentLateIcon from "@material-ui/icons/AssignmentLate";
+import LiveHelpIcon from "@material-ui/icons/LiveHelp";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   const classes = useStyles();
@@ -121,10 +124,19 @@ export default function FullWidthTabs(props) {
             variant="fullWidth"
             aria-label="full width tabs example"
           >
-            <Tab label={<Mytypography>مطالب</Mytypography>} {...a11yProps(0)} />
-            <Tab label={<Mytypography>اخبار</Mytypography>} {...a11yProps(1)} />
             <Tab
-              label={<Mytypography>پرسش و پاسخ</Mytypography>}
+              icon={<AssessmentIcon />}
+              label={<Mytypography><Box>مطالب</Box></Mytypography>}
+              {...a11yProps(0)}
+            />
+            <Tab
+              icon={<AssignmentLateIcon />}
+              label={<Mytypography><Box>اخبار</Box></Mytypography>}
+              {...a11yProps(1)}
+            />
+            <Tab
+              icon={<LiveHelpIcon />}
+              label={<Mytypography><Box>پرسش و پاسخ</Box></Mytypography>}
               {...a11yProps(2)}
             />
           </Tabs>
