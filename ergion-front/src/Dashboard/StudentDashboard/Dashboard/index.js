@@ -36,24 +36,21 @@ const Dashboard = () => {
       <ThemeProvider theme={theme}>
         <Container maxWidth="lg" style={{ marginTop: "30px" }}>
           <Grid container spacing={4} lg={10} item={true} dir="rtl">
-            <Grid item lg={9} md={9} xs={12} sm={12} >
+            <Grid item lg={9} md={9} xs={12} sm={12}>
               <Timeline />
             </Grid>
 
-            <Grid
-              item
-              lg={3}
-              md={3}
-              xs={false}
-              sm={false}
-              style={{
-                height: "100vh",
-                overflow: "auto",
-                direction: "ltr",
-              }}
-            >
+            <Grid item lg={3} md={3} xs={false} sm={false}>
               <Hidden only={["sm", "xs"]}>
-                <Suggestedcourse />
+                <div
+                  style={{
+                    height: "100vh",
+                    overflow: "auto",
+                    direction: "ltr",
+                  }}
+                >
+                  <Suggestedcourse />
+                </div>
               </Hidden>
             </Grid>
           </Grid>

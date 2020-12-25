@@ -266,6 +266,13 @@ function CourseLayout(props) {
     data.append("grade", newCourseGrade.current.value);
     data.append("capacity", newCourseCapacity.current.value);
     data.append("about_course", newCourseDescription.current.value);
+
+    if(accessType==='public'){
+      data.append("is_public", true);
+    }else{
+      data.append("is_public", false);
+    }
+
     if (selectedFile !== null) {
       data.append("course_cover", selectedFile);
     } else {

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import SwipeableViews from "react-swipeable-views";
-import { makeStyles, ThemeProvider, useTheme } from "@material-ui/core/styles";
+import { makeStyles, ThemeProvider, useTheme,createMuiTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -66,11 +66,19 @@ const useStyles = makeStyles((theme) => ({
     // display:'flex',
     backgroundColor: theme.palette.background.paper,
   },
+  tabFont: {
+    fontSize: 18,
+  },
 }));
 
 export default function FullWidthTabs(props) {
   const classes = useStyles();
-  const theme = useTheme();
+  const theme = createMuiTheme({
+    typography: {
+      fontFamily: '"Vazir", sans-serif'
+    },
+    direction: 'rtl'
+  });
   const [value, setValue] = React.useState(0);
   const [newslist, setnewslist] = React.useState([]);
   const [T, setT] = React.useState(false);
@@ -126,17 +134,20 @@ export default function FullWidthTabs(props) {
           >
             <Tab
               icon={<AssessmentIcon />}
-              label={<Mytypography><Box>مطالب</Box></Mytypography>}
+              label='مطالب'
+              className={classes.tabFont}
               {...a11yProps(0)}
             />
             <Tab
               icon={<AssignmentLateIcon />}
-              label={<Mytypography><Box>اخبار</Box></Mytypography>}
+              label="اخبار"
+              className={classes.tabFont}
               {...a11yProps(1)}
             />
             <Tab
               icon={<LiveHelpIcon />}
-              label={<Mytypography><Box>پرسش و پاسخ</Box></Mytypography>}
+              label="پرسش و پاسخ"
+              className={classes.tabFont}
               {...a11yProps(2)}
             />
           </Tabs>
