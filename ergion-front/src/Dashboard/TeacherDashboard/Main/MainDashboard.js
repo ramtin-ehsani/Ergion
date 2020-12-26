@@ -148,10 +148,18 @@ class MainDashboard extends Component {
     }
 
     rejectHandler=(id)=>{
+        const config = {
+            headers: { Authorization: `Token ${localStorage.getItem('api_key')}`}
+        }
         let requests = this.state.requests.slice();
-        requests.splice(id,1);
-        console.log(requests)
-        this.setState({requests}); 
+        let item = requests.splice(id,1);
+        this.setState({requests});
+        axios.post('http://127.0.0.1:8000/api/teacher/join-requests/',{
+            accept:0,
+            id: item[0].id
+        },config).then((res)=>{
+            console.log(res)
+        })
     }
 
     acceptHandler=(id)=>{
