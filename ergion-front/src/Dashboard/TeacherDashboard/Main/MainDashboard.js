@@ -125,18 +125,14 @@ class MainDashboard extends Component {
                 console.log(res.data.has_next)
                 this.setState({hasMore:res.data.has_next,events:events})
                 if(page === 1){
-                    this.setState({requests:[{
-                        id:1,
-                        name:'علی مردانی',
-                        picture:'',
-                        class:'ریاضی 1'
-                    },
-                    {
-                        id:2,
-                        name:'مهدی جعفری',
-                        picture:'',
-                        class:'فیزیک 1'
-                    },], mounted_reqs:true})
+                    axios.get('http://127.0.0.1:8000/api/teacher/join-requests/',config)
+                    .then((res)=>{
+                        let requests=[]
+                        res.data.map((req)=>{
+                            requests.push(req)
+                        })
+                        this.setState({requests:requests, mounted_reqs:true})
+                    })
                 }
             })
         },2000)
@@ -294,16 +290,16 @@ class MainDashboard extends Component {
                                                 className='text'
                                                 style={{padding:'8px 2px'}}
                                                 avatar={
-                                                    <Avatar alt="avatar" src={req.picture} />
+                                                    <Avatar alt="avatar" src={req.student_profile_picture} />
                                                 }
                                                 title={
                                                     <Typography style={{marginLeft:'2px',marginRight:'8px'}} className='text'>
-                                                        {req.name}
+                                                        {`${req.student_firstname} ${req.student_lastname}`}
                                                     </Typography>
                                                 }
                                                 subheader={
                                                     <Box style={{marginLeft:'2px',marginRight:'8px'}} className='text'>
-                                                        {req.class}
+                                                        {req.course_name}
                                                     </Box>
                                                 }
                                                 action={
