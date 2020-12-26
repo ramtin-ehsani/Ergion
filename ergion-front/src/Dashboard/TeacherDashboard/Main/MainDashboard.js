@@ -85,6 +85,7 @@ class MainDashboard extends Component {
         requests: [],
         mounted_reqs:false,
         open:false,
+        mounted_events:false,
     }
 
     loadMore(page){
@@ -123,7 +124,7 @@ class MainDashboard extends Component {
                     this.setState({count:count})
                 })
                 console.log(res.data.has_next)
-                this.setState({hasMore:res.data.has_next,events:events})
+                this.setState({hasMore:res.data.has_next,events:events,mounted_events:true})
                 if(page === 1){
                     axios.get('http://127.0.0.1:8000/api/teacher/join-requests/',config)
                     .then((res)=>{
@@ -340,68 +341,80 @@ class MainDashboard extends Component {
                             <Divider light />
                             <CardContent>
                                 <List style={{height: 200, overflow: 'auto'}} ref={(ref) => this.scrollParentRef = ref}>
-                                    <InfiniteScroll
-                                    pageStart={0}
-                                    hasMore={this.state.hasMore}
-                                    loadMore={this.loadMore.bind(this)}
-                                    loader={<div className="loader" key={0}><CircularProgress/></div>}
-                                    useWindow={false}
-                                    getScrollParent={() => this.scrollParentRef}
-                                    >
-                                    {this.state.events.map((event) => {
-                                        return (
-                                            <ListItem key={event.creation_time}>
-                                                <ListItemAvatar>
-                                                    <Avatar alt="avatar" src={event.user_profile_picture} />
-                                                </ListItemAvatar>
-                                                <ListItemText
-                                                    style={{ textAlign: 'right' }}
-                                                    primary={
-                                                        <>
-                                                            <Typography
-                                                                dir='rtl'
-                                                                component="span"
-                                                                variant="body2"
-                                                                className='text2'
-                                                                color="textSecondary"
-                                                            >
-                                                                {
-                                                                    this.toFarsiNumber(time(new Date(event.creation_time))
-                                                                    .replace("years", "سال")
-                                                                    .replace("year", "سال")
-                                                                    .replace("months", "ماه")
-                                                                    .replace("month", "ماه")
-                                                                    .replace("weeks", "هفته")
-                                                                    .replace("week", "هفته")
-                                                                    .replace("hours", "ساعت")
-                                                                    .replace("hour", "ساعت")
-                                                                    .replace("minutes", "دقیقه")
-                                                                    .replace("minute", "دقیقه")
-                                                                    .replace("days", "روز")
-                                                                    .replace("day", "روز")
-                                                                    .replace("seconds", "ثانیه")
-                                                                    .replace("second", "ثانیه")
-                                                                    .replace("ago", "پیش"))
-                                                                    +
-                                                                    " . "
-                                                                }
-                                                            </Typography>
-                                                            <Typography
-                                                                dir='rtl'
-                                                                component="span"
-                                                                variant="body1"
-                                                                className='text'
-                                                                color="textPrimary"
-                                                            >
-                                                                {`${event.user_firstname} ${event.user_lastname} ${event.type}`}
-                                                            </Typography>
-                                                        </>
-                                                    }
-                                                />
-                                            </ListItem>
-                                        )
-                                    })}
-                                    </InfiniteScroll>
+                                    {this.state.events.length === 0 && this.state.mounted_events ?
+                                        (<Typography
+                                        style={{
+                                            margin: '0',
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            msTransform: 'translate(-50%, -50%)',
+                                            transform: 'translate(-50%, -50%)'}}
+                                        className='text'>
+                                            اتفاقی یافت نشد
+                                        </Typography>):
+                                        (<InfiniteScroll
+                                        pageStart={0}
+                                        hasMore={this.state.hasMore}
+                                        loadMore={this.loadMore.bind(this)}
+                                        loader={<div className="loader" key={0}><CircularProgress/></div>}
+                                        useWindow={false}
+                                        getScrollParent={() => this.scrollParentRef}
+                                        >
+                                        {this.state.events.map((event) => {
+                                            return (
+                                                <ListItem key={event.creation_time}>
+                                                    <ListItemAvatar>
+                                                        <Avatar alt="avatar" src={event.user_profile_picture} />
+                                                    </ListItemAvatar>
+                                                    <ListItemText
+                                                        style={{ textAlign: 'right' }}
+                                                        primary={
+                                                            <>
+                                                                <Typography
+                                                                    dir='rtl'
+                                                                    component="span"
+                                                                    variant="body2"
+                                                                    className='text2'
+                                                                    color="textSecondary"
+                                                                >
+                                                                    {
+                                                                        this.toFarsiNumber(time(new Date(event.creation_time))
+                                                                        .replace("years", "سال")
+                                                                        .replace("year", "سال")
+                                                                        .replace("months", "ماه")
+                                                                        .replace("month", "ماه")
+                                                                        .replace("weeks", "هفته")
+                                                                        .replace("week", "هفته")
+                                                                        .replace("hours", "ساعت")
+                                                                        .replace("hour", "ساعت")
+                                                                        .replace("minutes", "دقیقه")
+                                                                        .replace("minute", "دقیقه")
+                                                                        .replace("days", "روز")
+                                                                        .replace("day", "روز")
+                                                                        .replace("seconds", "ثانیه")
+                                                                        .replace("second", "ثانیه")
+                                                                        .replace("ago", "پیش"))
+                                                                        +
+                                                                        " . "
+                                                                    }
+                                                                </Typography>
+                                                                <Typography
+                                                                    dir='rtl'
+                                                                    component="span"
+                                                                    variant="body1"
+                                                                    className='text'
+                                                                    color="textPrimary"
+                                                                >
+                                                                    {`${event.user_firstname} ${event.user_lastname} ${event.type}`}
+                                                                </Typography>
+                                                            </>
+                                                        }
+                                                    />
+                                                </ListItem>
+                                            )
+                                        })}
+                                        </InfiniteScroll>)}
                                 </List>
                             </CardContent>
 
