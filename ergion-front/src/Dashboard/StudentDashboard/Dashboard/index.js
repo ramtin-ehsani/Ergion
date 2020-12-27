@@ -35,7 +35,7 @@ const Dashboard = () => {
     <StylesProvider jss={jss}>
       <ThemeProvider theme={theme}>
         <Container maxWidth="lg" style={{ marginTop: "30px" }}>
-          <Grid container spacing={4} lg={10} item={true} dir="rtl">
+          <Grid container spacing={1} lg={10} item={true} dir="rtl">
             <Grid item lg={9} md={9} xs={12} sm={12}>
               <Timeline />
             </Grid>

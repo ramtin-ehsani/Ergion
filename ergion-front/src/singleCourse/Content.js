@@ -25,7 +25,6 @@ import PropTypes from "prop-types";
 import { Box } from "@material-ui/core";
 import { Typography } from "@material-ui/core";
 import AddBoxIcon from "@material-ui/icons/AddBox";
-import ReactPlayer from "react-player";
 import IconButton from "@material-ui/core/IconButton";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -283,7 +282,7 @@ class NestedList extends React.Component {
 
   bytesToSize(bytes) {
     var sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-    if (bytes == 0) return "0 Byte";
+    if (bytes === 0) return "0 Byte";
     var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
     return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
   }
@@ -886,40 +885,6 @@ class NestedList extends React.Component {
     this.setState({ list: results });
   };
 
-  TypeOfFile = (props) => {
-    const { src } = props;
-    const { classes } = this.props;
-
-    const lastIndexOfSlash = String(src).lastIndexOf("/");
-    const lastIndexOfDot = String(src).lastIndexOf(".");
-    let name = String(src).substring(lastIndexOfSlash + 1);
-    const type = String(src).substring(lastIndexOfDot);
-
-    if (name.length > 15) {
-      name = name.substring(0, 15) + type;
-    }
-
-    if (type === ".mp4") {
-      return (
-        <div style={{ marginTop: "8px", padding: "20px" }}>
-          <ReactPlayer width="100%" height="100%" url={src} controls />
-          <Typography>
-            <Box
-              fontSize={16}
-              dir="ltr"
-              fontWeight="fontWeightBold"
-              textAlign="center"
-              style={{ marginTop: "10px", marginBottom: "10px" }}
-            >
-              {name}
-            </Box>
-          </Typography>
-        </div>
-      );
-    }
-
-    return null;
-  };
 
   render() {
     const { classes } = this.props;

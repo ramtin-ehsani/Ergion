@@ -5,7 +5,6 @@ import Divider from "@material-ui/core/Divider";
 import ReplyIcon from "@material-ui/icons/Reply";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SendIcon from "@material-ui/icons/Send";
-import ReactPlayer from "react-player";
 import TableHead from "@material-ui/core/TableHead";
 import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -79,7 +78,7 @@ const styles = (theme) => ({
     },
     "*::-webkit-scrollbar-thumb": {
       backgroundColor: "rgba(0, 0, 0,.2)",
-      display:'none'
+      display: "none",
     },
   },
   root: {
@@ -213,9 +212,11 @@ class TimeLine extends React.Component {
     this.setState({ link: shareLink, shareDialogOpen: true });
   };
 
-  loadMore = (event) => {
-    this.setState({ loadingMore: true });
-    this.getValues(this.state.page);
+  loadMore = () => {
+    if (this.state.hasNext) {
+      this.setState({ loadingMore: true });
+      this.getValues(this.state.page);
+    }
   };
 
   componentDidMount() {
@@ -229,7 +230,7 @@ class TimeLine extends React.Component {
 
   bytesToSize(bytes) {
     var sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-    if (bytes == 0) return "0 Byte";
+    if (bytes === 0) return "0 Byte";
     var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
     return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
   }
@@ -411,8 +412,11 @@ class TimeLine extends React.Component {
         const listItem = {
           ...this.state.list[index],
         };
+        const commentObject=res.data
+        commentObject.isReplyOpen = false;
+        commentObject.replyRef = "";
         if (listItem.comments.length < 3) {
-          listItem.comments.push(res.data);
+          listItem.comments.push(commentObject);
         }
         listItem.comments_count = listItem.comments_count + 1;
         const list = [...this.state.list];
@@ -455,7 +459,7 @@ class TimeLine extends React.Component {
       if (index === idx) {
         const comments = item.comments;
         comments.map((comment, indx) => {
-          if (commentIndex == indx) {
+          if (commentIndex === indx) {
             comment.isReplyOpen = !comment.isReplyOpen;
           }
         });
@@ -474,7 +478,7 @@ class TimeLine extends React.Component {
       if (index === idx) {
         const comments = item.comments;
         comments.map((comment, indx) => {
-          if (commentIndex == indx) {
+          if (commentIndex === indx) {
             comment.replyRef = value;
           }
         });
@@ -508,7 +512,7 @@ class TimeLine extends React.Component {
       if (Index === idx) {
         const comments = item.comments;
         comments.map((comment, idxx) => {
-          if (commentIndex == idxx) {
+          if (commentIndex === idxx) {
             comment.liked = !comment.liked;
           }
         });
@@ -569,51 +573,7 @@ class TimeLine extends React.Component {
     this.setState({ shareDialogOpen: false });
   };
 
-  TypeOfFile = (props) => {
-    const { src } = props;
-    const { classes } = this.props;
-
-    const lastIndexOfSlash = String(src).lastIndexOf("/");
-    const lastIndexOfDot = String(src).lastIndexOf(".");
-    let name = String(src).substring(lastIndexOfSlash + 1);
-    const type = String(src).substring(lastIndexOfDot);
-
-    if (name.length > 15) {
-      name = name.substring(0, 15) + type;
-    }
-
-    if (type === ".mp4") {
-      return (
-        <div
-          style={{ padding: "16px" }}
-          // className='vid-wrapper'
-        >
-          <ReactPlayer
-            // className='react-player'
-            width="100%"
-            height="100%"
-            url={src}
-            // style={{ backgroundColor: '#000',maxHeight:500 }}
-            controls
-          />
-
-          <Typography>
-            <Box
-              fontSize={16}
-              dir="ltr"
-              fontWeight="fontWeightBold"
-              textAlign="center"
-              style={{ marginTop: "10px", marginBottom: "10px" }}
-            >
-              {name}
-            </Box>
-          </Typography>
-        </div>
-      );
-    }
-
-    return null;
-  };
+  
 
   render() {
     const { classes } = this.props;
@@ -675,9 +635,9 @@ class TimeLine extends React.Component {
           </DialogActions>
         </Dialog>
 
-        <div >
+        <div>
           {this.state.loading ? (
-            <div >
+            <div>
               <div className={classes.paperStyle} style={{ padding: "8px" }}>
                 <Paper
                   className={classes.mediaCardPaperStyle}
@@ -685,7 +645,7 @@ class TimeLine extends React.Component {
                   style={{
                     marginBottom: "5px",
                     padding: "8px",
-                    marginTop: "5px",
+                    // marginTop: "5px",
                     borderRadius: 8,
                   }}
                 >
@@ -781,7 +741,7 @@ class TimeLine extends React.Component {
                   style={{
                     marginBottom: "5px",
                     padding: "8px",
-                    marginTop: "5px",
+                    // marginTop: "5px",
                     borderRadius: 8,
                   }}
                 >
@@ -895,7 +855,7 @@ class TimeLine extends React.Component {
                             style={{
                               marginBottom: "5px",
                               padding: "8px",
-                              marginTop: "5px",
+                              // marginTop: "5px",
                               borderRadius: 8,
                             }}
                           >
@@ -977,7 +937,7 @@ class TimeLine extends React.Component {
                                         }}
                                       >
                                         <Box fontSize={18}>
-                                          {timeline.type == 0 ? (
+                                          {timeline.type === 0 ? (
                                             <span>
                                               <OndemandVideoIcon
                                                 color="primary"

@@ -403,22 +403,14 @@ class QuestionList extends Component {
                                   className="text"
                                   style={{ display: "flex" }}
                                 >
-                                  {questionItem.isAnswered ? (
-                                    <Box fontSize={16}>
-                                      {questionItem.sender_firstname +
-                                        " " +
-                                        questionItem.sender_lastname}
-                                    </Box>
-                                  ) : (
-                                    <Box
+                                  <Box
                                       fontSize={16}
-                                      fontWeight="fontWeightBold"
+                                      fontWeight={!questionItem.isAnswered&&"fontWeightBold"}
                                     >
                                       {questionItem.sender_firstname +
                                         " " +
                                         questionItem.sender_lastname}
                                     </Box>
-                                  )}
 
                                   <Box
                                     fontSize={14}
@@ -455,49 +447,28 @@ class QuestionList extends Component {
                                   // className="text"
                                   style={{ marginTop: "15px",width:'95%' }}
                                 >
-                                  {questionItem.isAnswered ? (
-                                    <Box
+                                  <Box
+                                      fontWeight={!questionItem.isAnswered&&"fontWeightBold"}
                                       style={{
                                         wordBreak: "break-all",
                                       }}
                                     >
                                       {questionItem.question}
                                     </Box>
-                                  ) : (
-                                    <Box
-                                      fontWeight="fontWeightBold"
-                                      style={{
-                                        wordBreak: "break-all",
-                                      }}
-                                    >
-                                      {questionItem.question}
-                                    </Box>
-                                  )}
                                 </Typography>
                               }
                             />
                             <div >
-                              {questionItem.isAnswered ? (
-                                <Typography className="text">
+                            <Typography className="text">
                                   <Box
                                     fontSize={16}
                                     fontWeight="fontWeightBold"
-                                    style={{ color: "green" }}
+                                    style={questionItem.isAnswered?{ color: "green" }:{ color: "red" }}
                                   >
-                                    پاسخ داده شده
+                                    {questionItem.isAnswered?'پاسخ داده شده':'پاسخی داده نشده'}
+                                    
                                   </Box>
                                 </Typography>
-                              ) : (
-                                <Typography className="text">
-                                  <Box
-                                    fontSize={16}
-                                    fontWeight="fontWeightBold"
-                                    style={{ color: "red" }}
-                                  >
-                                    پاسخی داده نشده
-                                  </Box>
-                                </Typography>
-                              )}
                             </div>
                           </ListItem>
                           <Divider />
