@@ -158,12 +158,19 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
     });
   };
   React.useEffect(() => {
+    if(JSON.parse(localStorage.getItem('user'))!==null)
+    {
     const promise = Axios.get(
-      `http://127.0.0.1:8000/api/course/${match.params.id}`
+      `http://127.0.0.1:8000/api/course/${match.params.id}`,
+      {
+      headers:{
+        "Authorization": `Token ${localStorage.getItem('token')}`,
+      },}
     );
     promise.then((response) => {
       setcourse(response.data);
-    });
+      console.log(response);
+    });}
   }, []);
 
   const classes = useStyles();

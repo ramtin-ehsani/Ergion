@@ -15,10 +15,12 @@ import Mytypography from "./mytypography1";
 import Content from "./Content";
 import News from "./TabItem/news/newscomponent";
 import Questions from "./Questions/Questions";
-import { Grid } from "@material-ui/core";
+import { Grid, Paper } from "@material-ui/core";
 import Write from "./TabItem/news/Writeanews";
 import axios from "axios";
 import TimeLine from "./TabItem/news/TimeLine";
+import clsx from "clsx";
+import LockIcon from '@material-ui/icons/Lock';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   const classes = useStyles();
@@ -62,6 +64,25 @@ const useStyles = makeStyles((theme) => ({
     // display:'flex',
     backgroundColor: theme.palette.background.paper,
   },
+  paper: {
+    padding:theme.spacing(0),
+    paddingBottom: theme.spacing(2),
+
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
+  },
+  lockb:{
+margin:theme.spacing(6),
+alignItems:"center",
+  },
+  fixedHeight1:{
+    height:400,
+  },
+  locktext:{
+    color:'gray',
+    fontSize:24
+  }
 }));
 
 export default function FullWidthTabs(props) {
@@ -72,20 +93,31 @@ export default function FullWidthTabs(props) {
   const [T, setT] = React.useState(false);
   const [S, setS] = React.useState(false);
   const [isowner, setisowner] = React.useState(false);
+  const[lock,setlock]=React.useState(true);
+
 
   React.useEffect(() => {
     if (JSON.parse(localStorage.getItem("user")) !== null) {
       if (JSON.parse(localStorage.getItem("user"))["role"] === "T") {
         setT(true);
-        // console.log(props.course)
-        // console.log(JSON.parse(localStorage.getItem('user')))
+
         if (
           JSON.parse(localStorage.getItem("user"))["id"] ===
           props.course.instructor_id
         ) {
           setisowner(true);
         }
-      } else setS(true);
+      } else {setS(true);
+      if(props.course.is_public)
+      {
+ 
+          setlock(false);
+      }
+        if(props.course.joined){
+          setlock(false);
+        }
+      
+      }
     }
     setTimeout(() => {
       const promise = axios.get("http://127.0.0.1:8000/api/course/news/", {
@@ -109,9 +141,23 @@ const getup=()=>
 {
 setupflag(true);
 }
+const fixedHeightPaper1 = clsx(classes.paper, classes.fixedHeight1);
   return (
     <div className={classes.root}>
       <ThemeProvider theme={theme}>
+        {lock?
+        <div>
+        <Paper className={fixedHeightPaper1} elevation={3}>
+
+         <div className={classes.lockb}>
+        <LockIcon style={{ fontSize: 80 }} color="disabled"/>
+        <Typography className={classes.locktext}>این درس پس از اجازه مدرس قابل استفاده است</Typography>
+</div>
+        </Paper>
+
+        </div>
+        :
+        <div>
         <AppBar position="static" color="default" dir="rtl">
           <Tabs
             value={value}
@@ -146,6 +192,7 @@ setupflag(true);
             <Questions />
           </TabPanel>
         </SwipeableViews>
+        </div>}
       </ThemeProvider>
     </div>
   );
