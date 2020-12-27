@@ -412,7 +412,7 @@ class TimeLine extends React.Component {
         const listItem = {
           ...this.state.list[index],
         };
-        const commentObject=res.data
+        const commentObject = res.data;
         commentObject.isReplyOpen = false;
         commentObject.replyRef = "";
         if (listItem.comments.length < 3) {
@@ -573,8 +573,6 @@ class TimeLine extends React.Component {
     this.setState({ shareDialogOpen: false });
   };
 
-  
-
   render() {
     const { classes } = this.props;
     return (
@@ -676,10 +674,10 @@ class TimeLine extends React.Component {
                               animation="wave"
                               height={20}
                               width={220}
-                              style={{ marginBottom: 6 }}
                               style={{
                                 marginRight: "12px",
                                 alignSelf: "flex-start",
+                                marginBottom: 6,
                               }}
                             />
                           </div>
@@ -772,10 +770,10 @@ class TimeLine extends React.Component {
                               animation="wave"
                               height={20}
                               width={220}
-                              style={{ marginBottom: 6 }}
                               style={{
                                 marginRight: "12px",
                                 alignSelf: "flex-start",
+                                marginBottom: 6,
                               }}
                             />
                           </div>

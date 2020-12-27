@@ -69,6 +69,13 @@ const useStyles = makeStyles((theme) => ({
   tabFont: {
     fontSize: 18,
   },
+  labelContainer: {
+    width: "auto",
+    padding: 0
+  },
+  iconLabelWrapper: {
+    flexDirection: "row"
+  },
 }));
 
 export default function FullWidthTabs(props) {
@@ -133,20 +140,32 @@ export default function FullWidthTabs(props) {
             aria-label="full width tabs example"
           >
             <Tab
-              icon={<AssessmentIcon />}
+              icon={<AssessmentIcon style={{marginLeft:'8px'}}/>}
               label='مطالب'
+              classes={{
+                wrapper: classes.iconLabelWrapper,
+                labelContainer: classes.labelContainer
+              }}
               className={classes.tabFont}
               {...a11yProps(0)}
             />
             <Tab
-              icon={<AssignmentLateIcon />}
+              icon={<AssignmentLateIcon style={{marginLeft:'8px'}}/>}
               label="اخبار"
+              classes={{
+                wrapper: classes.iconLabelWrapper,
+                labelContainer: classes.labelContainer
+              }}
               className={classes.tabFont}
               {...a11yProps(1)}
             />
             <Tab
-              icon={<LiveHelpIcon />}
+              icon={<LiveHelpIcon style={{marginLeft:'8px'}}/>}
               label="پرسش و پاسخ"
+              classes={{
+                wrapper: classes.iconLabelWrapper,
+                labelContainer: classes.labelContainer
+              }}
               className={classes.tabFont}
               {...a11yProps(2)}
             />

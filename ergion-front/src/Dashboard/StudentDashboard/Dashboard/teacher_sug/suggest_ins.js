@@ -197,7 +197,7 @@ const Suggestedins = () => {
                   }
                 />
                 <CardContent className="cc">
-                  <Grid className="cardSpacing" item xs={12} sm={0} md={0}>
+                  <Grid className="cardSpacing" item xs={12} sm={false} md={false}>
                     {/*// <Grid className="cardSpacing" item key={course.id}>*/}
                     <Card className="layout1">
                       {courses &&

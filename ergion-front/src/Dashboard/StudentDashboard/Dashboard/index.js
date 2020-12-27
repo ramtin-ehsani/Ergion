@@ -34,19 +34,18 @@ const Dashboard = () => {
   return (
     <StylesProvider jss={jss}>
       <ThemeProvider theme={theme}>
-        <Container maxWidth="lg" style={{ marginTop: "30px" }}>
-          <Grid container spacing={1} lg={10} item={true} dir="rtl">
-            <Grid item lg={9} md={9} xs={12} sm={12}>
+        <Container maxWidth="1300" style={{ marginTop: "30px" }}>
+          <Grid container spacing={6} lg={10} item={true} dir="rtl">
+            <Grid item lg={8} md={9} xs={12} sm={12}>
               <Timeline />
             </Grid>
 
-            <Grid item lg={3} md={3} xs={false} sm={false}>
+            <Grid item lg={4} md={3} xs={false} sm={false}>
               <Hidden only={["sm", "xs"]}>
                 <div
                   style={{
                     height: "100vh",
                     overflow: "auto",
-                    direction: "ltr",
                   }}
                 >
                   <Suggestedcourse />

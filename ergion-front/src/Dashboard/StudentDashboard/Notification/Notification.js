@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Avatar, Badge, Box, Typography } from "@material-ui/core";
+import { Avatar, Badge, Box, Divider, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -26,7 +26,7 @@ const styles = (theme) => ({
   },
 });
 
-const ITEM_HEIGHT = 48;
+const ITEM_HEIGHT = 60;
 
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
@@ -131,7 +131,15 @@ class Notification extends Component {
               style={{ direction: "rtl", marginTop: "30px" }}
             >
               {this.state.list.map((item) => (
-                <MenuItem key={item.time} onClick={this.handleMenuClose}>
+                <MenuItem
+                  key={item.time}
+                  onClick={this.handleMenuClose}
+                  style={
+                    !item.has_seen
+                      ? { backgroundColor: "#bbdefb" }
+                      : { backgroundColor: "white" }
+                  }
+                >
                   <div
                     style={{
                       display: "flex",
@@ -149,10 +157,10 @@ class Notification extends Component {
                       }}
                     />
                     <Typography style={{ alignSelf: "center", margin: "4px" }}>
-                    <Box fontWeight={!item.has_seen&&("fontWeightBold")}>{item.text}</Box>
+                      <Box>{item.text}</Box>
                     </Typography>
                     <Typography style={{ alignSelf: "center", margin: "4px" }}>
-                      <Box style={{ color: "grey" }} fontWeight={!item.has_seen&&("fontWeightBold")} fontSize={10}>
+                      <Box style={{ color: "grey" }} fontSize={10}>
                         {this.toFarsiNumber(
                           human(new Date(item.time))
                             .replace("years", "سال")
@@ -174,6 +182,7 @@ class Notification extends Component {
                       </Box>
                     </Typography>
                   </div>
+                  
                 </MenuItem>
               ))}
             </Menu>

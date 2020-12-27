@@ -367,19 +367,14 @@ function CourseLayout(props) {
 
                 <CardContent>
                   <Grid container spacing={1} dir="rtl">
-                    <Grid item md={12} xs={12}>
+                    <Grid item md={12} xs={12} style={{marginBottom:'4px'}}>
                       <Grid
                         container
                         direction="column"
                         justify="center"
                         alignItems="center"
-                        spacing={1}
+                        spacing={2}
                       >
-                        <Grid item md={12} xs={12}>
-                          <Typography style={{ alignSelf: "center" }}>
-                            <Box> نوع دسترسی دانش آموزان :</Box>
-                          </Typography>
-                        </Grid>
                         <Grid item md={12} xs={12}>
                           <Paper
                             className={classes.toggleButtonPaper}

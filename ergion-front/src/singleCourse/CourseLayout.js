@@ -7,8 +7,13 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles,withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import LockIcon from "@material-ui/icons/Lock";
+import LockOpenIcon from "@material-ui/icons/LockOpen";
+import Paper from "@material-ui/core/Paper";
 
 import "./CourseLayout.scss";
 import { Link, useHistory } from "react-router-dom";
@@ -67,6 +72,11 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     objectFit: "cover",
   },
+  toggleButtonPaper: {
+    display: "flex",
+    border: `1px solid ${theme.palette.divider}`,
+    flexWrap: "wrap",
+  },
   cardContent: {
     flexGrow: 1,
     padding: theme.spacing(1),
@@ -89,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   newCourseCardMedia: {
-    height: 160,
+    height: 120,
     width: "100%",
     objectFit: "cover",
     paddingLeft: 17,
@@ -139,10 +149,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const StyledToggleButtonGroup = withStyles((theme) => ({
+  grouped: {
+    margin: theme.spacing(0.5),
+    border: "none",
+    "&:not(:first-child)": {
+      borderRadius: theme.shape.borderRadius,
+    },
+    "&:first-child": {
+      borderRadius: theme.shape.borderRadius,
+    },
+  },
+}))(ToggleButtonGroup);
+
 export default function CourseLayout(props) {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [coverImage, setCoverImage] = React.useState("");
+  const [accessType, setaccessType] = React.useState("public");
   const newCourseName = React.useRef("");
   const newCourseSubject = React.useRef("");
   const newCourseGrade = React.useRef("1");
@@ -165,6 +189,18 @@ export default function CourseLayout(props) {
       setSelectedFile(event.target.files[0]);
       setCoverImage(URL.createObjectURL(event.target.files[0]));
     }
+  };
+
+  const handleAccessChange = (event, newAccess) => {
+    localStorage.setItem("course_name", newCourseName.current.value);
+    localStorage.setItem("course_subject", newCourseSubject.current.value);
+    localStorage.setItem("course_grade", newCourseGrade.current.value);
+    localStorage.setItem("course_capacity", newCourseCapacity.current.value);
+    localStorage.setItem(
+      "course_description",
+      newCourseDescription.current.value
+    );
+    setaccessType(newAccess);
   };
 
   const theme = createMuiTheme({
@@ -312,7 +348,76 @@ export default function CourseLayout(props) {
                 </div>
 
                 <CardContent>
-                  <Grid container spacing={2} dir="rtl">
+                  <Grid container spacing={1} dir="rtl">
+                  <Grid item md={12} xs={12} style={{marginBottom:'4px'}}>
+                      <Grid
+                        container
+                        direction="column"
+                        justify="center"
+                        alignItems="center"
+                        spacing={2}
+                      >
+                        <Grid item md={12} xs={12}>
+                          <Paper
+                            className={classes.toggleButtonPaper}
+                            style={{ alignSelf: "center" }}
+                          >
+                            <StyledToggleButtonGroup
+                              size="small"
+                              value={accessType}
+                              exclusive
+                              onChange={handleAccessChange}
+                              aria-label="text alignment"
+                            >
+                              <ToggleButton
+                                value="public"
+                                aria-label="right aligned"
+                                style={
+                                  accessType === "public"
+                                    ? {
+                                        backgroundColor: "#3f51b5",
+                                        color: "white",
+                                      }
+                                    : {
+                                        backgroundColor: "transparent",
+                                        color: "grey",
+                                      }
+                                }
+                              >
+                                <div style={{ display: "flex" }}>
+                                  <Typography>
+                                    <Box>عمومی</Box>
+                                  </Typography>
+                                  <LockOpenIcon />
+                                </div>
+                              </ToggleButton>
+                              <ToggleButton
+                                value="private"
+                                aria-label="left aligned"
+                                style={
+                                  accessType === "private"
+                                    ? {
+                                        backgroundColor: "#3f51b5",
+                                        color: "white",
+                                      }
+                                    : {
+                                        backgroundColor: "transparent",
+                                        color: "grey",
+                                      }
+                                }
+                              >
+                                <div style={{ display: "flex" }}>
+                                  <Typography>
+                                    <Box>خصوصی</Box>
+                                  </Typography>
+                                  <LockIcon />
+                                </div>
+                              </ToggleButton>
+                            </StyledToggleButtonGroup>
+                          </Paper>
+                        </Grid>
+                      </Grid>
+                    </Grid>
                     <Grid item md={6} xs={12}>
                       <TextValidator
                         fullWidth
@@ -380,7 +485,7 @@ export default function CourseLayout(props) {
                         defaultValue={props.course.about_course}
                         variant="outlined"
                         multiline={true}
-                        rows={5}
+                        rows={3}
                       />
                     </Grid>
                   </Grid>
