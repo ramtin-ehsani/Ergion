@@ -89,54 +89,52 @@ class MainDashboard extends Component {
     }
 
     loadMore(page){
-        setTimeout(()=>{
-            console.log(page)
-            const config = {
-                headers: { Authorization: `Token ${localStorage.getItem('api_key')}`}
+        console.log(page)
+        const config = {
+            headers: { Authorization: `Token ${localStorage.getItem('api_key')}`}
+            }
+        var events = this.state.events;
+        axios.get(`http://127.0.0.1:8000/api/teacher/timeline/?page=${page}`,config)
+        .then((res)=>{
+            res.data.data.map((event)=>{
+                var newE = event;
+                if(newE.type === 'comments'){
+                    if (newE.session_name !== null)
+                        newE.type= `برای ${newE.course_name} ${newE.session_name} کامنت گذاشت`
+                    else
+                    newE.type= `برای خبر ${newE.course_name} کامنت گذاشت`
                 }
-            var events = this.state.events;
-            axios.get(`http://127.0.0.1:8000/api/teacher/timeline/?page=${page}`,config)
-            .then((res)=>{
-                res.data.data.map((event)=>{
-                    var newE = event;
-                    if(newE.type === 'comments'){
-                        if (newE.session_name !== null)
-                            newE.type= `برای ${newE.course_name} ${newE.session_name} کامنت گذاشت`
-                        else
-                        newE.type= `برای خبر ${newE.course_name} کامنت گذاشت`
-                    }
-                    else if(newE.type === 'like'){
-                        if (newE.session_name !== null)
-                            newE.type= `${newE.session_name} از ${newE.course_name} را لایک کرد`
-                        else newE.type= `خبر از ${newE.course_name} را لایک کرد`
-                    }
-                    else if(newE.type === 'join'){
-                        newE.type= `به کلاس ${newE.course_name} پیوست`
-                    }
-                    else if(newE.type === 'question'){
-                        newE.type= `از ${newE.session_name} کلاس ${newE.course_name} سوال کرد`
-                    }
-                    events.push(newE)
-                })
-                axios.get('http://127.0.0.1:8000/api/teacher/profile-details/',config)
-                .then((res)=>{
-                    let count = res.data.count_of_questions;
-                    this.setState({count:count})
-                })
-                console.log(res.data.has_next)
-                this.setState({hasMore:res.data.has_next,events:events,mounted_events:true})
-                if(page === 1){
-                    axios.get('http://127.0.0.1:8000/api/teacher/join-requests/',config)
-                    .then((res)=>{
-                        let requests=[]
-                        res.data.map((req)=>{
-                            requests.push(req)
-                        })
-                        this.setState({requests:requests, mounted_reqs:true})
-                    })
+                else if(newE.type === 'like'){
+                    if (newE.session_name !== null)
+                        newE.type= `${newE.session_name} از ${newE.course_name} را لایک کرد`
+                    else newE.type= `خبر از ${newE.course_name} را لایک کرد`
                 }
+                else if(newE.type === 'join'){
+                    newE.type= `به کلاس ${newE.course_name} پیوست`
+                }
+                else if(newE.type === 'question'){
+                    newE.type= `از ${newE.session_name} کلاس ${newE.course_name} سوال کرد`
+                }
+                events.push(newE)
             })
-        },2000)
+            axios.get('http://127.0.0.1:8000/api/teacher/profile-details/',config)
+            .then((res)=>{
+                let count = res.data.count_of_questions;
+                this.setState({count:count})
+            })
+            console.log(res.data.has_next)
+            this.setState({hasMore:res.data.has_next,events:events,mounted_events:true})
+            if(page === 1){
+                axios.get('http://127.0.0.1:8000/api/teacher/join-requests/',config)
+                .then((res)=>{
+                    let requests=[]
+                    res.data.map((req)=>{
+                        requests.push(req)
+                    })
+                    this.setState({requests:requests, mounted_reqs:true})
+                })
+            }
+        })
         
 
     }
@@ -375,6 +373,7 @@ class MainDashboard extends Component {
                                         loadMore={this.loadMore.bind(this)}
                                         loader={<div className="loader" key={0}><CircularProgress/></div>}
                                         useWindow={false}
+                                        threshold={5}
                                         getScrollParent={() => this.scrollParentRef}
                                         >
                                         {this.state.events.map((event) => {
