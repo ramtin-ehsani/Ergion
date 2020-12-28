@@ -42,7 +42,7 @@ const SingleCoursecontainer = ({ match }) => {
   const classes = useStyles();
 
   return (
-    <div className={"dashboard"} style={{marginBottom:'20px'}}>
+    <div className={"dashboard"} style={{ marginBottom: "20px" }}>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="1300" className={classes.container}>
@@ -62,9 +62,13 @@ const SingleCoursecontainer = ({ match }) => {
               <Route path="/course/:id" exact component={SingleCourse} />
             </Grid>
             <Grid item lg={4} md={3} xs={false}>
-              <Hidden only={['sm', 'xs']}>
-                <Suggestedteachers />
-                <Suggestedcourse />
+              <Hidden only={["sm", "xs"]}>
+                {JSON.parse(localStorage.getItem("user"))["role"] === "S" && (
+                  <div>
+                    <Suggestedteachers />
+                    <Suggestedcourse />
+                  </div>
+                )}
               </Hidden>
             </Grid>
           </Grid>

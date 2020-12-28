@@ -434,27 +434,23 @@ class NestedList extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    if(this.props.course.id!==undefined){
+    if (this.props.course.id !== undefined) {
       this.ownerChecker(this.props.course);
     }
-    
   }
 
-  static getDerivedStateFromProps(nextProps,prevState){
-    if(nextProps.course.id!==prevState.courseId){
-      return {course:nextProps.course}
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.course.id !== prevState.courseId) {
+      return { course: nextProps.course };
     }
-    return {course:''}
-
+    return { course: "" };
   }
 
-  componentDidUpdate(){
-    if(this.state.course!==''){
+  componentDidUpdate() {
+    if (this.state.course !== "") {
       this.ownerChecker(this.state.course);
     }
-
   }
-
 
   componentWillUnmount() {
     this._isMounted = false;
@@ -465,6 +461,7 @@ class NestedList extends React.Component {
   };
 
   ownerChecker = (course) => {
+    if (course.id !== undefined) {
       if (JSON.parse(localStorage.getItem("user")) !== null) {
         if (JSON.parse(localStorage.getItem("user"))["role"] === "T") {
           if (
@@ -479,13 +476,13 @@ class NestedList extends React.Component {
       }
       this.setState({ courseId: course.id });
       this.getValues(course.id);
+    }
   };
 
   getValues = (id) => {
     axios
       .get(
-        "http://127.0.0.1:8000/api/course/chapters/?course_id=" +
-          id,
+        "http://127.0.0.1:8000/api/course/chapters/?course_id=" + id,
         this.config
       )
       .then((response) => {
@@ -616,11 +613,11 @@ class NestedList extends React.Component {
     }
   };
 
-  toFarsiNumber=(n)=> {
+  toFarsiNumber = (n) => {
     const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 
     return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
-  }
+  };
 
   handleClick = (e) => {
     e.preventDefault();
@@ -884,7 +881,6 @@ class NestedList extends React.Component {
     });
     this.setState({ list: results });
   };
-
 
   render() {
     const { classes } = this.props;

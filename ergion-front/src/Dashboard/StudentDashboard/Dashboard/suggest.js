@@ -28,6 +28,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import SearchIcon from "@material-ui/icons/Search";
 import ShareIcon from "@material-ui/icons/Share";
 import Snackbar from "@material-ui/core/Snackbar";
+import Skeleton from "@material-ui/lab/Skeleton";
 import Alert from "@material-ui/lab/Alert";
 import { ButtonGroup } from "@material-ui/core";
 // import copy from "copy-to-clipboard";
@@ -191,24 +192,26 @@ const Suggestedcourse = () => {
                                 </Grid>
                                 )} */}
             <div>
-              {courses &&
-                courses.map((course) => (
-                  <Grid
-                    className="cardSpacing"
-                    item
-                    key={course.id}
-                    xs={12}
-                    sm={false}
-                    md={false}
-                    style={{
-                      marginBottom: "10px",
-                      // paddingRight:'24px',paddingLeft:'24px',
-                      marginTop: "2px",
-                    }}
-                  >
-                    {/*// <Grid className="cardSpacing" item key={course.id}>*/}
-                    <Card className="layout1">
-                      {/* <CardHeader
+              {!loading ? (
+                <div>
+                  {courses &&
+                    courses.map((course) => (
+                      <Grid
+                        className="cardSpacing"
+                        item
+                        key={course.id}
+                        xs={12}
+                        sm={false}
+                        md={false}
+                        style={{
+                          marginBottom: "10px",
+                          // paddingRight:'24px',paddingLeft:'24px',
+                          marginTop: "2px",
+                        }}
+                      >
+                        {/*// <Grid className="cardSpacing" item key={course.id}>*/}
+                        <Card className="layout1">
+                          {/* <CardHeader
                         title={
                             <div >
                           <Typography
@@ -243,96 +246,106 @@ const Suggestedcourse = () => {
                           </Avatar>
                         }
                       /> */}
-                      <div
-                        style={{
-                          display: "flex",
-                          margin: "10px",
-                          wordBreak: "all-break",
-                        }}
-                      >
-                        <Avatar
-                          src={course.instructor_profile_picture}
-                          aria-label="recipe"
-                          className={classes.avatar}
-                          style={{ marginRight: "10px", alignSelf: "center" }}
-                        >
-                          {course.instructor_firstname.split("")[0]}
-                        </Avatar>
-                        <div
-                          style={{ marginRight: "6px", alignSelf: "center" }}
-                        >
-                          <div style={{ display: "flex" }}>
-                            <Typography
-                            //   className="courseOwnerPlace"
-                              component="h4"
+                          <div
+                            style={{
+                              display: "flex",
+                              margin: "10px",
+                              wordBreak: "all-break",
+                            }}
+                          >
+                            <Avatar
+                              src={course.instructor_profile_picture}
+                              aria-label="recipe"
+                              className={classes.avatar}
+                              style={{
+                                marginRight: "10px",
+                                alignSelf: "center",
+                              }}
                             >
-                                <Box>
-                              مدرس : 
-                              {course.instructor_firstname +
-                                " " +
-                                course.instructor_lastname}
-                                </Box>
-                            </Typography>
-                          </div>
-                          <div style={{ display: "flex",marginTop:'4px' }}>
-                            <Typography
-                            //   className="courseCapacityPlace"
-                              component="h4"
+                              {course.instructor_firstname.split("")[0]}
+                            </Avatar>
+                            <div
+                              style={{
+                                marginRight: "6px",
+                                alignSelf: "center",
+                              }}
                             >
-                              <Box
-                              // style={{textAlign:'right'}}
+                              <div style={{ display: "flex" }}>
+                                <Typography
+                                  //   className="courseOwnerPlace"
+                                  component="h4"
+                                >
+                                  <Box>
+                                    مدرس :
+                                    {course.instructor_firstname +
+                                      " " +
+                                      course.instructor_lastname}
+                                  </Box>
+                                </Typography>
+                              </div>
+                              <div
+                                style={{ display: "flex", marginTop: "4px" }}
                               >
-                                ظرفیت کلاس : 
-                                {toFarsiNumber(course.capacity)}
+                                <Typography
+                                  //   className="courseCapacityPlace"
+                                  component="h4"
+                                >
+                                  <Box
+                                  // style={{textAlign:'right'}}
+                                  >
+                                    ظرفیت کلاس :{toFarsiNumber(course.capacity)}
+                                  </Box>
+                                </Typography>
+                              </div>
+                            </div>
+                          </div>
+                          <CardMedia
+                            className={classes.cardMedia}
+                            component="img"
+                            image={course.course_cover}
+                            title={course.sunject}
+                          />
+                          <CardContent className={classes.cardContent}>
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="h2"
+                              className="courseNamePlace"
+                            >
+                              <Box style={{ textAlign: "right" }}>
+                                {course.name}
                               </Box>
                             </Typography>
-                          </div>
-                        </div>
-                      </div>
-                      <CardMedia
-                        className={classes.cardMedia}
-                        component="img"
-                        image={course.course_cover}
-                        title={course.sunject}
-                      />
-                      <CardContent className={classes.cardContent}>
-                        <Typography
-                          gutterBottom
-                          variant="h5"
-                          component="h2"
-                          className="courseNamePlace"
-                        >
-                          <Box style={{ textAlign: "right" }}>
-                            {course.name}
-                          </Box>
-                        </Typography>
-                        {/*<Typography className="courseOwnerPlace" component="h4">*/}
-                        {/*    مدرس: {course.owner_firstname + " " + course.owner_lastname}*/}
-                        {/*</Typography>*/}
+                            {/*<Typography className="courseOwnerPlace" component="h4">*/}
+                            {/*    مدرس: {course.owner_firstname + " " + course.owner_lastname}*/}
+                            {/*</Typography>*/}
 
-                        {/*<Typography className="courseCapacityPlace" component="h6">*/}
-                        {/*     دوره:{" " + course.grade}*/}
-                        {/*</Typography>*/}
-                      </CardContent>
-                      <Divider />
-                      <Divider />
-                      {/* <Divider />
+                            {/*<Typography className="courseCapacityPlace" component="h6">*/}
+                            {/*     دوره:{" " + course.grade}*/}
+                            {/*</Typography>*/}
+                          </CardContent>
+                          <Divider />
+                          <Divider />
+                          {/* <Divider />
                                             <Divider /> */}
-                      <CardActions className={classes.cardActions}>
-                        <ButtonGroup fullWidth>
-                          <Button
-                            href={`/student_dashboard/added_courses/${course.id}`}
-                            className="toSeeButton"
-                            size="small"
-                            color="primary"
-                            variant="contained"
-                          >
-                            <Typography variant="button"> مشاهده</Typography>{" "}
-                          </Button>
-                          <Divider
-                            style={{ minWidth: "3px", maxWidth: "3px" }}
-                          />
-                          {/* <Button size="small" color="primary"
+                          <CardActions className={classes.cardActions}>
+                            <ButtonGroup fullWidth>
+                              <Button
+                                href={`/student_dashboard/added_courses/${course.id}`}
+                                className="toSeeButton"
+                                size="small"
+                                color="primary"
+                                variant="contained"
+                              >
+                                <Typography variant="button">
+                                  {" "}
+                                  مشاهده
+                                </Typography>{" "}
+                              </Button>
+                              <Divider
+                                style={{ minWidth: "3px", maxWidth: "3px" }}
+                              />
+                              {/* <Button size="small" color="primary"
                                                         onClick={() => copyToClipboard(course.id)}
                                                         action={localStorage.setItem('id', course.id)}
                                                         endIcon={<ShareIcon />}
@@ -342,27 +355,254 @@ const Suggestedcourse = () => {
                                                         <Typography variant='button'> 
                                                         اشتراک
                                                         </Typography>  </Button> */}
-                        </ButtonGroup>
-                        <Snackbar
-                          className={classes.snackBAr}
-                          dir="rtl"
-                          open={open}
-                          autoHideDuration={1500}
-                          onClose={handleClose}
+                            </ButtonGroup>
+                            <Snackbar
+                              className={classes.snackBAr}
+                              dir="rtl"
+                              open={open}
+                              autoHideDuration={1500}
+                              onClose={handleClose}
+                            >
+                              <Alert
+                                className={classes.alertText}
+                                onClose={handleClose}
+                                severity="success"
+                                variant="filled"
+                              >
+                                لینک کلاس کپی شد
+                              </Alert>
+                            </Snackbar>
+                          </CardActions>
+                        </Card>
+                      </Grid>
+                    ))}
+                </div>
+              ) : (
+                <div>
+                  <Grid
+                    className="cardSpacing"
+                    item
+                    key="1"
+                    xs={12}
+                    sm={false}
+                    md={false}
+                    style={{
+                      marginBottom: "10px",
+                      marginTop: "2px",
+                    }}
+                  >
+                    <Card className="layout1">
+                      <div
+                        style={{
+                          display: "flex",
+                          margin: "10px",
+                          wordBreak: "all-break",
+                        }}
+                      >
+                        <Skeleton
+                          animation="wave"
+                          variant="circle"
+                          width={40}
+                          height={40}
+                          style={{ marginRight: "10px",marginTop:'4px' }}
+                        />
+                        <div
+                          style={{
+                            marginRight: "8px",
+                            alignSelf: "center",
+                          }}
                         >
-                          <Alert
-                            className={classes.alertText}
-                            onClose={handleClose}
-                            severity="success"
-                            variant="filled"
-                          >
-                            لینک کلاس کپی شد
-                          </Alert>
-                        </Snackbar>
-                      </CardActions>
+                          <div style={{ display: "flex" }}>
+                            <Skeleton
+                              animation="wave"
+                              height={20}
+                              width={80}
+                              style={{
+                                alignSelf: "flex-start",
+                              }}
+                            />
+                          </div>
+                          <div style={{ display: "flex", marginTop: "4px" }}>
+                            <Skeleton
+                              animation="wave"
+                              height={20}
+                              width={80}
+                              style={{
+                                alignSelf: "flex-start",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <Skeleton
+                        animation="wave"
+                        variant="rect"
+                        height={100}
+                      />
+                      <CardContent>
+                        <Skeleton
+                          animation="wave"
+                          height={40}
+                          width='100%'
+                          style={{
+                            // marginRight: "8px",
+                            // marginLeft: "8px",
+                            alignSelf: "center",
+                          }}
+                        />
+                      </CardContent>
                     </Card>
                   </Grid>
-                ))}
+                  <Grid
+                    className="cardSpacing"
+                    item
+                    key="2"
+                    xs={12}
+                    sm={false}
+                    md={false}
+                    style={{
+                      marginBottom: "10px",
+                      marginTop: "2px",
+                    }}
+                  >
+                    <Card className="layout1">
+                      <div
+                        style={{
+                          display: "flex",
+                          margin: "10px",
+                          wordBreak: "all-break",
+                        }}
+                      >
+                        <Skeleton
+                          animation="wave"
+                          variant="circle"
+                          width={40}
+                          height={40}
+                          style={{ marginRight: "10px",marginTop:'4px' }}
+                        />
+                        <div
+                          style={{
+                            marginRight: "8px",
+                            alignSelf: "center",
+                          }}
+                        >
+                          <div style={{ display: "flex" }}>
+                            <Skeleton
+                              animation="wave"
+                              height={20}
+                              width={80}
+                              style={{
+                                alignSelf: "flex-start",
+                              }}
+                            />
+                          </div>
+                          <div style={{ display: "flex", marginTop: "4px" }}>
+                            <Skeleton
+                              animation="wave"
+                              height={20}
+                              width={80}
+                              style={{
+                                alignSelf: "flex-start",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <Skeleton
+                        animation="wave"
+                        variant="rect"
+                        height={100}
+                      />
+                      <CardContent>
+                        <Skeleton
+                          animation="wave"
+                          height={40}
+                          width='100%'
+                          style={{
+                            // marginRight: "8px",
+                            // marginLeft: "8px",
+                            alignSelf: "center",
+                          }}
+                        />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid
+                    className="cardSpacing"
+                    item
+                    key="3"
+                    xs={12}
+                    sm={false}
+                    md={false}
+                    style={{
+                      marginBottom: "10px",
+                      marginTop: "2px",
+                    }}
+                  >
+                    <Card className="layout1">
+                      <div
+                        style={{
+                          display: "flex",
+                          margin: "10px",
+                          wordBreak: "all-break",
+                        }}
+                      >
+                        <Skeleton
+                          animation="wave"
+                          variant="circle"
+                          width={40}
+                          height={40}
+                          style={{ marginRight: "10px",marginTop:'4px' }}
+                        />
+                        <div
+                          style={{
+                            marginRight: "8px",
+                            alignSelf: "center",
+                          }}
+                        >
+                          <div style={{ display: "flex" }}>
+                            <Skeleton
+                              animation="wave"
+                              height={20}
+                              width={80}
+                              style={{
+                                alignSelf: "flex-start",
+                              }}
+                            />
+                          </div>
+                          <div style={{ display: "flex", marginTop: "4px" }}>
+                            <Skeleton
+                              animation="wave"
+                              height={20}
+                              width={80}
+                              style={{
+                                alignSelf: "flex-start",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <Skeleton
+                        animation="wave"
+                        variant="rect"
+                        height={100}
+                      />
+                      <CardContent>
+                        <Skeleton
+                          animation="wave"
+                          height={40}
+                          width='100%'
+                          style={{
+                            // marginRight: "8px",
+                            // marginLeft: "8px",
+                            alignSelf: "center",
+                          }}
+                        />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </div>
+              )}
             </div>
           </main>
         </ThemeProvider>
