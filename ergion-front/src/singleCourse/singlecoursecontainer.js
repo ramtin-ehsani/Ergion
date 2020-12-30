@@ -81,7 +81,7 @@ const  SingleCoursecontainer = ({match}) => {
                         xs={false}
                     >
 <Suggestedteachers/>
-                       <Suggestedcourse/> 
+                       <Suggestedcourse /> 
                     </Grid>
                     </Grid>
                 </Container>

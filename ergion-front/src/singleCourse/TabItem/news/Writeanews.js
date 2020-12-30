@@ -100,6 +100,9 @@ const useStyles = makeStyles((theme) =>
 		flexWrap: 'wrap',
 	   
 	  },
+	  iconButton:{
+		  transform:"rotate(180deg)"
+	  }
 	})
 );
 
@@ -125,6 +128,7 @@ const Write = (props) => {
 	const[newsid,setnewsid]=React.useState(0);
 	const [images,setimages]=React.useState([image1,image2,image3,image4])
 	const[courseid,setcourseid]=React.useState(0);
+	const[postid,setpostid]=React.useState();
 React.useEffect(()=>
 	{	
 		setcourseid(props.course.id);
@@ -141,13 +145,19 @@ setdpdf(true);
 	}
 	if(isimage>0)
 	{
-		setdimage(true);
+		setdvideo(true);
 		setdpdf(true);
 
 		if(isimage===4)
 		{
 			setdimage(true);
 		}
+if(isimage===0)
+{
+	setdvideo(false);
+	setdimage(false);
+}
+
 		}	}
 )
 
@@ -204,6 +214,8 @@ setimage2(image3);
 setimage3(image4);
 setimage4(null);
 setisimage(isimage-1);
+setdimage(false);
+setdvideo(false);
 }
 const image2delete=()=>{
 	
@@ -234,7 +246,8 @@ const image2delete=()=>{
 		
 		setisvideo(false);
 		setvideo(null);
-				
+			setdimage(false);
+			setdvideo(false);	
 				}
 
 
@@ -245,64 +258,39 @@ const	sendnewshandler=event=>
 		Axios.post('http://127.0.0.1:8000/api/course/news/',
 		{course_id:courseid,description:newstext}, 
 		{  headers :{
-			"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
+			"Authorization": `Token ${localStorage.getItem('token')}`}}).then(response=>{
 		setnewsid(response.data.post_id);	
 		setnewstext("");
 
 		if(isimage===4)
 		{
-			const fileData=new FormData()
-			fileData.append('post_id',response.data.post_id)
-			fileData.append("file",image4)
-			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
-			fileData,		{  headers :{
-				"Authoriza`	/xz,mnbtion": `Token ${localStorage.getItem('token')}`}}).then(function(response){
-		
-			setisimage(isimage-1);
-			setimage4(null);
-			
-			}).catch((error)=>{console.log(4);})
+			sendimage4(response.data.post_id);
+			sendimage3(response.data.post_id);
+			sendimage2(response.data.post_id);
+			sendimage1(response.data.post_id);
+			setisimage(0);
 		
 		}
 		if(isimage===3)
 		{
-			const fileData=new FormData()
-			fileData.append('post_id',response.data.post_id)
-			fileData.append("file",image3)
-			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
-			fileData,		{  headers :{
-				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
-				setisimage(isimage-1);
-			setimage3(null);
-			
-			}).catch((error)=>{console.log(3);})
+			sendimage3(response.data.post_id);
+			sendimage2(response.data.post_id);
+			sendimage1(response.data.post_id);
+			setisimage(0);
 		
 		}
 		if(isimage===2)
 		{
-			const fileData=new FormData()
-			fileData.append('post_id',response.data.post_id)
-			fileData.append("file",image2)
-			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
-			fileData,		{  headers :{
-				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(function(response){
-				setisimage(isimage-1);
-			setimage2(null);
-			}).catch((error)=>{console.log(2);})
+			sendimage2(response.data.post_id);
+			sendimage1(response.data.post_id);
+			setisimage(0);
 		
 		}
 		if(isimage===1)
-		{ const fileData=new FormData()
-			fileData.append('post_id',response.data.post_id)
-			fileData.append("file",image1)
-			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
-			fileData,		{  headers :{
-				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(response=>{
-					setisimage(isimage-1);
-			setimage1(null);
-			console.log('yyyyyyyyyyy');
-			}).catch((error)=>{console.log(error); })
 		
+		{ 
+		sendimage1(response.data.post_id);
+		setisimage(0);
 		}
 		if(isvideo)
 		{
@@ -342,6 +330,61 @@ const	sendnewshandler=event=>
 
 		
 
+	}
+	const sendimage1=(pi)=>
+	{
+		const fileData=new FormData()
+			fileData.append('post_id',pi)
+			fileData.append("file",image1)
+			Axios.post('http://127.0.0.1:8000/api/course/post-files/',
+			fileData,		{  headers :{
+				"Authorization": `Token ${localStorage.getItem('token')}`}}).then(response1=>{
+					setisimage(0);
+			setimage1(null);
+			setdimage(false);
+			setdvideo(false);
+			console.log('yyyyyyyyyyy');
+			}).catch((error)=>{console.log(error); })
+	}
+	const sendimage2=(pi)=>
+	{
+		const fileData=new FormData()
+		fileData.append('post_id',pi)
+		fileData.append("file",image2)
+		Axios.post('http://127.0.0.1:8000/api/course/post-files/',
+		fileData,		{  headers :{
+			"Authorization": `Token ${localStorage.getItem('token')}`}}).then(response2=>{
+		
+		setimage2(null);
+		console.log(isimage)
+		}).catch((error)=>{console.log(2);})
+	}
+	const sendimage3=(pi)=>
+	{
+		const fileData=new FormData()
+		fileData.append('post_id',pi)
+		fileData.append("file",image3)
+		Axios.post('http://127.0.0.1:8000/api/course/post-files/',
+		fileData,		{  headers :{
+			"Authorization": `Token ${localStorage.getItem('token')}`}}).then(response3=>{
+			
+		setimage3(null);
+		
+		}).catch((error)=>{console.log(3);})
+	}
+	const sendimage4=(pi)=>
+	{
+		const fileData=new FormData()
+		fileData.append('post_id',pi)
+		fileData.append("file",image4)
+		Axios.post('http://127.0.0.1:8000/api/course/post-files/',
+		fileData,		{  headers :{
+			"Authorization": `Token ${localStorage.getItem('token')}`}}).then(response4=>{
+	
+		
+		setimage4(null);
+		
+		}).catch((error)=>{console.log(4);})
 	}
 const	newstexthandler=event=>
 	{
@@ -454,13 +497,13 @@ const	newstexthandler=event=>
         <InsertDriveFileIcon fontSize="default" />
       </IconButton> */}
       {/* </label> */}
-      <input accept="image/*" className={classes.input} id="image" type="file" name="image" onChange={onchangeimage}/>
+      <input accept="image/*" className={classes.input} id="image" type="file" name="image" onChange={onchangeimage} disabled={dimage}/>
       <label htmlFor="image">
       <IconButton color="primary" aria-label="upload picture" component="span" disabled={dimage}> 
         <CropOriginalIcon fontSize="default" />
       </IconButton>
       </label>
-      <input accept="video/*" className={classes.input} id="video" type="file" name="video" onChange={onchangevideo}/>
+      <input accept="video/*" className={classes.input} id="video" type="file" name="video" onChange={onchangevideo} disabled={dvideo}/>
       <label htmlFor="video">
       <IconButton color="primary" aria-label="upload picture" component="span" disabled={dvideo}>
         <VideoLibraryIcon fontSize="default" />
@@ -468,7 +511,7 @@ const	newstexthandler=event=>
       </label>
 </Grid>
             <Grid item>
-      <IconButton className={classes.iconButton} aria-label="menu" onClick={sendnewshandler} disabled={newstext.length===0}>
+      <IconButton className={classes.iconButton} color='primary' aria-label="menu" onClick={sendnewshandler} disabled={newstext.length===0}>
         <SendIcon />
       </IconButton></Grid>
       </Grid>

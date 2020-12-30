@@ -93,7 +93,7 @@ export default function FullWidthTabs(props) {
   const [T, setT] = React.useState(false);
   const [S, setS] = React.useState(false);
   const [isowner, setisowner] = React.useState(false);
-  const[lock,setlock]=React.useState(true);
+  const[lock,setlock]=React.useState();
 
 
   React.useEffect(() => {
@@ -106,6 +106,7 @@ export default function FullWidthTabs(props) {
           props.course.instructor_id
         ) {
           setisowner(true);
+          setlock(false);
         }
       } else {setS(true);
       if(props.course.is_public)

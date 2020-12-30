@@ -43,7 +43,17 @@ import rtl from "jss-rtl";
 import TextField from "@material-ui/core/TextField";
 import CourseLayout from "./CourseLayout";
 import CardMedia from "@material-ui/core/CardMedia";
-
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import FormControl from "@material-ui/core/FormControl";
+import FileCopyIcon from "@material-ui/icons/FileCopy";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import PersonIcon from '@material-ui/icons/Person';
 const useStyles = makeStyles((theme) => ({
   chipo: {
     display: "flex",
@@ -81,6 +91,17 @@ const useStyles = makeStyles((theme) => ({
   informationtext: {
     margin: theme.spacing(2),
   },
+  newEpisodeButtonContent: {
+    // justifyContent:'space-between',
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingBottom: 8,
+    paddingTop: 8,
+  },
+  personicon:
+  {
+    verticalAlign: 'middle',
+  }
 }));
 
 export default function Information(props) {
@@ -105,6 +126,8 @@ export default function Information(props) {
   const [edit, setedit] = React.useState(false);
   const [editmode, seteditmode] = React.useState(0);
   const [hasrequested,sethasrequested]=React.useState(false);
+  const[removeDialog,setremoveDialog]=React.useState(false);
+  const [shareDialogOpen,setshareDialogOpen]=React.useState(false);
   const [snackbar, setsnackbar] = React.useState({
     open: false,
     vertical: "top",
@@ -124,6 +147,16 @@ export default function Information(props) {
     const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 
     return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+  };
+  const Grade = (n) => {
+    const farsiDigits = ["اول دبستان"
+    , "دوم دبستان",
+     "سوم دبستان",
+     "چهارم دبستان", "پنجم دبستان", "ششم دبستان", "هفتم", "هشتم", "نهم", "دهم",
+    "یازدهم","دوازدهم"
+  ];
+
+    return farsiDigits[n-1];
   };
 
   React.useEffect(() => {
@@ -195,6 +228,7 @@ export default function Information(props) {
 
   const handleDelete=()=>
   {
+    dialogOnclose();
     Axios.delete('http://127.0.0.1:8000/api/student/courses/' ,
     { params: {course_id:props.course.id},
        headers :{
@@ -215,6 +249,22 @@ export default function Information(props) {
    }).catch((error)=>console.log(error))
   }
 
+  const handlesharedialog=()=>
+  {
+    setshareDialogOpen(true);
+  }
+  const sharedialogOnclose=()=>
+  {
+    setshareDialogOpen(false);
+  }
+  const handledialogopen=()=>
+  {
+setremoveDialog(true);
+  }
+  const dialogOnclose=()=>
+  {
+setremoveDialog(false);
+  }
   const handleAdd = () => {
     if (localStorage.getItem("api_key") === "null") {
       window.location = "/login";
@@ -242,7 +292,15 @@ export default function Information(props) {
     }
   };
 
-
+const copytoclipboard=()=>{
+  let textField = document.createElement('textarea');
+  textField.innerText = 'http://localhost:3000/course/' + props.course.id;
+  document.body.appendChild(textField);
+  textField.select();
+  document.execCommand('copy');
+  textField.remove();
+  // setOpen(true);
+}
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
@@ -272,7 +330,7 @@ export default function Information(props) {
                         {Add===2 && (
                           <Button
                             size="medium"
-                             onClick={handleDelete}
+                             onClick={handledialogopen}
                             variant="contained"
                             color="secondary"
                           >
@@ -306,14 +364,101 @@ export default function Information(props) {
                   )}
                 </div>
               )}
+            <Dialog
+              open={removeDialog}
+              onClose={dialogOnclose}
+              aria-labelledby="error-dialog"
+              className={classes.newEpisodeRoot}
+            >
+              <DialogTitle id="error-dialog" dir="rtl">
+                حذف
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText dir="rtl" style={{ padding: "10px" }}>
+                آیا میخواهید این درس{" "}
+                   را حذف کنید؟
+                </DialogContentText>
+              </DialogContent>
 
+              <DialogActions className={classes.newEpisodeButtonContent}>
+                <Button
+                  color="primary"
+                  onClick={dialogOnclose}
+                  style={{ margin: "8px" }}
+                >
+                  
+                  <Typography inline variant="button">
+                              <Box>لغو</Box>
+                            </Typography>
+                </Button>
+
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleDelete}
+                  style={{ margin: "8px" }}
+                >
+                  
+                  <Typography inline variant="button">
+                              <Box>حذف</Box>
+                            </Typography>
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <Zoom
+                      in={loaded}
+                      timeout={700}
+                      style={{ transitionDelay: loaded ? "1000ms" : "0ms" }}
+                    >
               <IconButton
                 aria-label="add an alarm"
                 style={{ marginTop: "-8px", marginLeft: "10px" }}
+                onClick={handlesharedialog}
               >
                 <ShareIcon />
               </IconButton>
-              <Grid item alignItems="flex-start" justify="flex-start"></Grid>
+              </Zoom>
+              <Dialog
+          open={shareDialogOpen}
+          onClose={sharedialogOnclose}
+          aria-labelledby="share-dialog"
+          fullWidth={true}
+          maxWidth={"sm"}
+        >
+          <DialogTitle id="share-dialog" dir="rtl">
+            اشتراک گذاری
+          </DialogTitle>
+          <DialogContent>
+            <FormControl variant="outlined" fullWidth={true}>
+              <InputLabel htmlFor="outlined-adornment-link">لینک</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-link"
+                label="لینک"
+                defaultValue={`http://localhost:3000/course/` + props.course.id}
+                disabled={true}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton onClick={copytoclipboard} edge="end">
+                      <FileCopyIcon />
+                    </IconButton>
+                  </InputAdornment>
+                }
+                labelWidth={70}
+              />
+            </FormControl>
+          </DialogContent>
+
+          <DialogActions>
+            <Button
+              color="primary"
+              onClick={sharedialogOnclose}
+              style={{ margin: "8px" }}
+            >
+              لغو
+            </Button>
+          </DialogActions>
+        </Dialog>
+
               <Grid
                 item
                 alignItems="flex-end"
@@ -324,7 +469,7 @@ export default function Information(props) {
               >
                 <Typography
                   className={"nameeeee"}
-                  variant="h4"
+           
                   inline
                   color="primary"
                 >
@@ -336,7 +481,9 @@ export default function Information(props) {
                   </Zoom>
                 </Typography>
               </Grid>
+
             </Grid>
+            
           </Grid>
 
           <Grid container style={{ marginTop: "8px" }}>
@@ -347,7 +494,7 @@ export default function Information(props) {
               >
                 <div style={{ display: "flex" }}>
                   <Typography inline variant="body2">
-                    /{subject}
+                    /{Grade(grade)}
                   </Typography>{" "}
                   <Typography variant="body1">
                     {" "}
