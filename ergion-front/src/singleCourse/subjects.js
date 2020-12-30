@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     overflow: "auto",
     flexDirection: "column",
-    alignItems:'center'
+    alignItems: "center",
   },
   lockb: {
     margin: theme.spacing(6),
@@ -131,17 +131,18 @@ export default function FullWidthTabs(props) {
         ) {
           setisowner(true);
         }
-      } else setS(true);
+      } else {
+        setS(true);
 
-      if (props.course.is_public !== undefined) {
-        if (props.course.is_public) {
-          setlock(false);
-        } else {
-          setlock(true);
+        if (props.course.is_public !== undefined) {
+          if (!props.course.is_public) {
+            if (props.course.joined) {
+              setlock(false);
+            } else {
+              setlock(true);
+            }
+          } 
         }
-      }
-      if (props.course.joined) {
-        setlock(false);
       }
     }
     // setTimeout(() => {
@@ -153,7 +154,7 @@ export default function FullWidthTabs(props) {
     //     setnewslist(response.data);
     //   });
     // }, 2000);
-  });
+  },[props.course]);
   const fixedHeightPaper1 = clsx(classes.paper, classes.fixedHeight1);
   const handleChange = (event, newValue) => {
     setValue(newValue);

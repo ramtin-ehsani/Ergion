@@ -268,9 +268,9 @@ function CourseLayout(props) {
     data.append("about_course", newCourseDescription.current.value);
 
     if(accessType==='public'){
-      data.append("is_public", true);
+      data.append("is_public", 1);
     }else{
-      data.append("is_public", false);
+      data.append("is_public", 0);
     }
 
     if (selectedFile !== null) {

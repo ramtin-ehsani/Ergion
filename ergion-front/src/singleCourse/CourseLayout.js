@@ -7,7 +7,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles,withStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
@@ -260,6 +260,8 @@ export default function CourseLayout(props) {
     },
   ];
 
+  
+
   const addCourseButton = () => {
     const data = new FormData();
     data.append("name", newCourseName.current.value);
@@ -269,6 +271,12 @@ export default function CourseLayout(props) {
     data.append("about_course", newCourseDescription.current.value);
     if (selectedFile !== null) {
       data.append("course_cover", selectedFile);
+    }
+
+    if(accessType==='public'){
+      data.append("is_public", 1);
+    }else{
+      data.append("is_public", 0);
     }
     axios
       .put(`http://127.0.0.1:8000/api/course/${props.course.id}`, data, {
@@ -290,6 +298,11 @@ export default function CourseLayout(props) {
     setSelectedFile(null);
     setCoverImage(props.course.course_cover);
 
+    if (props.course.is_public) {
+      setaccessType("public");
+    } else {
+      setaccessType("private");
+    }
     setDialogOpen(true);
   };
   const NewCourseDialog = (props) => {
@@ -349,7 +362,7 @@ export default function CourseLayout(props) {
 
                 <CardContent>
                   <Grid container spacing={1} dir="rtl">
-                  <Grid item md={12} xs={12} style={{marginBottom:'4px'}}>
+                    <Grid item md={12} xs={12} style={{ marginBottom: "4px" }}>
                       <Grid
                         container
                         direction="column"
@@ -544,7 +557,13 @@ export default function CourseLayout(props) {
     setList(newList);
   };
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    if (props.course.is_public) {
+      setaccessType("public");
+    } else {
+      setaccessType("private");
+    }
+  }, [props.course]);
 
   return (
     <div>

@@ -53,7 +53,6 @@ function Copyright() {
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
 const theme = createMuiTheme({
-
   typography: {
     fontFamily: '"Vazir", sans-serif',
   },
@@ -100,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.dark,
   },
   paper: {
-    padding:theme.spacing(0),
+    padding: theme.spacing(0),
     paddingBottom: theme.spacing(2),
 
     display: "flex",
@@ -171,7 +170,8 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
   };
   React.useEffect(() => {
     const promise = Axios.get(
-      `http://127.0.0.1:8000/api/course/${match.params.id}`
+      `http://127.0.0.1:8000/api/course/${match.params.id}`,
+      { headers: { Authorization: `Token ${localStorage.getItem("api_key")}` } }
     );
     promise.then((response) => {
       setcourse(response.data);
@@ -213,8 +213,6 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
         </Alert>
       </Snackbar>
       <Grid container spacing={2}>
-
-
         <Grid item xs={12}>
           <Paper className={fixedHeightPaper1} elevation={3}>
             <Information course={course} getupdate={getcourse} />
