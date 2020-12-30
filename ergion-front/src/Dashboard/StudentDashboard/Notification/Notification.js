@@ -15,7 +15,6 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import { IconButton } from "@material-ui/core";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { create } from "jss";
-import Zoom from '@material-ui/core/Zoom';
 import rtl from "jss-rtl";
 import human from "@jacobmarshall/human-time";
 import { StylesProvider, jssPreset } from "@material-ui/core/styles";
@@ -33,11 +32,6 @@ const styles = (theme) => ({
     },
   },
   customWidth: {
-    // "& div": {
-    //   // this is just an example, you can use vw, etc.
-    //   width: "40ch",
-    //   overflow:'auto'
-    // },
   },
 });
 
@@ -71,7 +65,7 @@ class Notification extends Component {
   handleMenuClick = (event) => {
     this.setState({ anchorEl: event.currentTarget });
     if (this.state.number_of_unseen > 0) {
-      // this.handleSeen();
+      this.handleSeen();
     }
   };
 
@@ -80,11 +74,11 @@ class Notification extends Component {
   };
 
   loadMore = () => {
-    setTimeout(() => {
+    // setTimeout(() => {
       if (this.state.has_next) {
         this.getValues(this.state.page);
       }
-    }, 2000);
+    // }, 1200);
   };
   getValues = (page) => {
     axios
@@ -103,31 +97,43 @@ class Notification extends Component {
             role = "استاد";
           }
           const name = notifItem.user_firstname + " " + notifItem.user_lastname;
-          let text = role + " " + name;
           const type = notifItem.type;
+          let first = "";
+          let second = "";
+          let third = "";
           if (type === 0) {
-            text += " کامنت " + String(notifItem.comments) + " را لایک کرد";
+            first = " کامنت ";
+            second = String(notifItem.comments);
+            third = " را لایک کرد";
           } else if (type === 1) {
-            text += " به کامنت " + String(notifItem.comments) + " پاسخ داد";
+            first = " به کامنت ";
+            second = String(notifItem.comments);
+            third = " پاسخ داد";
           } else if (type === 2) {
-            text += " به سوال " + String(notifItem.question) + " پاسخ داد";
+            first = " به سوال ";
+            second = String(notifItem.question);
+            third = " پاسخ داد";
           } else if (type === 3) {
-            text +=
-              " درخواست عضویت شما را به درس " +
-              String(notifItem.course) +
-              " قبول کرد";
+            first = " درخواست عضویت شما را به درس ";
+            second = String(notifItem.course);
+            third = " قبول کرد";
           } else {
-            text +=
-              " درخواست عضویت شما را به درس " +
-              String(notifItem.course) +
-              " رد کرد";
+            first = " درخواست عضویت شما را به درس ";
+            second = String(notifItem.course);
+            third = " رد کرد";
           }
           const item = {
             id: notifItem.id,
             time: notifItem.created_at,
             has_seen: notifItem.has_seen,
             profile_picture: notifItem.user_profile_picture,
-            text: text,
+            text: {
+              role: role + " ",
+              name: name,
+              first: first,
+              second: second,
+              third: third,
+            },
           };
           list.push(item);
         });
@@ -214,7 +220,6 @@ class Notification extends Component {
               }}
               style={{ direction: "rtl", marginTop: "30px" }}
               ref={(ref) => (this.scrollParentRef = ref)}
-              TransitionComponent={Zoom}
             >
               {this.state.loading ? (
                 <div
@@ -228,7 +233,7 @@ class Notification extends Component {
                   <CircularProgress style={{ width: 30, height: 30 }} />
                 </div>
               ) : (
-                <div >
+                <div>
                   {this.state.list.length > 0 ? (
                     <InfiniteScroll
                       pageStart={0}
@@ -275,16 +280,28 @@ class Notification extends Component {
                               }}
                             />
                             <Typography
-                              style={{ alignSelf: "center", margin: "4px",wordBreak:'break-all' }}
-                              
+                              style={{
+                                alignSelf: "center",
+                                margin: "4px",
+                              }}
+                              noWrap
+                              variant="inherit"
                             >
-                              <Box>{item.text}</Box>
+                              <Box >
+                                <span>
+                                  {item.text.role}
+                                  <strong>{item.text.name}</strong>
+                                  {item.text.first}
+                                  <strong>{item.text.second}</strong>
+                                  {item.text.third}
+                                </span>
+                              </Box>
                             </Typography>
                             <Typography
                               style={{ alignSelf: "center", margin: "4px" }}
                             >
                               <Box style={{ color: "grey" }} fontSize={10}>
-                                {this.toFarsiNumber(
+                                {" . "+this.toFarsiNumber(
                                   human(new Date(item.time))
                                     .replace("years", "سال")
                                     .replace("year", "سال")
