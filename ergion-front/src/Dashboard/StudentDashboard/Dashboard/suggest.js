@@ -124,7 +124,8 @@ const Suggestedcourse = () => {
   const [loading, setLoading] = React.useState(true);
   const [isEmpty, setEmpty] = React.useState(false);
 
-  const [courses, setCourses] = useState(null);
+  const [courses, setCourses] = useState([]);
+  const [T, setT] = React.useState(false);
 
   const [open, setOpen] = useState(false);
 
@@ -161,6 +162,7 @@ const Suggestedcourse = () => {
 
   useEffect(() => {
     const showAllAPI = "http://127.0.0.1:8000/api/student/suggested-courses/";
+    const showAllAPI1 = "http://127.0.0.1:8000/api/teacher/courses/";
     if (JSON.parse(localStorage.getItem("user"))["role"] === "S") {
       axios
         .get(showAllAPI, config)
@@ -168,6 +170,25 @@ const Suggestedcourse = () => {
           if (response.data.length > 0) {
             setEmpty(false);
             setCourses(response.data);
+          } else {
+            setEmpty(true);
+          }
+          setLoading(false);
+        })
+        .catch((error) => console.log(error));
+    }
+
+    if (JSON.parse(localStorage.getItem("user"))["role"] === "T") {
+      setT(true);
+      axios
+        .get(showAllAPI1, config)
+        .then((response) => {
+          if (response.data.length > 0) {
+            response.data.slice(0, 3).map((course) => {
+              if (course.id !== window.location.href.split("/")[5]) {
+                setCourses((oldarray) => [...oldarray, course]);
+              }
+            });
           } else {
             setEmpty(true);
           }
@@ -330,18 +351,33 @@ const Suggestedcourse = () => {
                                             <Divider /> */}
                           <CardActions className={classes.cardActions}>
                             <ButtonGroup fullWidth>
-                              <Button
-                                href={`/student_dashboard/added_courses/${course.id}`}
-                                className="toSeeButton"
-                                size="small"
-                                color="primary"
-                                variant="contained"
-                              >
-                                <Typography variant="button">
-                                  {" "}
-                                  مشاهده
-                                </Typography>{" "}
-                              </Button>
+                              {T ? (
+                                <Button
+                                  href={`/teacher_dashboard/added_courses/${course.id}`}
+                                  className="toSeeButton"
+                                  size="small"
+                                  color="primary"
+                                  variant="contained"
+                                >
+                                  <Typography variant="button">
+                                    {" "}
+                                    مشاهده
+                                  </Typography>{" "}
+                                </Button>
+                              ) : (
+                                <Button
+                                  href={`/student_dashboard/added_courses/${course.id}`}
+                                  className="toSeeButton"
+                                  size="small"
+                                  color="primary"
+                                  variant="contained"
+                                >
+                                  <Typography variant="button">
+                                    {" "}
+                                    مشاهده
+                                  </Typography>{" "}
+                                </Button>
+                              )}
                               <Divider
                                 style={{ minWidth: "3px", maxWidth: "3px" }}
                               />
@@ -404,7 +440,7 @@ const Suggestedcourse = () => {
                           variant="circle"
                           width={40}
                           height={40}
-                          style={{ marginRight: "10px",marginTop:'4px' }}
+                          style={{ marginRight: "10px", marginTop: "4px" }}
                         />
                         <div
                           style={{
@@ -434,16 +470,12 @@ const Suggestedcourse = () => {
                           </div>
                         </div>
                       </div>
-                      <Skeleton
-                        animation="wave"
-                        variant="rect"
-                        height={100}
-                      />
+                      <Skeleton animation="wave" variant="rect" height={100} />
                       <CardContent>
                         <Skeleton
                           animation="wave"
                           height={40}
-                          width='100%'
+                          width="100%"
                           style={{
                             // marginRight: "8px",
                             // marginLeft: "8px",
@@ -478,7 +510,7 @@ const Suggestedcourse = () => {
                           variant="circle"
                           width={40}
                           height={40}
-                          style={{ marginRight: "10px",marginTop:'4px' }}
+                          style={{ marginRight: "10px", marginTop: "4px" }}
                         />
                         <div
                           style={{
@@ -508,16 +540,12 @@ const Suggestedcourse = () => {
                           </div>
                         </div>
                       </div>
-                      <Skeleton
-                        animation="wave"
-                        variant="rect"
-                        height={100}
-                      />
+                      <Skeleton animation="wave" variant="rect" height={100} />
                       <CardContent>
                         <Skeleton
                           animation="wave"
                           height={40}
-                          width='100%'
+                          width="100%"
                           style={{
                             // marginRight: "8px",
                             // marginLeft: "8px",
@@ -552,7 +580,7 @@ const Suggestedcourse = () => {
                           variant="circle"
                           width={40}
                           height={40}
-                          style={{ marginRight: "10px",marginTop:'4px' }}
+                          style={{ marginRight: "10px", marginTop: "4px" }}
                         />
                         <div
                           style={{
@@ -582,16 +610,12 @@ const Suggestedcourse = () => {
                           </div>
                         </div>
                       </div>
-                      <Skeleton
-                        animation="wave"
-                        variant="rect"
-                        height={100}
-                      />
+                      <Skeleton animation="wave" variant="rect" height={100} />
                       <CardContent>
                         <Skeleton
                           animation="wave"
                           height={40}
-                          width='100%'
+                          width="100%"
                           style={{
                             // marginRight: "8px",
                             // marginLeft: "8px",

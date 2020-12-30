@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) =>
       alignItems: "center",
       textAlign: "center",
       width: "100% ",
-      // margin: theme.spacing(2),
+      // margin:theme.spacing(2) ,
     },
     root1: {
       fontFamily: "IRANSans",
@@ -108,6 +108,9 @@ const useStyles = makeStyles((theme) =>
       display: "flex",
       flexWrap: "wrap",
     },
+    iconButton: {
+      transform: "rotate(180deg)",
+    },
   })
 );
 
@@ -133,6 +136,7 @@ const Write = (props) => {
   const [newsid, setnewsid] = React.useState(0);
   const [images, setimages] = React.useState([image1, image2, image3, image4]);
   const [courseid, setcourseid] = React.useState(0);
+  const [postid, setpostid] = React.useState();
   React.useEffect(() => {
     setcourseid(props.course.id);
     if (isvideo) {
@@ -144,11 +148,15 @@ const Write = (props) => {
       setdvideo(true);
     }
     if (isimage > 0) {
-      setdimage(true);
+      setdvideo(true);
       setdpdf(true);
 
       if (isimage === 4) {
         setdimage(true);
+      }
+      if (isimage === 0) {
+        setdvideo(false);
+        setdimage(false);
       }
     }
   });
@@ -197,6 +205,8 @@ const Write = (props) => {
     setimage3(image4);
     setimage4(null);
     setisimage(isimage - 1);
+    setdimage(false);
+    setdvideo(false);
   };
   const image2delete = () => {
     setimage2(image3);
@@ -216,6 +226,8 @@ const Write = (props) => {
   const videodelete = () => {
     setisvideo(false);
     setvideo(null);
+    setdimage(false);
+    setdvideo(false);
   };
 
   const sendnewshandler = (event) => {
@@ -228,78 +240,31 @@ const Write = (props) => {
         },
       }
     )
-      .then(function (response) {
+      .then((response) => {
         setnewsid(response.data.post_id);
         setnewstext("");
 
         if (isimage === 4) {
-          const fileData = new FormData();
-          fileData.append("post_id", response.data.post_id);
-          fileData.append("file", image4);
-          Axios.post("http://127.0.0.1:8000/api/course/post-files/", fileData, {
-            headers: {
-              "Authoriza`	/xz,mnbtion": `Token ${localStorage.getItem("token")}`,
-            },
-          })
-            .then(function (response) {
-              setisimage(isimage - 1);
-              setimage4(null);
-            })
-            .catch((error) => {
-              console.log(4);
-            });
+          sendimage4(response.data.post_id);
+          sendimage3(response.data.post_id);
+          sendimage2(response.data.post_id);
+          sendimage1(response.data.post_id);
+          setisimage(0);
         }
         if (isimage === 3) {
-          const fileData = new FormData();
-          fileData.append("post_id", response.data.post_id);
-          fileData.append("file", image3);
-          Axios.post("http://127.0.0.1:8000/api/course/post-files/", fileData, {
-            headers: {
-              Authorization: `Token ${localStorage.getItem("token")}`,
-            },
-          })
-            .then(function (response) {
-              setisimage(isimage - 1);
-              setimage3(null);
-            })
-            .catch((error) => {
-              console.log(3);
-            });
+          sendimage3(response.data.post_id);
+          sendimage2(response.data.post_id);
+          sendimage1(response.data.post_id);
+          setisimage(0);
         }
         if (isimage === 2) {
-          const fileData = new FormData();
-          fileData.append("post_id", response.data.post_id);
-          fileData.append("file", image2);
-          Axios.post("http://127.0.0.1:8000/api/course/post-files/", fileData, {
-            headers: {
-              Authorization: `Token ${localStorage.getItem("token")}`,
-            },
-          })
-            .then(function (response) {
-              setisimage(isimage - 1);
-              setimage2(null);
-            })
-            .catch((error) => {
-              console.log(2);
-            });
+          sendimage2(response.data.post_id);
+          sendimage1(response.data.post_id);
+          setisimage(0);
         }
         if (isimage === 1) {
-          const fileData = new FormData();
-          fileData.append("post_id", response.data.post_id);
-          fileData.append("file", image1);
-          Axios.post("http://127.0.0.1:8000/api/course/post-files/", fileData, {
-            headers: {
-              Authorization: `Token ${localStorage.getItem("token")}`,
-            },
-          })
-            .then((response) => {
-              setisimage(isimage - 1);
-              setimage1(null);
-              console.log("yyyyyyyyyyy");
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          sendimage1(response.data.post_id);
+          setisimage(0);
         }
         if (isvideo) {
           const fileData = new FormData();
@@ -311,6 +276,8 @@ const Write = (props) => {
             },
           })
             .then(function (response) {
+              setisvideo(false)
+              setdimage(false);
               setvideo(null);
             })
             .catch((error) => {
@@ -345,6 +312,75 @@ const Write = (props) => {
     console.log(ispdf);
     console.log(isvideo);
   };
+  const sendimage1 = (pi) => {
+    const fileData = new FormData();
+    fileData.append("post_id", pi);
+    fileData.append("file", image1);
+    Axios.post("http://127.0.0.1:8000/api/course/post-files/", fileData, {
+      headers: {
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((response1) => {
+        setisimage(0);
+        setimage1(null);
+        setdimage(false);
+        setdvideo(false);
+        console.log("yyyyyyyyyyy");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const sendimage2 = (pi) => {
+    const fileData = new FormData();
+    fileData.append("post_id", pi);
+    fileData.append("file", image2);
+    Axios.post("http://127.0.0.1:8000/api/course/post-files/", fileData, {
+      headers: {
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((response2) => {
+        setimage2(null);
+        console.log(isimage);
+      })
+      .catch((error) => {
+        console.log(2);
+      });
+  };
+  const sendimage3 = (pi) => {
+    const fileData = new FormData();
+    fileData.append("post_id", pi);
+    fileData.append("file", image3);
+    Axios.post("http://127.0.0.1:8000/api/course/post-files/", fileData, {
+      headers: {
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((response3) => {
+        setimage3(null);
+      })
+      .catch((error) => {
+        console.log(3);
+      });
+  };
+  const sendimage4 = (pi) => {
+    const fileData = new FormData();
+    fileData.append("post_id", pi);
+    fileData.append("file", image4);
+    Axios.post("http://127.0.0.1:8000/api/course/post-files/", fileData, {
+      headers: {
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((response4) => {
+        setimage4(null);
+      })
+      .catch((error) => {
+        console.log(4);
+      });
+  };
   const newstexthandler = (event) => {
     setnewstext(event.target.value);
   };
@@ -356,7 +392,7 @@ const Write = (props) => {
     <React.Fragment>
       <StylesProvider jss={jss}>
         <CssBaseline />
-        <div className="post-page-main" style={{ display: "flex" }}>
+        <div className="post-page-main">
           <Card className={classes.root} dir="rtl">
             <CardHeader
               className={classes.title}
@@ -399,7 +435,7 @@ const Write = (props) => {
             />
 
             <CardContent>
-              <Paper component="div" className={classes.root}>
+              <Paper component="form" className={classes.root}>
                 <Container className={classes.container}>
                   <Grid container>
                     <Grid container item>
@@ -527,6 +563,7 @@ const Write = (props) => {
                           type="file"
                           name="image"
                           onChange={onchangeimage}
+                          disabled={dimage}
                         />
                         <label htmlFor="image">
                           <IconButton
@@ -545,6 +582,7 @@ const Write = (props) => {
                           type="file"
                           name="video"
                           onChange={onchangevideo}
+                          disabled={dvideo}
                         />
                         <label htmlFor="video">
                           <IconButton
@@ -560,6 +598,7 @@ const Write = (props) => {
                       <Grid item>
                         <IconButton
                           className={classes.iconButton}
+                          color="primary"
                           aria-label="menu"
                           onClick={sendnewshandler}
                           disabled={newstext.length === 0}

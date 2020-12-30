@@ -31,8 +31,7 @@ const styles = (theme) => ({
       backgroundColor: "rgba(0, 0, 0,.2)",
     },
   },
-  customWidth: {
-  },
+  customWidth: {},
 });
 
 const ITEM_HEIGHT = 60;
@@ -75,9 +74,9 @@ class Notification extends Component {
 
   loadMore = () => {
     // setTimeout(() => {
-      if (this.state.has_next) {
-        this.getValues(this.state.page);
-      }
+    if (this.state.has_next) {
+      this.getValues(this.state.page);
+    }
     // }, 1200);
   };
   getValues = (page) => {
@@ -215,7 +214,7 @@ class Notification extends Component {
               PaperProps={{
                 style: {
                   maxHeight: ITEM_HEIGHT * 4.5,
-                  // width: '40ch',
+                  width: "70ch",
                 },
               }}
               style={{ direction: "rtl", marginTop: "30px" }}
@@ -227,7 +226,6 @@ class Notification extends Component {
                     display: "flex",
                     justifyContent: "center",
                     padding: "10px",
-                    width: "40ch",
                   }}
                 >
                   <CircularProgress style={{ width: 30, height: 30 }} />
@@ -259,15 +257,20 @@ class Notification extends Component {
                           onClick={this.handleMenuClose}
                           style={
                             !item.has_seen
-                              ? { backgroundColor: "#bbdefb" }
-                              : { backgroundColor: "white" }
+                              ? { backgroundColor: "#e6f8ff" }
+                              : {
+                                  backgroundColor: "white",
+                                  borderBottom: "ridge",
+                                }
                           }
                         >
                           <div
                             style={{
                               display: "flex",
-                              justifyContent: "space-evenly",
+                              justifyContent: "space-between",
                               wordBreak: "break-all",
+                              whiteSpace: "pre-line",
+                              width: "100%",
                             }}
                           >
                             <Avatar
@@ -283,11 +286,11 @@ class Notification extends Component {
                               style={{
                                 alignSelf: "center",
                                 margin: "4px",
+                                width: 380,
+                                textAlign: "right",
                               }}
-                              noWrap
-                              variant="inherit"
                             >
-                              <Box >
+                              <Box>
                                 <span>
                                   {item.text.role}
                                   <strong>{item.text.name}</strong>
@@ -298,10 +301,15 @@ class Notification extends Component {
                               </Box>
                             </Typography>
                             <Typography
-                              style={{ alignSelf: "center", margin: "4px" }}
+                              style={{
+                                alignSelf: "center",
+                                margin: "4px",
+                                width: 70,
+                                textAlign: "center",
+                              }}
                             >
                               <Box style={{ color: "grey" }} fontSize={10}>
-                                {" . "+this.toFarsiNumber(
+                                {this.toFarsiNumber(
                                   human(new Date(item.time))
                                     .replace("years", "سال")
                                     .replace("year", "سال")
@@ -332,7 +340,7 @@ class Notification extends Component {
                           display: "flex",
                           justifyContent: "center",
                           padding: "10px",
-                          width: "40ch",
+                          width: "100%",
                         }}
                       >
                         <Typography>

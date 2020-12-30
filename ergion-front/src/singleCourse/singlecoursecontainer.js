@@ -63,12 +63,16 @@ const SingleCoursecontainer = ({ match }) => {
             </Grid>
             <Grid item lg={4} md={3} xs={false}>
               <Hidden only={["sm", "xs"]}>
-                {JSON.parse(localStorage.getItem("user"))["role"] === "S" && (
-                  <div>
-                    <Suggestedteachers />
-                    <Suggestedcourse />
-                  </div>
-                )}
+                <Suggestedteachers />
+                <div
+                  style={
+                    JSON.parse(localStorage.getItem("user"))["role"] === "T"
+                      ? { marginTop: "-10px" }
+                      : {}
+                  }
+                >
+                  <Suggestedcourse />
+                </div>
               </Hidden>
             </Grid>
           </Grid>

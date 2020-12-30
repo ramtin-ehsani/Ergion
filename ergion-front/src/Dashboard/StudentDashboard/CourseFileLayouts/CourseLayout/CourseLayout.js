@@ -214,8 +214,13 @@ function CourseLayout(props) {
             </Grid>
           </Grid>
           {/* End hero unit */}
+
+          {loading && (
+              <div style={{ display: "flex", justifyContent: "center",padding:'30px' }}>
+                <CircularProgress />
+              </div>
+            )}
           <Grid container spacing={2} dir="rtl" lg={10} item={true}>
-            {loading && <CircularProgress />}
 
             {isEmpty && (
               <Grid item>
