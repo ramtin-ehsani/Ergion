@@ -25,7 +25,6 @@ import PropTypes from "prop-types";
 import { Box } from "@material-ui/core";
 import { Typography } from "@material-ui/core";
 import AddBoxIcon from "@material-ui/icons/AddBox";
-import ReactPlayer from "react-player";
 import IconButton from "@material-ui/core/IconButton";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -117,17 +116,6 @@ const StyledMenuItem = withStyles((theme) => ({
 }))(MenuItem);
 
 const styles = (theme) => ({
-  "@global": {
-    "*::-webkit-scrollbar": {
-      width: "0.4em",
-    },
-    "*::-webkit-scrollbar-track": {
-      "-webkit-box-shadow": "inset 0 0 6px rgba(10,10,0,0.00)",
-    },
-    "*::-webkit-scrollbar-thumb": {
-      backgroundColor: "rgba(0, 0, 0,.2)",
-    },
-  },
   root: {
     // height: 'auto',
     width: "100%",
@@ -294,7 +282,7 @@ class NestedList extends React.Component {
 
   bytesToSize(bytes) {
     var sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-    if (bytes == 0) return "0 Byte";
+    if (bytes === 0) return "0 Byte";
     var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
     return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
   }
@@ -446,7 +434,22 @@ class NestedList extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this.ownerChecker();
+    if (this.props.course.id !== undefined) {
+      this.ownerChecker(this.props.course);
+    }
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.course.id !== prevState.courseId) {
+      return { course: nextProps.course };
+    }
+    return { course: "" };
+  }
+
+  componentDidUpdate() {
+    if (this.state.course !== "") {
+      this.ownerChecker(this.state.course);
+    }
   }
 
   componentWillUnmount() {
@@ -457,13 +460,13 @@ class NestedList extends React.Component {
     headers: { Authorization: `Token ${localStorage.getItem("api_key")}` },
   };
 
-  ownerChecker = () => {
-    setTimeout(() => {
+  ownerChecker = (course) => {
+    if (course.id !== undefined) {
       if (JSON.parse(localStorage.getItem("user")) !== null) {
         if (JSON.parse(localStorage.getItem("user"))["role"] === "T") {
           if (
             JSON.parse(localStorage.getItem("user"))["id"] ===
-            this.props.course.instructor_id
+            course.instructor_id
           ) {
             if (this._isMounted) {
               this.setState({ isOwner: true });
@@ -471,16 +474,15 @@ class NestedList extends React.Component {
           }
         }
       }
-      this.setState({ courseId: this.props.course.id });
-      this.getValues();
-    }, 2000);
+      this.setState({ courseId: course.id });
+      this.getValues(course.id);
+    }
   };
 
-  getValues = () => {
+  getValues = (id) => {
     axios
       .get(
-        "http://127.0.0.1:8000/api/course/chapters/?course_id=" +
-          this.state.courseId,
+        "http://127.0.0.1:8000/api/course/chapters/?course_id=" + id,
         this.config
       )
       .then((response) => {
@@ -603,12 +605,18 @@ class NestedList extends React.Component {
   };
 
   onChange = (event) => {
-    this.setState({ newChapterValue: event.target.value });
+    this.setState({ newChapterValue: this.toFarsiNumber(event.target.value) });
     if (event.target.value.length > 0) {
       this.setState({ isButtonShown: true });
     } else {
       this.setState({ isButtonShown: false });
     }
+  };
+
+  toFarsiNumber = (n) => {
+    const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+
+    return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
   };
 
   handleClick = (e) => {
@@ -872,41 +880,6 @@ class NestedList extends React.Component {
       return item;
     });
     this.setState({ list: results });
-  };
-
-  TypeOfFile = (props) => {
-    const { src } = props;
-    const { classes } = this.props;
-
-    const lastIndexOfSlash = String(src).lastIndexOf("/");
-    const lastIndexOfDot = String(src).lastIndexOf(".");
-    let name = String(src).substring(lastIndexOfSlash + 1);
-    const type = String(src).substring(lastIndexOfDot);
-
-    if (name.length > 15) {
-      name = name.substring(0, 15) + type;
-    }
-
-    if (type === ".mp4") {
-      return (
-        <div style={{ marginTop: "8px", padding: "20px" }}>
-          <ReactPlayer width="100%" height="100%" url={src} controls />
-          <Typography>
-            <Box
-              fontSize={16}
-              dir="ltr"
-              fontWeight="fontWeightBold"
-              textAlign="center"
-              style={{ marginTop: "10px", marginBottom: "10px" }}
-            >
-              {name}
-            </Box>
-          </Typography>
-        </div>
-      );
-    }
-
-    return null;
   };
 
   render() {
@@ -1233,7 +1206,7 @@ class NestedList extends React.Component {
                       in={item.isOpened}
                       timeout="auto"
                       unmountOnExit
-                      style={{ marginLeft: "14px", marginRight: "14px" }}
+                      style={{ marginLeft: "4px", marginRight: "4px" }}
                     >
                       {item.episodes.length > 0 ? (
                         <div>

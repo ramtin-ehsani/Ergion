@@ -260,12 +260,11 @@ const PostPage = () => {
         setIsRed(stateItems);
       });
 
-      // const stateItems = {
-      //   id: id,
-      //   isLiked: !postPage.isLiked,
-      // };
-      // setIsRed(stateItems);
-
+    // const stateItems = {
+    //   id: id,
+    //   isLiked: !postPage.isLiked,
+    // };
+    // setIsRed(stateItems);
   };
 
   const settings = {
@@ -462,6 +461,10 @@ const PostPage = () => {
                           human(new Date(postPage.creation_time))
                             .replace("years", "سال")
                             .replace("year", "سال")
+                            .replace("months", "ماه")
+                            .replace("month", "ماه")
+                            .replace("weeks", "هفته")
+                            .replace("week", "هفته")
                             .replace("hours", "ساعت")
                             .replace("hour", "ساعت")
                             .replace("minutes", "دقیقه")

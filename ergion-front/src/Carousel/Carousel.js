@@ -57,7 +57,7 @@ class CarouselMedia extends React.Component {
             height={400}
             url={src}
             controls
-            style={{backgroundColor:'black'}}
+            style={{ backgroundColor: "black" }}
           />
 
           <Typography>
@@ -122,21 +122,22 @@ class CarouselMedia extends React.Component {
     // const { classes } = this.props;
     return (
       <StylesProvider jss={jss}>
-        <ThemeProvider theme={theme} >
-          <div style={{paddingRight:'15px',paddingLeft:'15px'}}>
-          <Carousel
-            autoPlay={false}
-            timeout={400}
-            animation="slide"
-            fullHeightHover={false}
-            indicators={this.state.list.length > 1}
-            navButtonsAlwaysInvisible={this.state.list.length < 2}
-            direction="rtl"
-          >
-            {this.state.list.map((file) => (
-              <this.TypeOfFile src={file.file} key={file.id} />
-            ))}
-          </Carousel>
+        <ThemeProvider theme={theme}>
+          <div style={{ paddingRight: "15px", paddingLeft: "15px" }}>
+            <Carousel
+              autoPlay={false}
+              timeout={400}
+              animation="slide"
+              changeOnFirstRender={false}
+              fullHeightHover={false}
+              indicators={this.state.list.length > 1}
+              navButtonsAlwaysInvisible={this.state.list.length < 2}
+              direction="rtl"
+            >
+              {this.state.list.map((file) => (
+                <this.TypeOfFile src={file.file} key={file.id} />
+              ))}
+            </Carousel>
           </div>
         </ThemeProvider>
       </StylesProvider>
