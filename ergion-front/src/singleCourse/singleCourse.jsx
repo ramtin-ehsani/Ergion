@@ -175,6 +175,7 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
     );
     promise.then((response) => {
       setcourse(response.data);
+      console.log(response);
     });
   }, []);
 
