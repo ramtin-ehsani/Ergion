@@ -268,7 +268,7 @@ class Notification extends Component {
                             style={{
                               display: "flex",
                               justifyContent: "space-between",
-                              wordBreak: "break-all",
+                              wordBreak: "normal",
                               whiteSpace: "pre-line",
                               width: "100%",
                             }}

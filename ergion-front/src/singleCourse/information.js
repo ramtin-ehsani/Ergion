@@ -236,6 +236,16 @@ export default function Information(props) {
     // return () => clearInterval(timer);
   }, [props.course]);
 
+  const shareLink = (id) => {
+    if (JSON.parse(localStorage.getItem("user")) !== null) {
+      if (JSON.parse(localStorage.getItem("user"))["role"] === "T") {
+        return "http://localhost:3000/teacher_dashboard/added_courses/" + id;
+      } else {
+        return "http://localhost:3000/student_dashboard/added_courses/" + id;
+      }
+    }
+  };
+
   const handleDelete = () => {
     dialogOnclose();
     Axios.delete("http://127.0.0.1:8000/api/student/courses/", {
@@ -285,13 +295,8 @@ export default function Information(props) {
     }
   };
 
-  const copytoclipboard = () => {
-    let textField = document.createElement("textarea");
-    textField.innerText = "http://localhost:3000/course/" + props.course.id;
-    document.body.appendChild(textField);
-    textField.select();
-    document.execCommand("copy");
-    textField.remove();
+  const copytoclipboard = (link) => {
+    navigator.clipboard.writeText(link);
     // setOpen(true);
   };
   return (
@@ -328,7 +333,7 @@ export default function Information(props) {
                             color="secondary"
                           >
                             <Typography inline variant="button">
-                              <Box>حذف</Box>
+                              <Box>خروج</Box>
                             </Typography>
                           </Button>
                         )}
@@ -416,7 +421,7 @@ export default function Information(props) {
                   style={{ marginTop: "-8px", marginLeft: "10px" }}
                   onClick={handlesharedialog}
                 >
-                  <ShareIcon />
+                  <FileCopyIcon />
                 </IconButton>
               </Zoom>
               <Dialog
@@ -437,13 +442,11 @@ export default function Information(props) {
                     <OutlinedInput
                       id="outlined-adornment-link"
                       label="لینک"
-                      defaultValue={
-                        `http://localhost:3000/course/` + props.course.id
-                      }
+                      defaultValue={shareLink(props.course.id)}
                       disabled={true}
                       endAdornment={
                         <InputAdornment position="end">
-                          <IconButton onClick={copytoclipboard} edge="end">
+                          <IconButton onClick={()=>copytoclipboard(shareLink(props.course.id))} edge="end">
                             <FileCopyIcon />
                           </IconButton>
                         </InputAdornment>
@@ -477,7 +480,13 @@ export default function Information(props) {
                     in={loaded}
                     style={{ transitionDelay: loaded ? "300ms" : "0ms" }}
                   >
-                    <Box> {name} </Box>
+                    <Box
+                      style={{ textAlign: "right" }}
+                      fontWeight="fontWeightBold"
+                    >
+                      {" "}
+                      {name}{" "}
+                    </Box>
                   </Zoom>
                 </Typography>
               </Grid>
