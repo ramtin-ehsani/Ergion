@@ -360,7 +360,7 @@ function Information(props) {
                             color="gray"
                           >
                             <Typography inline variant="button">
-                              درخواست
+                               درخواست داده شد
                             </Typography>
                           </Button>
                         )}
