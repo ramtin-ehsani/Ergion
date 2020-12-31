@@ -215,7 +215,13 @@ export default function Information(props) {
              {
        setAdd(3);
        
-             }else{setAdd(1)}
+             }else{
+              if(props.course.capacity===props.course.students_count) 
+              {
+                setAdd(4);
+              }
+              else{
+              setAdd(1)}}
             }
             setLoaded(true);
       }
@@ -355,6 +361,14 @@ const copytoclipboard=()=>{
  <Button size='medium' onClick={handleDelete} variant="contained" color='gray'>
  <Typography inline variant='button'>
   درخواست
+                            </Typography>
+                                      </Button>
+                        
+                        }
+                                                {Add===4 &&
+ <Button size='medium' variant="outlined"  disabled >
+ <Typography inline variant='button'>
+  تکمیل
                             </Typography>
                                       </Button>
                         
