@@ -2,8 +2,6 @@ import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 import ClassIcon from '@material-ui/icons/Class';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -74,24 +72,6 @@ export const MainListItems = () => {
                     <ClassIcon />
                 </ListItemIcon>
                 <p className="courses">کلاس های من</p>
-                
-            </ListItem>
-
-
-            <ListItem button dir='rtl' style={{paddingTop:'0px'}}>
-            <ListItemIcon>
-                    <ShoppingCartIcon />
-                </ListItemIcon>
-                <p className="store">فروشگاه</p>
-                
-            </ListItem>
-
-
-            <ListItem button className="QA" dir='rtl' style={{paddingTop:'0px'}}>
-            <ListItemIcon>
-                    <QuestionAnswerIcon />
-                </ListItemIcon>
-                <p className="QandA">سوالات</p>
                 
             </ListItem>
 
@@ -181,26 +161,6 @@ export const MobileListItems = () => {
                 </ListItemIcon>
                 <p className="courses">کلاس های من</p>
                 
-            </ListItem>
-
-
-            <ListItem button dir='rtl' style={{paddingTop:'0px'}}>
-            <ListItemIcon>
-                    <ShoppingCartIcon />
-                </ListItemIcon>
-                <p className="store">فروشگاه</p>
-                
-            </ListItem>
-
-
-            <ListItem button className="QA" dir='rtl' style={{paddingTop:'0px'}}>
-                {/*<div className="PP">*/}
-                <ListItemIcon>
-                    <QuestionAnswerIcon />
-                </ListItemIcon>
-                <p className="QandA">سوالات</p>
-                
-                {/*</div>*/}
             </ListItem>
 
 
