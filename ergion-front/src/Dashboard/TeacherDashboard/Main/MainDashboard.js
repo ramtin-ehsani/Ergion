@@ -57,6 +57,11 @@ const useStyles = (theme) => ({
                 .fade(0.5)}`,
         },
     }),
+    cardDisabled: ({ color }) => ({
+        minWidth: 256,
+        borderRadius: 16,
+        backgroundColor:'whitesmoke'
+    }),
     avatarMail: {
         color: theme.palette.getContrastText(yellow[600]),
         backgroundColor: yellow[600],
@@ -242,8 +247,8 @@ class MainDashboard extends Component {
                         </Card>
                     </Grid>
                     <Grid item xs>
-                        <Card style={{ width: '100%' }} dir='rtl' className={classes.card}>
-                            <CardActionArea>
+                        <Card style={{ width: '100%' }} dir='rtl' className={classes.cardDisabled}>
+                            <CardActionArea disabled={true} disableRipple={true} disableTouchRipple={true}>
                                 <CardHeader
                                     style={{ padding: '14px', textAlign:'right'}}
                                     avatar={
