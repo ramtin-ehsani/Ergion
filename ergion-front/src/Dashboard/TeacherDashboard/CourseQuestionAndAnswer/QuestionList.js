@@ -73,7 +73,7 @@ const useStyles = (theme) => ({
   answerStyle: {
     position: "absolute",
     width: "100%",
-    height: "100%",
+    minHeight: "50vh",
     display: "flex",
     alignItems: "center",
     paddingTop: "30px",
@@ -119,11 +119,11 @@ class QuestionList extends Component {
     this.setState({ questionAnswer: e.target.value });
   };
 
-  toFarsiNumber=(n)=> {
+  toFarsiNumber = (n) => {
     const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 
     return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
-  }
+  };
 
   answerDelete = () => {
     axios
@@ -403,22 +403,14 @@ class QuestionList extends Component {
                                   className="text"
                                   style={{ display: "flex" }}
                                 >
-                                  {questionItem.isAnswered ? (
-                                    <Box fontSize={16}>
-                                      {questionItem.sender_firstname +
-                                        " " +
-                                        questionItem.sender_lastname}
-                                    </Box>
-                                  ) : (
-                                    <Box
+                                  <Box
                                       fontSize={16}
-                                      fontWeight="fontWeightBold"
+                                      fontWeight={!questionItem.isAnswered&&"fontWeightBold"}
                                     >
                                       {questionItem.sender_firstname +
                                         " " +
                                         questionItem.sender_lastname}
                                     </Box>
-                                  )}
 
                                   <Box
                                     fontSize={14}
@@ -429,59 +421,54 @@ class QuestionList extends Component {
                                     }}
                                   >
                                     {" . " +
-                                    this.toFarsiNumber(
-                                      human(new Date(questionItem.time))
-                                        .replace("years", "سال")
-                                        .replace("year", "سال")
-                                        .replace("hours", "ساعت")
-                                        .replace("hour", "ساعت")
-                                        .replace("minutes", "دقیقه")
-                                        .replace("minute", "دقیقه")
-                                        .replace("days", "روز")
-                                        .replace("day", "روز")
-                                        .replace("seconds", "ثانیه")
-                                        .replace("second", "ثانیه")
-                                        .replace("ago", "پیش"))}
+                                      this.toFarsiNumber(
+                                        human(new Date(questionItem.time))
+                                          .replace("years", "سال")
+                                          .replace("year", "سال")
+                                          .replace("months", "ماه")
+                                          .replace("month", "ماه")
+                                          .replace("weeks", "هفته")
+                                          .replace("week", "هفته")
+                                          .replace("hours", "ساعت")
+                                          .replace("hour", "ساعت")
+                                          .replace("minutes", "دقیقه")
+                                          .replace("minute", "دقیقه")
+                                          .replace("days", "روز")
+                                          .replace("day", "روز")
+                                          .replace("seconds", "ثانیه")
+                                          .replace("second", "ثانیه")
+                                          .replace("ago", "پیش")
+                                      )}
                                   </Box>
                                 </Typography>
                               }
                               secondary={
                                 <Typography
                                   // className="text"
-                                  style={{ marginTop: "15px" }}
+                                  style={{ marginTop: "15px",width:'95%' }}
                                 >
-                                  {questionItem.isAnswered ? (
-                                    <Box>{questionItem.question}</Box>
-                                  ) : (
-                                    <Box fontWeight="fontWeightBold">
+                                  <Box
+                                      fontWeight={!questionItem.isAnswered&&"fontWeightBold"}
+                                      style={{
+                                        wordBreak: "break-all",
+                                      }}
+                                    >
                                       {questionItem.question}
                                     </Box>
-                                  )}
                                 </Typography>
                               }
                             />
-                            <div>
-                              {questionItem.isAnswered ? (
-                                <Typography className="text">
+                            <div >
+                            <Typography className="text">
                                   <Box
                                     fontSize={16}
                                     fontWeight="fontWeightBold"
-                                    style={{ color: "green" }}
+                                    style={questionItem.isAnswered?{ color: "green" }:{ color: "red" }}
                                   >
-                                    پاسخ داده شده
+                                    {questionItem.isAnswered?'پاسخ داده شده':'پاسخی داده نشده'}
+                                    
                                   </Box>
                                 </Typography>
-                              ) : (
-                                <Typography className="text">
-                                  <Box
-                                    fontSize={16}
-                                    fontWeight="fontWeightBold"
-                                    style={{ color: "red" }}
-                                  >
-                                    پاسخی داده نشده
-                                  </Box>
-                                </Typography>
-                              )}
                             </div>
                           </ListItem>
                           <Divider />
@@ -564,24 +551,30 @@ class QuestionList extends Component {
                                     color: "grey",
                                   }}
                                 >
-                                  {this.toFarsiNumber(human(
-                                    new Date(
-                                      this.state.list[
-                                        this.state.selectedIndex
-                                      ].time
+                                  {this.toFarsiNumber(
+                                    human(
+                                      new Date(
+                                        this.state.list[
+                                          this.state.selectedIndex
+                                        ].time
+                                      )
                                     )
-                                  )
-                                    .replace("years", "سال")
-                                    .replace("year", "سال")
-                                    .replace("hours", "ساعت")
-                                    .replace("hour", "ساعت")
-                                    .replace("minutes", "دقیقه")
-                                    .replace("minute", "دقیقه")
-                                    .replace("days", "روز")
-                                    .replace("day", "روز")
-                                    .replace("seconds", "ثانیه")
-                                    .replace("second", "ثانیه")
-                                    .replace("ago", "پیش"))}
+                                      .replace("years", "سال")
+                                      .replace("year", "سال")
+                                      .replace("months", "ماه")
+                                      .replace("month", "ماه")
+                                      .replace("weeks", "هفته")
+                                      .replace("week", "هفته")
+                                      .replace("hours", "ساعت")
+                                      .replace("hour", "ساعت")
+                                      .replace("minutes", "دقیقه")
+                                      .replace("minute", "دقیقه")
+                                      .replace("days", "روز")
+                                      .replace("day", "روز")
+                                      .replace("seconds", "ثانیه")
+                                      .replace("second", "ثانیه")
+                                      .replace("ago", "پیش")
+                                  )}
                                 </Box>
                               }
                             />
@@ -598,7 +591,7 @@ class QuestionList extends Component {
                           </div>
 
                           <CardContent
-                            style={{ textAlign: "right", marginRight: "5px" }}
+                            style={{ textAlign: "right", marginRight: "55px" }}
                           >
                             <Typography
                               className="text"
@@ -606,7 +599,10 @@ class QuestionList extends Component {
                               color="textPrimary"
                               component="p"
                             >
-                              <Box fontSize={16}>
+                              <Box
+                                fontSize={16}
+                                style={{ wordBreak: "break-all" }}
+                              >
                                 {
                                   this.state.list[this.state.selectedIndex]
                                     .question
@@ -634,7 +630,7 @@ class QuestionList extends Component {
                               <div
                                 style={{
                                   display: "flex",
-                                  justifyContent: "flex-start",
+                                  justifyContent: "space-between",
                                 }}
                               >
                                 <CardHeader
@@ -674,25 +670,31 @@ class QuestionList extends Component {
                                         color: "grey",
                                       }}
                                     >
-                                      {this.toFarsiNumber(human(
-                                        new Date(
-                                          this.state.list[
-                                            this.state.selectedIndex
-                                          ].answer[0].creation_time
+                                      {this.toFarsiNumber(
+                                        human(
+                                          new Date(
+                                            this.state.list[
+                                              this.state.selectedIndex
+                                            ].answer[0].creation_time
+                                          )
                                         )
-                                      )
-                                        .replace("just now", "همین الان")
-                                        .replace("years", "سال")
-                                        .replace("year", "سال")
-                                        .replace("hours", "ساعت")
-                                        .replace("hour", "ساعت")
-                                        .replace("minutes", "دقیقه")
-                                        .replace("minute", "دقیقه")
-                                        .replace("days", "روز")
-                                        .replace("day", "روز")
-                                        .replace("seconds", "ثانیه")
-                                        .replace("second", "ثانیه")
-                                        .replace("ago", "پیش"))}
+                                          .replace("just now", "همین الان")
+                                          .replace("years", "سال")
+                                          .replace("year", "سال")
+                                          .replace("months", "ماه")
+                                          .replace("month", "ماه")
+                                          .replace("weeks", "هفته")
+                                          .replace("week", "هفته")
+                                          .replace("hours", "ساعت")
+                                          .replace("hour", "ساعت")
+                                          .replace("minutes", "دقیقه")
+                                          .replace("minute", "دقیقه")
+                                          .replace("days", "روز")
+                                          .replace("day", "روز")
+                                          .replace("seconds", "ثانیه")
+                                          .replace("second", "ثانیه")
+                                          .replace("ago", "پیش")
+                                      )}
                                     </Box>
                                   }
                                 />
@@ -702,6 +704,7 @@ class QuestionList extends Component {
                                   style={{
                                     alignSelf: "center",
                                     color: "black",
+                                    marginLeft: "20px",
                                     width: 50,
                                     height: 50,
                                   }}
@@ -718,54 +721,56 @@ class QuestionList extends Component {
                                 onMouseLeave={() => this.showEditButton(false)}
                               >
                                 {!this.state.isTextMode ? (
-                                  <Typography
-                                    className="text"
-                                    variant="body2"
-                                    color="textPrimary"
-                                    component="p"
-                                  >
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                      }}
+                                  <div style={{ wordBreak: "break-all",marginRight: "47px" }}>
+                                    <Typography
+                                      className="text"
+                                      variant="body2"
+                                      color="textPrimary"
+                                      component="p"
                                     >
-                                      <Box
-                                        fontSize={16}
-                                        style={{
-                                          alignSelf: "center",
-                                          padding: "4px",
-                                        }}
-                                      >
-                                        {
-                                          this.state.list[
-                                            this.state.selectedIndex
-                                          ].answer[0].answer
-                                        }
-                                      </Box>
                                       <div
                                         style={{
-                                          alignSelf: "center",
-                                          // marginBottom: "-8px",
+                                          display: "flex",
                                         }}
                                       >
-                                        {this.state.editButtonShown &&
-                                          !this.state.isTextMode && (
-                                            <IconButton
-                                              onClick={this.textModeSwitcher}
-                                              style={{
-                                                width: 30,
-                                                height: 30,
-                                                color: "black",
-                                              }}
-                                            >
-                                              <EditIcon />
-                                            </IconButton>
-                                          )}
+                                        <Box
+                                          fontSize={16}
+                                          style={{
+                                            alignSelf: "center",
+                                            padding: "4px",
+                                          }}
+                                        >
+                                          {
+                                            this.state.list[
+                                              this.state.selectedIndex
+                                            ].answer[0].answer
+                                          }
+                                        </Box>
+                                        <div
+                                          style={{
+                                            alignSelf: "center",
+                                            // marginBottom: "-8px",
+                                          }}
+                                        >
+                                          {this.state.editButtonShown &&
+                                            !this.state.isTextMode && (
+                                              <IconButton
+                                                onClick={this.textModeSwitcher}
+                                                style={{
+                                                  width: 30,
+                                                  height: 30,
+                                                  color: "black",
+                                                }}
+                                              >
+                                                <EditIcon />
+                                              </IconButton>
+                                            )}
+                                        </div>
                                       </div>
-                                    </div>
-                                  </Typography>
+                                    </Typography>
+                                  </div>
                                 ) : (
-                                  <ValidatorForm onSubmit={this.editAnswer}>
+                                  <ValidatorForm onSubmit={this.editAnswer} style={{marginRight: "52px"}}>
                                     <InputBase
                                       fullWidth
                                       autoFocus
