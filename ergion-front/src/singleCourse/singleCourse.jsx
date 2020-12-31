@@ -134,7 +134,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SingleCourse = ({ match, snackQ, onSnackQ }) => {
+const SingleCourse = ({ match, snackQ, onSnackQ, snackCopy, onSnackCopy }) => {
   //const course = useSelector(state => state.course);
   const [course, setcourse] = React.useState({});
   const usedispatch = useDispatch();
@@ -151,6 +151,13 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
       return;
     }
     onSnackQ(false);
+  };
+
+  const onSnackBarCloseCopy = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    onSnackCopy(false);
   };
 
   const snackBar = useSelector((state) => state.snackBar);
@@ -199,6 +206,18 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
           سوال شما ارسال شد
         </Alert>
       </Snackbar>
+
+      <Snackbar
+        open={snackCopy}
+        autoHideDuration={1500}
+        onClose={onSnackBarCloseCopy}
+        dir="rtl"
+      >
+        <Alert className="snack" onClose={onSnackBarCloseCopy} severity="success">
+          لینک کپی شد
+        </Alert>
+      </Snackbar>
+
       <Snackbar
         open={snackBar}
         autoHideDuration={1500}
@@ -233,6 +252,7 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
 const mapStateToProps = (state) => {
   return {
     snackQ: state.snackBarQ,
+    snackCopy: state.snackBarCopyLink,
   };
 };
 
@@ -243,6 +263,7 @@ const mapDispatchToProps = (dispatch) => {
         type: actionTypes.SNACKBAR_NEW_Q,
         snackBarOpenOrClose: snackBarOpenOrClose,
       }),
+    onSnackCopy: (snackBarOpenOrClose) => dispatch({ type: actionTypes.SNACKBAR_COPY_LINK, snackBarOpenOrClose:snackBarOpenOrClose }),
   };
 };
 

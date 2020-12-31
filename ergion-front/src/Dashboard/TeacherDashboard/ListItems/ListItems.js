@@ -4,7 +4,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 import ClassIcon from '@material-ui/icons/Class';
-import SettingsIcon from '@material-ui/icons/Settings';
 import "./ListItems.scss";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Divider from "@material-ui/core/Divider";
@@ -76,16 +75,6 @@ export const MainListItems = () => {
             </ListItem>
 
             <Divider />
-
-
-            <ListItem dir='rtl' button style={{paddingTop:'0px'}}>
-            <ListItemIcon>
-                    <SettingsIcon />
-                </ListItemIcon>
-                <p className="setting">تنظیمات</p>
-                
-            </ListItem>
-
 
             <ListItem dir='rtl' button onClick={logOut} style={{paddingTop:'0px'}}>
             <ListItemIcon>
@@ -164,16 +153,6 @@ export const MobileListItems = () => {
 
 
             <Divider />
-
-
-            <ListItem button dir='rtl' style={{paddingTop:'0px'}}>
-            <ListItemIcon>
-                    <SettingsIcon />
-                </ListItemIcon>
-                <p className="setting">تنظیمات</p>
-                
-            </ListItem>
-
 
             <ListItem button onClick={logOut} dir='rtl' style={{paddingTop:'0px'}}>
             <ListItemIcon>
