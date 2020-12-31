@@ -77,16 +77,6 @@ export const MainListItems = () => {
 
             <Divider />
 
-
-            <ListItem dir='rtl' button style={{paddingTop:'0px'}}>
-            <ListItemIcon>
-                    <SettingsIcon />
-                </ListItemIcon>
-                <p className="setting">تنظیمات</p>
-                
-            </ListItem>
-
-
             <ListItem dir='rtl' button onClick={logOut} style={{paddingTop:'0px'}}>
             <ListItemIcon>
                     <ExitToAppIcon className="logoutIcon" />
@@ -164,16 +154,6 @@ export const MobileListItems = () => {
 
 
             <Divider />
-
-
-            <ListItem button dir='rtl' style={{paddingTop:'0px'}}>
-            <ListItemIcon>
-                    <SettingsIcon />
-                </ListItemIcon>
-                <p className="setting">تنظیمات</p>
-                
-            </ListItem>
-
 
             <ListItem button onClick={logOut} dir='rtl' style={{paddingTop:'0px'}}>
             <ListItemIcon>
