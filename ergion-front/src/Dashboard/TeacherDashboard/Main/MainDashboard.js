@@ -209,7 +209,7 @@ class MainDashboard extends Component {
                                     <CardHeader
                                         style={{ padding: '14px', textAlign:'right'}}
                                         avatar={
-                                            <Badge color="secondary" badgeContent={this.state.count}>
+                                            <Badge color="secondary" badgeContent={this.state.count} overlap='circle'>
                                             <Avatar
                                                 style={{ width: '70px', height: '70px' }} className={classes.avatarMail}>
                                                 <MailIcon style={{ width: '50px', height: '50px', color: 'white' }} />
