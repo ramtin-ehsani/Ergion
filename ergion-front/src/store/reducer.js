@@ -16,6 +16,7 @@ const initialState = {
   nCommentString: {},
   courseUnansweredQuestionsList: [],
   snackBarQ: false,
+  snackBarCopyLink: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -100,6 +101,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         qSnackBar: action.qSnackBarOpenOrClose,
+      };
+    case actionTypes.SNACKBAR_COPY_LINK:
+      return {
+        ...state,
+        snackBarCopyLink: action.snackBarOpenOrClose,
       };
     default:
       return state;

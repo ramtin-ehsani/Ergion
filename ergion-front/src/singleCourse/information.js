@@ -54,6 +54,8 @@ import FormControl from "@material-ui/core/FormControl";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import PersonIcon from "@material-ui/icons/Person";
+import { connect } from "react-redux";
+import * as actionTypes from '../store/actions';
 const useStyles = makeStyles((theme) => ({
   chipo: {
     display: "flex",
@@ -103,7 +105,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Information(props) {
+function Information(props) {
   const [Add, setAdd] = React.useState(0);
 
   const classes = useStyles();
@@ -297,6 +299,7 @@ export default function Information(props) {
 
   const copytoclipboard = (link) => {
     navigator.clipboard.writeText(link);
+    props.onSnackCopy(true);
     // setOpen(true);
   };
   return (
@@ -621,3 +624,11 @@ export default function Information(props) {
     </React.Fragment>
   );
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+      onSnackCopy: (snackBarOpenOrClose) => dispatch({ type: actionTypes.SNACKBAR_COPY_LINK, snackBarOpenOrClose:snackBarOpenOrClose }),
+  }
+}
+
+export default connect(null,mapDispatchToProps)(Information);
