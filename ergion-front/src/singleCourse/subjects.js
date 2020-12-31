@@ -123,8 +123,7 @@ export default function FullWidthTabs(props) {
     if (JSON.parse(localStorage.getItem("user")) !== null) {
       if (JSON.parse(localStorage.getItem("user"))["role"] === "T") {
         setT(true);
-        // console.log(props.course)
-        // console.log(JSON.parse(localStorage.getItem('user')))
+
         if (
           JSON.parse(localStorage.getItem("user"))["id"] ===
           props.course.instructor_id
@@ -136,11 +135,9 @@ export default function FullWidthTabs(props) {
 
         if (props.course.is_public !== undefined) {
           if (!props.course.is_public) {
-            if (props.course.joined) {
-              setlock(false);
-            } else {
+            if (!props.course.joined) {
               setlock(true);
-            }
+            } 
           } 
         }
       }

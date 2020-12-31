@@ -43,7 +43,17 @@ import rtl from "jss-rtl";
 import TextField from "@material-ui/core/TextField";
 import CourseLayout from "./CourseLayout";
 import CardMedia from "@material-ui/core/CardMedia";
-
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import InputLabel from "@material-ui/core/InputLabel";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import FormControl from "@material-ui/core/FormControl";
+import FileCopyIcon from "@material-ui/icons/FileCopy";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import PersonIcon from "@material-ui/icons/Person";
 const useStyles = makeStyles((theme) => ({
   chipo: {
     display: "flex",
@@ -81,10 +91,20 @@ const useStyles = makeStyles((theme) => ({
   informationtext: {
     margin: theme.spacing(2),
   },
+  newEpisodeButtonContent: {
+    // justifyContent:'space-between',
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingBottom: 8,
+    paddingTop: 8,
+  },
+  personicon: {
+    verticalAlign: "middle",
+  },
 }));
 
 export default function Information(props) {
-  const [Add, setAdd] = React.useState(1);
+  const [Add, setAdd] = React.useState(0);
 
   const classes = useStyles();
   const [name, setname] = React.useState(props.course.name);
@@ -104,6 +124,9 @@ export default function Information(props) {
   const [id, setid] = React.useState("");
   const [edit, setedit] = React.useState(false);
   const [editmode, seteditmode] = React.useState(0);
+  const [hasrequested, sethasrequested] = React.useState(false);
+  const [removeDialog, setremoveDialog] = React.useState(false);
+  const [shareDialogOpen, setshareDialogOpen] = React.useState(false);
   const [snackbar, setsnackbar] = React.useState({
     open: false,
     vertical: "top",
@@ -123,6 +146,24 @@ export default function Information(props) {
     const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 
     return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+  };
+  const Grade = (n) => {
+    const farsiDigits = [
+      "اول دبستان",
+      "دوم دبستان",
+      "سوم دبستان",
+      "چهارم دبستان",
+      "پنجم دبستان",
+      "ششم دبستان",
+      "هفتم",
+      "هشتم",
+      "نهم",
+      "دهم",
+      "یازدهم",
+      "دوازدهم",
+    ];
+
+    return farsiDigits[n - 1];
   };
 
   React.useEffect(() => {
@@ -173,25 +214,20 @@ export default function Information(props) {
         }
       } else {
         setS(true);
-
-        const promise = Axios.get(
-          "http://127.0.0.1:8000/api/student/courses/",
-          {
-            headers: {
-              Authorization: `Token ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        promise.then((result) => {
-          result.data.map((course) => {
-            if (course.id === props.course.id) {
-              sethasCourse(true);
-
-              setAdd(2);
+        if (props.course.joined) {
+          setAdd(2);
+        } else {
+          if (props.course.requested) {
+            setAdd(3);
+          } else {
+            if (props.course.capacity === props.course.students_count) {
+              setAdd(4);
+            } else {
+              setAdd(1);
             }
-          });
-          setLoaded(true);
-        });
+          }
+        }
+        setLoaded(true);
       }
     }
     // }, 1000);
@@ -200,29 +236,32 @@ export default function Information(props) {
     // return () => clearInterval(timer);
   }, [props.course]);
 
-  const edithandler = () => {
-    seteditmode(2);
-
-    setedit(true);
-  };
-  const okhandler = () => {
-    Axios.put(
-      `http://127.0.0.1:8000/api/course/${props.course.id}`,
-      { about_course: tempbio },
-      {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("token")}`,
-        },
-      }
-    ).then((response) => {
-      console.log(tempbio);
-      setbio(tempbio);
-    });
-
-    seteditmode(1);
-    setedit(false);
+  const handleDelete = () => {
+    dialogOnclose();
+    Axios.delete("http://127.0.0.1:8000/api/student/courses/", {
+      params: { course_id: props.course.id },
+      headers: {
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((response) => {
+        setAdd(1);
+      })
+      .catch((error) => console.log(error));
   };
 
+  const handlesharedialog = () => {
+    setshareDialogOpen(true);
+  };
+  const sharedialogOnclose = () => {
+    setshareDialogOpen(false);
+  };
+  const handledialogopen = () => {
+    setremoveDialog(true);
+  };
+  const dialogOnclose = () => {
+    setremoveDialog(false);
+  };
   const handleAdd = () => {
     if (localStorage.getItem("api_key") === "null") {
       window.location = "/login";
@@ -235,21 +274,26 @@ export default function Information(props) {
             Authorization: `Token ${localStorage.getItem("token")}`,
           },
         }
-      );
-      setsnackbar({ ...snackbar, open: true });
-      sethasCourse(true);
-      if (Add === 1) {
-        setAdd(2);
-      }
-      if (Add === 2) {
-        setAdd(1);
-      }
+      ).then((response) => {
+        if (props.course.is_public) {
+          setAdd(2);
+        } else {
+          setAdd(3);
+        }
+        setsnackbar({ ...snackbar, open: true });
+      });
     }
   };
 
-  function handleChangebio(event) {
-    settempbio(event.target.value);
-  }
+  const copytoclipboard = () => {
+    let textField = document.createElement("textarea");
+    textField.innerText = "http://localhost:3000/course/" + props.course.id;
+    document.body.appendChild(textField);
+    textField.select();
+    document.execCommand("copy");
+    textField.remove();
+    // setOpen(true);
+  };
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
@@ -276,10 +320,10 @@ export default function Information(props) {
                       style={{ transitionDelay: loaded ? "1000ms" : "0ms" }}
                     >
                       <div>
-                        {hascourse ? (
+                        {Add === 2 && (
                           <Button
                             size="medium"
-                            // onClick={handleAdd}
+                            onClick={handledialogopen}
                             variant="contained"
                             color="secondary"
                           >
@@ -287,7 +331,8 @@ export default function Information(props) {
                               <Box>حذف</Box>
                             </Typography>
                           </Button>
-                        ) : (
+                        )}
+                        {Add === 1 && (
                           <Button
                             size="medium"
                             onClick={handleAdd}
@@ -299,19 +344,126 @@ export default function Information(props) {
                             </Typography>
                           </Button>
                         )}
+                        {Add === 3 && (
+                          <Button
+                            size="medium"
+                            onClick={handleDelete}
+                            variant="contained"
+                            color="gray"
+                          >
+                            <Typography inline variant="button">
+                              درخواست
+                            </Typography>
+                          </Button>
+                        )}
+                        {Add === 4 && (
+                          <Button size="medium" variant="outlined" disabled>
+                            <Typography inline variant="button">
+                              تکمیل
+                            </Typography>
+                          </Button>
+                        )}
                       </div>
                     </Zoom>
                   )}
                 </div>
               )}
-
-              <IconButton
-                aria-label="add an alarm"
-                style={{ marginTop: "-8px", marginLeft: "10px" }}
+              <Dialog
+                open={removeDialog}
+                onClose={dialogOnclose}
+                aria-labelledby="error-dialog"
+                className={classes.newEpisodeRoot}
               >
-                <ShareIcon />
-              </IconButton>
-              <Grid item alignItems="flex-start" justify="flex-start"></Grid>
+                <DialogTitle id="error-dialog" dir="rtl">
+                  حذف
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText dir="rtl" style={{ padding: "10px" }}>
+                    آیا میخواهید این درس را حذف کنید؟
+                  </DialogContentText>
+                </DialogContent>
+
+                <DialogActions className={classes.newEpisodeButtonContent}>
+                  <Button
+                    color="primary"
+                    onClick={dialogOnclose}
+                    style={{ margin: "8px" }}
+                  >
+                    <Typography inline variant="button">
+                      <Box>لغو</Box>
+                    </Typography>
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleDelete}
+                    style={{ margin: "8px" }}
+                  >
+                    <Typography inline variant="button">
+                      <Box>حذف</Box>
+                    </Typography>
+                  </Button>
+                </DialogActions>
+              </Dialog>
+              <Zoom
+                in={loaded}
+                timeout={700}
+                style={{ transitionDelay: loaded ? "1000ms" : "0ms" }}
+              >
+                <IconButton
+                  aria-label="add an alarm"
+                  style={{ marginTop: "-8px", marginLeft: "10px" }}
+                  onClick={handlesharedialog}
+                >
+                  <ShareIcon />
+                </IconButton>
+              </Zoom>
+              <Dialog
+                open={shareDialogOpen}
+                onClose={sharedialogOnclose}
+                aria-labelledby="share-dialog"
+                fullWidth={true}
+                maxWidth={"sm"}
+              >
+                <DialogTitle id="share-dialog" dir="rtl">
+                  اشتراک گذاری
+                </DialogTitle>
+                <DialogContent>
+                  <FormControl variant="outlined" fullWidth={true}>
+                    <InputLabel htmlFor="outlined-adornment-link">
+                      لینک
+                    </InputLabel>
+                    <OutlinedInput
+                      id="outlined-adornment-link"
+                      label="لینک"
+                      defaultValue={
+                        `http://localhost:3000/course/` + props.course.id
+                      }
+                      disabled={true}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton onClick={copytoclipboard} edge="end">
+                            <FileCopyIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      labelWidth={70}
+                    />
+                  </FormControl>
+                </DialogContent>
+
+                <DialogActions>
+                  <Button
+                    color="primary"
+                    onClick={sharedialogOnclose}
+                    style={{ margin: "8px" }}
+                  >
+                    لغو
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
               <Grid
                 item
                 alignItems="flex-end"
@@ -320,12 +472,7 @@ export default function Information(props) {
                 xs
                 zeroMinWidth
               >
-                <Typography
-                  className={"nameeeee"}
-                  variant="h4"
-                  inline
-                  color="primary"
-                >
+                <Typography className={"nameeeee"} inline color="primary">
                   <Zoom
                     in={loaded}
                     style={{ transitionDelay: loaded ? "300ms" : "0ms" }}
@@ -345,7 +492,7 @@ export default function Information(props) {
               >
                 <div style={{ display: "flex" }}>
                   <Typography inline variant="body2">
-                    /{subject}
+                    /{Grade(grade)}
                   </Typography>{" "}
                   <Typography variant="body1">
                     {" "}
