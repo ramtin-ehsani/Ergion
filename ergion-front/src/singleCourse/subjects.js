@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   tabFont: {
-    fontSize: 18,
+    fontSize: 15,
   },
   labelContainer: {
     width: "auto",
