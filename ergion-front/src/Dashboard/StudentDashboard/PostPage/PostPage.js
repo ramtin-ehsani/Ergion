@@ -244,7 +244,7 @@ const PostPage = () => {
 
     axios
       .put(
-        "http://130.185.78.113:8000/api/course/post-likes/",
+        "https://api.classinium.ir/api/course/post-likes/",
         {
           post_id: id,
         },
@@ -384,7 +384,7 @@ const PostPage = () => {
     console.log(update_id);
     axios
       .get(
-        `http://130.185.78.113:8000/api/course/news-details/?news_id=${update_id}`,
+        `https://api.classinium.ir/api/course/news-details/?news_id=${update_id}`,
         config
       )
       .then((response) => {

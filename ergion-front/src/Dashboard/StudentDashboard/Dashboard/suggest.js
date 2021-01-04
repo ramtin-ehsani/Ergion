@@ -161,8 +161,8 @@ const Suggestedcourse = () => {
   };
 
   useEffect(() => {
-    const showAllAPI = "http://130.185.78.113:8000/api/student/suggested-courses/";
-    const showAllAPI1 = "http://130.185.78.113:8000/api/teacher/courses/";
+    const showAllAPI = "https://api.classinium.ir/api/student/suggested-courses/";
+    const showAllAPI1 = "https://api.classinium.ir/api/teacher/courses/";
     if (JSON.parse(localStorage.getItem("user"))["role"] === "S") {
       axios
         .get(showAllAPI, config)

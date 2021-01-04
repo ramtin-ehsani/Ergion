@@ -87,7 +87,7 @@ const [coverImage, setCoverImage] = React.useState("");
     setSelectedFile(event.target.files[0])
     setCoverImage(URL.createObjectURL(event.target.files[0]))
 
-    Axios.put(`http://130.185.78.113:8000/api/course/${props.course.id}`,
+    Axios.put(`https://api.classinium.ir/api/course/${props.course.id}`,
     {course_cover:coverImage},
     {
        headers :{

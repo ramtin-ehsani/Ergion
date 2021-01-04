@@ -131,7 +131,7 @@ export default function Information(props) {
     let timer;
     // setTimeout(() => {
     // timer = setInterval(() => {
-    // const promise1 = Axios.get(`http://130.185.78.113:8000/api/course/${c_id}`);
+    // const promise1 = Axios.get(`https://api.classinium.ir/api/course/${c_id}`);
     // promise1
     //   .then((response) => {
     //     setname(response.data.name);
@@ -194,7 +194,7 @@ export default function Information(props) {
 
   const handleDelete=()=>
   {
-    Axios.delete('http://130.185.78.113:8000/api/student/courses/' ,
+    Axios.delete('https://api.classinium.ir/api/student/courses/' ,
     { params: {course_id:id},
        headers :{
         "Authorization": `Token ${localStorage.getItem('token')}`,
@@ -219,7 +219,7 @@ export default function Information(props) {
       window.location = "/login";
     } else {
       Axios.put(
-        "http://130.185.78.113:8000/api/student/courses/",
+        "https://api.classinium.ir/api/student/courses/",
         { course_id: props.course.id },
         {
           headers: {

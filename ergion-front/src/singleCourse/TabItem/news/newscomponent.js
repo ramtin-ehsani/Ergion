@@ -125,7 +125,7 @@ const PostPage = (props) => {
   const likehandler = () => {
     axios
       .put(
-        "http://130.185.78.113:8000/api/course/post-likes/",
+        "https://api.classinium.ir/api/course/post-likes/",
         {
           post_id: props.update.id,
         },
@@ -154,7 +154,7 @@ const PostPage = (props) => {
 
       // setTimeout(() => {
       const promise = Axios.get(
-        "http://130.185.78.113:8000/api/course/post-files/",
+        "https://api.classinium.ir/api/course/post-files/",
         {
           params: { post_id: props.update.post_id },
           headers: { Authorization: `Token ${localStorage.getItem("token")}` },
@@ -171,7 +171,7 @@ const PostPage = (props) => {
         })
         .catch((error) => console.log(error));
       const promise1 = axios.get(
-        "http://130.185.78.113:8000/api/course/news-details/",
+        "https://api.classinium.ir/api/course/news-details/",
         {
           params: { news_id: props.update.id },
           headers: { Authorization: `Token ${localStorage.getItem("token")}` },

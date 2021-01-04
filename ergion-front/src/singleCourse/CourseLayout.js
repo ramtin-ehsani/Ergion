@@ -279,7 +279,7 @@ export default function CourseLayout(props) {
       data.append("is_public", 0);
     }
     axios
-      .put(`http://130.185.78.113:8000/api/course/${props.course.id}`, data, {
+      .put(`https://api.classinium.ir/api/course/${props.course.id}`, data, {
         headers: {
           Authorization: `Token ${localStorage.getItem("api_key")}`,
         },

@@ -82,7 +82,7 @@ class Notification extends Component {
   getValues = (page) => {
     axios
       .get(
-        "http://130.185.78.113:8000/api/student/notifications/?page=" + page,
+        "https://api.classinium.ir/api/student/notifications/?page=" + page,
         this.config
       )
       .then((res) => {
@@ -166,7 +166,7 @@ class Notification extends Component {
     setTimeout(() => {
       axios
         .put(
-          "http://130.185.78.113:8000/api/student/notifications/",
+          "https://api.classinium.ir/api/student/notifications/",
           {},
           this.config
         )

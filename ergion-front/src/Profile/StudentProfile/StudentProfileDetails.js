@@ -199,7 +199,7 @@ class ProfileDetails extends Component {
 
   getValues = () => {
     axios
-      .get("http://130.185.78.113:8000/api/student/profile/", this.config)
+      .get("https://api.classinium.ir/api/student/profile/", this.config)
       .then((response) => {
         // handle success
         const formData = {
@@ -276,7 +276,7 @@ class ProfileDetails extends Component {
       }
 
       axios
-        .put("http://130.185.78.113:8000/api/student/profile/", data, this.config)
+        .put("https://api.classinium.ir/api/student/profile/", data, this.config)
         .then((response) => {
           oldData["firstName"] = formData.firstName;
           oldData["lastName"] = formData.lastName;

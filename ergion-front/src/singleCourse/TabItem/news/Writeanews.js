@@ -232,7 +232,7 @@ const Write = (props) => {
 
   const sendnewshandler = (event) => {
     Axios.post(
-      "http://130.185.78.113:8000/api/course/news/",
+      "https://api.classinium.ir/api/course/news/",
       { course_id: courseid, description: newstext },
       {
         headers: {
@@ -270,7 +270,7 @@ const Write = (props) => {
           const fileData = new FormData();
           fileData.append("post_id", response.data.post_id);
           fileData.append("file", video);
-          Axios.post("http://130.185.78.113:8000/api/course/post-files/", fileData, {
+          Axios.post("https://api.classinium.ir/api/course/post-files/", fileData, {
             headers: {
               Authorization: `Token ${localStorage.getItem("token")}`,
             },
@@ -288,7 +288,7 @@ const Write = (props) => {
           const fileData = new FormData();
           fileData.append("post_id", response.data.post_id);
           fileData.append("file", pdf);
-          Axios.post("http://130.185.78.113:8000/api/course/post-files/", fileData, {
+          Axios.post("https://api.classinium.ir/api/course/post-files/", fileData, {
             headers: {
               Authorization: `Token ${localStorage.getItem("token")}`,
             },
@@ -316,7 +316,7 @@ const Write = (props) => {
     const fileData = new FormData();
     fileData.append("post_id", pi);
     fileData.append("file", image1);
-    Axios.post("http://130.185.78.113:8000/api/course/post-files/", fileData, {
+    Axios.post("https://api.classinium.ir/api/course/post-files/", fileData, {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },
@@ -336,7 +336,7 @@ const Write = (props) => {
     const fileData = new FormData();
     fileData.append("post_id", pi);
     fileData.append("file", image2);
-    Axios.post("http://130.185.78.113:8000/api/course/post-files/", fileData, {
+    Axios.post("https://api.classinium.ir/api/course/post-files/", fileData, {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },
@@ -353,7 +353,7 @@ const Write = (props) => {
     const fileData = new FormData();
     fileData.append("post_id", pi);
     fileData.append("file", image3);
-    Axios.post("http://130.185.78.113:8000/api/course/post-files/", fileData, {
+    Axios.post("https://api.classinium.ir/api/course/post-files/", fileData, {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },
@@ -369,7 +369,7 @@ const Write = (props) => {
     const fileData = new FormData();
     fileData.append("post_id", pi);
     fileData.append("file", image4);
-    Axios.post("http://130.185.78.113:8000/api/course/post-files/", fileData, {
+    Axios.post("https://api.classinium.ir/api/course/post-files/", fileData, {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },

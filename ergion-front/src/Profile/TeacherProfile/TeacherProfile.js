@@ -158,7 +158,7 @@ class Profile extends Component {
 
 
   getValues = () => {
-    axios.get('http://130.185.78.113:8000/api/teacher/profile/', this.config)
+    axios.get('https://api.classinium.ir/api/teacher/profile/', this.config)
       .then((response) => {
         // handle success
         const avatarImage = response.data.profile_picture
@@ -221,7 +221,7 @@ class Profile extends Component {
       data.append('profile_picture', this.state.selectedFile)
 
 
-      axios.put('http://130.185.78.113:8000/api/teacher/profile/',
+      axios.put('https://api.classinium.ir/api/teacher/profile/',
         data, this.uploadConfig)
         .then(() => {
           this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName
@@ -252,7 +252,7 @@ class Profile extends Component {
     // data.append('profile_picture', null)
 
     const data={profile_picture:null}
-    axios.put('http://130.185.78.113:8000/api/teacher/profile/', data,
+    axios.put('https://api.classinium.ir/api/teacher/profile/', data,
       this.config).then(response => {
         if (response.status === 200) {
           this.props.dispatchUser(this.props.user.firstName, this.props.user.lastName

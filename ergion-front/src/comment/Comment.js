@@ -62,7 +62,7 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
             headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
         }
         if (reduxNewText[id].length !== 0) {
-            axios.post('http://130.185.78.113:8000/api/course/comments/', {
+            axios.post('https://api.classinium.ir/api/course/comments/', {
                 parent_comment_id: id,
                 comment_text: reduxNewText[id]
             }, config).then((res) => {
@@ -91,7 +91,7 @@ const Comment = ({ comments , replies, reduxReply, onReply, onLikeComment, redux
         const config = {
             headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
         }
-        axios.put('http://130.185.78.113:8000/api/course/comment-likes/',{
+        axios.put('https://api.classinium.ir/api/course/comment-likes/',{
             comment_id: id
         },config).then((res)=>{
             console.log(res)
