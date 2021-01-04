@@ -101,7 +101,7 @@ const Suggestedins = () => {
 
 	function copyToClipboard(id) {
 		let textField = document.createElement('textarea');
-		textField.innerText = 'http://localhost:3000/course/' + id;
+		textField.innerText = 'http://app.classinium.ir/course/' + id;
 		document.body.appendChild(textField);
 		textField.select();
 		document.execCommand('copy');
@@ -117,7 +117,7 @@ const Suggestedins = () => {
 	};
 
 	function courseLinkHandler(id) {
-		return 'http://localhost:3000/course/' + id;
+		return 'http://app.classinium.ir/course/' + id;
 	}
 
 	useEffect(() => {

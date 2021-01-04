@@ -241,9 +241,9 @@ function Information(props) {
   const shareLink = (id) => {
     if (JSON.parse(localStorage.getItem("user")) !== null) {
       if (JSON.parse(localStorage.getItem("user"))["role"] === "T") {
-        return "http://localhost:3000/teacher_dashboard/added_courses/" + id;
+        return "http://app.classinium.ir/teacher_dashboard/added_courses/" + id;
       } else {
-        return "http://localhost:3000/student_dashboard/added_courses/" + id;
+        return "http://app.classinium.ir/student_dashboard/added_courses/" + id;
       }
     }
   };

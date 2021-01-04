@@ -157,7 +157,7 @@ const PostPage = () => {
 
   function copyToClipboard(id) {
     let textField = document.createElement("textarea");
-    textField.innerText = "http://localhost:3000/student_dashboard/post/" + id;
+    textField.innerText = "http://app.classinium.ir/student_dashboard/post/" + id;
     document.body.appendChild(textField);
     textField.select();
     document.execCommand("copy");

@@ -1012,7 +1012,7 @@ class TimeLine extends React.Component {
                                           1,
                                           index,
                                           false,
-                                          "http://localhost:3000/student_dashboard" +
+                                          "http://app.classinium.ir/student_dashboard" +
                                             timeline.postUrl
                                         )
                                       }
