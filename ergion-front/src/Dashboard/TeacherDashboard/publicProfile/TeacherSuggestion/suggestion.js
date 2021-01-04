@@ -121,7 +121,7 @@ const Suggestedins = () => {
 	}
 
 	useEffect(() => {
-		const showAllAPI = 'http://127.0.0.1:8000/api/student/suggested-instructors/';
+		const showAllAPI = 'http://130.185.78.113:8000/api/student/suggested-instructors/';
 
 		if (JSON.parse(localStorage.getItem('user'))['role'] === 'S') {
 			axios

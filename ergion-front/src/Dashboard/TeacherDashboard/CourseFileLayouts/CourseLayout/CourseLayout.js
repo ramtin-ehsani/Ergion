@@ -279,7 +279,7 @@ function CourseLayout(props) {
       data.append("course_cover", "");
     }
     axios
-      .post("http://127.0.0.1:8000/api/teacher/courses/", data, {
+      .post("http://130.185.78.113:8000/api/teacher/courses/", data, {
         headers: {
           Authorization: `Token ${localStorage.getItem("api_key")}`,
         },
@@ -568,7 +568,7 @@ function CourseLayout(props) {
 
   const getValues = () => {
     setList([]);
-    const promise1 = axios.get("http://127.0.0.1:8000/api/teacher/courses/", {
+    const promise1 = axios.get("http://130.185.78.113:8000/api/teacher/courses/", {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },

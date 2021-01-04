@@ -143,7 +143,7 @@ export default function FullWidthTabs(props) {
       }
     }
     // setTimeout(() => {
-    //   const promise = axios.get("http://127.0.0.1:8000/api/course/news/", {
+    //   const promise = axios.get("http://130.185.78.113:8000/api/course/news/", {
     //     params: { course_id: props.course.id },
     //     headers: { Authorization: `Token ${localStorage.getItem("token")}` },
     //   });

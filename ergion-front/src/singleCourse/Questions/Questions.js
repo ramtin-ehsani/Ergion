@@ -63,7 +63,7 @@ class Questions extends Component {
         const config = {
         headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
         }
-        axios.get(`http://127.0.0.1:8000/api/course/chapters/?course_id=${course_id}`,config)
+        axios.get(`http://130.185.78.113:8000/api/course/chapters/?course_id=${course_id}`,config)
         .then((res)=>{
             const eps = [];
             res.data.map((chapter)=>{
@@ -79,7 +79,7 @@ class Questions extends Component {
             })
             this.setState({episodes:eps})
         })
-        axios.get(`http://127.0.0.1:8000/api/forum/episode-question/?course_id=${course_id}`,config)
+        axios.get(`http://130.185.78.113:8000/api/forum/episode-question/?course_id=${course_id}`,config)
         .then((res)=>{
             const qs = [];
             let reps = {
@@ -124,7 +124,7 @@ class Questions extends Component {
         const config = {
         headers: { Authorization: `Token ${localStorage.getItem('api_key')}`, }
         }
-        axios.post('http://127.0.0.1:8000/api/forum/episode-question/',{
+        axios.post('http://130.185.78.113:8000/api/forum/episode-question/',{
             question: this.state.text_field,
             related_episode: this.state.episode
 

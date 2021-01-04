@@ -241,7 +241,7 @@ class TimeLine extends React.Component {
 
   getValues = (page) => {
     axios
-      .get("http://127.0.0.1:8000/api/student/posts/?page=" + page, this.config)
+      .get("http://130.185.78.113:8000/api/student/posts/?page=" + page, this.config)
       .then((response) => {
         // handle success
         const { list } = this.state;
@@ -319,7 +319,7 @@ class TimeLine extends React.Component {
 
     axios
       .put(
-        "http://127.0.0.1:8000/api/course/post-likes/",
+        "http://130.185.78.113:8000/api/course/post-likes/",
         {
           post_id: id,
         },
@@ -365,7 +365,7 @@ class TimeLine extends React.Component {
   handlePostReply = (index, commentIndex, commentID, text) => {
     axios
       .post(
-        "http://127.0.0.1:8000/api/course/comments/",
+        "http://130.185.78.113:8000/api/course/comments/",
         {
           parent_comment_id: commentID,
           comment_text: text,
@@ -401,7 +401,7 @@ class TimeLine extends React.Component {
   handlePostComment = (index, timelineID, text) => {
     axios
       .post(
-        "http://127.0.0.1:8000/api/course/comments/",
+        "http://130.185.78.113:8000/api/course/comments/",
         {
           post_id: timelineID,
           comment_text: text,
@@ -496,7 +496,7 @@ class TimeLine extends React.Component {
     this.handleLikeResponse(Index, commentIndex);
     axios
       .put(
-        "http://127.0.0.1:8000/api/course/comment-likes/",
+        "http://130.185.78.113:8000/api/course/comment-likes/",
         {
           comment_id: this.state.list[Index].comments[commentIndex].id,
         },

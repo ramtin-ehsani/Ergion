@@ -130,7 +130,7 @@ const AddCourse = () => {
         headers: { Authorization: `Token ${localStorage.getItem('api_key')}` },
     };
     const changeSearchBarHandler = (event) => {
-        const API = "http://127.0.0.1:8000/api/student/all-courses/?substring=" + event.target.value;
+        const API = "http://130.185.78.113:8000/api/student/all-courses/?substring=" + event.target.value;
         axios.get(API, config)
             .then((response) => {
                 setCourses(response.data);
@@ -166,7 +166,7 @@ const AddCourse = () => {
       }
 
     useEffect(() => {
-        const showAllAPI = "http://127.0.0.1:8000/api/student/all-courses/";
+        const showAllAPI = "http://130.185.78.113:8000/api/student/all-courses/";
         axios.get(showAllAPI, config)
             .then((response) => {
                 if (response.data.length > 0) {

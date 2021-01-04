@@ -99,7 +99,7 @@ class TabsClass extends Component {
 
   componentDidMount() {
     axios
-      .get("http://127.0.0.1:8000/api/teacher/courses/", {
+      .get("http://130.185.78.113:8000/api/teacher/courses/", {
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },

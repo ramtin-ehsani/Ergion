@@ -33,7 +33,7 @@ class Comments extends Component {
 			headers: { Authorization: `Token ${localStorage.getItem('api_key')}` }
 		};
 		const update_id = this.props.postId;
-		axios.get(`http://127.0.0.1:8000/api/course/comments/?post_id=${update_id}`, config).then((res) => {
+		axios.get(`http://130.185.78.113:8000/api/course/comments/?post_id=${update_id}`, config).then((res) => {
 			res.data.map((comment) => {
 				const newComment = {
 					postId: update_id,
@@ -74,7 +74,7 @@ class Comments extends Component {
 		if (this.state.nCommentString.length !== 0) {
 			axios
 				.post(
-					'http://127.0.0.1:8000/api/course/comments/',
+					'http://130.185.78.113:8000/api/course/comments/',
 					{
 						post_id: update_id,
 						comment_text: this.state.nCommentString

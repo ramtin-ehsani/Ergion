@@ -99,7 +99,7 @@ class MainDashboard extends Component {
             headers: { Authorization: `Token ${localStorage.getItem('api_key')}`}
             }
         var events = this.state.events;
-        axios.get(`http://127.0.0.1:8000/api/teacher/timeline/?page=${page}`,config)
+        axios.get(`http://130.185.78.113:8000/api/teacher/timeline/?page=${page}`,config)
         .then((res)=>{
             res.data.data.map((event)=>{
                 var newE = event;
@@ -122,7 +122,7 @@ class MainDashboard extends Component {
                 }
                 events.push(newE)
             })
-            axios.get('http://127.0.0.1:8000/api/teacher/profile-details/',config)
+            axios.get('http://130.185.78.113:8000/api/teacher/profile-details/',config)
             .then((res)=>{
                 let count = res.data.count_of_questions;
                 this.setState({count:count})
@@ -130,7 +130,7 @@ class MainDashboard extends Component {
             console.log(res.data.has_next)
             this.setState({hasMore:res.data.has_next,events:events,mounted_events:true})
             if(page === 1){
-                axios.get('http://127.0.0.1:8000/api/teacher/join-requests/',config)
+                axios.get('http://130.185.78.113:8000/api/teacher/join-requests/',config)
                 .then((res)=>{
                     let requests=[]
                     res.data.map((req)=>{
@@ -157,7 +157,7 @@ class MainDashboard extends Component {
         let requests = this.state.requests.slice();
         let item = requests.splice(id,1);
         this.setState({requests});
-        axios.post('http://127.0.0.1:8000/api/teacher/join-requests/',{
+        axios.post('http://130.185.78.113:8000/api/teacher/join-requests/',{
             accept:0,
             id: item[0].id
         },config).then((res)=>{
@@ -172,7 +172,7 @@ class MainDashboard extends Component {
         let requests = this.state.requests.slice();
         let item = requests.splice(id,1);
         this.setState({requests, open:true});
-        axios.post('http://127.0.0.1:8000/api/teacher/join-requests/',{
+        axios.post('http://130.185.78.113:8000/api/teacher/join-requests/',{
             accept:1,
             id: item[0].id
         },config).then((res)=>{

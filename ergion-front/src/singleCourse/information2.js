@@ -130,7 +130,7 @@ export default function Information(props) {
     let timer;
     // setTimeout(() => {
     // timer = setInterval(() => {
-    // const promise1 = Axios.get(`http://127.0.0.1:8000/api/course/${c_id}`);
+    // const promise1 = Axios.get(`http://130.185.78.113:8000/api/course/${c_id}`);
     // promise1
     //   .then((response) => {
     //     setname(response.data.name);
@@ -175,7 +175,7 @@ export default function Information(props) {
         setS(true);
 
         const promise = Axios.get(
-          "http://127.0.0.1:8000/api/student/courses/",
+          "http://130.185.78.113:8000/api/student/courses/",
           {
             headers: {
               Authorization: `Token ${localStorage.getItem("token")}`,
@@ -207,7 +207,7 @@ export default function Information(props) {
   };
   const okhandler = () => {
     Axios.put(
-      `http://127.0.0.1:8000/api/course/${props.course.id}`,
+      `http://130.185.78.113:8000/api/course/${props.course.id}`,
       { about_course: tempbio },
       {
         headers: {
@@ -228,7 +228,7 @@ export default function Information(props) {
       window.location = "/login";
     } else {
       Axios.put(
-        "http://127.0.0.1:8000/api/student/courses/",
+        "http://130.185.78.113:8000/api/student/courses/",
         { course_id: props.course.id },
         {
           headers: {

@@ -301,7 +301,7 @@ class NestedList extends React.Component {
 
     axios
       .post(
-        "http://127.0.0.1:8000/api/course/chapter-episodes/",
+        "http://130.185.78.113:8000/api/course/chapter-episodes/",
         data,
         this.config
       )
@@ -318,7 +318,7 @@ class NestedList extends React.Component {
             promises.push(
               axios
                 .post(
-                  "http://127.0.0.1:8000/api/course/post-files/",
+                  "http://130.185.78.113:8000/api/course/post-files/",
                   fileData,
                   this.config
                 )
@@ -482,7 +482,7 @@ class NestedList extends React.Component {
   getValues = (id) => {
     axios
       .get(
-        "http://127.0.0.1:8000/api/course/chapters/?course_id=" + id,
+        "http://130.185.78.113:8000/api/course/chapters/?course_id=" + id,
         this.config
       )
       .then((response) => {
@@ -524,7 +524,7 @@ class NestedList extends React.Component {
     if (this.state.isChapterToDelete) {
       axios
         .delete(
-          "http://127.0.0.1:8000/api/course/chapters/?chapter_id=" +
+          "http://130.185.78.113:8000/api/course/chapters/?chapter_id=" +
             this.state.list[this.state.positionOfEpisodeChapter].id,
           this.config
         )
@@ -542,7 +542,7 @@ class NestedList extends React.Component {
     } else {
       axios
         .delete(
-          "http://127.0.0.1:8000/api/course/chapter-episodes/?episode_id=" +
+          "http://130.185.78.113:8000/api/course/chapter-episodes/?episode_id=" +
             this.state.list[this.state.positionOfEpisodeChapter].episodes[
               this.state.positionOfEpisode
             ].id,
@@ -625,7 +625,7 @@ class NestedList extends React.Component {
     data.append("course_id", this.state.courseId);
     data.append("name", this.state.newChapterValue);
     axios
-      .post("http://127.0.0.1:8000/api/course/chapters/", data, this.config)
+      .post("http://130.185.78.113:8000/api/course/chapters/", data, this.config)
       .then((response) => {
         // handle success
         const l = [
@@ -756,7 +756,7 @@ class NestedList extends React.Component {
 
     axios
       .patch(
-        "http://127.0.0.1:8000/api/course/chapter-episodes/",
+        "http://130.185.78.113:8000/api/course/chapter-episodes/",
         data,
         this.config
       )
@@ -801,7 +801,7 @@ class NestedList extends React.Component {
   chapterEditButtonSaveChanges = (index) => {
     axios
       .patch(
-        "http://127.0.0.1:8000/api/course/chapters/",
+        "http://130.185.78.113:8000/api/course/chapters/",
         {
           name: this.newEpisodeName.current.value,
           chapter_id: this.state.list[index].id,

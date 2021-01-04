@@ -259,7 +259,7 @@ const Suggestions = () => {
     }
 
     useEffect(() => {
-        const api = "http://127.0.0.1:8000/api/suggested-courses/";
+        const api = "http://130.185.78.113:8000/api/suggested-courses/";
         axios.get(api, config)
             .then((response) => {
                 if (response.data.length > 0) {

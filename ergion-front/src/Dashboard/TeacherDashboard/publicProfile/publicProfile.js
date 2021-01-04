@@ -144,7 +144,7 @@ const PublicProfile = () => {
 		});
 		const teacher_id = window.location.href.split('/')[5];
 		axios
-			.get(`http://127.0.0.1:8000/api/teacher/profile-details/?teacher_id=${teacher_id}`, config)
+			.get(`http://130.185.78.113:8000/api/teacher/profile-details/?teacher_id=${teacher_id}`, config)
 			.then((response) => {
 				setDetails(response.data);
 				setMyclasses(response.data.courses);
