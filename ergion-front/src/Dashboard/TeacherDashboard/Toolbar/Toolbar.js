@@ -12,6 +12,7 @@ import { MainListItems, MobileListItems } from "../ListItems/ListItems";
 import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import './Toolbar.scss';
+import { ReactComponent as Logo } from "./logo.svg";
 
 const drawerWidth = 247;
 
@@ -69,8 +70,8 @@ function ResponsiveDrawer(props) {
                 <CssBaseline />
                 <AppBar position="fixed" className={classes.appBar}>
                     <Toolbar>
-                        <Typography variant="h6" noWrap className={classes.title}>
-                            Ergion
+                        <Typography className={classes.title}>
+                            <Logo/>
                         </Typography>
                         <IconButton
                             color="inherit"
