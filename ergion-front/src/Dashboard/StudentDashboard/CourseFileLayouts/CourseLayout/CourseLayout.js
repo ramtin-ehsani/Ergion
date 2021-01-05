@@ -244,7 +244,8 @@ function CourseLayout(props) {
                   <CardContent className={classes.cardContent}>
                     <Typography
                       gutterBottom
-                      variant="h5"
+                      variant="h6"
+                      noWrap
                       component="h2"
                       className="courseNamePlace"
                     >

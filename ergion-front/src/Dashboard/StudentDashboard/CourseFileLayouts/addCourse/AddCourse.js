@@ -241,7 +241,7 @@ const AddCourse = () => {
                                                 title={course.sunject}
                                             />
                                             <CardContent className={classes.cardContent} spacing={3}>
-                                                <Typography gutterBottom variant="h5" component="h2"
+                                                <Typography gutterBottom variant="h6" component="h2" noWrap
                                                     className="courseNamePlace">
                                                     {course.name}
                                                 </Typography>
