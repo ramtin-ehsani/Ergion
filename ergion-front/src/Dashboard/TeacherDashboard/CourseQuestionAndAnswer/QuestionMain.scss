@@ -1,0 +1,31 @@
+.text{
+    font-family: IRANSans !important;
+    text-align: right !important;
+}
+
+.text1{
+    font-family: IRANSans !important;
+    
+}
+
+.input{
+    font-family: IRANSans !important;
+}
+
+.icon{
+    transform: scaleX(-1);
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    -ms-transform: scaleX(-1);
+}
+
+.courselayout {
+    font-family: IRANSans !important;
+    transition: 0.3s;
+    width: 270px;
+    margin: auto;
+    box-shadow: 0 8px 40px -12px rgba(0, 0, 0, 0.3);
+    &:hover {
+      box-shadow: 0 16px 70px -12.125px rgba(0, 0, 0, 0.3) !important;
+    }
+}

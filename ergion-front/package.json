@@ -3,17 +3,58 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@jacobmarshall/human-time": "^0.1.0",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@momsfriendlydevco/readable": "^1.2.1",
+    "axios": "^0.21.0",
+    "faker": "^5.1.0",
+    "jss-rtl": "^0.3.0",
+    "material-ui-dropzone": "^3.5.0",
+    "moment": "^2.29.1",
+    "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-helmet": "^6.1.0",
+    "react-image": "^4.0.3",
+    "react-infinite-scroller": "^1.2.4",
+    "react-loading-overlay": "^1.0.1",
+    "react-material-ui-carousel": "^2.1.1",
+    "react-material-ui-form-validator": "^2.1.1",
+    "react-nice-input-password": "^2.7.0",
+    "react-player": "^2.7.0",
+    "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "1.1.5"
+    "react-scripts": "^3.4.0",
+    "react-slick": "^0.27.13",
+    "react-swipeable-views": "^0.13.9",
+    "react-virtuoso": "^1.1.3",
+    "redux": "^4.0.5",
+    "sass": "^1.27.0",
+    "slick-carousel": "^1.8.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "file-loader": "^6.2.0",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^10.0.4"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

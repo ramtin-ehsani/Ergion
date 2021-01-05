@@ -1,0 +1,87 @@
+.main {
+
+    .layout1 {
+      font-family: IRANSans !important;
+      transition: 0.3s;
+      max-width: 300px;
+      max-height: 400px;
+      margin: auto;
+      border-radius: 4%;
+      box-shadow: 0 8px 40px -12px rgba(0, 0, 0, 0.3);
+  
+      &:hover {
+        box-shadow: 0 16px 70px -12.125px rgba(0, 0, 0, 0.3) !important;
+      }
+  
+      .toSee {
+        font-family: IRANSans !important;
+        font-size: 16px;
+      }
+  
+      .courseNamePlace {
+        font-family: IRANSans !important;
+        margin: 9px;
+      }
+  
+      .courseCapacityPlace {
+        font-family: IRANSans !important;
+        margin: 8px;
+        font-size: 14px;
+        padding-top: 4px;
+      }
+  
+      .courseOwnerPlace {
+        font-family: IRANSans !important;
+        font-size: 14px;
+        justify-content: center;
+        align-items: center;
+        max-height: 30px;
+        display: flex;
+      }
+      
+    }
+  
+    .cardSpacing {
+      padding: 5px;
+    }
+  
+    .textFieldSearchbar {
+      width: 100%;
+      justify-content: center;
+      display: flex;
+  
+      .labelOFSearchbar {
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        flex-direction: row;
+  
+        .search_Icon {
+          margin-left: 7px;
+        }
+      }
+    }
+  
+    .toSeeButton {
+      width: 100%;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      height: 40px;
+      border-radius: 4%;
+  
+      .toSee {
+        font-size: 16px;
+      }
+    }
+  }
+  
+  //
+  //.sahar {
+  //  width: 100%;
+  //  justify-content: center;
+  //  display: flex;
+  //  align-items: center;
+  //  text-align: center;
+  //}
