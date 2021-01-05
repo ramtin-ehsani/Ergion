@@ -135,7 +135,7 @@ const Suggestedcourse = () => {
 
   function copyToClipboard(id) {
     let textField = document.createElement("textarea");
-    textField.innerText = "http://localhost:3000/course/" + id;
+    textField.innerText = "http://app.classinium.ir/course/" + id;
     document.body.appendChild(textField);
     textField.select();
     document.execCommand("copy");
@@ -151,7 +151,7 @@ const Suggestedcourse = () => {
   };
 
   function courseLinkHandler(id) {
-    return "http://localhost:3000/course/" + id;
+    return "http://app.classinium.ir/course/" + id;
   }
 
   const toFarsiNumber = (n) => {
@@ -161,8 +161,8 @@ const Suggestedcourse = () => {
   };
 
   useEffect(() => {
-    const showAllAPI = "http://127.0.0.1:8000/api/student/suggested-courses/";
-    const showAllAPI1 = "http://127.0.0.1:8000/api/teacher/courses/";
+    const showAllAPI = "https://api.classinium.ir/api/student/suggested-courses/";
+    const showAllAPI1 = "https://api.classinium.ir/api/teacher/courses/";
     if (JSON.parse(localStorage.getItem("user"))["role"] === "S") {
       axios
         .get(showAllAPI, config)

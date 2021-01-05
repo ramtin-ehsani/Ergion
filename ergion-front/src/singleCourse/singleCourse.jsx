@@ -169,7 +169,7 @@ const SingleCourse = ({ match, snackQ, onSnackQ, snackCopy, onSnackCopy }) => {
   // }, []);
   const getcourse = () => {
     const promise = Axios.get(
-      `http://127.0.0.1:8000/api/course/${match.params.id}`
+      `https://api.classinium.ir/api/course/${match.params.id}`
     );
     promise.then((response) => {
       setcourse(response.data);
@@ -177,7 +177,7 @@ const SingleCourse = ({ match, snackQ, onSnackQ, snackCopy, onSnackCopy }) => {
   };
   React.useEffect(() => {
     const promise = Axios.get(
-      `http://127.0.0.1:8000/api/course/${match.params.id}`,
+      `https://api.classinium.ir/api/course/${match.params.id}`,
       { headers: { Authorization: `Token ${localStorage.getItem("api_key")}` } }
     );
     promise.then((response) => {

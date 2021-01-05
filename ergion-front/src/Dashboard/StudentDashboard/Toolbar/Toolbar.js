@@ -13,6 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import "./Toolbar.scss";
 import Notification from "../Notification/Notification";
+import { ReactComponent as Logo } from "./logo.svg";
 
 const drawerWidth = 247;
 
@@ -81,8 +82,8 @@ function ResponsiveDrawer(props) {
               
             <Notification />
 
-            <Typography variant="h6" noWrap className={classes.title}>
-              Ergion
+            <Typography className={classes.title}>
+              <Logo/>
             </Typography>
             <IconButton
               color="inherit"

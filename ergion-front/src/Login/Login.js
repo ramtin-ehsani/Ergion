@@ -106,9 +106,9 @@ function Login(props) {
     if (localStorage.getItem("api_key") !== "null") {
       if (localStorage.getItem("user") !== null) {
         if (JSON.parse(localStorage.getItem("user"))["role"] === "T") {
-          // window.location = '/teacher_dashboard';
+          window.location = '/teacher_dashboard';
         } else {
-          //window.location = '/student_dashboard';
+          window.location = '/student_dashboard';
         }
       }
     }
@@ -144,7 +144,7 @@ function Login(props) {
   const handleLogin = () => {
     setLoading(true);
     axios
-      .post("http://127.0.0.1:8000/api/rest-auth/login/", {
+      .post("https://api.classinium.ir/api/rest-auth/login/", {
         email: email.value,
         password: password.value,
       })
@@ -155,14 +155,14 @@ function Login(props) {
           };
 
           const promise = axios.get(
-            "http://127.0.0.1:8000/api/rest-auth/user/",
+            "https://api.classinium.ir/api/rest-auth/user/",
             config
           );
           promise.then((result) => {
             setUserSession(response.data.key, result.data);
             if (result.data["role"] === "S") {
               axios
-                .get("http://127.0.0.1:8000/api/student/profile/", config)
+                .get("https://api.classinium.ir/api/student/profile/", config)
                 .then((res) => {
                   // handle success
                   console.log(res);
@@ -179,7 +179,7 @@ function Login(props) {
                   localStorage.setItem("api_key", response.data.key);
                   //setUserSession(response.data.key, response.data.user);
                   const promise1 = axios.get(
-                    "http://127.0.0.1:8000/api/student/courses/",
+                    "https://api.classinium.ir/api/student/courses/",
                     config
                   );
                   promise1.then((resultt) => {
@@ -205,7 +205,7 @@ function Login(props) {
                 });
             } else {
               axios
-                .get("http://127.0.0.1:8000/api/teacher/profile/", config)
+                .get("https://api.classinium.ir/api/teacher/profile/", config)
                 .then((res) => {
                   // handle success
                   console.log(res.data);
@@ -222,7 +222,7 @@ function Login(props) {
                   localStorage.setItem("api_key", response.data.key);
                   //setUserSession(response.data.key, response.data.user);
                   const promise1 = axios.get(
-                    "http://127.0.0.1:8000/api/teacher/courses/",
+                    "https://api.classinium.ir/api/teacher/courses/",
                     config
                   );
                   promise1.then((resultt) => {

@@ -142,7 +142,7 @@ function CommentMain() {
       headers: { Authorization: `Token ${localStorage.getItem("api_key")}` },
     };
     axios.put(
-      "http://127.0.0.1:8000/api/course/post-likes/",
+      "https://api.classinium.ir/api/course/post-likes/",
       {
         post_id: postId,
       },
@@ -235,7 +235,7 @@ function CommentMain() {
 
     axios
       .get(
-        `http://127.0.0.1:8000/api/course/chapter-episodes/?chapter_id=${chapter_id}`,
+        `https://api.classinium.ir/api/course/chapter-episodes/?chapter_id=${chapter_id}`,
         config
       )
       .then((res) => {

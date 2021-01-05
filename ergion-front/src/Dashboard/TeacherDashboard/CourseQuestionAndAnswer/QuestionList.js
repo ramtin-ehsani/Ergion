@@ -128,7 +128,7 @@ class QuestionList extends Component {
   answerDelete = () => {
     axios
       .delete(
-        "http://127.0.0.1:8000/api/forum/episode-answer/?answer_id=" +
+        "https://api.classinium.ir/api/forum/episode-answer/?answer_id=" +
           this.state.list[this.state.selectedIndex].answer[0].id,
         this.config
       )
@@ -194,7 +194,7 @@ class QuestionList extends Component {
   editAnswer = () => {
     axios
       .put(
-        "http://127.0.0.1:8000/api/forum/episode-answer/?answer_id=" +
+        "https://api.classinium.ir/api/forum/episode-answer/?answer_id=" +
           this.state.list[this.state.selectedIndex].answer[0].id,
         {
           answer: this.editAnswerRef.current.value,
@@ -228,7 +228,7 @@ class QuestionList extends Component {
   submitAnswer = () => {
     axios
       .post(
-        "http://127.0.0.1:8000/api/forum/episode-answer/",
+        "https://api.classinium.ir/api/forum/episode-answer/",
         {
           question: this.state.list[this.state.selectedIndex].id,
           answer: this.state.questionAnswer,
@@ -269,7 +269,7 @@ class QuestionList extends Component {
     const courseId = this.props.courseId;
     axios
       .get(
-        "http://127.0.0.1:8000/api/forum/episode-answer/?course_id=" + courseId,
+        "https://api.classinium.ir/api/forum/episode-answer/?course_id=" + courseId,
         this.config
       )
       .then((resp) => {

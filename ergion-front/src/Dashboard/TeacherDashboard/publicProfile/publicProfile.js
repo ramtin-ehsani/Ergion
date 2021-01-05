@@ -129,7 +129,7 @@ const PublicProfile = () => {
 
 	function copyToClipboard(id) {
 		let textField = document.createElement('textarea');
-		textField.innerText = 'http://localhost:3000/course/' + id;
+		textField.innerText = 'http://app.classinium.ir/course/' + id;
 		document.body.appendChild(textField);
 		textField.select();
 		document.execCommand('copy');
@@ -144,7 +144,7 @@ const PublicProfile = () => {
 		});
 		const teacher_id = window.location.href.split('/')[5];
 		axios
-			.get(`http://127.0.0.1:8000/api/teacher/profile-details/?teacher_id=${teacher_id}`, config)
+			.get(`https://api.classinium.ir/api/teacher/profile-details/?teacher_id=${teacher_id}`, config)
 			.then((response) => {
 				setDetails(response.data);
 				setMyclasses(response.data.courses);

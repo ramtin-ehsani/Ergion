@@ -173,7 +173,7 @@ function Information(props) {
     let timer;
     // setTimeout(() => {
     // timer = setInterval(() => {
-    // const promise1 = Axios.get(`http://127.0.0.1:8000/api/course/${c_id}`);
+    // const promise1 = Axios.get(`https://api.classinium.ir/api/course/${c_id}`);
     // promise1
     //   .then((response) => {
     //     setname(response.data.name);
@@ -241,16 +241,16 @@ function Information(props) {
   const shareLink = (id) => {
     if (JSON.parse(localStorage.getItem("user")) !== null) {
       if (JSON.parse(localStorage.getItem("user"))["role"] === "T") {
-        return "http://localhost:3000/teacher_dashboard/added_courses/" + id;
+        return "http://app.classinium.ir/teacher_dashboard/added_courses/" + id;
       } else {
-        return "http://localhost:3000/student_dashboard/added_courses/" + id;
+        return "http://app.classinium.ir/student_dashboard/added_courses/" + id;
       }
     }
   };
 
   const handleDelete = () => {
     dialogOnclose();
-    Axios.delete("http://127.0.0.1:8000/api/student/courses/", {
+    Axios.delete("https://api.classinium.ir/api/student/courses/", {
       params: { course_id: props.course.id },
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
@@ -279,7 +279,7 @@ function Information(props) {
       window.location = "/login";
     } else {
       Axios.put(
-        "http://127.0.0.1:8000/api/student/courses/",
+        "https://api.classinium.ir/api/student/courses/",
         { course_id: props.course.id },
         {
           headers: {

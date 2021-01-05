@@ -101,7 +101,7 @@ function CourseLayout(props) {
 
   React.useEffect(() => {
     // setTimeout(() => {
-    const promise1 = axios.get("http://127.0.0.1:8000/api/student/courses/", {
+    const promise1 = axios.get("https://api.classinium.ir/api/student/courses/", {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },
@@ -244,7 +244,8 @@ function CourseLayout(props) {
                   <CardContent className={classes.cardContent}>
                     <Typography
                       gutterBottom
-                      variant="h5"
+                      variant="h6"
+                      noWrap
                       component="h2"
                       className="courseNamePlace"
                     >

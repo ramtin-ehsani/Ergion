@@ -279,7 +279,7 @@ function CourseLayout(props) {
       data.append("course_cover", "");
     }
     axios
-      .post("http://127.0.0.1:8000/api/teacher/courses/", data, {
+      .post("https://api.classinium.ir/api/teacher/courses/", data, {
         headers: {
           Authorization: `Token ${localStorage.getItem("api_key")}`,
         },
@@ -568,7 +568,7 @@ function CourseLayout(props) {
 
   const getValues = () => {
     setList([]);
-    const promise1 = axios.get("http://127.0.0.1:8000/api/teacher/courses/", {
+    const promise1 = axios.get("https://api.classinium.ir/api/teacher/courses/", {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },
@@ -717,7 +717,8 @@ function CourseLayout(props) {
                   <CardContent className={classes.cardContent}>
                     <Typography
                       gutterBottom
-                      variant="h5"
+                      variant="h6"
+                      noWrap
                       component="h2"
                       className="courseNamePlace"
                     >

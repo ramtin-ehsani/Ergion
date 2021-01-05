@@ -157,7 +157,7 @@ const PostPage = () => {
 
   function copyToClipboard(id) {
     let textField = document.createElement("textarea");
-    textField.innerText = "http://localhost:3000/student_dashboard/post/" + id;
+    textField.innerText = "http://app.classinium.ir/student_dashboard/post/" + id;
     document.body.appendChild(textField);
     textField.select();
     document.execCommand("copy");
@@ -244,7 +244,7 @@ const PostPage = () => {
 
     axios
       .put(
-        "http://127.0.0.1:8000/api/course/post-likes/",
+        "https://api.classinium.ir/api/course/post-likes/",
         {
           post_id: id,
         },
@@ -384,7 +384,7 @@ const PostPage = () => {
     console.log(update_id);
     axios
       .get(
-        `http://127.0.0.1:8000/api/course/news-details/?news_id=${update_id}`,
+        `https://api.classinium.ir/api/course/news-details/?news_id=${update_id}`,
         config
       )
       .then((response) => {

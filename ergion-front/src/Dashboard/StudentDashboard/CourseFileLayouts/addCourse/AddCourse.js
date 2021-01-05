@@ -130,7 +130,7 @@ const AddCourse = () => {
         headers: { Authorization: `Token ${localStorage.getItem('api_key')}` },
     };
     const changeSearchBarHandler = (event) => {
-        const API = "http://127.0.0.1:8000/api/student/all-courses/?substring=" + event.target.value;
+        const API = "https://api.classinium.ir/api/student/all-courses/?substring=" + event.target.value;
         axios.get(API, config)
             .then((response) => {
                 setCourses(response.data);
@@ -140,7 +140,7 @@ const AddCourse = () => {
 
     function copyToClipboard(id) {
         let textField = document.createElement('textarea');
-        textField.innerText = 'http://localhost:3000/course/' + id;
+        textField.innerText = 'http://app.classinium.ir/course/' + id;
         document.body.appendChild(textField);
         textField.select();
         document.execCommand('copy');
@@ -156,7 +156,7 @@ const AddCourse = () => {
     };
 
     function courseLinkHandler(id) {
-        return ('http://localhost:3000/course/' + id);
+        return ('http://app.classinium.ir/course/' + id);
     }
 
     const toFarsiNumber=(n)=> {
@@ -166,7 +166,7 @@ const AddCourse = () => {
       }
 
     useEffect(() => {
-        const showAllAPI = "http://127.0.0.1:8000/api/student/all-courses/";
+        const showAllAPI = "https://api.classinium.ir/api/student/all-courses/";
         axios.get(showAllAPI, config)
             .then((response) => {
                 if (response.data.length > 0) {
@@ -241,7 +241,7 @@ const AddCourse = () => {
                                                 title={course.sunject}
                                             />
                                             <CardContent className={classes.cardContent} spacing={3}>
-                                                <Typography gutterBottom variant="h5" component="h2"
+                                                <Typography gutterBottom variant="h6" component="h2" noWrap
                                                     className="courseNamePlace">
                                                     {course.name}
                                                 </Typography>

@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   tabFont: {
-    fontSize: 18,
+    fontSize: 15,
   },
   labelContainer: {
     width: "auto",
@@ -143,7 +143,7 @@ export default function FullWidthTabs(props) {
       }
     }
     // setTimeout(() => {
-    //   const promise = axios.get("http://127.0.0.1:8000/api/course/news/", {
+    //   const promise = axios.get("https://api.classinium.ir/api/course/news/", {
     //     params: { course_id: props.course.id },
     //     headers: { Authorization: `Token ${localStorage.getItem("token")}` },
     //   });
