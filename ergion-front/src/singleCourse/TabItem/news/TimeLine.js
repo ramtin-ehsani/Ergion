@@ -12,7 +12,7 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { create } from "jss";
-import Carousel from '../../../Carousel/Carousel'
+import Carousel from "../../../Carousel/Carousel";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import rtl from "jss-rtl";
@@ -47,7 +47,7 @@ import FileCopyIcon from "@material-ui/icons/FileCopy";
 import { Avatar } from "@material-ui/core";
 import GetAppRoundedIcon from "@material-ui/icons/GetAppRounded";
 import ImageIcon from "@material-ui/icons/Image";
-import Write from './Writeanews';
+import Write from "./Writeanews";
 import {
   AttachFile,
   Description,
@@ -174,11 +174,10 @@ class TimeLine extends React.Component {
       link: "",
       snackBarOpen: false,
       snackBarMessage: "",
-      page:props.courseid,
+      page: props.courseid,
       loadingMore: false,
       hasNext: false,
-      cid:props.courseid,
-     
+      cid: props.courseid,
     };
   }
 
@@ -224,15 +223,14 @@ class TimeLine extends React.Component {
   };
 
   getValues = (page) => {
-   
     axios
-      .get('http://127.0.0.1:8000/api/course/news/' , {
+      .get("https://api.classinium.ir/api/course/news/", {
         params: { course_id: page },
-        headers: { "Authorization": `Token ${localStorage.getItem('token')}` }
-  })
+        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+      })
       .then((response) => {
         // handle success
-        const list  = [];
+        const list = [];
         console.log(response.data);
         console.log(page);
         response.data.reverse().map((post) => {
@@ -264,8 +262,7 @@ class TimeLine extends React.Component {
           };
           list.push(postObject);
         });
-        this.setState(
-          list)
+        this.setState(list);
         if (this._isMounted) {
           this.setState({
             list,
@@ -301,7 +298,7 @@ class TimeLine extends React.Component {
 
     axios
       .put(
-        "http://127.0.0.1:8000/api/course/post-likes/",
+        "https://api.classinium.ir/api/course/post-likes/",
         {
           post_id: id,
         },
@@ -347,7 +344,7 @@ class TimeLine extends React.Component {
   handlePostReply = (index, commentIndex, commentID, text) => {
     axios
       .post(
-        "http://127.0.0.1:8000/api/course/comments/",
+        "https://api.classinium.ir/api/course/comments/",
         {
           parent_comment_id: commentID,
           comment_text: text,
@@ -388,7 +385,7 @@ class TimeLine extends React.Component {
   handlePostComment = (index, timelineID, text) => {
     axios
       .post(
-        "http://127.0.0.1:8000/api/course/comments/",
+        "https://api.classinium.ir/api/course/comments/",
         {
           post_id: timelineID,
           comment_text: text,
@@ -423,6 +420,12 @@ class TimeLine extends React.Component {
 
   handleReplyTextOnChange = (e, ind, commIndex) => {
     this.replyTextHandler(ind, commIndex, e.target.value);
+  };
+
+  toFarsiNumber = (n) => {
+    const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+
+    return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
   };
 
   commentTextHandler = (index, value) => {
@@ -480,7 +483,7 @@ class TimeLine extends React.Component {
     this.handleLikeResponse(Index, commentIndex);
     axios
       .put(
-        "http://127.0.0.1:8000/api/course/comment-likes/",
+        "https://api.classinium.ir/api/course/comment-likes/",
         {
           comment_id: this.state.list[Index].comments[commentIndex].id,
         },
@@ -605,14 +608,14 @@ class TimeLine extends React.Component {
 
   render() {
     const { classes } = this.props;
-    this.page=this.props.courseid;
+    this.page = this.props.courseid;
 
-    return (  
-  
-
+    return (
       <StylesProvider jss={jss}>
         <ThemeProvider theme={theme}>
-   {this.props.isowner &&      <Write course={this.props.coursem} getupdate={this.getValues}/>}
+          {this.props.isowner && (
+            <Write course={this.props.coursem} getupdate={this.getValues} />
+          )}
           <Snackbar
             open={this.state.snackBarOpen}
             autoHideDuration={2000}
@@ -899,18 +902,24 @@ class TimeLine extends React.Component {
                                           style={{ color: "grey" }}
                                         >
                                           {" . " +
-                                            human(new Date(timeline.time))
-                                              .replace("years", "سال")
-                                              .replace("year", "سال")
-                                              .replace("hours", "ساعت")
-                                              .replace("hour", "ساعت")
-                                              .replace("minutes", "دقیقه")
-                                              .replace("minute", "دقیقه")
-                                              .replace("days", "روز")
-                                              .replace("day", "روز")
-                                              .replace("seconds", "ثانیه")
-                                              .replace("second", "ثانیه")
-                                              .replace("ago", "پیش")}
+                                            this.toFarsiNumber(
+                                              human(new Date(timeline.time))
+                                                .replace("years", "سال")
+                                                .replace("year", "سال")
+                                                .replace("months", "ماه")
+                                                .replace("month", "ماه")
+                                                .replace("weeks", "هفته")
+                                                .replace("week", "هفته")
+                                                .replace("hours", "ساعت")
+                                                .replace("hour", "ساعت")
+                                                .replace("minutes", "دقیقه")
+                                                .replace("minute", "دقیقه")
+                                                .replace("days", "روز")
+                                                .replace("day", "روز")
+                                                .replace("seconds", "ثانیه")
+                                                .replace("second", "ثانیه")
+                                                .replace("ago", "پیش")
+                                            )}
                                         </Box>
                                       </Typography>
                                     </div>
@@ -987,7 +996,7 @@ class TimeLine extends React.Component {
                                           1,
                                           index,
                                           false,
-                                          "http://localhost:3000/student_dashboard" +
+                                          "http://app.classinium.ir/student_dashboard" +
                                             timeline.postUrl
                                         )
                                       }
@@ -1022,7 +1031,7 @@ class TimeLine extends React.Component {
                               </Grid>
 
                               <Grid item md={12} lg={12} sm={12} xs={12}>
-                              <Carousel files={timeline.files} />
+                                <Carousel files={timeline.files} />
                               </Grid>
 
                               <Grid item md={12} lg={12} sm={12} xs={12}>
@@ -1147,14 +1156,14 @@ class TimeLine extends React.Component {
                                           style={{ color: "red" }}
                                           fontSize={14}
                                         >
-                                          {timeline.likes_count}
+                                          {this.toFarsiNumber(timeline.likes_count)}
                                         </Box>
                                       ) : (
                                         <Box
                                           style={{ color: "grey" }}
                                           fontSize={14}
                                         >
-                                          {timeline.likes_count}
+                                          {this.toFarsiNumber(timeline.likes_count)}
                                         </Box>
                                       )}
                                     </div>
@@ -1181,7 +1190,7 @@ class TimeLine extends React.Component {
                                         }}
                                         fontSize={14}
                                       >
-                                        {timeline.comments_count}
+                                        {this.toFarsiNumber(timeline.comments.length)}
                                       </Box>
                                     </div>
 
@@ -1611,8 +1620,8 @@ class TimeLine extends React.Component {
                     }}
                   >
                     <Typography>
-                      <Box fontSize={18} p={20}>
-                        مطلبی وجود ندارد
+                      <Box fontSize={18} p={3}>
+                        خبری وجود ندارد
                       </Box>
                     </Typography>
                   </div>

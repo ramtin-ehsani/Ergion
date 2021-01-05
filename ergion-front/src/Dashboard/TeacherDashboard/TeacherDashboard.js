@@ -5,7 +5,7 @@ import Toolbars from "./Toolbar/Toolbar"
 import "./TeacherDashboard.scss";
 import TeacherProfile from '../../Profile/TeacherProfile';
 import { Route, Switch } from 'react-router-dom';
-import Template from './Template'
+// import Template from './Template'
 import * as actionTypes from '../../store/actions'
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -50,7 +50,7 @@ const Dashboard = () => {
 
         if (localStorage.getItem("api_key") !== 'null') {
 
-            axios.get('http://127.0.0.1:8000/api/teacher/profile/', config)
+            axios.get('https://api.classinium.ir/api/teacher/profile/', config)
                 .then((res) => {
                     // handle success
                     const avatarImage = res.data.profile_picture

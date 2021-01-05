@@ -99,7 +99,7 @@ class TabsClass extends Component {
 
   componentDidMount() {
     axios
-      .get("http://127.0.0.1:8000/api/teacher/courses/", {
+      .get("https://api.classinium.ir/api/teacher/courses/", {
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -148,19 +148,19 @@ class TabsClass extends Component {
         )}
         {this.state.list.length > 0 ? (
           <div>
-            <Typography
-              gutterBottom
-              className="text"
-              style={{ margin: "14px" }}
-            >
-              <Box fontSize={25} fontWeight="fontWeightBold">
-                کلاس های من
-              </Box>
-            </Typography>
             <Paper
               elevation={3}
-              style={{ marginRight: "18px", marginLeft: "18px" }}
+              style={{
+                marginRight: "18px",
+                marginLeft: "18px",
+                padding: "20px",
+              }}
             >
+              <Typography gutterBottom className="text">
+                <Box fontSize={25} fontWeight="fontWeightBold">
+                  کلاس های من
+                </Box>
+              </Typography>
               <Tabs
                 value={this.state.value}
                 onChange={(e, v) => this.handleChange(v)}
@@ -236,49 +236,57 @@ class TabsClass extends Component {
                                   </Box>
                                 </Typography>
                               </div>
-                              <Box
-                                style={{
-                                  display: "flex",
-                                  wordBreak: "break-all",
-                                  direction: "ltr",
-                                  padding: "4px",
-                                  backgroundColor: "#d50000",
-                                  width: "40%",
-                                  marginTop: "8px",
-                                  justifyContent: "center",
-                                }}
-                                borderRadius={8}
-                              >
-                                <div
-                                  style={{ direction: "rtl", display: "flex" }}
+                              {this.props.courseUnansweredQuestionsList[index] >
+                                0 ? (
+                                <Box
+                                  style={{
+                                    display: "flex",
+                                    wordBreak: "break-all",
+                                    direction: "ltr",
+                                    padding: "4px",
+                                    backgroundColor: "#d50000",
+                                    width: "40%",
+                                    marginTop: "8px",
+                                    justifyContent: "center",
+                                  }}
+                                  borderRadius={8}
                                 >
-                                  <Typography gutterBottom className="text">
-                                    <Box
-                                      color="white"
-                                      fontSize={12}
-                                      fontWeight="fontWeightBold"
-                                    >
-                                      سوالات جدید :
-                                    </Box>
-                                  </Typography>
-                                  <Typography
-                                    gutterBottom
-                                    className="text"
-                                    style={{ marginLeft: "4px" }}
+                                  <div
+                                    style={{
+                                      direction: "rtl",
+                                      display: "flex",
+                                    }}
                                   >
-                                    <Box
-                                      color="white"
-                                      fontSize={12}
-                                      fontWeight="fontWeightBold"
+                                    <Typography gutterBottom className="text">
+                                      <Box
+                                        color="white"
+                                        fontSize={12}
+                                        fontWeight="fontWeightBold"
+                                      >
+                                        سوالات جدید :
+                                      </Box>
+                                    </Typography>
+                                    <Typography
+                                      gutterBottom
+                                      className="text"
+                                      style={{ marginLeft: "4px" }}
                                     >
-                                      {this.toFarsiNumber(
-                                        this.props
-                                          .courseUnansweredQuestionsList[index]
-                                      )}
-                                    </Box>
-                                  </Typography>
-                                </div>
-                              </Box>
+                                      <Box
+                                        color="white"
+                                        fontSize={12}
+                                        fontWeight="fontWeightBold"
+                                      >
+                                        {this.toFarsiNumber(
+                                          this.props
+                                            .courseUnansweredQuestionsList[
+                                            index
+                                          ]
+                                        )}
+                                      </Box>
+                                    </Typography>
+                                  </div>
+                                </Box>
+                              ):(<div style={{height:38}}/>)}
                             </CardContent>
                           </Card>
                         </Button>

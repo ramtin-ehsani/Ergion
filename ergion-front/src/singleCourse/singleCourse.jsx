@@ -72,6 +72,17 @@ function Alert(props) {
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  "@global": {
+    "*::-webkit-scrollbar": {
+      width: "0.4em",
+    },
+    "*::-webkit-scrollbar-track": {
+      "-webkit-box-shadow": "inset 0 0 6px rgba(10,10,0,0.00)",
+    },
+    "*::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(0, 0, 0,.2)",
+    },
+  },
   root: {
     display: "flex",
     padding: theme.spacing(0),
@@ -88,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.dark,
   },
   paper: {
-    padding:theme.spacing(0),
+    padding: theme.spacing(0),
     paddingBottom: theme.spacing(2),
 
     display: "flex",
@@ -123,7 +134,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SingleCourse = ({ match, snackQ, onSnackQ }) => {
+const SingleCourse = ({ match, snackQ, onSnackQ, snackCopy, onSnackCopy }) => {
   //const course = useSelector(state => state.course);
   const [course, setcourse] = React.useState({});
   const usedispatch = useDispatch();
@@ -142,6 +153,13 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
     onSnackQ(false);
   };
 
+  const onSnackBarCloseCopy = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    onSnackCopy(false);
+  };
+
   const snackBar = useSelector((state) => state.snackBar);
 
   // useEffect(() => {
@@ -151,7 +169,7 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
   // }, []);
   const getcourse = () => {
     const promise = Axios.get(
-      `http://127.0.0.1:8000/api/course/${match.params.id}`
+      `https://api.classinium.ir/api/course/${match.params.id}`
     );
     promise.then((response) => {
       setcourse(response.data);
@@ -159,10 +177,12 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
   };
   React.useEffect(() => {
     const promise = Axios.get(
-      `http://127.0.0.1:8000/api/course/${match.params.id}`
+      `https://api.classinium.ir/api/course/${match.params.id}`,
+      { headers: { Authorization: `Token ${localStorage.getItem("api_key")}` } }
     );
     promise.then((response) => {
       setcourse(response.data);
+      console.log(response);
     });
   }, []);
 
@@ -186,6 +206,18 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
           سوال شما ارسال شد
         </Alert>
       </Snackbar>
+
+      <Snackbar
+        open={snackCopy}
+        autoHideDuration={1500}
+        onClose={onSnackBarCloseCopy}
+        dir="rtl"
+      >
+        <Alert className="snack" onClose={onSnackBarCloseCopy} severity="success">
+          لینک کپی شد
+        </Alert>
+      </Snackbar>
+
       <Snackbar
         open={snackBar}
         autoHideDuration={1500}
@@ -201,8 +233,6 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
         </Alert>
       </Snackbar>
       <Grid container spacing={2}>
-
-
         <Grid item xs={12}>
           <Paper className={fixedHeightPaper1} elevation={3}>
             <Information course={course} getupdate={getcourse} />
@@ -222,6 +252,7 @@ const SingleCourse = ({ match, snackQ, onSnackQ }) => {
 const mapStateToProps = (state) => {
   return {
     snackQ: state.snackBarQ,
+    snackCopy: state.snackBarCopyLink,
   };
 };
 
@@ -232,6 +263,7 @@ const mapDispatchToProps = (dispatch) => {
         type: actionTypes.SNACKBAR_NEW_Q,
         snackBarOpenOrClose: snackBarOpenOrClose,
       }),
+    onSnackCopy: (snackBarOpenOrClose) => dispatch({ type: actionTypes.SNACKBAR_COPY_LINK, snackBarOpenOrClose:snackBarOpenOrClose }),
   };
 };
 

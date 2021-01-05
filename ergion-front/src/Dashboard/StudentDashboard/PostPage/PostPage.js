@@ -157,7 +157,7 @@ const PostPage = () => {
 
   function copyToClipboard(id) {
     let textField = document.createElement("textarea");
-    textField.innerText = "http://localhost:3000/student_dashboard/post/" + id;
+    textField.innerText = "http://app.classinium.ir/student_dashboard/post/" + id;
     document.body.appendChild(textField);
     textField.select();
     document.execCommand("copy");
@@ -244,7 +244,7 @@ const PostPage = () => {
 
     axios
       .put(
-        "http://127.0.0.1:8000/api/course/post-likes/",
+        "https://api.classinium.ir/api/course/post-likes/",
         {
           post_id: id,
         },
@@ -260,12 +260,11 @@ const PostPage = () => {
         setIsRed(stateItems);
       });
 
-      // const stateItems = {
-      //   id: id,
-      //   isLiked: !postPage.isLiked,
-      // };
-      // setIsRed(stateItems);
-
+    // const stateItems = {
+    //   id: id,
+    //   isLiked: !postPage.isLiked,
+    // };
+    // setIsRed(stateItems);
   };
 
   const settings = {
@@ -385,7 +384,7 @@ const PostPage = () => {
     console.log(update_id);
     axios
       .get(
-        `http://127.0.0.1:8000/api/course/news-details/?news_id=${update_id}`,
+        `https://api.classinium.ir/api/course/news-details/?news_id=${update_id}`,
         config
       )
       .then((response) => {
@@ -462,6 +461,10 @@ const PostPage = () => {
                           human(new Date(postPage.creation_time))
                             .replace("years", "سال")
                             .replace("year", "سال")
+                            .replace("months", "ماه")
+                            .replace("month", "ماه")
+                            .replace("weeks", "هفته")
+                            .replace("week", "هفته")
                             .replace("hours", "ساعت")
                             .replace("hour", "ساعت")
                             .replace("minutes", "دقیقه")

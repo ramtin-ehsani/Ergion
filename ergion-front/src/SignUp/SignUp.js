@@ -207,7 +207,7 @@ class SignUp extends Component {
     const submitted = this.state.submitted;
     if (submitted) {
       const formData = this.state.formData;
-      axios.post('http://127.0.0.1:8000/api/rest-auth/registration/', {
+      axios.post('https://api.classinium.ir/api/rest-auth/registration/', {
         username: formData.email,
         password1: formData.password1,
         password2: formData.password2,

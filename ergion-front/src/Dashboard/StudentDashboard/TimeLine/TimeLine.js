@@ -5,12 +5,11 @@ import Divider from "@material-ui/core/Divider";
 import ReplyIcon from "@material-ui/icons/Reply";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SendIcon from "@material-ui/icons/Send";
-import ReactPlayer from "react-player";
 import TableHead from "@material-ui/core/TableHead";
 import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Carousel from "../../../Carousel/Carousel";
-// import AssignmentIcon from "@material-ui/icons/Assignment";
 import AnnouncementIcon from "@material-ui/icons/Announcement";
 import OndemandVideoIcon from "@material-ui/icons/OndemandVideo";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
@@ -18,11 +17,11 @@ import { create } from "jss";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import rtl from "jss-rtl";
+import { Virtuoso } from "react-virtuoso";
 import { StylesProvider, jssPreset } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
-import InfiniteScroll from "react-infinite-scroll-component";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -31,10 +30,8 @@ import Skeleton from "@material-ui/lab/Skeleton";
 import { withStyles } from "@material-ui/core/styles";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-// import BallotIcon from "@material-ui/icons/Ballot";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import InputLabel from "@material-ui/core/InputLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FormControl from "@material-ui/core/FormControl";
@@ -72,10 +69,22 @@ import {
 import { ValidatorForm } from "react-material-ui-form-validator";
 
 const styles = (theme) => ({
+  "@global": {
+    "*::-webkit-scrollbar": {
+      width: "0.4em",
+    },
+    "*::-webkit-scrollbar-track": {
+      "-webkit-box-shadow": "inset 0 0 6px rgba(10,10,0,0.00)",
+    },
+    "*::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(0, 0, 0,.2)",
+      display: "none",
+    },
+  },
   root: {
-    height: "auto",
+    height: "100vh",
     width: "100%",
-    flexGrow: 1,
+    // flexGrow: 1,
   },
   veticalDots: {
     color: "#000",
@@ -90,7 +99,7 @@ const styles = (theme) => ({
     font: "20",
   },
   mediaCardPaperStyle: {
-    borderRadius: 4,
+    borderRadius: 8,
     boxShadow: 20,
   },
   tabFont: {
@@ -204,8 +213,10 @@ class TimeLine extends React.Component {
   };
 
   loadMore = () => {
-    this.setState({ loadingMore: true });
-    this.getValues(this.state.page);
+    if (this.state.hasNext) {
+      this.setState({ loadingMore: true });
+      this.getValues(this.state.page);
+    }
   };
 
   componentDidMount() {
@@ -219,7 +230,7 @@ class TimeLine extends React.Component {
 
   bytesToSize(bytes) {
     var sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-    if (bytes == 0) return "0 Byte";
+    if (bytes === 0) return "0 Byte";
     var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
     return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
   }
@@ -230,11 +241,11 @@ class TimeLine extends React.Component {
 
   getValues = (page) => {
     axios
-      .get("http://127.0.0.1:8000/api/student/posts/?page=" + page, this.config)
+      .get("https://api.classinium.ir/api/student/posts/?page=" + page, this.config)
       .then((response) => {
         // handle success
         const { list } = this.state;
-        console.log(response.data);
+        // console.log(response.data);
 
         response.data.data.map((post) => {
           const comments = [];
@@ -283,12 +294,11 @@ class TimeLine extends React.Component {
       });
   };
 
-
-  toFarsiNumber=(n)=> {
+  toFarsiNumber = (n) => {
     const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 
     return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
-  }
+  };
 
   font = 28;
 
@@ -309,7 +319,7 @@ class TimeLine extends React.Component {
 
     axios
       .put(
-        "http://127.0.0.1:8000/api/course/post-likes/",
+        "https://api.classinium.ir/api/course/post-likes/",
         {
           post_id: id,
         },
@@ -355,7 +365,7 @@ class TimeLine extends React.Component {
   handlePostReply = (index, commentIndex, commentID, text) => {
     axios
       .post(
-        "http://127.0.0.1:8000/api/course/comments/",
+        "https://api.classinium.ir/api/course/comments/",
         {
           parent_comment_id: commentID,
           comment_text: text,
@@ -391,7 +401,7 @@ class TimeLine extends React.Component {
   handlePostComment = (index, timelineID, text) => {
     axios
       .post(
-        "http://127.0.0.1:8000/api/course/comments/",
+        "https://api.classinium.ir/api/course/comments/",
         {
           post_id: timelineID,
           comment_text: text,
@@ -402,8 +412,11 @@ class TimeLine extends React.Component {
         const listItem = {
           ...this.state.list[index],
         };
+        const commentObject = res.data;
+        commentObject.isReplyOpen = false;
+        commentObject.replyRef = "";
         if (listItem.comments.length < 3) {
-          listItem.comments.push(res.data);
+          listItem.comments.push(commentObject);
         }
         listItem.comments_count = listItem.comments_count + 1;
         const list = [...this.state.list];
@@ -446,7 +459,7 @@ class TimeLine extends React.Component {
       if (index === idx) {
         const comments = item.comments;
         comments.map((comment, indx) => {
-          if (commentIndex == indx) {
+          if (commentIndex === indx) {
             comment.isReplyOpen = !comment.isReplyOpen;
           }
         });
@@ -465,7 +478,7 @@ class TimeLine extends React.Component {
       if (index === idx) {
         const comments = item.comments;
         comments.map((comment, indx) => {
-          if (commentIndex == indx) {
+          if (commentIndex === indx) {
             comment.replyRef = value;
           }
         });
@@ -483,7 +496,7 @@ class TimeLine extends React.Component {
     this.handleLikeResponse(Index, commentIndex);
     axios
       .put(
-        "http://127.0.0.1:8000/api/course/comment-likes/",
+        "https://api.classinium.ir/api/course/comment-likes/",
         {
           comment_id: this.state.list[Index].comments[commentIndex].id,
         },
@@ -499,7 +512,7 @@ class TimeLine extends React.Component {
       if (Index === idx) {
         const comments = item.comments;
         comments.map((comment, idxx) => {
-          if (commentIndex == idxx) {
+          if (commentIndex === idxx) {
             comment.liked = !comment.liked;
           }
         });
@@ -560,56 +573,10 @@ class TimeLine extends React.Component {
     this.setState({ shareDialogOpen: false });
   };
 
-  TypeOfFile = (props) => {
-    const { src } = props;
-    const { classes } = this.props;
-
-    const lastIndexOfSlash = String(src).lastIndexOf("/");
-    const lastIndexOfDot = String(src).lastIndexOf(".");
-    let name = String(src).substring(lastIndexOfSlash + 1);
-    const type = String(src).substring(lastIndexOfDot);
-
-    if (name.length > 15) {
-      name = name.substring(0, 15) + type;
-    }
-
-    if (type === ".mp4") {
-      return (
-        <div
-          style={{ padding: "16px" }}
-          // className='vid-wrapper'
-        >
-          <ReactPlayer
-            // className='react-player'
-            width="100%"
-            height="100%"
-            url={src}
-            // style={{ backgroundColor: '#000',maxHeight:500 }}
-            controls
-          />
-
-          <Typography>
-            <Box
-              fontSize={16}
-              dir="ltr"
-              fontWeight="fontWeightBold"
-              textAlign="center"
-              style={{ marginTop: "10px", marginBottom: "10px" }}
-            >
-              {name}
-            </Box>
-          </Typography>
-        </div>
-      );
-    }
-
-    return null;
-  };
-
   render() {
     const { classes } = this.props;
     return (
-      <div>
+      <div className={classes.root}>
         <Snackbar
           open={this.state.snackBarOpen}
           autoHideDuration={2000}
@@ -666,14 +633,19 @@ class TimeLine extends React.Component {
           </DialogActions>
         </Dialog>
 
-        <div className={classes.root}>
+        <div>
           {this.state.loading ? (
             <div>
-              <div className={classes.paperStyle}>
+              <div className={classes.paperStyle} style={{ padding: "8px" }}>
                 <Paper
                   className={classes.mediaCardPaperStyle}
                   elevation={3}
-                  style={{ marginBottom: "30px",padding:'8px' }}
+                  style={{
+                    marginBottom: "5px",
+                    padding: "8px",
+                    // marginTop: "5px",
+                    borderRadius: 8,
+                  }}
                 >
                   <Grid container dir="rtl" spacing={2}>
                     <Grid
@@ -701,11 +673,11 @@ class TimeLine extends React.Component {
                             <Skeleton
                               animation="wave"
                               height={20}
-                              width={240}
-                              style={{ marginBottom: 6 }}
+                              width={220}
                               style={{
                                 marginRight: "12px",
                                 alignSelf: "flex-start",
+                                marginBottom: 6,
                               }}
                             />
                           </div>
@@ -725,13 +697,13 @@ class TimeLine extends React.Component {
                       </div>
                     </Grid>
                     <Grid md={12} lg={12} sm={12} item xs={12}>
-                              <Divider
-                                style={{
-                                  marginLeft: "-8px",
-                                  marginRight: "-8px",
-                                }}
-                              />
-                            </Grid>
+                      <Divider
+                        style={{
+                          marginLeft: "-8px",
+                          marginRight: "-8px",
+                        }}
+                      />
+                    </Grid>
                     <Grid item lg={12} md={12} xs={12} sm={12}>
                       <Skeleton
                         animation="wave"
@@ -760,11 +732,16 @@ class TimeLine extends React.Component {
                   </Grid>
                 </Paper>
               </div>
-              <div className={classes.paperStyle}>
+              <div className={classes.paperStyle} style={{ padding: "8px" }}>
                 <Paper
                   className={classes.mediaCardPaperStyle}
                   elevation={3}
-                  style={{ marginBottom: "30px",padding:'8px', marginTop: "30px" }}
+                  style={{
+                    marginBottom: "5px",
+                    padding: "8px",
+                    // marginTop: "5px",
+                    borderRadius: 8,
+                  }}
                 >
                   <Grid container dir="rtl" spacing={2}>
                     <Grid
@@ -792,11 +769,11 @@ class TimeLine extends React.Component {
                             <Skeleton
                               animation="wave"
                               height={20}
-                              width={240}
-                              style={{ marginBottom: 6 }}
+                              width={220}
                               style={{
                                 marginRight: "12px",
                                 alignSelf: "flex-start",
+                                marginBottom: 6,
                               }}
                             />
                           </div>
@@ -816,13 +793,13 @@ class TimeLine extends React.Component {
                       </div>
                     </Grid>
                     <Grid md={12} lg={12} sm={12} item xs={12}>
-                              <Divider
-                                style={{
-                                  marginLeft: "-8px",
-                                  marginRight: "-8px",
-                                }}
-                              />
-                            </Grid>
+                      <Divider
+                        style={{
+                          marginLeft: "-8px",
+                          marginRight: "-8px",
+                        }}
+                      />
+                    </Grid>
                     <Grid item lg={12} md={12} xs={12} sm={12}>
                       <Skeleton
                         animation="wave"
@@ -853,813 +830,846 @@ class TimeLine extends React.Component {
               </div>
             </div>
           ) : (
-            <div>
+            <div style={{ direction: "ltr" }}>
               {this.state.list.length > 0 ? (
-                <div>
-                  <div
-                  // dataLength={this.state.list.length}
-                  // next={this.loadMore}
-                  // hasMore={this.state.hasNext}
-                  // style={{ padding: "4px" }}
-                  // loader={
-                  //   <div
-                  //     style={{
-                  //       display: "flex",
-                  //       justifyContent: "center",
-                  //       padding: "16px",
-                  //     }}
-                  //   >
-                  //     {/* <Button
-                  //     color="primary"
-                  //     disabled={this.state.loadingMore}
-                  //     variant="outlined"
-                  //     style={{ borderRadius: 30, padding: "16px" }}
-                  //     onClick={this.loadMore}
-                  //   > */}
-                  //     <CircularProgress />
-                  //     {/* </Button> */}
-                  //   </div>
-                  // }
-                  >
-                    {this.state.list.map((timeline, index) => (
-                      <div className={classes.paperStyle} key={timeline.id}>
-                        <Paper
-                          className={classes.mediaCardPaperStyle}
-                          elevation={5}
-                          style={{
-                            marginBottom: "30px",
-                            padding: "8px",
-                          }}
+                <Virtuoso
+                  data={this.state.list}
+                  // style={{ height: "calc(100vh - " + "40px" + ")" }}
+                  style={{ height: "100vh" }}
+                  // className='virtualWrapperHeight'
+                  endReached={this.loadMore}
+                  overscan={2000}
+                  itemContent={
+                    (index, timeline) => {
+                      return (
+                        <div
+                          className={classes.paperStyle}
+                          key={timeline.id}
+                          style={{ padding: "8px" }}
                         >
-                          <Grid container dir="rtl">
-                            <Grid
-                              item
-                              lg={12}
-                              md={12}
-                              sm={12}
-                              xs={12}
-                              style={{
-                                padding: "16px",
-                                display: "flex",
-                                justifyContent: "space-between",
-                              }}
-                            >
-                              <div style={{ display: "flex" }}>
-                                <Avatar
-                                  src={timeline.instructor_profilePic}
-                                  style={{ width: 60, height: 60 }}
-                                />
-                                <div>
-                                  <div style={{ display: "flex" }}>
-                                    <Typography
-                                      style={{
-                                        marginRight: "12px",
-                                        alignSelf: "flex-start",
-                                      }}
-                                    >
-                                      <Box
-                                        fontSize={20}
-                                        fontWeight="fontWeightBold"
-                                      >
-                                        {timeline.instructor_firstName +
-                                          " " +
-                                          timeline.instructor_lastName}
-                                      </Box>
-                                    </Typography>
-
-                                    <Typography
-                                      style={{
-                                        marginRight: "8px",
-                                        alignSelf: "flex-start",
-                                        marginTop: "6px",
-                                      }}
-                                    >
-                                      <Box
-                                        fontSize={14}
-                                        style={{ color: "grey" }}
-                                      >
-                                        {" . " +
-                                          this.toFarsiNumber(human(new Date(timeline.time))
-                                            .replace("years", "سال")
-                                            .replace("year", "سال")
-                                            .replace("hours", "ساعت")
-                                            .replace("hour", "ساعت")
-                                            .replace("minutes", "دقیقه")
-                                            .replace("minute", "دقیقه")
-                                            .replace("days", "روز")
-                                            .replace("day", "روز")
-                                            .replace("seconds", "ثانیه")
-                                            .replace("second", "ثانیه")
-                                            .replace("ago", "پیش"))}
-                                      </Box>
-                                    </Typography>
-                                  </div>
-                                  <div style={{ display: "flex" }}>
-                                    <Typography
-                                      style={{
-                                        alignSelf: "flex-start",
-                                        marginTop: "8px",
-                                        marginRight: "12px",
-                                      }}
-                                    >
-                                      <Box fontSize={18}>
-                                        {timeline.type == 0 ? (
-                                          <span>
-                                            <OndemandVideoIcon
-                                              color="primary"
-                                              style={{
-                                                marginLeft: "4px",
-                                                marginBottom: "-8px",
-                                              }}
-                                            />
-                                            جلسه ی{" "}
-                                            <strong>
-                                              <Link
-                                                href={
-                                                  "/student_dashboard" +
-                                                  timeline.postUrl
-                                                }
-                                              >
-                                                {timeline.name}
-                                              </Link>
-                                            </strong>{" "}
-                                            از دوره ی{" "}
-                                            <strong>
-                                              <Link
-                                                href={
-                                                  "/student_dashboard" +
-                                                  timeline.course_url.replace(
-                                                    "course",
-                                                    "added_courses"
-                                                  )
-                                                }
-                                              >
-                                                {timeline.course_name}
-                                              </Link>
-                                            </strong>{" "}
-                                            منتشر شد.
-                                          </span>
-                                        ) : (
-                                          <div style={{ display: "flex" }}>
-                                            <AnnouncementIcon
-                                              color="primary"
-                                              style={{ marginLeft: "4px" }}
-                                            />
-                                            خبر
-                                          </div>
-                                        )}
-                                      </Box>
-                                    </Typography>
-                                  </div>
-                                </div>
-                              </div>
-                              <div style={{ alignSelf: "flex-start" }}>
-                                <IconButton
-                                  component="span"
-                                  aria-controls="customized-menu"
-                                  aria-haspopup="true"
-                                  onClick={(e) =>
-                                    this.handleAnchorEl(e, index, true)
-                                  }
-                                  className={classes.veticalDots}
-                                >
-                                  <MoreHorizIcon />
-                                </IconButton>
-                                <StyledMenu
-                                  id="customized-menu"
-                                  anchorEl={timeline.anchorEl}
-                                  keepMounted
-                                  open={Boolean(timeline.anchorEl)}
-                                  onClose={(e) =>
-                                    this.handleAnchorEl(e, index, false)
-                                  }
-                                >
-                                  <StyledMenuItem
-                                    onClick={() =>
-                                      this.openShareDialog(
-                                        1,
-                                        index,
-                                        false,
-                                        "http://localhost:3000/student_dashboard" +
-                                          timeline.postUrl
-                                      )
-                                    }
-                                  >
-                                    <ListItemIcon>
-                                      <ShareIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="اشتراک گذاری" />
-                                  </StyledMenuItem>
-                                </StyledMenu>
-                              </div>
-                            </Grid>
-                            <Grid md={12} lg={12} sm={12} item xs={12}>
-                              <Divider
-                                style={{
-                                  marginLeft: "-8px",
-                                  marginRight: "-8px",
-                                }}
-                              />
-                            </Grid>
-                            <Grid item md={12} lg={12} sm={12} xs={12}>
-                              <div
+                          <Paper
+                            className={classes.mediaCardPaperStyle}
+                            elevation={5}
+                            style={{
+                              marginBottom: "5px",
+                              padding: "8px",
+                              // marginTop: "5px",
+                              borderRadius: 8,
+                            }}
+                          >
+                            <Grid container dir="rtl">
+                              <Grid
+                                item
+                                lg={12}
+                                md={12}
+                                sm={12}
+                                xs={12}
                                 style={{
                                   padding: "16px",
                                   display: "flex",
-                                  wordBreak: "break-all",
+                                  justifyContent: "space-between",
                                 }}
                               >
-                                <Typography>
-                                  <Box fontSize={18}>
-                                    {timeline.description !== ""
-                                      ? timeline.description
-                                      : "(توضیحی وجود ندارد)"}
-                                  </Box>
-                                </Typography>
-                              </div>
-                            </Grid>
+                                <div style={{ display: "flex" }}>
+                                  <Avatar
+                                    src={timeline.instructor_profilePic}
+                                    style={{ width: 60, height: 60 }}
+                                  />
+                                  <div>
+                                    <div style={{ display: "flex" }}>
+                                      <Typography
+                                        style={{
+                                          marginRight: "12px",
+                                          alignSelf: "flex-start",
+                                        }}
+                                      >
+                                        <Box
+                                          fontSize={20}
+                                          fontWeight="fontWeightBold"
+                                        >
+                                          {timeline.instructor_firstName +
+                                            " " +
+                                            timeline.instructor_lastName}
+                                        </Box>
+                                      </Typography>
 
-                            <Grid item md={12} lg={12} sm={12} xs={12}>
-                              <Carousel files={timeline.files} />
-                            </Grid>
-
-                            <Grid item md={12} lg={12} sm={12} xs={12}>
-                              {timeline.files.length > 0 ? (
-                                <div style={{ padding: "16px" }}>
-                                  <Typography
-                                    style={{
-                                      display: "flex",
-                                      marginBottom: "8px",
-                                    }}
-                                  >
-                                    <Box fontSize={18}>فایل ها :</Box>
-                                  </Typography>
-
-                                  <TableContainer dir="rtl" component={Paper}>
-                                    <Table
-                                      aria-label="customized table"
-                                      dir="rtl"
-                                    >
-                                      <TableHead dir="rtl">
-                                        <TableRow dir="rtl">
-                                          <StyledTableCell align="center">
-                                            آیکون
-                                          </StyledTableCell>
-                                          <StyledTableCell align="center">
-                                            اسم فایل
-                                          </StyledTableCell>
-                                          <StyledTableCell align="center">
-                                            حجم
-                                          </StyledTableCell>
-                                          <StyledTableCell align="center">
-                                            دانلود
-                                          </StyledTableCell>
-                                        </TableRow>
-                                      </TableHead>
-                                      <TableBody>
-                                        {timeline.files.map(
-                                          (tabFile, tabIndx) => (
-                                            <StyledTableRow
-                                              dir="rtl"
-                                              key={tabFile.id}
-                                            >
-                                              <StyledTableCell align="center">
-                                                <this.HandlePreviewIcon
-                                                  src={this.fileNameExtractor(
-                                                    tabFile.file
-                                                  )}
-                                                />
-                                              </StyledTableCell>
-                                              <StyledTableCell align="center">
-                                                <Box>
-                                                  {this.fileNameExtractor(
-                                                    tabFile.file
-                                                  )}
-                                                </Box>
-                                              </StyledTableCell>
-                                              <StyledTableCell align="center">
-                                                <div dir="ltr">
-                                                  <Box
-                                                    style={{ color: "grey" }}
-                                                    fontSize={14}
-                                                  >
-                                                    {this.bytesToSize(
-                                                      tabFile.size
-                                                    )}
-                                                  </Box>
-                                                </div>
-                                              </StyledTableCell>
-                                              <StyledTableCell align="center">
-                                                <IconButton
-                                                  variant="outlined"
-                                                  color="primary"
-                                                  onClick={() =>
-                                                    this.handleDownload(
-                                                      tabFile.file
+                                      <Typography
+                                        style={{
+                                          marginRight: "8px",
+                                          alignSelf: "flex-start",
+                                          marginTop: "6px",
+                                        }}
+                                      >
+                                        <Box
+                                          fontSize={14}
+                                          style={{ color: "grey" }}
+                                        >
+                                          {" . " +
+                                            this.toFarsiNumber(
+                                              human(new Date(timeline.time))
+                                                .replace("years", "سال")
+                                                .replace("year", "سال")
+                                                .replace("months", "ماه")
+                                                .replace("month", "ماه")
+                                                .replace("weeks", "هفته")
+                                                .replace("week", "هفته")
+                                                .replace("hours", "ساعت")
+                                                .replace("hour", "ساعت")
+                                                .replace("minutes", "دقیقه")
+                                                .replace("minute", "دقیقه")
+                                                .replace("days", "روز")
+                                                .replace("day", "روز")
+                                                .replace("seconds", "ثانیه")
+                                                .replace("second", "ثانیه")
+                                                .replace("ago", "پیش")
+                                            )}
+                                        </Box>
+                                      </Typography>
+                                    </div>
+                                    <div style={{ display: "flex" }}>
+                                      <Typography
+                                        style={{
+                                          alignSelf: "flex-start",
+                                          marginTop: "8px",
+                                          marginRight: "12px",
+                                        }}
+                                      >
+                                        <Box fontSize={18}>
+                                          {timeline.type === 0 ? (
+                                            <span>
+                                              <OndemandVideoIcon
+                                                color="primary"
+                                                style={{
+                                                  marginLeft: "4px",
+                                                  marginBottom: "-8px",
+                                                }}
+                                              />
+                                              جلسه ی{" "}
+                                              <strong>
+                                                <Link
+                                                  href={
+                                                    "/student_dashboard" +
+                                                    timeline.postUrl
+                                                  }
+                                                >
+                                                  {timeline.name}
+                                                </Link>
+                                              </strong>{" "}
+                                              از دوره ی{" "}
+                                              <strong>
+                                                <Link
+                                                  href={
+                                                    "/student_dashboard" +
+                                                    timeline.course_url.replace(
+                                                      "course",
+                                                      "added_courses"
                                                     )
                                                   }
                                                 >
-                                                  <GetAppRoundedIcon />
-                                                </IconButton>
-                                              </StyledTableCell>
-                                            </StyledTableRow>
-                                          )
-                                        )}
-                                      </TableBody>
-                                    </Table>
-                                  </TableContainer>
-                                </div>
-                              ) : (
-                                ""
-                              )}
-                            </Grid>
-
-                            <Grid md={12} lg={12} sm={12} item xs={12}>
-                              <Divider
-                                style={{
-                                  marginLeft: "-8px",
-                                  marginRight: "-8px",
-                                }}
-                              />
-                            </Grid>
-
-                            <Grid
-                              item
-                              md={12}
-                              lg={12}
-                              sm={12}
-                              style={{
-                                paddingRight: "16px",
-                                paddingLeft: "16px",
-                                paddingBottom: "4px",
-                                paddingTop: "4px",
-                              }}
-                              xs={12}
-                            >
-                              <div
-                                style={{
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  display: "flex",
-                                }}
-                              >
-                                <div style={{ display: "flex" }}>
-                                  <div style={{ alignSelf: "center" }}>
-                                    {timeline.liked ? (
-                                      <Box
-                                        style={{ color: "red" }}
-                                        fontSize={14}
-                                      >
-                                        {timeline.likes_count}
-                                      </Box>
-                                    ) : (
-                                      <Box
-                                        style={{ color: "grey" }}
-                                        fontSize={14}
-                                      >
-                                        {timeline.likes_count}
-                                      </Box>
-                                    )}
+                                                  {timeline.course_name}
+                                                </Link>
+                                              </strong>{" "}
+                                              منتشر شد.
+                                            </span>
+                                          ) : (
+                                            <div style={{ display: "flex" }}>
+                                              <AnnouncementIcon
+                                                color="primary"
+                                                style={{ marginLeft: "4px" }}
+                                              />
+                                              خبر
+                                            </div>
+                                          )}
+                                        </Box>
+                                      </Typography>
+                                    </div>
                                   </div>
+                                </div>
+                                <div style={{ alignSelf: "flex-start" }}>
                                   <IconButton
-                                    onClick={() =>
-                                      this.handleTimelineLike(
-                                        index,
-                                        timeline.id
-                                      )
+                                    component="span"
+                                    aria-controls="customized-menu"
+                                    aria-haspopup="true"
+                                    onClick={(e) =>
+                                      this.handleAnchorEl(e, index, true)
+                                    }
+                                    className={classes.veticalDots}
+                                  >
+                                    <MoreHorizIcon />
+                                  </IconButton>
+                                  <StyledMenu
+                                    id="customized-menu"
+                                    anchorEl={timeline.anchorEl}
+                                    keepMounted
+                                    open={Boolean(timeline.anchorEl)}
+                                    onClose={(e) =>
+                                      this.handleAnchorEl(e, index, false)
                                     }
                                   >
-                                    {timeline.liked ? (
-                                      <FavoriteIcon color="secondary" />
-                                    ) : (
-                                      <FavoriteBorderOutlinedIcon />
-                                    )}
-                                  </IconButton>
-                                </div>
-                                <div style={{ display: "flex" }}>
-                                  <div style={{ alignSelf: "center" }}>
-                                    <Box
-                                      style={{
-                                        color: "grey",
-                                      }}
-                                      fontSize={14}
+                                    <StyledMenuItem
+                                      onClick={() =>
+                                        this.openShareDialog(
+                                          1,
+                                          index,
+                                          false,
+                                          "http://app.classinium.ir/student_dashboard" +
+                                            timeline.postUrl
+                                        )
+                                      }
                                     >
-                                      {timeline.comments_count}
-                                    </Box>
-                                  </div>
-
-                                  <IconButton
-                                    href={
-                                      "/student_dashboard" + timeline.postUrl
-                                    }
-                                  >
-                                    <CommentIcon />
-                                  </IconButton>
+                                      <ListItemIcon>
+                                        <ShareIcon />
+                                      </ListItemIcon>
+                                      <ListItemText primary="اشتراک گذاری" />
+                                    </StyledMenuItem>
+                                  </StyledMenu>
                                 </div>
-                                {/* <IconButton href={"/student_dashboard" + timeline.postUrl.replace('update', 'post')}
-                                                                        style={{ marginLeft: '5px', alignSelf: 'center' }}
-                                                                    >
-                                                                        <AssignmentIcon style={{ marginRight: '4px' }} />
-                                                                    </IconButton>
-                                                                    <IconButton href={"/student_dashboard" + timeline.course_url.replace('course', 'added_courses')}
-                                                                        style={{ marginRight: '5px', alignSelf: 'center' }}
-                                                                    >
-                                                                        <BallotIcon style={{ marginRight: '4px' }} />
-                                                                    </IconButton> */}
-                              </div>
-                            </Grid>
+                              </Grid>
+                              <Grid md={12} lg={12} sm={12} item xs={12}>
+                                <Divider
+                                  style={{
+                                    marginLeft: "-8px",
+                                    marginRight: "-8px",
+                                  }}
+                                />
+                              </Grid>
+                              <Grid item md={12} lg={12} sm={12} xs={12}>
+                                <div
+                                  style={{
+                                    padding: "16px",
+                                    display: "flex",
+                                    wordBreak: "break-all",
+                                  }}
+                                >
+                                  <Typography>
+                                    <Box fontSize={18}>
+                                      {timeline.description !== ""
+                                        ? timeline.description
+                                        : "(توضیحی وجود ندارد)"}
+                                    </Box>
+                                  </Typography>
+                                </div>
+                              </Grid>
 
-                            <Grid item md={12} lg={12} sm={12} xs={12}>
-                              <div
+                              <Grid item md={12} lg={12} sm={12} xs={12}>
+                                <Carousel files={timeline.files} />
+                              </Grid>
+
+                              <Grid item md={12} lg={12} sm={12} xs={12}>
+                                {timeline.files.length > 0 ? (
+                                  <div style={{ padding: "16px" }}>
+                                    <Typography
+                                      style={{
+                                        display: "flex",
+                                        marginBottom: "8px",
+                                      }}
+                                    >
+                                      <Box fontSize={18}>فایل ها :</Box>
+                                    </Typography>
+
+                                    <TableContainer dir="rtl" component={Paper}>
+                                      <Table
+                                        aria-label="customized table"
+                                        dir="rtl"
+                                      >
+                                        <TableHead dir="rtl">
+                                          <TableRow dir="rtl">
+                                            <StyledTableCell align="center">
+                                              آیکون
+                                            </StyledTableCell>
+                                            <StyledTableCell align="center">
+                                              اسم فایل
+                                            </StyledTableCell>
+                                            <StyledTableCell align="center">
+                                              حجم
+                                            </StyledTableCell>
+                                            <StyledTableCell align="center">
+                                              دانلود
+                                            </StyledTableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          {timeline.files.map(
+                                            (tabFile, tabIndx) => (
+                                              <StyledTableRow
+                                                dir="rtl"
+                                                key={tabFile.id}
+                                              >
+                                                <StyledTableCell align="center">
+                                                  <this.HandlePreviewIcon
+                                                    src={this.fileNameExtractor(
+                                                      tabFile.file
+                                                    )}
+                                                  />
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">
+                                                  <Box>
+                                                    {this.fileNameExtractor(
+                                                      tabFile.file
+                                                    )}
+                                                  </Box>
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">
+                                                  <div dir="ltr">
+                                                    <Box
+                                                      style={{ color: "grey" }}
+                                                      fontSize={14}
+                                                    >
+                                                      {this.bytesToSize(
+                                                        tabFile.size
+                                                      )}
+                                                    </Box>
+                                                  </div>
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">
+                                                  <IconButton
+                                                    variant="outlined"
+                                                    color="primary"
+                                                    onClick={() =>
+                                                      this.handleDownload(
+                                                        tabFile.file
+                                                      )
+                                                    }
+                                                  >
+                                                    <GetAppRoundedIcon />
+                                                  </IconButton>
+                                                </StyledTableCell>
+                                              </StyledTableRow>
+                                            )
+                                          )}
+                                        </TableBody>
+                                      </Table>
+                                    </TableContainer>
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
+                              </Grid>
+
+                              <Grid md={12} lg={12} sm={12} item xs={12}>
+                                <Divider
+                                  style={{
+                                    marginLeft: "-8px",
+                                    marginRight: "-8px",
+                                  }}
+                                />
+                              </Grid>
+
+                              <Grid
+                                item
+                                md={12}
+                                lg={12}
+                                sm={12}
                                 style={{
                                   paddingRight: "16px",
                                   paddingLeft: "16px",
-                                  paddingBottom: "16px",
+                                  paddingBottom: "4px",
                                   paddingTop: "4px",
                                 }}
+                                xs={12}
                               >
                                 <div
                                   style={{
-                                    marginRight: "-16px",
-                                    marginLeft: "-16px",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    display: "flex",
                                   }}
                                 >
-                                  {timeline.comments.length > 0 && (
-                                    <div>
-                                      <List
-                                        component="div"
-                                        aria-labelledby="nested-comment-list-subheader"
-                                        subheader={
-                                          <ListSubheader
-                                            component="div"
-                                            id="nested-comment-list-subheader"
-                                          >
-                                            کامنت ها
-                                          </ListSubheader>
-                                        }
+                                  <div style={{ display: "flex" }}>
+                                    <div style={{ alignSelf: "center" }}>
+                                      {timeline.liked ? (
+                                        <Box
+                                          style={{ color: "red" }}
+                                          fontSize={14}
+                                        >
+                                          {this.toFarsiNumber(
+                                            timeline.likes_count
+                                          )}
+                                        </Box>
+                                      ) : (
+                                        <Box
+                                          style={{ color: "grey" }}
+                                          fontSize={14}
+                                        >
+                                          {this.toFarsiNumber(
+                                            timeline.likes_count
+                                          )}
+                                        </Box>
+                                      )}
+                                    </div>
+                                    <IconButton
+                                      onClick={() =>
+                                        this.handleTimelineLike(
+                                          index,
+                                          timeline.id
+                                        )
+                                      }
+                                    >
+                                      {timeline.liked ? (
+                                        <FavoriteIcon color="secondary" />
+                                      ) : (
+                                        <FavoriteBorderOutlinedIcon />
+                                      )}
+                                    </IconButton>
+                                  </div>
+                                  <div style={{ display: "flex" }}>
+                                    <div style={{ alignSelf: "center" }}>
+                                      <Box
+                                        style={{
+                                          color: "grey",
+                                        }}
+                                        fontSize={14}
                                       >
-                                        {timeline.comments.map(
-                                          (comment, commentIndex) => (
-                                            <div key={comment.id}>
-                                              <ListItem>
-                                                <ListItemAvatar>
-                                                  <Avatar
-                                                    alt="avatar"
-                                                    src={
-                                                      comment.profile_picture
-                                                    }
-                                                  />
-                                                </ListItemAvatar>
-                                                <ListItemText
-                                                  style={{
-                                                    textAlign: "right",
-                                                  }}
-                                                  primary={
-                                                    <Typography>
-                                                      {comment.user_firstname +
-                                                        " " +
-                                                        comment.user_lastname}
-                                                    </Typography>
-                                                  }
-                                                  secondary={
-                                                    <>
-                                                      <Typography
-                                                        dir="rtl"
-                                                        component="span"
-                                                        variant="body2"
-                                                        color="textPrimary"
-                                                        style={{
-                                                          wordBreak:
-                                                            "break-all",
-                                                        }}
+                                        {this.toFarsiNumber(
+                                          timeline.comments_count
+                                        )}
+                                      </Box>
+                                    </div>
+
+                                    <IconButton
+                                      href={
+                                        "/student_dashboard" + timeline.postUrl
+                                      }
+                                    >
+                                      <CommentIcon />
+                                    </IconButton>
+                                  </div>
+                                  {/* <IconButton href={"/student_dashboard" + timeline.postUrl.replace('update', 'post')}
+                                                          style={{ marginLeft: '5px', alignSelf: 'center' }}
                                                       >
-                                                        {comment.comment_text}
+                                                          <AssignmentIcon style={{ marginRight: '4px' }} />
+                                                      </IconButton>
+                                                      <IconButton href={"/student_dashboard" + timeline.course_url.replace('course', 'added_courses')}
+                                                          style={{ marginRight: '5px', alignSelf: 'center' }}
+                                                      >
+                                                          <BallotIcon style={{ marginRight: '4px' }} />
+                                                      </IconButton> */}
+                                </div>
+                              </Grid>
+                              <Grid md={12} lg={12} sm={12} item xs={12}>
+                                <Divider
+                                  style={{
+                                    marginLeft: "-8px",
+                                    marginRight: "-8px",
+                                  }}
+                                />
+                              </Grid>
+
+                              <Grid item md={12} lg={12} sm={12} xs={12}>
+                                <div
+                                  style={{
+                                    paddingRight: "16px",
+                                    paddingLeft: "16px",
+                                    paddingBottom: "16px",
+                                    paddingTop: "4px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      marginRight: "-16px",
+                                      marginLeft: "-16px",
+                                    }}
+                                  >
+                                    {timeline.comments.length > 0 && (
+                                      <div>
+                                        <List component="div">
+                                          {timeline.comments.map(
+                                            (comment, commentIndex) => (
+                                              <div key={comment.id}>
+                                                <ListItem>
+                                                  <ListItemAvatar>
+                                                    <Avatar
+                                                      alt="avatar"
+                                                      src={
+                                                        comment.profile_picture
+                                                      }
+                                                    />
+                                                  </ListItemAvatar>
+                                                  <ListItemText
+                                                    style={{
+                                                      textAlign: "right",
+                                                    }}
+                                                    primary={
+                                                      <Typography>
+                                                        {comment.user_firstname +
+                                                          " " +
+                                                          comment.user_lastname}
                                                       </Typography>
-                                                    </>
-                                                  }
-                                                ></ListItemText>
-                                                <ListItemIcon>
-                                                  <IconButton
-                                                    onClick={() =>
-                                                      this.replyOpener(
-                                                        index,
-                                                        commentIndex
-                                                      )
                                                     }
-                                                  >
-                                                    <ReplyIcon />
-                                                  </IconButton>
-                                                  <IconButton
-                                                    onClick={() =>
-                                                      this.handleClickLike(
-                                                        index,
-                                                        commentIndex
-                                                      )
+                                                    secondary={
+                                                      <>
+                                                        <Typography
+                                                          dir="rtl"
+                                                          component="span"
+                                                          variant="body2"
+                                                          color="textPrimary"
+                                                          style={{
+                                                            wordBreak:
+                                                              "break-all",
+                                                          }}
+                                                        >
+                                                          {comment.comment_text}
+                                                        </Typography>
+                                                      </>
                                                     }
-                                                  >
-                                                    {comment.liked ? (
-                                                      <FavoriteIcon color="secondary" />
-                                                    ) : (
-                                                      <FavoriteBorderOutlinedIcon />
-                                                    )}
-                                                  </IconButton>
-                                                </ListItemIcon>
-                                              </ListItem>
-                                              <Collapse
-                                                in={comment.isReplyOpen}
-                                                timeout="auto"
-                                                unmountOnExit
-                                              >
-                                                {comment.replies.length > 3 ? (
-                                                  <div>
-                                                    <List
-                                                      component="div"
-                                                      aria-labelledby="nested-reply-list-subheader"
-                                                      style={{
-                                                        marginRight: "25px",
-                                                      }}
+                                                  ></ListItemText>
+                                                  <ListItemIcon>
+                                                    <IconButton
+                                                      onClick={() =>
+                                                        this.replyOpener(
+                                                          index,
+                                                          commentIndex
+                                                        )
+                                                      }
                                                     >
-                                                      {comment.replies
-                                                        .slice(0, 3)
-                                                        .map(
-                                                          (
-                                                            reply,
-                                                            replyIndex
-                                                          ) => (
-                                                            <div key={reply.id}>
-                                                              <ListItem>
-                                                                <ListItemAvatar>
-                                                                  <Avatar
-                                                                    alt="avatar"
-                                                                    src={
-                                                                      reply.profile_picture
-                                                                    }
-                                                                  />
-                                                                </ListItemAvatar>
-                                                                <ListItemText
-                                                                  style={{
-                                                                    textAlign:
-                                                                      "right",
-                                                                  }}
-                                                                  primary={
-                                                                    <Typography>
-                                                                      {reply.user_firstname +
-                                                                        " " +
-                                                                        reply.user_lastname}
-                                                                    </Typography>
-                                                                  }
-                                                                  secondary={
-                                                                    <>
-                                                                      <Typography
-                                                                        dir="rtl"
-                                                                        component="span"
-                                                                        variant="body2"
-                                                                        color="textPrimary"
-                                                                        style={{
-                                                                          wordBreak:
-                                                                            "break-all",
-                                                                        }}
-                                                                      >
-                                                                        {
-                                                                          reply.comment_text
-                                                                        }
-                                                                      </Typography>
-                                                                    </>
-                                                                  }
-                                                                ></ListItemText>
-                                                              </ListItem>
-                                                            </div>
-                                                          )
-                                                        )}
-                                                    </List>
-                                                    <div
-                                                      style={{
-                                                        display: "flex",
-                                                        marginBottom: "30px",
-                                                        justifyContent:
-                                                          "center",
-                                                      }}
+                                                      <ReplyIcon />
+                                                    </IconButton>
+                                                    <IconButton
+                                                      onClick={() =>
+                                                        this.handleClickLike(
+                                                          index,
+                                                          commentIndex
+                                                        )
+                                                      }
                                                     >
-                                                      <Button
-                                                        // color="primary"
-                                                        style={{
-                                                          padding: "8px",
-                                                        }}
-                                                        href={
-                                                          "/student_dashboard" +
-                                                          timeline.postUrl
-                                                        }
-                                                      >
-                                                        مشاهده ی بقیه ریپلای ها
-                                                        ...
-                                                      </Button>
-                                                    </div>
-                                                  </div>
-                                                ) : (
-                                                  <div>
-                                                    {comment.replies.length >
-                                                      0 && (
+                                                      {comment.liked ? (
+                                                        <FavoriteIcon color="secondary" />
+                                                      ) : (
+                                                        <FavoriteBorderOutlinedIcon />
+                                                      )}
+                                                    </IconButton>
+                                                  </ListItemIcon>
+                                                </ListItem>
+                                                <Collapse
+                                                  in={comment.isReplyOpen}
+                                                  timeout="auto"
+                                                  unmountOnExit
+                                                >
+                                                  {comment.replies.length >
+                                                  3 ? (
+                                                    <div>
                                                       <List
+                                                        component="div"
+                                                        aria-labelledby="nested-reply-list-subheader"
                                                         style={{
                                                           marginRight: "25px",
                                                         }}
-                                                        component="div"
-                                                        aria-labelledby="nested-reply-list-subheader"
                                                       >
-                                                        {comment.replies.map(
-                                                          (
-                                                            reply,
-                                                            replyIndex
-                                                          ) => (
-                                                            <div key={reply.id}>
-                                                              <ListItem>
-                                                                <ListItemAvatar>
-                                                                  <Avatar
-                                                                    alt="avatar"
-                                                                    src={
-                                                                      reply.profile_picture
-                                                                    }
-                                                                  />
-                                                                </ListItemAvatar>
-                                                                <ListItemText
-                                                                  style={{
-                                                                    textAlign:
-                                                                      "right",
-                                                                  }}
-                                                                  primary={
-                                                                    <Typography>
-                                                                      {reply.user_firstname +
-                                                                        " " +
-                                                                        reply.user_lastname}
-                                                                    </Typography>
-                                                                  }
-                                                                  secondary={
-                                                                    <>
-                                                                      <Typography
-                                                                        dir="rtl"
-                                                                        component="span"
-                                                                        variant="body2"
-                                                                        color="textPrimary"
-                                                                        style={{
-                                                                          wordBreak:
-                                                                            "break-all",
-                                                                        }}
-                                                                      >
-                                                                        {
-                                                                          reply.comment_text
-                                                                        }
+                                                        {comment.replies
+                                                          .slice(0, 3)
+                                                          .map(
+                                                            (
+                                                              reply,
+                                                              replyIndex
+                                                            ) => (
+                                                              <div
+                                                                key={reply.id}
+                                                              >
+                                                                <ListItem>
+                                                                  <ListItemAvatar>
+                                                                    <Avatar
+                                                                      alt="avatar"
+                                                                      src={
+                                                                        reply.profile_picture
+                                                                      }
+                                                                    />
+                                                                  </ListItemAvatar>
+                                                                  <ListItemText
+                                                                    style={{
+                                                                      textAlign:
+                                                                        "right",
+                                                                    }}
+                                                                    primary={
+                                                                      <Typography>
+                                                                        {reply.user_firstname +
+                                                                          " " +
+                                                                          reply.user_lastname}
                                                                       </Typography>
-                                                                    </>
-                                                                  }
-                                                                ></ListItemText>
-                                                              </ListItem>
-                                                            </div>
-                                                          )
-                                                        )}
+                                                                    }
+                                                                    secondary={
+                                                                      <>
+                                                                        <Typography
+                                                                          dir="rtl"
+                                                                          component="span"
+                                                                          variant="body2"
+                                                                          color="textPrimary"
+                                                                          style={{
+                                                                            wordBreak:
+                                                                              "break-all",
+                                                                          }}
+                                                                        >
+                                                                          {
+                                                                            reply.comment_text
+                                                                          }
+                                                                        </Typography>
+                                                                      </>
+                                                                    }
+                                                                  ></ListItemText>
+                                                                </ListItem>
+                                                              </div>
+                                                            )
+                                                          )}
                                                       </List>
-                                                    )}
-                                                  </div>
-                                                )}
+                                                      <div
+                                                        style={{
+                                                          display: "flex",
+                                                          marginBottom: "30px",
+                                                          justifyContent:
+                                                            "center",
+                                                        }}
+                                                      >
+                                                        <IconButton
+                                                          // color="primary"
+                                                          style={{
+                                                            padding: "8px",
+                                                          }}
+                                                          href={
+                                                            "/student_dashboard" +
+                                                            timeline.postUrl
+                                                          }
+                                                        >
+                                                          <ExpandMoreIcon />
+                                                        </IconButton>
+                                                      </div>
+                                                    </div>
+                                                  ) : (
+                                                    <div>
+                                                      {comment.replies.length >
+                                                        0 && (
+                                                        <List
+                                                          style={{
+                                                            marginRight: "25px",
+                                                          }}
+                                                          component="div"
+                                                          aria-labelledby="nested-reply-list-subheader"
+                                                        >
+                                                          {comment.replies.map(
+                                                            (
+                                                              reply,
+                                                              replyIndex
+                                                            ) => (
+                                                              <div
+                                                                key={reply.id}
+                                                              >
+                                                                <ListItem>
+                                                                  <ListItemAvatar>
+                                                                    <Avatar
+                                                                      alt="avatar"
+                                                                      src={
+                                                                        reply.profile_picture
+                                                                      }
+                                                                    />
+                                                                  </ListItemAvatar>
+                                                                  <ListItemText
+                                                                    style={{
+                                                                      textAlign:
+                                                                        "right",
+                                                                    }}
+                                                                    primary={
+                                                                      <Typography>
+                                                                        {reply.user_firstname +
+                                                                          " " +
+                                                                          reply.user_lastname}
+                                                                      </Typography>
+                                                                    }
+                                                                    secondary={
+                                                                      <>
+                                                                        <Typography
+                                                                          dir="rtl"
+                                                                          component="span"
+                                                                          variant="body2"
+                                                                          color="textPrimary"
+                                                                          style={{
+                                                                            wordBreak:
+                                                                              "break-all",
+                                                                          }}
+                                                                        >
+                                                                          {
+                                                                            reply.comment_text
+                                                                          }
+                                                                        </Typography>
+                                                                      </>
+                                                                    }
+                                                                  ></ListItemText>
+                                                                </ListItem>
+                                                              </div>
+                                                            )
+                                                          )}
+                                                        </List>
+                                                      )}
+                                                    </div>
+                                                  )}
 
-                                                <ValidatorForm
-                                                  onSubmit={() =>
-                                                    this.handlePostReply(
-                                                      index,
-                                                      commentIndex,
-                                                      comment.id,
-                                                      comment.replyRef
-                                                    )
-                                                  }
-                                                  style={{
-                                                    padding: "10px",
-                                                    marginRight: "30px",
-                                                    marginLeft: "20px",
-                                                    marginBottom: "4px",
-                                                  }}
-                                                >
-                                                  <InputBase
-                                                    style={{ padding: "8px",borderRadius:10 }}
-                                                    value={comment.replyRef}
-                                                    onChange={(e) =>
-                                                      this.handleReplyTextOnChange(
-                                                        e,
+                                                  <ValidatorForm
+                                                    onSubmit={() =>
+                                                      this.handlePostReply(
                                                         index,
-                                                        commentIndex
+                                                        commentIndex,
+                                                        comment.id,
+                                                        comment.replyRef
                                                       )
                                                     }
-                                                    fullWidth
-                                                    required
-                                                    className="input2"
-                                                    placeholder="متن پیام"
-                                                    endAdornment={
-                                                      <InputAdornment position="end">
-                                                        {comment.replyRef !==
-                                                          "" && (
-                                                          <IconButton
-                                                            color="primary"
-                                                            className={
-                                                              classes.iconButton
-                                                            }
-                                                            onClick={() =>
-                                                              this.handlePostReply(
-                                                                index,
-                                                                commentIndex,
-                                                                comment.id,
-                                                                comment.replyRef
-                                                              )
-                                                            }
-                                                          >
-                                                            <SendIcon className="icon" />
-                                                          </IconButton>
-                                                        )}
-                                                      </InputAdornment>
-                                                    }
-                                                  />
-                                                </ValidatorForm>
-                                              </Collapse>
-                                              <Divider />
-                                            </div>
-                                          )
-                                        )}
-                                      </List>
-                                      {timeline.comments_count > 3 && (
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            marginBottom: "30px",
-                                            justifyContent: "center",
-                                          }}
-                                        >
-                                          <Button
-                                            // color="primary"
+                                                    style={{
+                                                      padding: "10px",
+                                                      marginRight: "30px",
+                                                      marginLeft: "20px",
+                                                      marginBottom: "4px",
+                                                    }}
+                                                  >
+                                                    <InputBase
+                                                      style={{
+                                                        padding: "8px",
+                                                        borderRadius: 10,
+                                                      }}
+                                                      value={comment.replyRef}
+                                                      onChange={(e) =>
+                                                        this.handleReplyTextOnChange(
+                                                          e,
+                                                          index,
+                                                          commentIndex
+                                                        )
+                                                      }
+                                                      fullWidth
+                                                      required
+                                                      className="input2"
+                                                      placeholder="متن پیام"
+                                                      endAdornment={
+                                                        <InputAdornment position="end">
+                                                          {comment.replyRef !==
+                                                            "" && (
+                                                            <IconButton
+                                                              color="primary"
+                                                              className={
+                                                                classes.iconButton
+                                                              }
+                                                              onClick={() =>
+                                                                this.handlePostReply(
+                                                                  index,
+                                                                  commentIndex,
+                                                                  comment.id,
+                                                                  comment.replyRef
+                                                                )
+                                                              }
+                                                            >
+                                                              <SendIcon className="icon" />
+                                                            </IconButton>
+                                                          )}
+                                                        </InputAdornment>
+                                                      }
+                                                    />
+                                                  </ValidatorForm>
+                                                </Collapse>
+                                                <Divider />
+                                              </div>
+                                            )
+                                          )}
+                                        </List>
+                                        {timeline.comments_count > 3 && (
+                                          <div
                                             style={{
-                                              padding: "8px",
+                                              display: "flex",
+                                              marginBottom: "30px",
+                                              justifyContent: "center",
                                             }}
-                                            href={
-                                              "/student_dashboard" +
-                                              timeline.postUrl
-                                            }
                                           >
-                                            مشاهده ی بقیه کامنت ها ...
-                                          </Button>
-                                        </div>
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
-                                <ValidatorForm
-                                  onSubmit={() =>
-                                    this.handlePostComment(
-                                      index,
-                                      timeline.id,
-                                      timeline.commentRef
-                                    )
-                                  }
-                                >
-                                  <InputBase
-                                    style={{
-                                      padding: "8px",
-                                      marginTop: "6px",
-                                      borderRadius:10 
-                                    }}
-                                    value={timeline.commentRef}
-                                    onChange={(e) =>
-                                      this.handleCommentTextOnChange(e, index)
-                                    }
-                                    fullWidth
-                                    required
-                                    className="input2"
-                                    placeholder="کامنت بگذارید"
-                                    endAdornment={
-                                      <InputAdornment position="end">
-                                        {timeline.commentRef !== "" && (
-                                          <IconButton
-                                            color="primary"
-                                            className={classes.iconButton}
-                                            onClick={() =>
-                                              this.handlePostComment(
-                                                index,
-                                                timeline.id,
-                                                timeline.commentRef
-                                              )
-                                            }
-                                          >
-                                            <SendIcon className="icon" />
-                                          </IconButton>
+                                            <IconButton
+                                              // color="primary"
+                                              style={{
+                                                padding: "8px",
+                                              }}
+                                              href={
+                                                "/student_dashboard" +
+                                                timeline.postUrl
+                                              }
+                                            >
+                                              <ExpandMoreIcon />
+                                            </IconButton>
+                                          </div>
                                         )}
-                                      </InputAdornment>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <ValidatorForm
+                                    onSubmit={() =>
+                                      this.handlePostComment(
+                                        index,
+                                        timeline.id,
+                                        timeline.commentRef
+                                      )
                                     }
-                                  />
-                                </ValidatorForm>
-                              </div>
+                                  >
+                                    <InputBase
+                                      style={{
+                                        padding: "8px",
+                                        marginTop: "6px",
+                                        borderRadius: 10,
+                                      }}
+                                      value={timeline.commentRef}
+                                      onChange={(e) =>
+                                        this.handleCommentTextOnChange(e, index)
+                                      }
+                                      fullWidth
+                                      required
+                                      className="input2"
+                                      placeholder="کامنت بگذارید"
+                                      endAdornment={
+                                        <InputAdornment position="end">
+                                          {timeline.commentRef !== "" && (
+                                            <IconButton
+                                              color="primary"
+                                              className={classes.iconButton}
+                                              onClick={() =>
+                                                this.handlePostComment(
+                                                  index,
+                                                  timeline.id,
+                                                  timeline.commentRef
+                                                )
+                                              }
+                                            >
+                                              <SendIcon className="icon" />
+                                            </IconButton>
+                                          )}
+                                        </InputAdornment>
+                                      }
+                                    />
+                                  </ValidatorForm>
+                                </div>
+                              </Grid>
                             </Grid>
-                          </Grid>
-                        </Paper>
-                      </div>
-                    ))}
-                  </div>
+                          </Paper>
+                        </div>
+                      );
+                    }
+                    // ))
+                  }
+                  components={{
+                    Footer: () => {
+                      return (
+                        <div>
+                          {this.state.hasNext && (
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                padding: "8px",
+                              }}
+                            >
+                              <CircularProgress />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    },
+                  }}
+                />
+              ) : (
+                /* {this.state.list.length > 0 ? (
+                <div>
+                  <div>
+                    {this.state.list.map(}
+                  </div> */
 
-                  {this.state.hasNext && (
+                /* {this.state.hasNext && (
                     <div
                       style={{
                         display: "flex",
@@ -1681,9 +1691,8 @@ class TimeLine extends React.Component {
                         )}
                       </Button>
                     </div>
-                  )}
-                </div>
-              ) : (
+                  )} */
+                // </div>
                 <div
                   style={{
                     display: "flex",
