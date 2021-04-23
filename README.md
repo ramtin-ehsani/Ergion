@@ -11,11 +11,14 @@ Front-end of this website is developed with **React** and the Back-end with **Dj
 ## Features
 
 - Sign up as a Teacher or Student
+
 As a Teacher:
+
 - Create new classes with detailed info such as subject, number of students,...
 - Create new courses for each class with  educational videos, images and files
 - Answer students' questions in your inbox
 - ...
+
 As a Student:
 - Join in your desired classes
 - Use the materials in each class to learn new stuff
